@@ -59,16 +59,4 @@ class PathFinderTest {
         int distance = pathFinder.findDistance(1L, 6L);
         assertThat(distance).isEqualTo(61);
     }
-
-    public static void main(String[] args) {
-        List<Integer> as = List.of(1, 2, 3);
-        List<Integer> bs = List.of(2, 3, 1);
-
-        LinkedList<Integer> list = as.stream()
-                .flatMap(a -> bs.stream()
-                        .filter(b -> b.equals(a)))
-                .collect(Collectors.toCollection(LinkedList::new));
-
-        System.out.println("list = " + list);
-    }
 }

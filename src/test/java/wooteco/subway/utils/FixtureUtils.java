@@ -1,6 +1,5 @@
 package wooteco.subway.utils;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
@@ -11,6 +10,7 @@ import wooteco.subway.dto.request.StationRequest;
 import java.util.List;
 import java.util.Map;
 
+import static io.restassured.RestAssured.given;
 import static java.util.Collections.EMPTY_MAP;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -36,37 +36,43 @@ public class FixtureUtils {
         return String.format("/paths?source=%d&target=%d", sourceStationId, targetStationId);
     }
 
-    public static final StationRequest 상도역 = StationRequest.builder()
-            .name("상도역")
-            .build();
+    public static final StationRequest 상도역 =
+            StationRequest.builder()
+                    .name("상도역")
+                    .build();
 
-    public static final StationRequest 이수역 = StationRequest.builder()
-            .name("이수역")
-            .build();
+    public static final StationRequest 이수역 =
+            StationRequest.builder()
+                    .name("이수역")
+                    .build();
 
-    public static final StationRequest 강남구청역 = StationRequest.builder()
-            .name("강남구청역")
-            .build();
+    public static final StationRequest 강남구청역 =
+            StationRequest.builder()
+                    .name("강남구청역")
+                    .build();
 
-    public static final StationRequest 선릉역 = StationRequest.builder()
-            .name("선릉역")
-            .build();
+    public static final StationRequest 선릉역 =
+            StationRequest.builder()
+                    .name("선릉역")
+                    .build();
 
-    public static LineRequest 신분당선 = LineRequest.builder()
-            .name("신분당선")
-            .color("yellow")
-            .upStationId(1L)
-            .downStationId(2L)
-            .distance(7)
-            .build();
+    public static LineRequest 신분당선 =
+            LineRequest.builder()
+                    .name("신분당선")
+                    .color("yellow")
+                    .upStationId(1L)
+                    .downStationId(2L)
+                    .distance(7)
+                    .build();
 
-    public static LineRequest _7호선 = LineRequest.builder()
-            .name("7호선")
-            .color("brown")
-            .upStationId(1L)
-            .downStationId(2L)
-            .distance(7)
-            .build();
+    public static LineRequest _7호선 =
+            LineRequest.builder()
+                    .name("7호선")
+                    .color("brown")
+                    .upStationId(1L)
+                    .downStationId(2L)
+                    .distance(7)
+                    .build();
 
     private FixtureUtils() {
     }
@@ -128,7 +134,7 @@ public class FixtureUtils {
     }
 
     private static RequestSpecification preProcess(Object requestBody) {
-        return RestAssured.given().log().all()
+        return given().log().all()
                 .body(requestBody)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when();
