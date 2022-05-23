@@ -74,4 +74,8 @@ public class Line {
     public List<Station> getStations() {
         return sections.getAllStations();
     }
+
+    public int getExtraFare() {
+        return extraFare;
+    }
 }

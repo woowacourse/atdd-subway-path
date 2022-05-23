@@ -12,8 +12,8 @@ public class Fare {
         this.value = value;
     }
 
-    public static Fare of(double distance) {
-        int fare = MINIMUM_FARE + calculateOver50km(distance) + calculateOver10kmUnder50km(distance);
+    public static Fare of(double distance, int extraFare) {
+        int fare = MINIMUM_FARE + calculateOver50km(distance) + calculateOver10kmUnder50km(distance) + extraFare;
         return new Fare(fare);
     }
 

@@ -1,6 +1,7 @@
 package wooteco.subway.ui.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -34,7 +35,6 @@ public class PathService {
     }
 
     private PathResponse getPath(long source, long target) {
-        // List<Section> sections = sectionDao.findAll();
         List<Line> lines = lineDao.findAll();
         PathCalculator pathCalculator = PathCalculator.from(lines);
 
@@ -42,10 +42,18 @@ public class PathService {
                 .orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 역이 존재하지 않습니다."));
         Station targetStation = stationDao.findById(target)
                 .orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 역이 존재하지 않습니다."));
-        List<Station> path = pathCalculator.calculateShortestPath(sourceStation, targetStation);
 
+        List<Station> path = pathCalculator.calculateShortestPath(sourceStation, targetStation);
+        List<Long> lineIds = pathCalculator.calculateShortestPathLines(sourceStation, targetStation);
+        int maxExtraFare = lineIds.stream()
+                .map(lineDao::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .mapToInt(Line::getExtraFare)
+                .max()
+                .orElse(0);
         double distance = pathCalculator.calculateShortestDistance(sourceStation, targetStation);
 
-        return new PathResponse(StationResponse.of(path), distance, Fare.of(distance));
+        return new PathResponse(StationResponse.of(path), distance, Fare.of(distance, maxExtraFare));
     }
 }

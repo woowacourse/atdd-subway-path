@@ -8,10 +8,10 @@ import org.junit.jupiter.params.provider.CsvSource;
 public class FareTest {
 
     @ParameterizedTest(name = "{0}km일 때 요금은 {1}원이다")
-    @CsvSource({"9,1250", "12,1350", "16,1450", "58,2150", "15.1,1450"})
-    void calculate(double distance, int expected) {
-        Fare fare = Fare.of(distance);
+    @CsvSource({"9,1250,0", "12,1350,0", "16,1450,0", "58,2150,900", "15.1,1450,0"})
+    void calculate(double distance, int expected, int extraFare) {
+        Fare fare = Fare.of(distance, extraFare);
 
-        assertThat(fare.getValue()).isEqualTo(expected);
+        assertThat(fare.getValue()).isEqualTo(expected + extraFare);
     }
 }
