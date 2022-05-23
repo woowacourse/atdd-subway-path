@@ -66,7 +66,6 @@ class LineServiceTest {
                 new LineRequest("2호선", "bg-green-600", 500, stationResponse2.getId(), stationResponse4.getId(), 10));
     }
 
-    // TODO: stations 도 함께 LineResponse에 포함해야함
     @DisplayName("이름, 색상, 상행선, 하행선, 길이를 전달받아 새로운 노선을 등록한다.")
     @Test
     void createLine() {
@@ -88,6 +87,28 @@ class LineServiceTest {
                 () -> assertThat(actual.getName()).isEqualTo(name),
                 () -> assertThat(actual.getColor()).isEqualTo(color)
         );
+    }
+
+    @DisplayName("생성된 노선의 Response는 역 목록을 가지고 있다.")
+    @Test
+    void createLine_hasSections() {
+        // given
+        String name = "3호선";
+        String color = "bg-green-600";
+        Integer extraFare = 500;
+        Long upStationId = stationResponse1.getId();
+        Long downStationId = stationResponse2.getId();
+        Integer distance = 10;
+
+        LineRequest lineRequest = new LineRequest(name, color, extraFare, upStationId, downStationId, distance);
+        LineResponse lineResponse = lineService.createLine(lineRequest);
+
+        // when
+        List<StationResponse> actual = lineService.getLineById(lineResponse.getId()).getStations();
+
+        // then
+        assertThat(actual).hasSize(2);
+
     }
 
     @DisplayName("중복된 이름의 노선을 등록할 경우 예외를 발생한다.")

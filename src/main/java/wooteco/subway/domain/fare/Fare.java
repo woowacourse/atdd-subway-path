@@ -22,8 +22,10 @@ public class Fare {
         this.value = value;
     }
 
-    public static Fare from(Distance distance) {
-        return new Fare(DEFAULT_FARE + calculateOverFare(distance.getValue()));
+    public static Fare of(Distance distance, Age age, Fare extraFare) {
+        Fare fareFromDistance = new Fare(DEFAULT_FARE + calculateOverFare(distance.getValue()));
+        Fare extraFareAdded = fareFromDistance.add(extraFare);
+        return extraFareAdded.discountWithAge(age);
     }
 
     private static int calculateOverFare(int distance) {
@@ -48,6 +50,10 @@ public class Fare {
         if (fare < 0) {
             throw new NegativeFareException();
         }
+    }
+
+    public Fare add(Fare other) {
+        return new Fare(value + other.value);
     }
 
     public Fare subtract(int operand) {

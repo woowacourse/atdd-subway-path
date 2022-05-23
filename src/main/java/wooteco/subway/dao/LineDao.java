@@ -46,7 +46,7 @@ public class LineDao {
         }, keyHolder);
 
         long lineId = Objects.requireNonNull(keyHolder.getKey()).longValue();
-        return new Line(lineId, line.getName(), line.getColor(), line.getExtraFare(), line.getSections());
+        return new Line(lineId, line.getName(), line.getColor(), line.getExtraFare());
     }
 
     // TODO: Entity 및 Repository 도입하고 개선해보기

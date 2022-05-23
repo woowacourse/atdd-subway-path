@@ -4,6 +4,8 @@ import java.util.List;
 import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
+import wooteco.subway.domain.station.Station;
+
 
 public class Line {
     private Long id;
@@ -23,8 +25,16 @@ public class Line {
         this.sections = sections;
     }
 
+    public Line(Long id, String name, String color, Fare extraFare) {
+        this(id, name, color, extraFare, null);
+    }
+
     public Line(String name, String color, Fare extraFare, Section section) {
         this(null, name, color, extraFare, new Sections(List.of(section)));
+    }
+
+    public Line(String name, String color, Fare extraFare) {
+        this(null, name, color, extraFare, null);
     }
 
     public Long getId() {
@@ -47,8 +57,12 @@ public class Line {
         sections.addSection(section);
     }
 
+    public void deleteStation(Station station) {
+        sections.deleteStation(station);
+    }
+
     public Sections getSections() {
-        return sections;
+        return sections.withLine(this);
     }
 
     @Override
@@ -57,6 +71,8 @@ public class Line {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", color='" + color + '\'' +
+                ", extraFare=" + extraFare +
+                ", sections=" + sections +
                 '}';
     }
 }

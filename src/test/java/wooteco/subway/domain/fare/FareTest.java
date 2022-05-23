@@ -26,7 +26,7 @@ class FareTest {
     void calculate_fare_with_distance(int distanceValue, int expectedFare) {
         // when
         Distance distance = new Distance(distanceValue);
-        Fare createdFare = Fare.from(distance);
+        Fare createdFare = Fare.of(distance, new Age(20), new Fare(0));
         int actual = createdFare.getValue();
 
         // then

@@ -37,34 +37,32 @@ public class LineService {
     }
 
     public LineResponse createLine(LineRequest lineRequest) {
-        Line newLine = getLineFromLineRequest(lineRequest);
-        validateDuplicateName(newLine.getName());
+        validateDuplicateName(lineRequest.getName());
 
-        Line savedLine = saveLineWithSections(newLine);
-        return LineResponse.from(savedLine, getStationResponsesByLineId(savedLine.getId()));
+        Line newLine = generateLineFromLineRequest(lineRequest);
+        Line createdLine = lineDao.save(newLine);
+        Section section = generateSectionFromLineRequest(lineRequest);
+
+        saveSections(List.of(section), createdLine.getId());
+        return LineResponse.from(createdLine, generateStationResponsesByLineId(createdLine.getId()));
     }
 
-    private Line getLineFromLineRequest(LineRequest lineRequest) {
-        String name = lineRequest.getName();
-        String color = lineRequest.getColor();
-        Fare extraFare = new Fare(lineRequest.getExtraFare());
-        Section section = getSectionFromLineRequest(lineRequest);
-        return new Line(name, color, extraFare, section);
+    private Line generateLineFromLineRequest(LineRequest lineRequest) {
+        return new Line(lineRequest.getName(), lineRequest.getColor(), new Fare(lineRequest.getExtraFare()));
     }
 
-    private Section getSectionFromLineRequest(LineRequest lineRequest) {
-        Station upStation = getStation(lineRequest.getUpStationId());
-        Station downStation = getStation(lineRequest.getDownStationId());
+    private Section generateSectionFromLineRequest(LineRequest lineRequest) {
+        Station upStation = stationDao.findById(lineRequest.getUpStationId())
+                .orElseThrow(NotFoundStationException::new);
+        Station downStation = stationDao.findById(lineRequest.getDownStationId())
+                .orElseThrow(NotFoundStationException::new);
         return new Section(upStation, downStation, new Distance(lineRequest.getDistance()));
     }
 
-    private Line saveLineWithSections(Line line) {
-        Line savedLine = lineDao.save(line);
-        for (Section section : line.getSections().getValue()) {
-            sectionDao.save(savedLine.getId(), section);
+    private void saveSections(List<Section> sections, Long lineId) {
+        for (Section section : sections) {
+            sectionDao.save(lineId, section);
         }
-
-        return savedLine;
     }
 
     private void validateDuplicateName(String name) {
@@ -78,13 +76,13 @@ public class LineService {
     public List<LineResponse> getAllLines() {
         return lineDao.findAll()
                 .stream()
-                .map(line -> LineResponse.from(line, getStationResponsesByLineId(line.getId())))
+                .map(line -> LineResponse.from(line, generateStationResponsesByLineId(line.getId())))
                 .collect(Collectors.toList());
     }
 
     public LineResponse getLineById(Long id) {
         return lineDao.findById(id)
-                .map(line -> LineResponse.from(line, getStationResponsesByLineId(id)))
+                .map(line -> LineResponse.from(line, generateStationResponsesByLineId(id)))
                 .orElseThrow(NotFoundLineException::new);
     }
 
@@ -108,7 +106,7 @@ public class LineService {
         }
     }
 
-    private List<StationResponse> getStationResponsesByLineId(Long lineId) {
+    private List<StationResponse> generateStationResponsesByLineId(Long lineId) {
         Line foundLine = lineDao.findById(lineId).orElseThrow(NotFoundLineException::new);
         List<Section> sections = foundLine.getSections().getValue();
 
@@ -138,14 +136,12 @@ public class LineService {
         Line line = lineDao.findById(lineId).orElseThrow(NotFoundLineException::new);
         Station station = stationDao.findById(stationId).orElseThrow(NotFoundStationException::new);
 
-        line.getSections().deleteStation(station);
+        line.deleteStation(station);
         deleteAndCreateSections(lineId, line);
     }
 
     private void deleteAndCreateSections(Long lineId, Line line) {
         sectionDao.deleteAllSectionsByLineId(lineId);
-        for (Section section : line.getSections().getValue()) {
-            sectionDao.save(lineId, section);
-        }
+        saveSections(line.getSections().getValue(), lineId);
     }
 }

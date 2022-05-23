@@ -3,6 +3,8 @@ package wooteco.subway.domain.section;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.exception.BothUpAndDownStationDoNotExistException;
 import wooteco.subway.exception.BothUpAndDownStationExistException;
@@ -22,6 +24,13 @@ public class Sections {
         if (sections.isEmpty()) {
             throw new IllegalArgumentException("비어있는 구간 목록은 생성할 수 없습니다.");
         }
+    }
+
+    public Sections withLine(Line line) {
+        List<Section> sections = this.sections.stream()
+                .map(section -> new Section(section, line))
+                .collect(Collectors.toList());
+        return new Sections(sections);
     }
 
     public void addSection(Section newSection) {
@@ -102,8 +111,6 @@ public class Sections {
 
         Optional<Section> upSection = getUpSection(station);
         Optional<Section> downSection = getDownSection(station);
-
-        System.out.println("deleteStation: " + sections);
 
         upSection.ifPresent(sections::remove);
         downSection.ifPresent(sections::remove);

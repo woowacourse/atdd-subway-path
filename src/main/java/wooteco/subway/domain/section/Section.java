@@ -3,31 +3,43 @@ package wooteco.subway.domain.section;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.station.Station;
 
 public class Section {
     private final Long id;
+    private final Line line;
     private final Station upStation;
     private final Station downStation;
     private final Distance distance;
 
-    public Section(Long id, Station upStation, Station downStation, Distance distance) {
+    public Section(Long id, Line line, Station upStation, Station downStation, Distance distance) {
         this.id = id;
+        this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
     }
 
+    public Section(Long id, Station upStation, Station downStation, Distance distance) {
+        this(id, null, upStation, downStation, distance);
+    }
+
     public Section(Station upStation, Station downStation, Distance distance) {
-        this(null, upStation, downStation, distance);
+        this(null, null, upStation, downStation, distance);
     }
 
     public Section(Long id, Section section) {
-        this(id, section.getUpStation(), section.getDownStation(), section.getDistance());
+        this(id, null, section.upStation, section.downStation, section.distance);
+    }
+
+    public Section(Section section, Line line) {
+        this(section.id, line, section.upStation, section.downStation, section.distance);
     }
 
     public static Section merge(Section upSection, Section downSection) {
-        return new Section(upSection.upStation, downSection.downStation, upSection.addDistance(downSection));
+        return new Section(null, null, upSection.upStation, downSection.downStation,
+                upSection.addDistance(downSection));
     }
 
     public boolean isUpStationSame(Section other) {
@@ -83,6 +95,10 @@ public class Section {
         return distance;
     }
 
+    public Line getLine() {
+        return line;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -106,6 +122,7 @@ public class Section {
     public String toString() {
         return "Section{" +
                 "id=" + id +
+                ", line=" + line +
                 ", upStation=" + upStation +
                 ", downStation=" + downStation +
                 ", distance=" + distance +
