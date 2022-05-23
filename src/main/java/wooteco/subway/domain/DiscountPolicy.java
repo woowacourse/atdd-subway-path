@@ -5,6 +5,7 @@ import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
 
 public enum DiscountPolicy {
+
     CHILDREN(age -> age >= 13 && age < 19, value -> (int) (value - ((value - 350) * 0.2))),
     TEENAGER(age -> age >= 6 && age < 13, value -> (int) (value - ((value - 350) * 0.5))),
     NO_DISCOUNT_AGE_GROUP(age -> false, value -> value);

@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
@@ -119,5 +121,14 @@ class PathServiceTest {
             () -> assertThat(pathResponse.getDistance()).isEqualTo(71),
             () -> assertThat(pathResponse.getFare()).isEqualTo(2350 + 1000)
         );
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"5, 3050", "10, 1700", "15, 2510", "20, 3050"})
+    @DisplayName("연령별 요금 할인 정책을 적용한 금액 계산")
+    void calculateFareWithDiscountPolicy(int age, int expectedFare) {
+        PathResponse pathResponse = pathService.findShortestPath(new PathRequest(2L, 8L, age));
+
+        assertThat(pathResponse.getFare()).isEqualTo(expectedFare);
     }
 }

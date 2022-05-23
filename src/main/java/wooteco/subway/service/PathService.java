@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
+import wooteco.subway.domain.DiscountPolicy;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Sections;
@@ -37,7 +38,7 @@ public class PathService {
         return new PathResponse(
             getStationResponses(pathRequest, shortestPath),
             shortestPath.getTotalDistance(),
-            fare.getValue());
+            DiscountPolicy.getDiscountValue(fare.getValue(), pathRequest.getAge()));
     }
 
     private void validateExistStations(PathRequest pathRequest) {
