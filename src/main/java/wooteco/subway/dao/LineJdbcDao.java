@@ -12,11 +12,11 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.exception.datanotfound.LineNotFoundException;
 
 @Repository
-public class LineDaoImpl implements LineDao {
+public class LineJdbcDao implements LineDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public LineDaoImpl(JdbcTemplate jdbcTemplate) {
+    public LineJdbcDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

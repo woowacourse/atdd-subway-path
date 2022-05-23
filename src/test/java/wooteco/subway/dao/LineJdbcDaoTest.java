@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.domain.Line;
 
-public class LineDaoImplTest extends DaoImplTest{
+public class LineJdbcDaoTest extends DaoImplTest{
 
     private LineDao lineDao;
 
@@ -19,7 +19,7 @@ public class LineDaoImplTest extends DaoImplTest{
 
     @BeforeEach
     void setUp() {
-        lineDao = new LineDaoImpl(jdbcTemplate);
+        lineDao = new LineJdbcDao(jdbcTemplate);
     }
 
     @DisplayName("노선정보를 저장한다.")

@@ -11,23 +11,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.domain.Station;
 
-class StationDaoImplTest extends DaoImplTest {
+class StationJdbcDaoTest extends DaoImplTest {
 
-    private StationDaoImpl stationDaoImpl;
+    private StationJdbcDao stationJdbcDao;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @BeforeEach
     void setUp() {
-        stationDaoImpl = new StationDaoImpl(jdbcTemplate);
+        stationJdbcDao = new StationJdbcDao(jdbcTemplate);
     }
 
     @DisplayName("역 정보를 저장한다.")
     @Test
     void save() {
         Station station = new Station("역삼역");
-        Station newStation = stationDaoImpl.save(station);
+        Station newStation = stationJdbcDao.save(station);
 
         assertThat(newStation.getName()).isEqualTo("역삼역");
     }
@@ -35,7 +35,7 @@ class StationDaoImplTest extends DaoImplTest {
     @DisplayName("역 정보들을 가져온다.")
     @Test
     void findAll() {
-        List<Station> stations = stationDaoImpl.findAll();
+        List<Station> stations = stationJdbcDao.findAll();
 
         assertThat(stations.size()).isEqualTo(3);
     }
@@ -44,8 +44,8 @@ class StationDaoImplTest extends DaoImplTest {
     @Test
     void delete() {
         Station station = new Station("역삼역");
-        Station newStation = stationDaoImpl.save(station);
+        Station newStation = stationJdbcDao.save(station);
 
-        assertThat(stationDaoImpl.deleteStation(newStation.getId())).isEqualTo(1);
+        assertThat(stationJdbcDao.deleteStation(newStation.getId())).isEqualTo(1);
     }
 }
