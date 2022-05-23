@@ -1,7 +1,6 @@
 package wooteco.subway.repository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -39,7 +38,7 @@ public class SectionRepository {
     public Sections findAll() {
         List<SectionEntity> sectionEntities = sectionDao.findAll();
         List<Station> stations = stationDao.findByIdIn(collectStationIds(sectionEntities));
-        return buildSections(sectionEntities, stations);
+        return toSections(sectionEntities, stations);
     }
 
     private List<Long> collectStationIds(List<SectionEntity> sectionEntities) {
@@ -51,9 +50,9 @@ public class SectionRepository {
         return stationIds;
     }
 
-    private Sections buildSections(List<SectionEntity> sectionEntities, List<Station> stations) {
-        Map<Long, Station> allStations = new HashMap<>();
-        stations.forEach(station -> allStations.put(station.getId(), station));
+    private Sections toSections(List<SectionEntity> sectionEntities, List<Station> stations) {
+        Map<Long, Station> allStations = stations.stream()
+                .collect(Collectors.toMap(Station::getId, station -> station));
         List<Section> sections = sectionEntities.stream()
                 .map(sectionDto -> new Section(sectionDto.getId(),
                         allStations.get(sectionDto.getUpStationId()),
