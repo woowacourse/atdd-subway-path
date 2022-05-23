@@ -18,7 +18,7 @@ public final class FarePolicyImpl implements FarePolicy {
         return new Fare(calculateDistanceFare(distance) + calculateExtraFare(lines));
     }
 
-    private static int calculateDistanceFare(int distance) {
+    private int calculateDistanceFare(int distance) {
         if (distance <= STANDARD_DISTANCE) {
             return STANDARD_FARE;
         }
@@ -31,11 +31,11 @@ public final class FarePolicyImpl implements FarePolicy {
                 + calculateOverFare(distance - FIRST_OVER_FARE_DISTANCE, SECOND_OVER_DISTANCE_UNIT);
     }
 
-    private static int calculateOverFare(int distance, int unit) {
+    private int calculateOverFare(int distance, int unit) {
         return (int) ((Math.ceil((distance - 1) / unit) + 1) * OVER_FARE_UNIT);
     }
 
-    private static int calculateExtraFare(List<Line> lines) {
+    private int calculateExtraFare(List<Line> lines) {
         return lines.stream()
                 .mapToInt(Line::getExtraFare)
                 .max()
