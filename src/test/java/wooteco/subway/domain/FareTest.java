@@ -5,15 +5,13 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-public class FareCalculatorTest {
+public class FareTest {
 
     @ParameterizedTest(name = "{0}km일 때 요금은 {1}원이다")
     @CsvSource({"9,1250", "12,1350", "16,1450", "58,2150", "15.1,1450"})
     void calculate(double distance, int expected) {
-        FareCalculator fareCalculator = new FareCalculator(distance);
+        Fare fare = Fare.of(distance);
 
-        int fare = fareCalculator.execute();
-
-        assertThat(fare).isEqualTo(expected);
+        assertThat(fare.getValue()).isEqualTo(expected);
     }
 }
