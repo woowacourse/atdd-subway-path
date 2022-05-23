@@ -27,7 +27,7 @@ public class SectionService {
     }
 
     public void save(SectionSaveRequest request) {
-        Section sectionForSave = new Section(request.getLineId(),
+        Section sectionForSave = new Section(lineRepository.findById(request.getLineId()),
                 stationService.findById(request.getUpStationId()),
                 stationService.findById(request.getDownStationId()), request.getDistance());
         Sections sections = new Sections(findByLineId(request.getLineId()));

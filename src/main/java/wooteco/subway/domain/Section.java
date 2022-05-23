@@ -7,25 +7,25 @@ import wooteco.subway.exception.DomainException;
 public class Section {
 
     private final Long id;
-    private final Long lineId;
+    private final Line line;
     private final Station upStation;
     private final Station downStation;
     private final Integer distance;
 
 
-    public Section(Long id, Long lineId, Station upStation, Station downStation, Integer distance) {
+    public Section(Long id, Line line, Station upStation, Station downStation, Integer distance) {
         if (upStation.equals(downStation)) {
             throw new DomainException(ExceptionMessage.SAME_STATIONS_SECTION.getContent());
         }
         this.id = id;
-        this.lineId = lineId;
+        this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
     }
 
-    public Section(Long lineId, Station upStation, Station downStation, Integer distance) {
-        this(null, lineId, upStation, downStation, distance);
+    public Section(Line line, Station upStation, Station downStation, Integer distance) {
+        this(null, line, upStation, downStation, distance);
     }
 
     public boolean isForDivide(Section other) {
@@ -45,10 +45,10 @@ public class Section {
         checkDistance(other);
         int distanceGap = distance - other.distance;
         if (isUpDivide(other)) {
-            return new Section(id, lineId, other.downStation, downStation, distanceGap);
+            return new Section(id, line, other.downStation, downStation, distanceGap);
         }
         if (isDownDivide(other)) {
-            return new Section(id, lineId, upStation, other.upStation, distanceGap);
+            return new Section(id, line, upStation, other.upStation, distanceGap);
         }
         throw new DomainException(ExceptionMessage.INVALID_DIVIDE_SECTION.getContent());
     }
@@ -74,28 +74,20 @@ public class Section {
         int mergedDistance = distance + other.distance;
 
         if (upStation.equals(other.downStation)) {
-            return new Section(id, lineId, other.upStation, downStation, mergedDistance);
+            return new Section(id, line, other.upStation, downStation, mergedDistance);
         }
         if (downStation.equals(other.upStation)) {
-            return new Section(id, lineId, upStation, other.downStation, mergedDistance);
+            return new Section(id, line, upStation, other.downStation, mergedDistance);
         }
         throw new DomainException(ExceptionMessage.NOT_CONNECTED_SECTIONS.getContent());
-    }
-
-    public boolean isUpperThan(Section other) {
-        return downStation.equals(other.upStation);
-    }
-
-    public boolean isDownerThan(Section other) {
-        return upStation.equals(other.downStation);
     }
 
     public Long getId() {
         return id;
     }
 
-    public Long getLineId() {
-        return lineId;
+    public Line getLine() {
+        return line;
     }
 
     public Station getUpStation() {

@@ -16,12 +16,17 @@ class PathFinderTest {
     Station station3 = new Station(3L, "station3");
     Station station4 = new Station(4L, "station4");
 
+    Line line1 = new Line(1L, "1호선", "blue", 100L);
+    Line line2 = new Line(2L, "2호선", "red", 200L);;
+    Line line3 = new Line(3L, "3호선", "green", 300L);;
+    Line line4 = new Line(4L, "4호선", "white", 400L);
+
     // given
-    Section section1 = new Section(1L, station1, station2, 10);
-    Section section2 = new Section(2L, station2, station3, 10);
-    Section section3 = new Section(3L, station1, station3, 100);
+    Section section1 = new Section(line1, station1, station2, 10);
+    Section section2 = new Section(line2, station2, station3, 10);
+    Section section3 = new Section(line3, station1, station3, 100);
     List<Section> sections = List.of(section1, section2, section3);
-    Section section4 = new Section(4L, station3, station4, 100);
+    Section section4 = new Section(line4, station3, station4, 100);
     List<Section> unconnectedSect = List.of(section1, section4);
 
     @Test

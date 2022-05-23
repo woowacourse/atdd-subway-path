@@ -21,28 +21,30 @@ class SectionTest {
     private static Station three;
     private static Station four;
 
+    private static Line line = new Line(1L, "7호선", "red", 100L);
+
     private static Stream<Arguments> provideSection_divide() {
         return Stream.of(
-                Arguments.of(new Section(1L, one, two, 4),
-                        new Section(1L, three, two, 1),
-                        new Section(1L, one, three, 3)),
-                Arguments.of(new Section(1L, one, two, 4),
-                        new Section(1L, one, three, 1),
-                        new Section(1L, three, two, 3))
+                Arguments.of(new Section(line, one, two, 4),
+                        new Section(line, three, two, 1),
+                        new Section(line, one, three, 3)),
+                Arguments.of(new Section(line, one, two, 4),
+                        new Section(line, one, three, 1),
+                        new Section(line, three, two, 3))
         );
     }
 
     private static Stream<Arguments> provideSectionsForMergeTest() {
         return Stream.of(
                 Arguments.of(
-                        new Section(1L, one, two, 4),
-                        new Section(1L, two, three, 5),
-                        new Section(1L, one, three, 9)
+                        new Section(line, one, two, 4),
+                        new Section(line, two, three, 5),
+                        new Section(line, one, three, 9)
                 ),
                 Arguments.of(
-                        new Section(1L, two, three, 5),
-                        new Section(1L, one, two, 4),
-                        new Section(1L, one, three, 9)
+                        new Section(line, two, three, 5),
+                        new Section(line, one, two, 4),
+                        new Section(line, one, three, 9)
                 )
         );
     }
@@ -74,8 +76,8 @@ class SectionTest {
     @DisplayName("연결할 역이 없는 경우 예외 생성하기")
     void insert_invalidNotMatch() {
         // given
-        Section section = new Section(1L, one, two, 4);
-        Section sectionForAdd = new Section(1L, three, four, 1);
+        Section section = new Section(line, one, two, 4);
+        Section sectionForAdd = new Section(line, three, four, 1);
 
         // when
         assertThatThrownBy(() -> section.divideFrom(sectionForAdd))
@@ -87,8 +89,8 @@ class SectionTest {
     @DisplayName("삽입되는 구간이 쪼개지는 구간 길이보다 길거나 같은 경우 예외 생성하기")
     void insert_invalidDistance() {
         // given
-        Section section = new Section(1L, one, two, 4);
-        Section sectionForAdd = new Section(1L, one, three, 4);
+        Section section = new Section(line, one, two, 4);
+        Section sectionForAdd = new Section(line, one, three, 4);
 
         // when
         assertThatThrownBy(() -> section.divideFrom(sectionForAdd))
@@ -100,8 +102,8 @@ class SectionTest {
     @DisplayName("같은 출발점과 도착점을 쪼개려는 경우 예외 생성하기")
     void insert_invalidSection() {
         // given
-        Section section = new Section(1L, one, two, 4);
-        Section sectionForAdd = new Section(1L, one, two, 3);
+        Section section = new Section(line, one, two, 4);
+        Section sectionForAdd = new Section(line, one, two, 3);
 
         // when
         assertThatThrownBy(() -> section.divideFrom(sectionForAdd))
@@ -128,8 +130,8 @@ class SectionTest {
     @DisplayName("같은 출발점과 도착점을 합치려는 경우 예외 생성하기")
     void merge_invalidSameStations() {
         // given
-        Section section = new Section(1L, one, two, 4);
-        Section sectionForAdd = new Section(1L, one, two, 5);
+        Section section = new Section(line, one, two, 4);
+        Section sectionForAdd = new Section(line, one, two, 5);
 
         // then
         assertThatThrownBy(() -> section.merge(sectionForAdd))
@@ -141,8 +143,8 @@ class SectionTest {
     @DisplayName("연결되지 않는 두 구간을 합치려는 경우 예외 생성하기")
     void merge_invalidNotConnectedSections() {
         // given
-        Section section = new Section(1L, one, two, 4);
-        Section sectionForAdd = new Section(1L, three, four, 5);
+        Section section = new Section(line, one, two, 4);
+        Section sectionForAdd = new Section(line, three, four, 5);
 
         // then
         assertThatThrownBy(() -> section.merge(sectionForAdd))

@@ -3,6 +3,7 @@ package wooteco.subway.repository;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.repository.dao.SectionDao;
 import wooteco.subway.repository.entity.SectionEntity;
@@ -11,10 +12,13 @@ import wooteco.subway.repository.entity.SectionEntity;
 public class SectionRepository {
 
     private final SectionDao sectionDao;
+    private final LineRepository lineRepository;
     private final StationRepository stations;
 
-    public SectionRepository(SectionDao sectionDao, StationRepository stations) {
+    public SectionRepository(SectionDao sectionDao, LineRepository lineRepository,
+                             StationRepository stations) {
         this.sectionDao = sectionDao;
+        this.lineRepository = lineRepository;
         this.stations = stations;
     }
 
@@ -36,7 +40,8 @@ public class SectionRepository {
     }
 
     private Section toSection(SectionEntity entity) {
-        return new Section(entity.getId(), entity.getLineId(),
+        Line line = lineRepository.findById(entity.getLineId());
+        return new Section(entity.getId(), line,
                 stations.findById(entity.getUpStationId()),
                 stations.findById(entity.getDownStationId()),
                 entity.getDistance());

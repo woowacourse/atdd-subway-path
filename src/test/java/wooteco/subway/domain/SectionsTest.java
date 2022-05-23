@@ -24,6 +24,8 @@ class SectionsTest {
     Sections sections;
     Sections invalidSection;
 
+    Line line = new Line(1L, "7호선", "red", 100L);
+
     @BeforeEach
     void setUp() {
         상계 = new Station(1L, "상계");
@@ -31,9 +33,9 @@ class SectionsTest {
         하계 = new Station(3L, "하계");
         노원 = new Station(4L, "노원");
 
-        중계_하계 = new Section(1L, 1L, 중계, 하계, 10);
-        상계_중계 = new Section(2L, 1L, 상계, 중계, 10);
-        상계_노원 = new Section(3L, 1L, 상계, 노원, 5);
+        중계_하계 = new Section(1L, line, 중계, 하계, 10);
+        상계_중계 = new Section(2L, line, 상계, 중계, 10);
+        상계_노원 = new Section(3L, line, 상계, 노원, 5);
         sections = new Sections(List.of(상계_중계, 중계_하계));
         invalidSection = new Sections(List.of(상계_노원, 중계_하계));
     }
