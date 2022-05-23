@@ -112,7 +112,7 @@ class PathServiceTest {
     }
 
     @Test
-    @DisplayName("어린이의 추가요금 노선의 두 역 사이의 요금을 계산한다.")
+    @DisplayName("청소년의 추가요금 노선의 두 역 사이의 요금을 계산한다.")
     void getPathsResponse_total() {
         //given
         Station 강남 = stationRepository.save(new Station("강남"));
@@ -128,7 +128,8 @@ class PathServiceTest {
         PathResponse actual = pathService.showPaths(new PathsRequest(강남.getId(), 판교.getId(), 14));
 
         //then
-        assertThat(actual.getFare()).isEqualTo(720 + 500);
+        assertThat(actual.getDistance()).isEqualTo(8);
+        assertThat(actual.getFare()).isEqualTo(1120);
     }
 
     @Test
@@ -150,6 +151,7 @@ class PathServiceTest {
         PathResponse actual = pathService.showPaths(new PathsRequest(강남.getId(), 판교.getId(), 8));
 
         //then
-        assertThat(actual.getFare()).isEqualTo(450 + 300);
+        assertThat(actual.getDistance()).isEqualTo(8);
+        assertThat(actual.getFare()).isEqualTo(600);
     }
 }

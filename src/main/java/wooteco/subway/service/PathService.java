@@ -36,10 +36,15 @@ public class PathService {
         Station target = stationRepository.findById(pathsRequest.getTarget());
         List<Station> route = subwayGraph.getShortestRoute(source, target);
         int distance = subwayGraph.getShortestDistance(source, target);
+        int fare = getFare(pathsRequest, subwayGraph, source, target, distance);
+        return new PathResponse(toStationResponse(route), distance, fare);
+    }
+
+    private int getFare(PathsRequest pathsRequest, SubwayGraph subwayGraph, Station source, Station target,
+                        int distance) {
         LineExtraFeePolicy lineFee = PolicyFactory.createLineFee(subwayGraph.getLines(source, target));
         AgeDiscountPolicy ageDiscount = PolicyFactory.createAgeDiscount(pathsRequest.getAge());
-        int fare = new Fare(List.of(ageDiscount, lineFee)).getFare(distance);
-        return new PathResponse(toStationResponse(route), distance, fare);
+        return new Fare(List.of(lineFee, ageDiscount)).getFare(distance);
     }
 
     private List<StationResponse> toStationResponse(List<Station> route) {
