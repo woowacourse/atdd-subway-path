@@ -7,13 +7,10 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import wooteco.subway.dao.LineDao;
-import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.LineEntity;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.dto.service.StationDto;
 import wooteco.subway.dto.service.request.LineServiceRequest;
 import wooteco.subway.dto.service.request.LineUpdateRequest;
@@ -21,63 +18,37 @@ import wooteco.subway.dto.service.response.LineServiceResponse;
 
 @Service
 public class LineService {
-    private static final String ERROR_MESSAGE_DUPLICATE_NAME = "중복된 지하철 노선 이름입니다.";
-    private static final String ERROR_MESSAGE_NOT_EXISTS_ID = "존재하지 않는 지하철 노선 id입니다.";
     private static final String ERROR_MESSAGE_NOT_EXISTS_STATION = "존재하지 않는 역을 지나는 노선은 만들 수 없습니다.";
 
-    private final LineDao lineDao;
-    private final SectionDao sectionDao;
+    private final LineRepository lineRepository;
     private final StationDao stationDao;
-    private final DomainCreatorService domainCreatorService;
 
-    public LineService(LineDao lineDao, SectionDao sectionDao, StationDao stationDao,
-        DomainCreatorService domainCreatorService) {
-        this.lineDao = lineDao;
-        this.sectionDao = sectionDao;
+    public LineService(LineRepository lineRepository, StationDao stationDao) {
         this.stationDao = stationDao;
-        this.domainCreatorService = domainCreatorService;
+        this.lineRepository = lineRepository;
     }
 
     @Transactional
     public LineServiceResponse save(LineServiceRequest lineInfo) {
-        String lineName = lineInfo.getName();
-        String lineColor = lineInfo.getColor();
-        Long upStationId = lineInfo.getUpStationId();
-        Long downStationId = lineInfo.getDownStationId();
-        int extraFare = lineInfo.getExtraFare();
+        long upStationId = lineInfo.getUpStationId();
+        long downStationId = lineInfo.getDownStationId();
 
-        validateBeforeSave(lineName, upStationId, downStationId);
+        validateBeforeSave(upStationId, downStationId);
 
-        Line lineToAdd = new Line(lineName, lineColor, extraFare);
-        LineEntity lineEntity = lineDao.save(lineToAdd);
-
-        saveFirstSection(lineInfo.getDistance(), upStationId, downStationId, lineEntity.getId());
-
-        Line resultLine = domainCreatorService.createLine(lineEntity.getId());
+        Line lineToAdd = new Line(lineInfo.getName(), lineInfo.getColor(), lineInfo.getExtraFare());
+        Line resultLine = lineRepository.save(lineToAdd, upStationId, downStationId, lineInfo.getDistance());
 
         return new LineServiceResponse(resultLine.getId(), resultLine.getName(), resultLine.getColor(),
             resultLine.getExtraFare(), convertStationToInfo(resultLine.getStations()));
     }
 
-    private void validateBeforeSave(String lineName, Long upStationId, Long downStationId) {
-        validateNameDuplication(lineName);
+    private void validateBeforeSave(Long upStationId, Long downStationId) {
         validateNotExistStation(upStationId);
         validateNotExistStation(downStationId);
     }
 
-    private void saveFirstSection(int distance, Long upStationId, Long downStationId,
-        long lineId) {
-        Section section = new Section(stationDao.getStation(upStationId), stationDao.getStation(downStationId),
-            distance);
-        sectionDao.save(lineId, section);
-    }
-
     public List<LineServiceResponse> findAll() {
-        List<Line> lines = new ArrayList<>();
-        List<LineEntity> lineEntities = lineDao.findAll();
-        for (LineEntity lineEntity : lineEntities) {
-            lines.add(domainCreatorService.createLine(lineEntity.getId()));
-        }
+        List<Line> lines = lineRepository.findAll();
 
         List<LineServiceResponse> lineServiceResponses = new ArrayList<>();
         for (Line line : lines) {
@@ -88,9 +59,7 @@ public class LineService {
     }
 
     public LineServiceResponse find(Long id) {
-        validateNotExists(id);
-        LineEntity lineEntity = lineDao.find(id);
-        Line line = domainCreatorService.createLine(lineEntity.getId());
+        Line line = lineRepository.find(id);
         return new LineServiceResponse(line.getId(), line.getName(), line.getColor(),
             line.getExtraFare(), convertStationToInfo(line.getStations()));
     }
@@ -106,34 +75,18 @@ public class LineService {
         String name = lineUpdateRequest.getName();
         int extraFare = lineUpdateRequest.getExtraFare();
 
-        validateNotExists(id);
-        validateNameDuplication(name);
         Line line = new Line(id, name, lineUpdateRequest.getColor(), extraFare);
-        lineDao.update(line);
+        lineRepository.update(line);
     }
 
     @Transactional
     public void delete(Long id) {
-        validateNotExists(id);
-        sectionDao.deleteAll(id);
-        lineDao.delete(id);
-    }
-
-    private void validateNotExists(Long id) {
-        if (!lineDao.existById(id)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_NOT_EXISTS_ID);
-        }
+        lineRepository.delete(id);
     }
 
     private void validateNotExistStation(Long stationId) {
         if (!stationDao.existById(stationId)) {
             throw new IllegalArgumentException(ERROR_MESSAGE_NOT_EXISTS_STATION);
-        }
-    }
-
-    private void validateNameDuplication(String name) {
-        if (lineDao.existByName(name)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_DUPLICATE_NAME);
         }
     }
 }

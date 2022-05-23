@@ -7,9 +7,9 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Lines;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.Lines;
 
 @Component
 public class DijkstraPathFindingStrategy implements PathFindingStrategy {

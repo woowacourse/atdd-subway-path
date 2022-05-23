@@ -1,4 +1,4 @@
-package wooteco.subway.service;
+package wooteco.subway.service.repository;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
@@ -11,25 +11,26 @@ import org.junit.jupiter.api.Test;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.path.DijkstraPathFindingStrategy;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Sections;
+import wooteco.subway.service.FakeLineDao;
+import wooteco.subway.service.FakeSectionDao;
+import wooteco.subway.service.FakeStationDao;
 
-public class DomainCreatorServiceTest {
+public class LineRepositoryWithDaoTest {
     private LineDao lineDao;
     private StationDao stationDao;
     private SectionDao sectionDao;
-    private DomainCreatorService domainCreatorService;
+    private LineRepositoryWithDao lineRepositoryWithDao;
 
     @BeforeEach
     void setUp() {
         lineDao = new FakeLineDao();
         sectionDao = new FakeSectionDao();
         stationDao = new FakeStationDao();
-        domainCreatorService = new DomainCreatorService(lineDao, sectionDao, stationDao,
-            new DijkstraPathFindingStrategy());
+        lineRepositoryWithDao = new LineRepositoryWithDao(lineDao, sectionDao, stationDao);
 
         stationDao.save(new Station("강남역"));
         stationDao.save(new Station("선릉역"));
@@ -40,7 +41,7 @@ public class DomainCreatorServiceTest {
     @DisplayName("정상적으로 Line을 만드는지 테스트")
     @Test
     void createLine() {
-        Line line = domainCreatorService.createLine(1L);
+        Line line = lineRepositoryWithDao.find(1L);
         Sections sections = line.getSections();
 
         assertThat(line.getId()).isEqualTo(1L);

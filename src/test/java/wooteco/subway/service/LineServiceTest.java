@@ -7,10 +7,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.path.DijkstraPathFindingStrategy;
 import wooteco.subway.dto.service.request.LineServiceRequest;
 import wooteco.subway.dto.service.request.LineUpdateRequest;
 import wooteco.subway.dto.service.response.LineServiceResponse;
+import wooteco.subway.service.repository.LineRepositoryWithDao;
 
 public class LineServiceTest {
 
@@ -24,8 +24,8 @@ public class LineServiceTest {
         fakeLineDao = new FakeLineDao();
         fakeSectionDao = new FakeSectionDao();
         fakeStationDao = new FakeStationDao();
-        lineService = new LineService(fakeLineDao, fakeSectionDao, fakeStationDao,
-            new DomainCreatorService(fakeLineDao, fakeSectionDao, fakeStationDao, new DijkstraPathFindingStrategy()));
+        lineService = new LineService(new LineRepositoryWithDao(fakeLineDao, fakeSectionDao, fakeStationDao),
+            fakeStationDao);
 
         fakeStationDao.save(new Station("강남역"));
         fakeStationDao.save(new Station("선릉역"));

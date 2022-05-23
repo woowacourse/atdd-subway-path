@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.section;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -8,6 +8,8 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
+import wooteco.subway.domain.Station;
 
 public class Sections implements Iterable<Section> {
     private static final String ERROR_MESSAGE_MINIMUM_SIZE = "구간은 최소 %d개가 있어야 합니다.";

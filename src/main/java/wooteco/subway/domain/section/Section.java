@@ -1,6 +1,8 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.section;
 
 import java.util.Objects;
+
+import wooteco.subway.domain.Station;
 
 public class Section {
     private static final String ERROR_MESSAGE_SAME_UP_AND_DOWN_STATION = "구간의 상행역과 하행역은 달라야합니다.";

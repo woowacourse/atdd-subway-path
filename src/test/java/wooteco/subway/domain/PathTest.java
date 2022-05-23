@@ -8,8 +8,12 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.Lines;
 import wooteco.subway.domain.path.DijkstraPathFindingStrategy;
 import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Sections;
 
 public class PathTest {
 

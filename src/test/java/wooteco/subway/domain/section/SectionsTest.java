@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.section;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import wooteco.subway.domain.Station;
 
 public class SectionsTest {
     @DisplayName("구간을 추가한다.")
