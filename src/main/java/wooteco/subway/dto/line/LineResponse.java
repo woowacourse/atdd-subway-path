@@ -9,14 +9,11 @@ import wooteco.subway.dto.station.StationResponse;
 
 public class LineResponse {
 
-    private Long id;
-    private String name;
-    private String color;
-    private int extraFare;
-    private List<StationResponse> stations;
-
-    private LineResponse() {
-    }
+    private final Long id;
+    private final String name;
+    private final String color;
+    private final int extraFare;
+    private final List<StationResponse> stations;
 
     public LineResponse(final Long id, final String name, final String color, final int extraFare,
                         final List<StationResponse> stations) {
