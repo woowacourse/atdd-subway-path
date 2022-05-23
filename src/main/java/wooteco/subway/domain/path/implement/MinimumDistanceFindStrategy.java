@@ -8,6 +8,7 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.domain.Path;
+import wooteco.subway.domain.PathFindSpecification;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.path.PathFindStrategy;
@@ -24,8 +25,9 @@ public class MinimumDistanceFindStrategy implements PathFindStrategy {
     }
 
     @Override
-    public Path findPath(List<Station> stations, List<Section> sections, Station from, Station to) {
-        GraphPath<Station, Section> graphPath = getGraphPath(stations, sections, from, to);
+    public Path findPath(PathFindSpecification specification) {
+        GraphPath<Station, Section> graphPath = getGraphPath(specification.getStations(), specification.getSections(),
+                specification.getFrom(), specification.getTo());
         if (Objects.isNull(graphPath)) {
             throw new IllegalArgumentException(UNCONNECTED_STATION_EXCEPTION);
         }

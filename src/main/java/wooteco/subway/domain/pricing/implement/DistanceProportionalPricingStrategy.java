@@ -1,6 +1,7 @@
 package wooteco.subway.domain.pricing.implement;
 
 import java.util.List;
+import wooteco.subway.domain.FareCacluateSpecification;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.pricing.PricingStrategy;
 import wooteco.subway.domain.pricing.distancepricing.PricingBySection;
@@ -16,8 +17,8 @@ public class DistanceProportionalPricingStrategy implements PricingStrategy {
     }
 
     @Override
-    public int calculateFee(List<Section> sections) {
-        int distance = calculateDistance(sections);
+    public int calculateFee(FareCacluateSpecification specification) {
+        int distance = calculateDistance(specification.getSections());
         List<PricingBySection> pricingBySections = PricingBySection.getAllStrategies();
         return pricingBySections.stream()
                 .mapToInt(it -> it.calculateFee(distance))

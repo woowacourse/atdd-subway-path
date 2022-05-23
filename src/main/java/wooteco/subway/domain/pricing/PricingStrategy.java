@@ -1,9 +1,8 @@
 package wooteco.subway.domain.pricing;
 
-import java.util.List;
-import wooteco.subway.domain.Section;
+import wooteco.subway.domain.FareCacluateSpecification;
 
 public interface PricingStrategy {
 
-    int calculateFee(List<Section> sections);
+    int calculateFee(FareCacluateSpecification specification);
 }

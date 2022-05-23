@@ -5,7 +5,9 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.FareCacluateSpecification;
 import wooteco.subway.domain.Path;
+import wooteco.subway.domain.PathFindSpecification;
 import wooteco.subway.domain.path.PathFindStrategy;
 import wooteco.subway.domain.pricing.PricingStrategy;
 import wooteco.subway.domain.Section;
@@ -26,17 +28,29 @@ public class PathService {
     }
 
     public PathResponse searchPaths(PathFindStrategy pathFindStrategy, PricingStrategy pricingStrategy, PathRequest pathRequest) {
+        Path path = getPath(pathFindStrategy, pathRequest);
+        int fare = getFare(pricingStrategy, pathRequest, path);
+
+        return new PathResponse(
+                path.getDistance(),
+                fare,
+                generateStationResponses(path.getStationsInPath())
+        );
+    }
+
+    private int getFare(PricingStrategy pricingStrategy, PathRequest pathRequest, Path path) {
+        FareCacluateSpecification fareCacluateSpecification = new FareCacluateSpecification(pathRequest.getAge(), path.getSectionsInPath());
+        return pricingStrategy.calculateFee(fareCacluateSpecification);
+    }
+
+    private Path getPath(PathFindStrategy pathFindStrategy, PathRequest pathRequest) {
         List<Section> sections = sectionDao.findAll();
         List<Station> stations = stationDao.findAll();
         Station from = findById(stations, pathRequest.getSource());
         Station to = findById(stations, pathRequest.getTarget());
-        Path path = pathFindStrategy.findPath(stations, sections, from, to);
 
-        return new PathResponse(
-                path.getDistance(),
-                pricingStrategy.calculateFee(path.getSectionsInPath()),
-                generateStationResponses(path.getStationsInPath())
-        );
+        PathFindSpecification pathFindSpecification = new PathFindSpecification(from, to, stations, sections);
+        return pathFindStrategy.findPath(pathFindSpecification);
     }
 
     private Station findById(List<Station> stations, Long id) {

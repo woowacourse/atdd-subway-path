@@ -61,7 +61,7 @@ class MinimumDistanceStrategyTest {
         Station to = stationMap.get(toId);
 
         // when
-        Path path = strategy.findPath(stations, sections, from, to);
+        Path path = strategy.findPath(new PathFindSpecification(from, to, stations, sections));
         int result = path.getDistance();
 
         // then
@@ -78,7 +78,7 @@ class MinimumDistanceStrategyTest {
         Station to = stationMap.get(toId);
 
         // when
-        Path path = strategy.findPath(stations, sections, from, to);
+        Path path = strategy.findPath(new PathFindSpecification(from, to, stations, sections));
         List<Station> stationsInPath = path.getStationsInPath();
 
         // then
@@ -104,7 +104,7 @@ class MinimumDistanceStrategyTest {
         Station to = stationMap.get(toId);
 
         // when
-        Path path = strategy.findPath(stations, sections, from, to);
+        Path path = strategy.findPath(new PathFindSpecification(from, to, stations, sections));
         List<Section> sectionsInPath = path.getSectionsInPath();
 
         // then
@@ -129,7 +129,7 @@ class MinimumDistanceStrategyTest {
         Station to = stationMap.get(7L);
 
         // when
-        assertThatThrownBy(() -> strategy.findPath(stations, sections, from, to))
+        assertThatThrownBy(() -> strategy.findPath(new PathFindSpecification(from, to, stations, sections)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("연결되지 않은 두 역입니다.");
     }
