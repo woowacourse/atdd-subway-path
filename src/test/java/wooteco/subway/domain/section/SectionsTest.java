@@ -2,8 +2,6 @@ package wooteco.subway.domain.section;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +28,7 @@ public class SectionsTest {
         Section section = new Section(2L, 1L, 2L, 3L, 10);
         sections.save(section);
 
-        assertTrue(sections.getStationIds().contains(3L));
+        assertThat(sections.getStationIds().contains(3L)).isTrue();
     }
 
     @Test
@@ -69,7 +67,7 @@ public class SectionsTest {
     void overLappedSectionNotExist(){
         Section section = new Section(2L, 1L, 2L, 3L, 10);
 
-        assertTrue(sections.fixOverLappedSection(section).isEmpty());
+        assertThat(sections.fixOverLappedSection(section).isEmpty()).isTrue();
     }
 
     @Test
@@ -77,7 +75,7 @@ public class SectionsTest {
     void fixOverLappedSection(){
         Section section = new Section(2L, 1L, 1L, 3L, 10);
 
-        assertTrue(sections.fixOverLappedSection(section).isPresent());
+        assertThat(sections.fixOverLappedSection(section).isPresent()).isTrue();
     }
 
     @Test
@@ -87,7 +85,7 @@ public class SectionsTest {
         sections.save(section);
         sections.delete(1L, 2L);
 
-        assertFalse(sections.getStationIds().contains(2L));
+        assertThat(sections.getStationIds().contains(2L)).isFalse();
     }
 
     @Test
@@ -104,7 +102,7 @@ public class SectionsTest {
         Section section = new Section(2L, 1L, 2L, 3L, 10);
         sections.save(section);
 
-        assertTrue(sections.fixDisconnectedSection(1L, 3L).isEmpty());
+        assertThat(sections.fixDisconnectedSection(1L, 3L).isEmpty()).isTrue();
     }
 
     @Test
@@ -113,7 +111,7 @@ public class SectionsTest {
         Section section = new Section(2L, 1L, 2L, 3L, 10);
         sections.save(section);
 
-        assertTrue(sections.fixDisconnectedSection(1L, 2L).isPresent());
+        assertThat(sections.fixDisconnectedSection(1L, 2L).isPresent()).isTrue();
     }
 
     @Test
