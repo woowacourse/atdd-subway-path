@@ -20,7 +20,7 @@ public class PathFindResponse {
         this.fare = fare;
     }
 
-    public static PathFindResponse from(Path path, int age) {
+    public static PathFindResponse from(final Path path, final int age) {
         List<StationResponse> stationResponses = path.getStations()
                 .stream()
                 .map(StationResponse::from)

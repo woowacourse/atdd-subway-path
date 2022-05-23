@@ -17,7 +17,8 @@ public class LineResponse {
     private LineResponse() {
     }
 
-    private LineResponse(Long id, String name, String color, int extraFare, List<StationResponse> stations) {
+    private LineResponse(final Long id, final String name, final String color, final int extraFare,
+                         final List<StationResponse> stations) {
         this.id = id;
         this.name = name;
         this.color = color;

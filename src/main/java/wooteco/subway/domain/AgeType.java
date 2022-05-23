@@ -5,20 +5,20 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public enum AgeType {
-    INFANT(age -> age > 0 && age < 6, originalFare -> 0),
-    CHILD(age -> age >= 6 && age < 13, originalFare -> (int) ((originalFare - 350) * 0.5)),
-    TEENAGER(age -> age >= 13 && age < 19, originalFare -> (int) ((originalFare - 350) * 0.8)),
-    ADULT(age -> age >= 19, originalFare -> originalFare);
+    INFANT(age -> age > 0 && age < 6, fare -> 0),
+    CHILD(age -> age >= 6 && age < 13, fare -> (int) ((fare - 350) * 0.5)),
+    TEENAGER(age -> age >= 13 && age < 19, fare -> (int) ((fare - 350) * 0.8)),
+    ADULT(age -> age >= 19, fare -> fare);
 
     private final Predicate<Integer> agePredicate;
-    private final Function<Integer, Integer> originalFare;
+    private final Function<Integer, Integer> fare;
 
-    AgeType(Predicate<Integer> agePredicate, Function<Integer, Integer> originalFare) {
+    AgeType(final Predicate<Integer> agePredicate, final Function<Integer, Integer> fare) {
         this.agePredicate = agePredicate;
-        this.originalFare = originalFare;
+        this.fare = fare;
     }
 
-    public static AgeType from(int age) {
+    public static AgeType from(final int age) {
         return Arrays.stream(values())
                 .filter(it -> it.agePredicate.test(age))
                 .findFirst()
@@ -26,6 +26,6 @@ public enum AgeType {
     }
 
     public int calculateFare(int originFare) {
-        return originalFare.apply(originFare);
+        return fare.apply(originFare);
     }
 }

@@ -16,7 +16,7 @@ public class Path {
     private final int distance;
     private final List<Line> lines;
 
-    public Path(List<Station> stations, int distance, List<Line> lines) {
+    public Path(final List<Station> stations, final int distance, final List<Line> lines) {
         validateEmptyStations(stations);
         validatePositiveDistance(distance);
         validateEmptyLines(lines);
@@ -37,13 +37,13 @@ public class Path {
         }
     }
 
-    private void validateEmptyLines(List<Line> lines) {
+    private void validateEmptyLines(final List<Line> lines) {
         if (lines.isEmpty()) {
             throw new IllegalArgumentException("이용한 노선은 비어서는 안됩니다.");
         }
     }
 
-    public double calculateFinalFare(int age) {
+    public double calculateFinalFare(final int age) {
         AgeType ageType = AgeType.from(age);
         return ageType.calculateFare(calculateGeneralFare());
     }
@@ -63,7 +63,7 @@ public class Path {
         return calculateOverFare(distance - DISTANCE_OF_DEFAULT_FARE, DISTANCE_OF_FIRST_ADDITIONAL_UNIT);
     }
 
-    private int calculateOverFare(int distance, int unitDistance) {
+    private int calculateOverFare(final int distance, final int unitDistance) {
         return (((distance - 1) / unitDistance) * UNIT_OF_ADDITIONAL_FARE) + UNIT_OF_ADDITIONAL_FARE;
     }
 

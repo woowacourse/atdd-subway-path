@@ -46,13 +46,12 @@ public class FindDijkstraShortestPathStrategy implements FindPathStrategy {
         }
     }
 
-    private GraphPath<Station, ShortestPathEdge> getStationShortestPathEdgeGraphPath(Station source, Station target,
-                                                                                     WeightedMultigraph<Station, ShortestPathEdge> graph) {
+    private GraphPath<Station, ShortestPathEdge> getStationShortestPathEdgeGraphPath(final Station source,
+                                                                                     final Station target,
+                                                                                     final WeightedMultigraph<Station, ShortestPathEdge> graph) {
         DijkstraShortestPath<Station, ShortestPathEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        GraphPath<Station, ShortestPathEdge> shortestPath =
-                Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
-                        .orElseThrow(() -> new NotFoundException("갈 수 있는 경로를 찾을 수 없습니다."));
-        return shortestPath;
+        return Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
+                .orElseThrow(() -> new NotFoundException("갈 수 있는 경로를 찾을 수 없습니다."));
     }
 
     private List<Line> getLines(final GraphPath<Station, ShortestPathEdge> shortestPath) {

@@ -28,8 +28,9 @@ public class LineSaveRequest {
     private LineSaveRequest() {
     }
 
-    public LineSaveRequest(String name, String color, long upStationId, long downStationId, int distance,
-                           int extraFare) {
+    public LineSaveRequest(final String name, final String color, final long upStationId, final long downStationId,
+                           final int distance,
+                           final int extraFare) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;
