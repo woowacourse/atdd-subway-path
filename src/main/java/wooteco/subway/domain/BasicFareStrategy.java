@@ -13,6 +13,10 @@ public class BasicFareStrategy implements FareStrategy {
 
     @Override
     public int calculate(int distance) {
+        if (distance < FIRST_OVER_DISTANCE) {
+            return BASIC_FARE;
+        }
+
         if (distance > SECOND_OVER_DISTANCE) {
             return BASIC_FARE + MAX_FARE_FROM_TEN_TO_FIFTY + calculateOverFifty(distance - SECOND_OVER_DISTANCE);
         }

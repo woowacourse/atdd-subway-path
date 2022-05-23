@@ -9,8 +9,8 @@ class FareTest {
 
     @Test
     @DisplayName("10km 미만일 경우 1250을 부과한다.")
-    void calculateUnderBasicFare() {
-        int distance = 1;
+    void calculateIfDistanceIsUnderTen() {
+        int distance = 9;
         Fare fare = new Fare();
         int expected = fare.calculateFare(distance, new BasicFareStrategy());
 
@@ -18,8 +18,38 @@ class FareTest {
     }
 
     @Test
-    @DisplayName("10km~50km: 5km 까지 마다 100원 추가한다.")
-    void calculateFare() {
+    @DisplayName("10km일 경우 1350을 부과한다.")
+    void calculateIfDistanceIsTen() {
+        int distance = 10;
+        Fare fare = new Fare();
+        int expected = fare.calculateFare(distance, new BasicFareStrategy());
+
+        assertThat(expected).isEqualTo(1350);
+    }
+
+    @Test
+    @DisplayName("11km일 경우 1350을 부과한다.")
+    void calculateIfDistanceIsEleven() {
+        int distance = 11;
+        Fare fare = new Fare();
+        int expected = fare.calculateFare(distance, new BasicFareStrategy());
+
+        assertThat(expected).isEqualTo(1350);
+    }
+
+    @Test
+    @DisplayName("15km일 경우 1350을 부과한다.")
+    void calculateIfDistanceIsFifteen() {
+        int distance = 15;
+        Fare fare = new Fare();
+        int expected = fare.calculateFare(distance, new BasicFareStrategy());
+
+        assertThat(expected).isEqualTo(1350);
+    }
+
+    @Test
+    @DisplayName("16km일 경우 1450을 부과한다.")
+    void calculateIfDistanceIsSixteen() {
         int distance = 16;
         Fare fare = new Fare();
         int expected = fare.calculateFare(distance, new BasicFareStrategy());
@@ -28,12 +58,52 @@ class FareTest {
     }
 
     @Test
-    @DisplayName("50km 초과: 8km 까지 마다 100원 추가한다.")
-    void calculateFareOver50km() {
-        int distance = 108;
+    @DisplayName("21km일 경우 1550을 부과한다.")
+    void calculateIfDistanceIsTwentyOne() {
+        int distance = 21;
         Fare fare = new Fare();
         int expected = fare.calculateFare(distance, new BasicFareStrategy());
 
-        assertThat(expected).isEqualTo(2850);
+        assertThat(expected).isEqualTo(1550);
+    }
+
+    @Test
+    @DisplayName("49km일 경우 2050을 부과한다.")
+    void calculateIfDistanceIsFortyNine() {
+        int distance = 49;
+        Fare fare = new Fare();
+        int expected = fare.calculateFare(distance, new BasicFareStrategy());
+
+        assertThat(expected).isEqualTo(2050);
+    }
+
+    @Test
+    @DisplayName("50km일 경우 2050을 부과한다.")
+    void calculateIfDistanceIsFifty() {
+        int distance = 50;
+        Fare fare = new Fare();
+        int expected = fare.calculateFare(distance, new BasicFareStrategy());
+
+        assertThat(expected).isEqualTo(2050);
+    }
+
+    @Test
+    @DisplayName("58km일 경우 2150을 부과한다.")
+    void calculateIfDistanceIsFiftyEight() {
+        int distance = 58;
+        Fare fare = new Fare();
+        int expected = fare.calculateFare(distance, new BasicFareStrategy());
+
+        assertThat(expected).isEqualTo(2150);
+    }
+
+    @Test
+    @DisplayName("59km일 경우 2250을 부과한다.")
+    void calculateIfDistanceIsFiftyNine() {
+        int distance = 59;
+        Fare fare = new Fare();
+        int expected = fare.calculateFare(distance, new BasicFareStrategy());
+
+        assertThat(expected).isEqualTo(2250);
     }
 }
