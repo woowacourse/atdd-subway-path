@@ -1,3 +1,6 @@
+<details>
+<summary>1단계 페어 규칙 및 목표</summary>
+
 ## 페어 규칙
 
 - 방역수칙 준수
@@ -37,7 +40,10 @@
 - custom exception 써보기!
 - 해당 로직이 해당 계층에 어울리는지 한번 더 고민해보기
 
----
+</details>
+
+<details>
+<summary>1단계 기능 목록</summary>
 
 ### 기능 목록
 
@@ -72,6 +78,11 @@
     - [X] 불필요한 중복이 없는지 확인
     - [X] 지역 변수 final 삭제
 
+</details>
+
+<details>
+<summary>1단계 첫번째 리뷰</summary>
+
 ### 스티치의 1단계 첫번째 리뷰
 
 - [X] Dao 에 @Repository 대신 @Component 사용하기
@@ -83,3 +94,17 @@
 - [X] @RequestParam @ModelAttribute 로 묶어보기
 - [X] LineService 의 create 메서드를 기능 단위로 메서드 분리해보기
 - [X] StationService 의 try-catch 수정해보기
+
+</details>
+
+<details>
+<summary>1단계 두번째 리뷰</summary>
+
+### 스티치의 1단계 두번째 리뷰
+
+- [ ] LineDao 의 createNewObject() 사용한 이유 알아보고, 새로운 객체를 반환하도록 수정하기
+- [ ] 요금을 관리하는 객체에서 요금을 필드로 갖게하기
+- [ ] FareCalculator 의 생성자와 필드 위치 수정하기
+- [ ] FareCalculator 의 메서드 명이 메서드의 의도를 드러내도록 수정하기
+
+</details>
