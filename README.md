@@ -56,7 +56,7 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-subwayGraph/blo
 - [x] 지하철 역을 조회한다.
 - [x] 지하철 역을 삭제한다.
     - [x] [예외] 삭제할 역이 있어야 한다.
-    - [ ] [예외] 해당 역과 연결된 구간이 있을 경우 삭제할 수 없다
+    - [x] [예외] 해당 역과 연결된 구간이 있을 경우 삭제할 수 없다
 
 ### 지하철 노선
 
@@ -158,6 +158,7 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-subwayGraph/blo
 ### 목표
 
 - [ ] service 단의 for/if문 -> dao 안에서 새 메소드(...all) 생성, batch... 사용해 한번에 처리
+- [ ] 테스트코드 패키지 위치 맞추기
 - [ ] repository 중 메인 repository 설정 -> sectionEntity를 바로 section으로 변경
 - [x] 요금 정책 인터페이스, 이후 정책 별로 클래스 분리
     - [x] miro로 미리 설계
@@ -181,5 +182,6 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-subwayGraph/blo
 - [x] 예외 시 log.error(); 추가
 
 ### 1단계-2 피드백
+
 - [x] Dto setter 제거
 - [x] SectionEntity의 경우 생성자에서 id를 제외한 필드는 long 타입으로 선언돼 있는 걸로 봐서는 null을 허용할 필요는 없어보이기도 하네요.

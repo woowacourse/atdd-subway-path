@@ -19,6 +19,7 @@ import wooteco.subway.service.dto.response.StationResponse;
 
 @Service
 public class LineService {
+    private static final String ALREADY_IN_LINE_ERROR_MESSAGE = "지하철 노선에 해당 역이 등록되어있어 역을 삭제할 수 없습니다.";
 
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
@@ -95,7 +96,7 @@ public class LineService {
         lineRepository.save(line);
     }
 
-    public void removeById(Long id) {
+    public void removeLineById(Long id) {
         lineRepository.deleteById(id);
     }
 
@@ -126,5 +127,21 @@ public class LineService {
             Section combineSection = sections.combine(line, removedSections);
             sectionRepository.save(combineSection);
         }
+    }
+
+    public void removeStationById(Long id) {
+        validateStationNotLinked(id);
+        stationRepository.deleteById(id);
+    }
+
+    private void validateStationNotLinked(Long stationId) {
+        Station station = stationRepository.findById(stationId);
+        lineRepository.findAll().stream()
+                .map(sectionRepository::findSectionByLine)
+                .filter(sections -> !new Sections(sections).isStationIn(station))
+                .findAny()
+                .ifPresent(section -> {
+                    throw new IllegalArgumentException(ALREADY_IN_LINE_ERROR_MESSAGE);
+                });
     }
 }

@@ -137,6 +137,10 @@ public class Sections {
         return List.copyOf(stations);
     }
 
+    public boolean isStationIn(Station station) {
+        return getStations().contains(station);
+    }
+
     public List<Section> getSections() {
         return List.copyOf(sections);
     }

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static wooteco.subway.domain.fixtures.TestFixtures.강남;
 import static wooteco.subway.domain.fixtures.TestFixtures.건대;
+import static wooteco.subway.domain.fixtures.TestFixtures.당고개;
 import static wooteco.subway.domain.fixtures.TestFixtures.삼성;
 import static wooteco.subway.domain.fixtures.TestFixtures.성수;
 import static wooteco.subway.domain.fixtures.TestFixtures.왕십리;
@@ -190,6 +191,14 @@ class SectionsTest {
         assertThatThrownBy(() -> 기존_구간.combine(이호선, 합칠_구간))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("연결할 수 없는 구간입니다.");
+    }
+
+    @Test
+    @DisplayName("특정 역이 노선에 있는지 확인한다.")
+    void isStationIn() {
+        Sections 기존_구간 = new Sections(getSavedSections(이호선));
+        assertThat(기존_구간.isStationIn(강남)).isTrue();
+        assertThat(기존_구간.isStationIn(당고개)).isFalse();
     }
 
     private List<Section> getSections(Line line) {

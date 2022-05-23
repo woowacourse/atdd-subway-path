@@ -3,6 +3,7 @@ package wooteco.subway.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import wooteco.subway.domain.element.Sections;
 import wooteco.subway.domain.element.Station;
 import wooteco.subway.exception.BadRequestException;
 import wooteco.subway.repository.StationRepository;
@@ -36,9 +37,5 @@ public class StationService {
         return stations.stream()
                 .map(value -> new StationResponse(value.getId(), value.getName()))
                 .collect(Collectors.toList());
-    }
-
-    public void removeById(Long id) {
-        stationRepository.deleteById(id);
     }
 }

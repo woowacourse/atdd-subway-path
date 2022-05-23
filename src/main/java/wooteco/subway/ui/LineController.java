@@ -52,7 +52,7 @@ public class LineController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteLineById(@PathVariable Long id) {
-        lineService.removeById(id);
+        lineService.removeLineById(id);
     }
 
     @PostMapping("/{id}/sections")
