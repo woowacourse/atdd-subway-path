@@ -24,6 +24,15 @@ public class FareTest {
     void calculate(int input, int expected) {
         Fare fare = new Fare(input);
 
-        assertThat(fare.calculate()).isEqualTo(expected);
+        assertThat(fare.calculate(0)).isEqualTo(expected);
+    }
+
+    @DisplayName("추가요금이 있는 운임을 계산한다.")
+    @ParameterizedTest
+    @CsvSource(value = {"9,2150", "10,2150", "12,2250", "50,2950", "58,3050"})
+    void calculateWithExtraFare(int input, int expected) {
+        Fare fare = new Fare(input);
+
+        assertThat(fare.calculate(900)).isEqualTo(expected);
     }
 }

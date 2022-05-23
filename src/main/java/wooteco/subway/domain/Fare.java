@@ -24,7 +24,11 @@ public class Fare {
         }
     }
 
-    public int calculate() {
+    public int calculate(int extraFare) {
+        return calculateWithDistance() + extraFare;
+    }
+
+    private int calculateWithDistance() {
         if (distance <= FIRST_STANDARD_DISTANCE) {
             return FIRST_BASIC_FARE;
         }

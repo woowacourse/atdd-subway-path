@@ -38,7 +38,7 @@ class PathServiceTest {
         StationResponse 강남역 = stationService.save(new StationRequest("강남역"));
         StationResponse 낙성대역 = stationService.save(new StationRequest("낙성대역"));
         StationResponse 신대방역 = stationService.save(new StationRequest("신대방역"));
-        LineRequest lineRequest = new LineRequest("2호선", "green", 선릉역.getId(), 강남역.getId(), 10, 0);
+        LineRequest lineRequest = new LineRequest("2호선", "green", 선릉역.getId(), 강남역.getId(), 10, 900);
         LineResponse lineResponse = lineService.save(lineRequest);
         SectionRequest sectionRequest1 = new SectionRequest(강남역.getId(), 낙성대역.getId(), 10);
         SectionRequest sectionRequest2 = new SectionRequest(낙성대역.getId(), 신대방역.getId(), 10);
@@ -50,7 +50,7 @@ class PathServiceTest {
         assertAll(
                 () -> assertThat(pathResponse.getStations().size()).isEqualTo(4),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(30),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(1650)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(2550)
         );
     }
 
@@ -62,11 +62,11 @@ class PathServiceTest {
         StationResponse 대림역 = stationService.save(new StationRequest("대림역"));
         StationResponse 낙성대역 = stationService.save(new StationRequest("낙성대역"));
         LineRequest line7 = new LineRequest(
-                "7호선", "deep green", 건대입구역.getId(), 강남구청역.getId(), 10, 0);
+                "7호선", "deep green", 건대입구역.getId(), 강남구청역.getId(), 10, 900);
         LineResponse line7Response = lineService.save(line7);
         lineService.addSection(line7Response.getId(), new SectionRequest(강남구청역.getId(), 대림역.getId(), 10));
         LineRequest line2 = new LineRequest(
-                "2호선", "green", 건대입구역.getId(), 낙성대역.getId(), 5, 0);
+                "2호선", "green", 건대입구역.getId(), 낙성대역.getId(), 5, 800);
         LineResponse line2Response = lineService.save(line2);
         lineService.addSection(line2Response.getId(), new SectionRequest(낙성대역.getId(), 대림역.getId(), 5));
 
@@ -75,14 +75,13 @@ class PathServiceTest {
         assertAll(
                 () -> assertThat(pathResponse.getStations().size()).isEqualTo(3),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(10),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(1250)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(2150)
         );
     }
 
     @DisplayName("다른 노선의 갈 수 없는 경로를 조회하면 예외를 던진다.")
     @Test
     void findPathCanNotGo() {
-
         StationResponse 건대입구역 = stationService.save(new StationRequest("건대입구역"));
         StationResponse 강남구청역 = stationService.save(new StationRequest("강남구청역"));
         StationResponse 부천역 = stationService.save(new StationRequest("부천역"));

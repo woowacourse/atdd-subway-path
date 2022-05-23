@@ -6,14 +6,16 @@ public class Path {
 
     private final List<Station> stations;
     private final int distance;
+    private final int extraFare;
 
-    public Path(List<Station> stations, int distance) {
+    public Path(List<Station> stations, int distance, int extraFare) {
         this.stations = stations;
         this.distance = distance;
+        this.extraFare = extraFare;
     }
 
     public int calculateFare() {
-        return new Fare(distance).calculate();
+        return new Fare(distance).calculate(extraFare);
     }
 
     public List<Station> getStations() {
