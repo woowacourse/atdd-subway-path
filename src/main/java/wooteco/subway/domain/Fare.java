@@ -7,7 +7,8 @@ public class Fare {
         this.fareStrategy = fareStrategy;
     }
 
-    public int calculate(int distance) {
+    public int calculate(Path path) {
+        int distance = path.getShortestDistance();
         return fareStrategy.calculate(distance);
     }
 }

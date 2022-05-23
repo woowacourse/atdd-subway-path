@@ -38,14 +38,14 @@ public class PathService {
         Station source = stationDao.getStation(pathServiceRequest.getSource());
         Station target = stationDao.getStation(pathServiceRequest.getTarget());
 
-        Path path = domainCreatorService.createPath();
-        List<StationDto> stationDtos = path.getShortestPath(source, target).stream()
+        Path path = domainCreatorService.createPath(source, target);
+        List<StationDto> stationDtos = path.getShortestPath().stream()
             .map(station -> new StationDto(station.getId(), station.getName()))
             .collect(Collectors.toList());
-        int distance = path.getShortestDistance(source, target);
+        int distance = path.getShortestDistance();
         Fare fare = new Fare(new DistanceFareStrategy());
 
-        return new PathServiceResponse(stationDtos, distance, fare.calculate(distance));
+        return new PathServiceResponse(stationDtos, distance, fare.calculate(path));
     }
 
     private void validateNotExists(Long id) {
