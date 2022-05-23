@@ -60,6 +60,11 @@ public class SectionDao {
         jdbcTemplate.update(sql, id);
     }
 
+    public boolean existedByStation(Long stationId) {
+        String sql = "select exists (select * from section where up_station_id = ? or down_station_id limit 1)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, stationId);
+    }
+
     private SectionEntity toSectionEntity(long id, SectionEntity section) {
         return new SectionEntity(
                 id,

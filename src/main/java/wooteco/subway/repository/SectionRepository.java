@@ -48,6 +48,10 @@ public class SectionRepository {
         sectionDao.deleteById(id);
     }
 
+    public boolean existedByStation(Long stationId) {
+        return sectionDao.existedByStation(stationId);
+    }
+
     private Station toStation(StationEntity entity) {
         return new Station(entity.getId(), entity.getName());
     }

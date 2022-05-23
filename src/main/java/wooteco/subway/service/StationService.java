@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.Station;
 import wooteco.subway.exception.BadRequestException;
+import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
 import wooteco.subway.service.dto.request.StationRequest;
 import wooteco.subway.service.dto.response.StationResponse;
@@ -13,9 +14,12 @@ import wooteco.subway.service.dto.response.StationResponse;
 public class StationService {
 
     private final StationRepository stationRepository;
+    private final SectionRepository sectionRepository;
 
-    public StationService(StationRepository stationRepository) {
+    public StationService(StationRepository stationRepository,
+            SectionRepository sectionRepository) {
         this.stationRepository = stationRepository;
+        this.sectionRepository = sectionRepository;
     }
 
     public StationResponse create(StationRequest stationRequest) {
@@ -33,6 +37,9 @@ public class StationService {
     }
 
     public void removeById(Long id) {
+        if (sectionRepository.existedByStation(id)) {
+            throw new BadRequestException("삭제하려는 역이 구간에 존재합니다.");
+        }
         stationRepository.deleteById(id);
     }
 

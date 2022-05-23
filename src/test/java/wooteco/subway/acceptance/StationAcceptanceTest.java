@@ -129,6 +129,30 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 assertThat(response.statusCode()).isEqualTo(204);
             }
         }
+
+        @Nested
+        @DisplayName("노선에 해당하는 역이 존재할 때 역을 삭제하려는 경우")
+        class Context_Input_Delete_Station_Exist_Line {
+
+            private long 강남;
+            private long 역삼;
+
+            @BeforeEach
+            void setUp() {
+                강남 = 역_저장("강남역");
+                역삼 = 역_저장("역삼역");
+            }
+
+            @Test
+            @DisplayName("역이 삭제되지 않고 400응답을 한다.")
+            void it_returns_stations() {
+                노선_저장(노선_저장_파라미터("2호선", "green", 강남, 역삼, 10, 500));
+
+                ExtractableResponse<Response> response = 역_삭제(강남);
+
+                assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+            }
+        }
     }
 
     private ExtractableResponse<Response> 역_삭제(long id) {
