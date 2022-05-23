@@ -52,6 +52,7 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-path/blob/maste
 ## 2단계 기능 요구 사항
 ### 노선별 추가 요금
 - 추가 요금이 있는 노선을 이용 할 경우 측정된 요금에 추가
+- 경로가 여러 노선을 거친다면, 가장 높은 금액의 추가 요금만 적용시킨다.
 
 ### 연령별 요금 할인
 - 나이가 13세 이상이고 19세 미만이면 금액의 20%를 할인해준다.
