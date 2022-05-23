@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 
 public enum AgeDiscount implements Predicate<Integer> {
 
-    BABY(age -> age < 6, fare -> fare),
+    BABY(age -> age >= 0 && age < 6, fare -> fare),
     CHILD(age -> age >= 6 && age < 13, fare -> (int) ((fare - 350) * 0.5)),
     TEENAGER(age -> age >= 13 && age < 19, fare -> (int) ((fare - 350) * 0.2)),
     ADULT(age -> age >= 19, fare -> 0);
@@ -27,7 +27,7 @@ public enum AgeDiscount implements Predicate<Integer> {
         return Arrays.stream(AgeDiscount.values())
                 .filter(type -> type.test(age))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("나이는 음수가 될 수 없습니다."));
     }
 
     @Override

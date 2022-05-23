@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 
 public enum DistanceCharge implements Predicate<Integer> {
 
-    NONE(distance -> distance <= 10, distance -> 0),
+    NONE(distance -> distance > 0 && distance <= 10, distance -> 0),
     PER_5KM(distance -> distance > 10 && distance <= 50, DistanceCharge::calculateHundredPer5km),
     PER_8KM(distance -> distance > 50, DistanceCharge::calculateHundredPer8km);
 
@@ -26,7 +26,7 @@ public enum DistanceCharge implements Predicate<Integer> {
         return Arrays.stream(DistanceCharge.values())
                 .filter(type -> type.test(distance))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("거리는 음수가 될 수 없습니다."));
     }
 
     @Override
