@@ -44,6 +44,15 @@ public class SubwayGraph {
 
     private GraphPath<Station, DefaultWeightedEdge> graphResult(final Station source, final Station target) {
         DijkstraShortestPath<Station, DefaultWeightedEdge> pathFinder = new DijkstraShortestPath<>(subwayGraph);
-        return pathFinder.getPath(source, target);
+        GraphPath<Station, DefaultWeightedEdge> path = pathFinder.getPath(source, target);
+        validateSourceToTargetLink(path);
+        return path;
     }
+
+    private void validateSourceToTargetLink(GraphPath<Station, DefaultWeightedEdge> path) {
+        if (path == null) {
+            throw new IllegalArgumentException("출발역과 도착역이 연결되어 있지 않습니다.");
+        }
+    }
+
 }
