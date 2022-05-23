@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.service.PathService;
 import wooteco.subway.service.dto.request.PathServiceRequest;
 import wooteco.subway.service.dto.response.PathServiceResponse;
-import wooteco.subway.ui.dto.PathRequest;
+import wooteco.subway.ui.dto.request.PathRequest;
 import wooteco.subway.ui.dto.response.PathResponse;
 
 @RestController
