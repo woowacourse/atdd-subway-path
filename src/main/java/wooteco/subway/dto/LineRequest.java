@@ -2,7 +2,6 @@ package wooteco.subway.dto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import org.springframework.lang.NonNull;
 
 public class LineRequest {
 
