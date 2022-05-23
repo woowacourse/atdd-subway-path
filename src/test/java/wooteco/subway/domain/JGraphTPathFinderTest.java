@@ -24,7 +24,7 @@ import wooteco.subway.domain.path.JGraphTPathFinder;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.PathFinder;
 import wooteco.subway.exception.notfound.NotFoundPathException;
-import wooteco.subway.exception.notfound.NotFoundStationException;
+import wooteco.subway.exception.notfound.NotFoundStationInSectionException;
 
 class JGraphTPathFinderTest {
 
@@ -85,7 +85,7 @@ class JGraphTPathFinderTest {
 
         // when & then
         assertThatThrownBy(() -> pathFinder.searchShortestPath(new Sections(sections), source, target))
-                .isInstanceOf(NotFoundStationException.class);
+                .isInstanceOf(NotFoundStationInSectionException.class);
     }
 
     @DisplayName("경로 조회 요청 시, 출발지 부터 도착지 까지 연결된 구간이 존재하지 않을 경우 예외가 발생한다")
