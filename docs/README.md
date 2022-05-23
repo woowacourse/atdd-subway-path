@@ -102,7 +102,7 @@
   - 이러한 방식을 채택한 이유와 장점은 무엇일까?
 - [ ] (PathService) `getShortestPath()` 메서드가 너무 커진 것 같다. 역할을 좀 더 이해하기 쉽게 개선해볼 수 없을까?
 - [ ] (PathService) `containsStationInSection()`, `getExtraFare()`가 이곳에 있는 것이 적절할까?
-- [ ] (DijkstraShortestPathStationTest) `@DisplayName`을 잘 쓰자!
+- [x] (DijkstraShortestPathStationTest) `@DisplayName`을 잘 쓰자!
 - [ ] 역이 어느 구간에도 포함되어 있지 않을 때 에러를 더 구체적으로 처리하면 좋을 것 같다.
 - [ ] 출발역과 도착역이 같은 경우 어떤 일이 발생할까?
 - [ ] 노선의 역 정보를 출력할 때 순서대로 출력이 되면 어떨까?
