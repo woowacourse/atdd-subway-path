@@ -1,5 +1,6 @@
 package wooteco.subway.dao;
 
+import java.util.Collections;
 import java.util.List;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -61,5 +62,13 @@ public class JdbcStationDao implements StationDao {
     public boolean existById(final Long stationId) {
         final String sql = "SELECT EXISTS (SELECT * FROM STATION WHERE id = (?))";
         return jdbcTemplate.queryForObject(sql, Boolean.class, stationId);
+    }
+
+    @Override
+    public List<Station> findByIds(final List<Long> ids) {
+        final String inSql = String.join(",", Collections.nCopies(ids.size(), "?"));
+        final String sql = String.format("SELECT * FROM STATION WHERE id in (%s)", inSql);
+
+        return jdbcTemplate.query(sql, ids.toArray(), stationRowMapper);
     }
 }

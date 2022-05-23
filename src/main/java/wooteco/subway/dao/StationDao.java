@@ -16,4 +16,6 @@ public interface StationDao {
     boolean existByName(final Station station);
 
     boolean existById(final Long stationId);
+
+    List<Station> findByIds(final List<Long> ids);
 }

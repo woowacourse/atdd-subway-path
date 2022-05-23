@@ -45,9 +45,8 @@ public class StationService {
 
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public List<StationResponse> findByStationIds(final List<Long> stationIds) {
-        final Map<Long, Station> stations = stationDao.findAll()
+        final Map<Long, Station> stations = stationDao.findByIds(stationIds)
                 .stream()
-                .filter(station -> stationIds.contains(station.getId()))
                 .collect(Collectors.toMap(Station::getId, station -> station));
 
         return stationIds.stream()
