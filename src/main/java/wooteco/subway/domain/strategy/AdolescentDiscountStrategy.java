@@ -1,8 +1,8 @@
 package wooteco.subway.domain.strategy;
 
-public class AdolescentDiscountStrategy implements DiscountStrategy {
+import static wooteco.subway.domain.strategy.KidDiscountStrategy.DEDUCTION;
 
-    private static final int DEDUCTION = 350;
+public class AdolescentDiscountStrategy implements DiscountStrategy {
 
     @Override
     public int calculate(int fare) {
