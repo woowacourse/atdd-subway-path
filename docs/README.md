@@ -87,7 +87,7 @@
 
 - [X] Dao 에 @Repository 대신 @Component 사용하기
 - [X] RowMapper를 메서드 또는 상수로 관리하기
-- [ ] LineDao 의 createNewObject() 사용한 이유 알아보고, 새로운 객체를 반환하도록 수정하기
+- [X] LineDao 의 createNewObject() 사용한 이유 알아보고, 새로운 객체를 반환하도록 수정하기
 - [X] NamedParameterJdbcTemplate 으로 수정
 - [X] FareCalculator 가 필드로 distance 를 갖도록 수정
 - [x] 매직넘버 상수로 관리하기
@@ -102,7 +102,6 @@
 
 ### 스티치의 1단계 두번째 리뷰
 
-- [ ] LineDao 의 createNewObject() 사용한 이유 알아보고, 새로운 객체를 반환하도록 수정하기
 - [ ] 요금을 관리하는 객체에서 요금을 필드로 갖게하기
 - [ ] FareCalculator 의 생성자와 필드 위치 수정하기
 - [ ] FareCalculator 의 메서드 명이 메서드의 의도를 드러내도록 수정하기

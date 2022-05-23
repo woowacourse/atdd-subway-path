@@ -36,7 +36,7 @@ public class SectionDaoTest {
 
         Section section = new Section(upTermination, downTermination, 10);
         line = new Line("신분당선", "bg-red-600", section);
-        lineDao.save(line);
+        line = lineDao.save(line);
     }
 
     @DisplayName("기존 노선에 구간을 추가할 수 있다")

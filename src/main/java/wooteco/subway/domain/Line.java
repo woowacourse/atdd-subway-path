@@ -10,6 +10,22 @@ public class Line {
     private final String color;
     private final Sections sections;
 
+    public Line(Long id, Line line) {
+        this(id, line.getName(), line.getColor(), line.getSections());
+    }
+
+    public Line(Long id, String name, String color, Sections sections) {
+        this(id, name, color, sections.getSections());
+    }
+
+    public Line(String name, String color, Section section) {
+        this(null, name, color, List.of(section));
+    }
+
+    public Line(Long id, String name, String color) {
+        this(id, name, color, new LinkedList<>());
+    }
+
     public Line(Long id, String name, String color, List<Section> sections) {
         validateNotNull(name, "name");
         validateNotNull(color, "color");
@@ -23,14 +39,6 @@ public class Line {
         if (input == null || input.isBlank()) {
             throw new IllegalArgumentException(String.format("%s은 필수 입력값입니다.", param));
         }
-    }
-
-    public Line(String name, String color, Section section) {
-        this(null, name, color, List.of(section));
-    }
-
-    public Line(Long id, String name, String color) {
-        this(id, name, color, new LinkedList<>());
     }
 
     public void addSection(Section section) {
