@@ -199,6 +199,6 @@ public class Sections {
         }
         return stations.stream()
             .distinct()
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
     }
 }

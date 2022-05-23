@@ -1,5 +1,6 @@
 package wooteco.subway.domain;
 
+import java.util.Collections;
 import java.util.List;
 
 public class Line {
@@ -67,7 +68,7 @@ public class Line {
     }
 
     public List<Section> getSections() {
-        return sections.getSections();
+        return Collections.unmodifiableList(sections.getSections());
     }
 
     public int getExtraFare() {
