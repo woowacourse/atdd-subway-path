@@ -78,7 +78,7 @@ public class LineService {
 
     private List<Station> getStations(Long lineId) {
         Line line = lineRepository.findById(lineId);
-        Sections sections = new Sections(sectionRepository.findSectionByLine(line));
+        Sections sections = Sections.create(sectionRepository.findSectionByLine(line));
         return sections.getStations();
     }
 
@@ -105,7 +105,7 @@ public class LineService {
         Station upStation = findStation(request.getUpStationId());
         Station downStation = findStation(request.getDownStationId());
         int distance = request.getDistance();
-        Sections sections = new Sections(sectionRepository.findSectionByLine(line));
+        Sections sections = Sections.create(sectionRepository.findSectionByLine(line));
         Section newSection = new Section(line, upStation, downStation, distance);
 
         for (Section updateSection : sections.findUpdatedSections(newSection)) {
@@ -116,7 +116,7 @@ public class LineService {
     public void deleteSection(Long lineId, Long stationId) {
         Line line = findLine(lineId);
         Station station = findStation(stationId);
-        Sections sections = new Sections(sectionRepository.findSectionByLine(line));
+        Sections sections = Sections.create(sectionRepository.findSectionByLine(line));
 
         List<Section> removedSections = sections.findDeleteSections(line, station);
         for (Section removedSection : removedSections) {
@@ -135,13 +135,8 @@ public class LineService {
     }
 
     private void validateStationNotLinked(Long stationId) {
-        Station station = stationRepository.findById(stationId);
-        lineRepository.findAll().stream()
-                .map(sectionRepository::findSectionByLine)
-                .filter(sections -> !new Sections(sections).isStationIn(station))
-                .findAny()
-                .ifPresent(section -> {
-                    throw new IllegalArgumentException(ALREADY_IN_LINE_ERROR_MESSAGE);
-                });
+        if (Sections.createUnSorted(sectionRepository.findAll()).isStationIn(findStation((stationId)))) {
+            throw new IllegalArgumentException(ALREADY_IN_LINE_ERROR_MESSAGE);
+        }
     }
 }

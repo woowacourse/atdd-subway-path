@@ -105,7 +105,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
                 .collect(Collectors.toList());
         List<Long> resultLineIds = response.jsonPath().getList(".", StationResponse.class).stream()
-                .map(it -> it.getId())
+                .map(StationResponse::getId)
                 .collect(Collectors.toList());
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
@@ -142,7 +142,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
 
         List<String> resultLineNames = listResponse.jsonPath().getList(".", StationResponse.class).stream()
-                .map(it -> it.getName())
+                .map(StationResponse::getName)
                 .collect(Collectors.toList());
 
         assertThat(resultLineNames.contains("강남역")).isFalse();

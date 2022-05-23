@@ -14,15 +14,23 @@ public class Sections {
 
     private final List<Section> sections;
 
-    public Sections(List<Section> sections) {
-        this.sections = sort(new ArrayList<>(sections));
+    private Sections(List<Section> sections) {
+        this.sections = new ArrayList<>(sections);
     }
 
-    private List<Section> sort(List<Section> sections) {
+    public static Sections createUnSorted(List<Section> sections) {
+        return new Sections(sections);
+    }
+
+    public static Sections create(List<Section> sections) {
+        return new Sections(sort(sections));
+    }
+
+    private static List<Section> sort(List<Section> sections) {
         return fillSection(sections, findFirstStation(sections));
     }
 
-    private Station findFirstStation(List<Section> sections) {
+    private static Station findFirstStation(List<Section> sections) {
         List<Station> upStations = getAllUpStations(sections);
         List<Station> downStations = getAllDownStations(sections);
         return upStations.stream()
@@ -31,19 +39,19 @@ public class Sections {
                 .orElseThrow(() -> new IllegalArgumentException("첫번째 역이 존재하지 않습니다."));
     }
 
-    private List<Station> getAllUpStations(List<Section> sections) {
+    private static List<Station> getAllUpStations(List<Section> sections) {
         return sections.stream()
                 .map(Section::getUpStation)
                 .collect(Collectors.toList());
     }
 
-    private List<Station> getAllDownStations(List<Section> sections) {
+    private static List<Station> getAllDownStations(List<Section> sections) {
         return sections.stream()
                 .map(Section::getDownStation)
                 .collect(Collectors.toList());
     }
 
-    private List<Section> fillSection(List<Section> sections, Station firstStation) {
+    private static List<Section> fillSection(List<Section> sections, Station firstStation) {
         List<Section> result = new ArrayList<>();
         Station nowStation = firstStation;
         while (result.size() != sections.size()) {
@@ -54,7 +62,7 @@ public class Sections {
         return result;
     }
 
-    private Section findNextSection(List<Section> sections, Station upStation) {
+    private static Section findNextSection(List<Section> sections, Station upStation) {
         return sections.stream()
                 .filter(section -> section.isEqualToUpStation(upStation))
                 .findFirst()
