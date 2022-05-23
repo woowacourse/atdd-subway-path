@@ -18,9 +18,7 @@ public class Path {
     }
 
     public static Path of(List<Section> sections, Long source, Long target) {
-        WeightedMultigraph<Long, SectionWeightEdge> graph = new WeightedMultigraph(SectionWeightEdge.class);
-        initPathGraph(sections, graph, gatherStationIds(sections));
-        GraphPath path = new DijkstraShortestPath(graph).getPath(source, target);
+        GraphPath path = initPathGraph(sections, gatherStationIds(sections), source, target);
         return new Path(path.getEdgeList(), (int) path.getWeight());
     }
 
@@ -33,7 +31,8 @@ public class Path {
         return ids;
     }
 
-    private static void initPathGraph(List<Section> sections, WeightedMultigraph<Long, SectionWeightEdge> graph, Set<Long> ids) {
+    private static GraphPath initPathGraph(List<Section> sections, Set<Long> ids, Long source, Long target) {
+        WeightedMultigraph<Long, SectionWeightEdge> graph = new WeightedMultigraph(SectionWeightEdge.class);
         for (Long id : ids) {
             graph.addVertex(id);
         }
@@ -42,6 +41,7 @@ public class Path {
             graph.addEdge(section.getUpStationId(), section.getDownStationId(),
                     new SectionWeightEdge(section.getLineId(), section.getUpStationId(), section.getDownStationId(), section.getDistance()));
         }
+        return new DijkstraShortestPath(graph).getPath(source, target);
     }
 
     public double calculateFare(List<Line> lines, Long age) {
