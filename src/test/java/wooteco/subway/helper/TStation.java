@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Objects;
 import org.springframework.http.MediaType;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.StationRequest;
@@ -57,11 +58,18 @@ public enum TStation {
     }
 
     public StationResponse 역() {
+        validateSaved();
         return new StationResponse(id, name);
     }
 
     public PathAndRequest 부터(TStation target) {
+        validateSaved();
         return new PathAndRequest(this, target);
+    }
+    private void validateSaved() {
+        if(Objects.isNull(id)) {
+            throw new IllegalStateException("[ERROR] 역을 먼저 등록하고 사용하세요.");
+        }
     }
 
     public Long getId() {
