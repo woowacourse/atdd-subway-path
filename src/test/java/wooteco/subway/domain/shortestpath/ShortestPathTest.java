@@ -1,5 +1,6 @@
 package wooteco.subway.domain.shortestpath;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
@@ -52,5 +53,44 @@ class ShortestPathTest {
         assertThatThrownBy(() ->  new ShortestPath(new DistanceShortestPathStrategy(), new Sections(sections), 1L, 1L))
                 .isInstanceOf(NotFoundPathException.class)
                 .hasMessageContaining("같은 위치로는 경로를 찾을 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("최단 경로에서 지나온 총 거리를 반환한다.")
+    void getTotalDistance() {
+        List<Section> sections = List.of(
+                new Section(1L, 1L, 1L, 2L, 5, 1L),
+                new Section(2L, 1L, 2L, 3L, 5, 2L),
+                new Section(3L, 2L, 3L, 4L, 5, 1L)
+        );
+        ShortestPath shortestPath = new ShortestPath(new DistanceShortestPathStrategy(), new Sections(sections), 1L, 4L);
+
+        assertThat(shortestPath.getTotalDistance()).isEqualTo(15);
+    }
+
+    @Test
+    @DisplayName("최단 경로에서 지나온 지하철역의 id를 반환한다.")
+    void getStationIds() {
+        List<Section> sections = List.of(
+                new Section(1L, 1L, 1L, 2L, 5, 1L),
+                new Section(2L, 1L, 2L, 3L, 5, 2L),
+                new Section(3L, 2L, 3L, 4L, 5, 1L)
+        );
+        ShortestPath shortestPath = new ShortestPath(new DistanceShortestPathStrategy(), new Sections(sections), 1L, 4L);
+
+        assertThat(shortestPath.getStationIds(1L, 4L)).containsExactly(1L, 2L, 3L, 4L);
+    }
+
+    @Test
+    @DisplayName("최단 경로에서 지나온 호선의 id 값을 반환한다.")
+    void getLineIds() {
+        List<Section> sections = List.of(
+                new Section(1L, 1L, 1L, 2L, 5, 1L),
+                new Section(2L, 1L, 2L, 3L, 5, 2L),
+                new Section(3L, 2L, 3L, 4L, 5, 1L)
+        );
+        ShortestPath shortestPath = new ShortestPath(new DistanceShortestPathStrategy(), new Sections(sections), 1L, 4L);
+
+        assertThat(shortestPath.getLineIds()).containsExactly(1L, 2L);
     }
 }

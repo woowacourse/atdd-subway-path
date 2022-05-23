@@ -36,7 +36,7 @@ class ShortestPathServiceTest {
                                 tuple(6L, "청계산입구역")
                         ),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(10),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(1250)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(2250)
         );
     }
 
@@ -62,7 +62,7 @@ class ShortestPathServiceTest {
                                 tuple(7L, "상일동역")
                         ),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(80),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(2450)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(3450)
         );
     }
 
@@ -80,7 +80,7 @@ class ShortestPathServiceTest {
                                 tuple(1L, "신도림역")
                         ),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(80),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(2450)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(3450)
         );
     }
 }

@@ -2,6 +2,7 @@ package wooteco.subway.domain.shortestpath;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.exception.NotFoundPathException;
@@ -51,5 +52,12 @@ public class ShortestPath {
         }
         stationIds.add(targetId);
         return stationIds;
+    }
+
+    public List<Long> getLineIds(){
+        return path.stream()
+                .map(Section::getLineId)
+                .distinct()
+                .collect(Collectors.toList());
     }
 }

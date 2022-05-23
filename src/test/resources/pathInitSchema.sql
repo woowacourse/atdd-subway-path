@@ -47,22 +47,22 @@ VALUES ('청계산입구역');
 INSERT INTO STATION (name)
 VALUES ('상일동역');
 
-INSERT INTO LINE (name, color)
-VALUES ('신분당선', 'red');
+INSERT INTO LINE (name, color, extra_fare)
+VALUES ('신분당선', 'red', 1000);
 INSERT INTO SECTION (line_id, up_station_id, down_station_id, distance, line_order)
 VALUES (1, 5, 6, 10, 1);
 
-INSERT INTO LINE (name, color)
-VALUES ('2호선', 'green');
+INSERT INTO LINE (name, color, extra_fare)
+VALUES ('2호선', 'green', 500);
 INSERT INTO SECTION (line_id, up_station_id, down_station_id, distance, line_order)
 VALUES (2, 1, 2, 30, 1);
 
-INSERT INTO LINE (name, color)
-VALUES ('5호선', 'purple');
+INSERT INTO LINE (name, color, extra_fare)
+VALUES ('5호선', 'purple', 1000);
 INSERT INTO SECTION (line_id, up_station_id, down_station_id, distance, line_order)
 VALUES (3, 2, 7, 50, 1);
 
-INSERT INTO LINE (name, color)
-VALUES ('1호선', 'dark-blue');
+INSERT INTO LINE (name, color, extra_fare)
+VALUES ('1호선', 'dark-blue', 500);
 INSERT INTO SECTION (line_id, up_station_id, down_station_id, distance, line_order)
 VALUES (1, 3, 4, 20, 1);

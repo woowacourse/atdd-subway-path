@@ -73,6 +73,18 @@ class JdbcLineDaoTest {
     }
 
     @Test
+    @DisplayName("지하철 노선을 id값으로 여러개를 조회한다.")
+    void findByIds() {
+        Long lineId1 = lineDao.save(new Line("신분당선", "red", 0));
+        Long lineId2 = lineDao.save(new Line("2호선", "green", 0));
+        List<Line> lines = lineDao.findByIds(List.of(1L, 2L));
+
+        assertThat(lines).hasSize(2)
+                .extracting("name", "color")
+                .containsExactly(tuple("신분당선", "red"), tuple("2호선", "green"));
+    }
+
+    @Test
     @DisplayName("지하철 노선을 업데이트한다.")
     void update() {
         Long lineId = lineDao.save(new Line("신분당선", "red", 0));

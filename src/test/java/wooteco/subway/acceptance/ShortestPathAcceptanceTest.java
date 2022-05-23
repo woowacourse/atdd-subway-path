@@ -36,7 +36,7 @@ class ShortestPathAcceptanceTest extends AcceptanceTest{
         assertAll(
                 () -> assertThat(stationNames).containsExactly("신도림역", "왕십리역", "상일동역"),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(80),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(2450)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(3450)
         );
     }
 }
