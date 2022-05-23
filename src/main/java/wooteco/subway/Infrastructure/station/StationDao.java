@@ -1,4 +1,4 @@
-package wooteco.subway.Infrastructure;
+package wooteco.subway.Infrastructure.station;
 
 import wooteco.subway.domain.Station;
 
@@ -12,7 +12,7 @@ public interface StationDao {
 
     Optional<Station> findById(Long id);
 
-    List<Station> findByIdIn(Collection<Long> sortedStations);
+    List<Station> findByIdIn(Collection<Long> sortedStationIds);
 
     boolean existById(Long id);
 

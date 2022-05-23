@@ -1,4 +1,4 @@
-package wooteco.subway.Infrastructure;
+package wooteco.subway.Infrastructure.station;
 
 import wooteco.subway.domain.Station;
 
@@ -30,12 +30,12 @@ public class MemoryStationDao implements StationDao {
     }
 
     @Override
-    public List<Station> findByIdIn(Collection<Long> sortedStations) {
+    public List<Station> findByIdIn(Collection<Long> sortedStationIds) {
         LinkedList<Station> stations = this.stations.stream()
-                .filter(it -> sortedStations.contains(it.getId()))
+                .filter(it -> sortedStationIds.contains(it.getId()))
                 .collect(Collectors.toCollection(LinkedList::new));
 
-        return sort(sortedStations, stations);
+        return sort(sortedStationIds, stations);
     }
 
     @Override

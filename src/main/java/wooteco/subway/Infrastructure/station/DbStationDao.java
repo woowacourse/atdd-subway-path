@@ -1,4 +1,4 @@
-package wooteco.subway.Infrastructure;
+package wooteco.subway.Infrastructure.station;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;

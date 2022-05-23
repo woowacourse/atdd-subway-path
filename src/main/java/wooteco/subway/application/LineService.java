@@ -2,8 +2,8 @@ package wooteco.subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.Infrastructure.LineDao;
-import wooteco.subway.Infrastructure.SectionDao;
+import wooteco.subway.Infrastructure.line.LineDao;
+import wooteco.subway.Infrastructure.section.SectionDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.exception.constant.DuplicateException;

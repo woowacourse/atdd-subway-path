@@ -10,7 +10,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.Infrastructure.DbStationDao;
+import wooteco.subway.Infrastructure.station.DbStationDao;
 import wooteco.subway.dto.response.StationResponse;
 
 import java.util.List;

@@ -1,8 +1,8 @@
 package wooteco.subway.application;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.Infrastructure.SectionDao;
-import wooteco.subway.Infrastructure.StationDao;
+import wooteco.subway.Infrastructure.section.SectionDao;
+import wooteco.subway.Infrastructure.station.StationDao;
 import wooteco.subway.domain.FareCalculator;
 import wooteco.subway.domain.PathFinder;
 import wooteco.subway.domain.Section;

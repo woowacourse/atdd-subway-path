@@ -4,8 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.test.context.jdbc.Sql;
+import wooteco.subway.Infrastructure.section.DbSectionDao;
 import wooteco.subway.domain.Section;
 
 import javax.sql.DataSource;

@@ -1,4 +1,4 @@
-package wooteco.subway.Infrastructure;
+package wooteco.subway.Infrastructure.section;
 
 import wooteco.subway.domain.Section;
 
