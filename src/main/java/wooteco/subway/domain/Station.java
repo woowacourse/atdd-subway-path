@@ -6,9 +6,6 @@ public class Station {
     private Long id;
     private String name;
 
-    private Station() {
-    }
-
     public Station(Long id, String name) {
         this.id = id;
         this.name = Objects.requireNonNull(name, "[ERROR] 잘못된 입력값입니다. cause = name");

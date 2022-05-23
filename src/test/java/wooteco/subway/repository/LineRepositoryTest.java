@@ -3,12 +3,12 @@ package wooteco.subway.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.TestFixtures.LINE_COLOR;
-import static wooteco.subway.TestFixtures.STANDARD_DISTANCE;
-import static wooteco.subway.TestFixtures.동묘앞역;
-import static wooteco.subway.TestFixtures.보문역;
-import static wooteco.subway.TestFixtures.신당역;
-import static wooteco.subway.TestFixtures.창신역;
+import static wooteco.subway.helper.TestFixtures.LINE_COLOR;
+import static wooteco.subway.helper.TestFixtures.STANDARD_DISTANCE;
+import static wooteco.subway.helper.TestFixtures.동묘앞역;
+import static wooteco.subway.helper.TestFixtures.보문역;
+import static wooteco.subway.helper.TestFixtures.신당역;
+import static wooteco.subway.helper.TestFixtures.창신역;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -65,6 +65,14 @@ public class LineRepositoryTest extends RepositoryTest {
         Long id = lineRepository.save(new Line("분당선", LINE_COLOR));
         Line line = lineRepository.findById(id);
         assertThat(line.isSameName("분당선"));
+    }
+
+    @DisplayName("노선 중 최대 추가요금을 조회한다.")
+    @Test
+    void findMaxExtraFare() {
+        Long id = lineRepository.save(new Line("분당선", LINE_COLOR, 100));
+        Long id2 = lineRepository.save(new Line("6호선", LINE_COLOR, 200));
+        assertThat(lineRepository.findMaxExtraFare(List.of(id, id2))).isEqualTo(200);
     }
 
     @DisplayName("이름이 존재하는지 확인한다. 있다면 true를 반환한다.")

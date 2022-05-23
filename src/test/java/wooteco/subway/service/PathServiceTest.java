@@ -2,12 +2,12 @@ package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.TestFixtures.LINE_COLOR;
-import static wooteco.subway.TestFixtures.LINE_SIX;
-import static wooteco.subway.TestFixtures.STANDARD_DISTANCE;
-import static wooteco.subway.TestFixtures.동묘앞역;
-import static wooteco.subway.TestFixtures.신당역;
-import static wooteco.subway.TestFixtures.창신역;
+import static wooteco.subway.helper.TestFixtures.LINE_COLOR;
+import static wooteco.subway.helper.TestFixtures.LINE_SIX_NAME;
+import static wooteco.subway.helper.TestFixtures.STANDARD_DISTANCE;
+import static wooteco.subway.helper.TestFixtures.동묘앞역;
+import static wooteco.subway.helper.TestFixtures.신당역;
+import static wooteco.subway.helper.TestFixtures.창신역;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -48,12 +48,13 @@ public class PathServiceTest {
         Station saved_동묘앞역 = createStation(동묘앞역);
         Station saved_창신역 = createStation(창신역);
 
-        Line line = createLine(LINE_SIX, LINE_COLOR);
+        Line line = createLine(LINE_SIX_NAME, LINE_COLOR, 100);
 
         sectionRepository.save(new Section(line.getId(), saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
         sectionRepository.save(new Section(line.getId(), saved_동묘앞역, saved_창신역, STANDARD_DISTANCE));
 
-        PathResponse pathResponse = pathService.calculateMinDistance(new PathRequest(saved_신당역.getId(), saved_창신역.getId(), 10));
+        PathResponse pathResponse = pathService.calculateMinDistance(
+                new PathRequest(saved_신당역.getId(), saved_창신역.getId(), 20));
         List<StationResponse> stations = pathResponse.getStations();
 
         assertAll(() -> {
@@ -62,13 +63,13 @@ public class PathServiceTest {
                     new StationResponse(saved_동묘앞역),
                     new StationResponse(saved_창신역));
             assertThat(pathResponse.getDistance()).isEqualTo(STANDARD_DISTANCE + STANDARD_DISTANCE);
-            assertThat(pathResponse.getFare()).isEqualTo(1450);
+            assertThat(pathResponse.getFare()).isEqualTo(1550);
         });
 
     }
 
-    private Line createLine(String lineName, String lineColor) {
-        Long id = lineRepository.save(new Line(lineName, lineColor));
+    private Line createLine(String lineName, String lineColor, int extraFare) {
+        Long id = lineRepository.save(new Line(lineName, lineColor, extraFare));
         return new Line(id, lineName, lineColor);
     }
 

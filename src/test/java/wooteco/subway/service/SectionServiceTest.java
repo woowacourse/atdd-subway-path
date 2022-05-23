@@ -3,15 +3,13 @@ package wooteco.subway.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.TestFixtures.LINE_COLOR;
-import static wooteco.subway.TestFixtures.LINE_SIX;
-import static wooteco.subway.TestFixtures.STANDARD_DISTANCE;
-import static wooteco.subway.TestFixtures.동묘앞역;
-import static wooteco.subway.TestFixtures.신당역;
-import static wooteco.subway.TestFixtures.창신역;
+import static wooteco.subway.helper.TestFixtures.LINE_COLOR;
+import static wooteco.subway.helper.TestFixtures.LINE_SIX_NAME;
+import static wooteco.subway.helper.TestFixtures.STANDARD_DISTANCE;
+import static wooteco.subway.helper.TestFixtures.동묘앞역;
+import static wooteco.subway.helper.TestFixtures.신당역;
+import static wooteco.subway.helper.TestFixtures.창신역;
 
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +19,13 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineResponse;
-import wooteco.subway.dto.PathRequest;
-import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationResponse;
+import wooteco.subway.exception.SectionCreateException;
+import wooteco.subway.exception.SectionDeleteException;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
-import wooteco.subway.exception.SectionCreateException;
-import wooteco.subway.exception.SectionDeleteException;
 
 @Transactional
 @SpringBootTest
@@ -56,7 +52,7 @@ class SectionServiceTest {
         Station saved_신당역 = createStation(신당역);
         Station saved_동묘앞역 = createStation(동묘앞역);
         Station saved_창신역 = createStation(창신역);
-        Line lineSix = createLine(LINE_SIX, LINE_COLOR);
+        Line lineSix = createLine(LINE_SIX_NAME, LINE_COLOR);
         sectionRepository.save(new Section(lineSix.getId(), saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
 
         sectionService.create(lineSix.getId(),
@@ -77,7 +73,7 @@ class SectionServiceTest {
         Station saved_신당역 = createStation(신당역);
         Station saved_동묘앞역 = createStation(동묘앞역);
         Station saved_창신역 = createStation(창신역);
-        Line lineSix = createLine(LINE_SIX, LINE_COLOR);
+        Line lineSix = createLine(LINE_SIX_NAME, LINE_COLOR);
         sectionRepository.save(new Section(lineSix.getId(), saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
 
         sectionService.create(lineSix.getId(),
@@ -94,7 +90,7 @@ class SectionServiceTest {
         Station saved_신당역 = createStation(신당역);
         Station saved_동묘앞역 = createStation(동묘앞역);
         Station saved_창신역 = createStation(창신역);
-        Line lineSix = createLine(LINE_SIX, LINE_COLOR);
+        Line lineSix = createLine(LINE_SIX_NAME, LINE_COLOR);
         sectionRepository.save(new Section(lineSix.getId(), saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
 
         assertThatThrownBy(() -> sectionService.create(lineSix.getId(),
@@ -107,7 +103,7 @@ class SectionServiceTest {
     void createDuplicateException() {
         Station saved_신당역 = createStation(신당역);
         Station saved_동묘앞역 = createStation(동묘앞역);
-        Line lineSix = createLine(LINE_SIX, LINE_COLOR);
+        Line lineSix = createLine(LINE_SIX_NAME, LINE_COLOR);
         sectionRepository.save(new Section(lineSix.getId(), saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
 
         assertThatThrownBy(() -> sectionService.create(lineSix.getId(),
@@ -121,7 +117,7 @@ class SectionServiceTest {
         Station saved_신당역 = createStation(신당역);
         Station saved_동묘앞역 = createStation(동묘앞역);
         Station saved_창신역 = createStation(창신역);
-        Line lineSix = createLine(LINE_SIX, LINE_COLOR);
+        Line lineSix = createLine(LINE_SIX_NAME, LINE_COLOR);
         sectionRepository.save(new Section(lineSix.getId(), saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
 
         sectionService.create(lineSix.getId(),
@@ -137,7 +133,7 @@ class SectionServiceTest {
         Station saved_신당역 = createStation(신당역);
         Station saved_동묘앞역 = createStation(동묘앞역);
         Station saved_창신역 = createStation(창신역);
-        Line lineSix = createLine(LINE_SIX, LINE_COLOR);
+        Line lineSix = createLine(LINE_SIX_NAME, LINE_COLOR);
         sectionRepository.save(new Section(lineSix.getId(), saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
 
         sectionService.create(lineSix.getId(),
@@ -155,7 +151,7 @@ class SectionServiceTest {
         Station saved_신당역 = createStation(신당역);
         Station saved_동묘앞역 = createStation(동묘앞역);
         Station saved_창신역 = createStation(창신역);
-        Line lineSix = createLine(LINE_SIX, LINE_COLOR);
+        Line lineSix = createLine(LINE_SIX_NAME, LINE_COLOR);
         sectionRepository.save(new Section(lineSix.getId(), saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
 
         sectionService.create(lineSix.getId(),
@@ -172,7 +168,7 @@ class SectionServiceTest {
     void deleteOneSectionException() {
         Station saved_신당역 = createStation(신당역);
         Station saved_동묘앞역 = createStation(동묘앞역);
-        Line lineSix = createLine(LINE_SIX, LINE_COLOR);
+        Line lineSix = createLine(LINE_SIX_NAME, LINE_COLOR);
         sectionRepository.save(new Section(lineSix.getId(), saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
 
         assertThatThrownBy(() -> sectionService.delete(lineSix.getId(), saved_동묘앞역.getId()))

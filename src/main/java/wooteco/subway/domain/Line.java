@@ -11,20 +11,30 @@ public class Line {
     private final String name;
     private final String color;
     private final Sections sections;
+    private final int extraFare;
 
-    public Line(Long id, String name, String color, Sections sections) {
+    public Line(Long id, String name, String color, int extraFare, Sections sections) {
         this.id = id;
         this.name = Objects.requireNonNull(name, NULL_PREVENT_MESSAGE + "name");
         this.color = Objects.requireNonNull(color, NULL_PREVENT_MESSAGE + "color");
+        this.extraFare = extraFare;
         this.sections = Objects.requireNonNull(sections, NULL_PREVENT_MESSAGE + "sections");
     }
 
     public Line(Long id, String name, String color) {
-        this(id, name, color, new Sections(Collections.emptyList()));
+        this(id, name, color, 0, new Sections(Collections.emptyList()));
+    }
+
+    public Line(Long id, String name, String color, int extraFare) {
+        this(id, name, color, extraFare, new Sections(Collections.emptyList()));
     }
 
     public Line(String name, String color) {
-        this(null, name, color, new Sections(Collections.emptyList()));
+        this(null, name, color, 0, new Sections(Collections.emptyList()));
+    }
+
+    public Line(String name, String color, int extraFare) {
+        this(null, name, color, extraFare, new Sections(Collections.emptyList()));
     }
 
     public boolean isSameName(String name) {
@@ -41,6 +51,10 @@ public class Line {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     public Sections getSections() {
@@ -70,6 +84,7 @@ public class Line {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", color='" + color + '\'' +
+                ", extraFare=" + extraFare +
                 ", sections=" + sections +
                 '}';
     }

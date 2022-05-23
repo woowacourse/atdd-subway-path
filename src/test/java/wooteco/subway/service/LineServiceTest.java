@@ -4,12 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.TestFixtures.LINE_COLOR;
-import static wooteco.subway.TestFixtures.STANDARD_DISTANCE;
-import static wooteco.subway.TestFixtures.동묘앞역;
-import static wooteco.subway.TestFixtures.보문역;
-import static wooteco.subway.TestFixtures.신당역;
-import static wooteco.subway.TestFixtures.창신역;
+import static wooteco.subway.helper.TestFixtures.LINE_COLOR;
+import static wooteco.subway.helper.TestFixtures.STANDARD_DISTANCE;
+import static wooteco.subway.helper.TestFixtures.동묘앞역;
+import static wooteco.subway.helper.TestFixtures.보문역;
+import static wooteco.subway.helper.TestFixtures.신당역;
+import static wooteco.subway.helper.TestFixtures.창신역;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -22,10 +22,10 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
+import wooteco.subway.exception.NameDuplicatedException;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
-import wooteco.subway.exception.NameDuplicatedException;
 
 @Transactional
 @SpringBootTest
@@ -49,7 +49,7 @@ public class LineServiceTest {
         Station 선릉역 = stationRepository.save(new Station("선릉역"));
         Station 선정릉역 = stationRepository.save(new Station("선정릉역"));
 
-        LineRequest lineRequest = new LineRequest("분당선", LINE_COLOR, 선릉역.getId(), 선정릉역.getId(), STANDARD_DISTANCE);
+        LineRequest lineRequest = new LineRequest("분당선", LINE_COLOR, 0, 선릉역.getId(), 선정릉역.getId(), STANDARD_DISTANCE);
         LineResponse lineResponse = lineService.create(lineRequest);
 
         assertAll(

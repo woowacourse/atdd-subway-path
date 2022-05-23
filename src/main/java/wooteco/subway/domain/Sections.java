@@ -8,13 +8,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.exception.SectionCreateException;
 import wooteco.subway.exception.SectionDeleteException;
-import wooteco.subway.exception.SectionNotFoundException;
-import wooteco.subway.exception.StationNotFoundException;
 import wooteco.subway.exception.SubwayException;
 
 public class Sections {
@@ -44,6 +39,23 @@ public class Sections {
         validateExistSection(section);
     }
 
+    private void validateDuplicateSection(final Section section) {
+        boolean exist = values.stream()
+                .anyMatch(value -> value.isSameSection(section));
+        if (exist) {
+            throw new SectionCreateException(SECTION_NOT_CONNECT_MESSAGE);
+        }
+
+    }
+
+    private void validateSectionConnect(final Section section) {
+        boolean exist = values.stream()
+                .anyMatch(value -> value.haveStation(section));
+        if (!exist) {
+            throw new SectionCreateException(SECTION_NOT_CONNECT_MESSAGE);
+        }
+    }
+
     private void validateExistSection(final Section section) {
         Station upStation = section.getUpStation();
         Station downStation = section.getDownStation();
@@ -66,23 +78,6 @@ public class Sections {
         return values.stream()
                 .map(Section::getDownStation)
                 .collect(toList());
-    }
-
-    private void validateDuplicateSection(final Section section) {
-        boolean exist = values.stream()
-                .anyMatch(value -> value.isSameSection(section));
-        if (exist) {
-            throw new SectionCreateException(SECTION_NOT_CONNECT_MESSAGE);
-        }
-
-    }
-
-    private void validateSectionConnect(final Section section) {
-        boolean exist = values.stream()
-                .anyMatch(value -> value.haveStation(section));
-        if (!exist) {
-            throw new SectionCreateException(SECTION_NOT_CONNECT_MESSAGE);
-        }
     }
 
     private void cutInSection(final Section section) {

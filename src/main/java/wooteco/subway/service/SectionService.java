@@ -3,16 +3,12 @@ package wooteco.subway.service;
 import static wooteco.subway.domain.Sections.NEED_MERGE_SIZE;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.PathRequest;
-import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.SectionRequest;
-import wooteco.subway.dto.StationResponse;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
 

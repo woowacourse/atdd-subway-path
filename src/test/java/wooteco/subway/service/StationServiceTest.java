@@ -2,11 +2,11 @@ package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static wooteco.subway.TestFixtures.LINE_COLOR;
-import static wooteco.subway.TestFixtures.LINE_SIX;
-import static wooteco.subway.TestFixtures.STANDARD_DISTANCE;
-import static wooteco.subway.TestFixtures.동묘앞역;
-import static wooteco.subway.TestFixtures.신당역;
+import static wooteco.subway.helper.TestFixtures.LINE_COLOR;
+import static wooteco.subway.helper.TestFixtures.LINE_SIX_NAME;
+import static wooteco.subway.helper.TestFixtures.STANDARD_DISTANCE;
+import static wooteco.subway.helper.TestFixtures.동묘앞역;
+import static wooteco.subway.helper.TestFixtures.신당역;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -19,11 +19,11 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.StationResponse;
+import wooteco.subway.exception.NameDuplicatedException;
+import wooteco.subway.exception.SubwayException;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
-import wooteco.subway.exception.NameDuplicatedException;
-import wooteco.subway.exception.SubwayException;
 
 @Transactional
 @SpringBootTest
@@ -80,7 +80,7 @@ class StationServiceTest {
     void deleteStationException() {
         Station saved_신당역 = stationRepository.save(신당역);
         Station saved_동묘앞역 = stationRepository.save(동묘앞역);
-        Long lineId = lineRepository.save(new Line(LINE_SIX, LINE_COLOR));
+        Long lineId = lineRepository.save(new Line(LINE_SIX_NAME, LINE_COLOR));
         sectionRepository.save(new Section(lineId, saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
         assertThatThrownBy(() -> stationService.deleteStation(saved_신당역.getId()))
                 .isInstanceOf(SubwayException.class)

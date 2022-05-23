@@ -11,10 +11,10 @@ import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.StationResponse;
+import wooteco.subway.exception.NameDuplicatedException;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
-import wooteco.subway.exception.NameDuplicatedException;
 
 @Transactional
 @Service
@@ -25,8 +25,8 @@ public class LineService {
     private final StationRepository stationRepository;
 
     public LineService(LineRepository lineRepository,
-            SectionRepository sectionRepository,
-            StationRepository stationRepository) {
+                       SectionRepository sectionRepository,
+                       StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.sectionRepository = sectionRepository;
         this.stationRepository = stationRepository;
@@ -35,13 +35,17 @@ public class LineService {
     public LineResponse create(final LineRequest lineRequest) {
         String name = lineRequest.getName();
         validateDuplicateName(lineRepository.isNameExists(name), name);
-        Long id = lineRepository.save(new Line(name, lineRequest.getColor()));
+        Long id = lineRepository.save(new Line(name, lineRequest.getColor(), lineRequest.getExtraFare()));
         Station upStation = stationRepository.findById(lineRequest.getUpStationId());
         Station downStation = stationRepository.findById(lineRequest.getDownStationId());
 
         Section section = new Section(id, upStation, downStation, lineRequest.getDistance());
         sectionRepository.save(section);
-        Line line = new Line(id, name, lineRequest.getColor(), new Sections(List.of(section)));
+        Line line = new Line(id,
+                name,
+                lineRequest.getColor(),
+                lineRequest.getExtraFare(),
+                new Sections(List.of(section)));
         return new LineResponse(line.getId(),
                 line.getName(),
                 line.getColor(),

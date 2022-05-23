@@ -1,0 +1,14 @@
+package wooteco.subway.domain.fare;
+
+public abstract class FareStrategy {
+
+    protected static final int DEFAULT_FARE = 1250;
+    protected static final int DEFAULT_DISTANCE = 10;
+    protected static final int OVER_FARE_DISTANCE = 50;
+
+    public abstract int calculateFare(FareCondition fareCondition);
+
+    protected AgeDiscountPolicy getAgeDiscountPolicy(final int age) {
+        return AgeDiscountPolicy.findPolicy(age);
+    }
+}
