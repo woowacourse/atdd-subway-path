@@ -48,7 +48,7 @@ class LineControllerTest {
         final Station downStation = stationService.findStationById(2L);
         final String name = "경의선";
         final String color = "푸른이";
-        final LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), 10);
+        final LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), 10, 0);
 
         mockMvc.perform(post("/lines")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -87,7 +87,7 @@ class LineControllerTest {
     void modifyLine() throws Exception {
         final String name = "새로운노선";
         final String color = "새로운색깔";
-        final LineRequest lineRequest = new LineRequest(name, color, 1L, 2L, 10);
+        final LineRequest lineRequest = new LineRequest(name, color, 1L, 2L, 10, 0);
 
         mockMvc.perform(put("/lines/1")
                 .contentType(MediaType.APPLICATION_JSON)
