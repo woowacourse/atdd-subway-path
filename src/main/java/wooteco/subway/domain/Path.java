@@ -29,7 +29,11 @@ public class Path {
     }
 
     public Fare calculateFare(int age) {
-        return Fare.calculateOf(new DistanceStrategy(distance));
+        return Fare.calculateOf(
+                new DistanceStrategy(distance),
+                x -> x + extraFare,
+                new AgeStrategy(age)
+        );
     }
 
     public List<Station> getStations() {
