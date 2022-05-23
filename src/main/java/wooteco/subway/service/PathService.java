@@ -1,8 +1,5 @@
 package wooteco.subway.service;
 
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
@@ -10,6 +7,8 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.*;
 import wooteco.subway.dto.PathResponse;
+import wooteco.subway.service.pathInfra.PathFinder;
+import wooteco.subway.service.pathInfra.ShortestPathFinder;
 
 import java.util.Comparator;
 import java.util.List;
@@ -31,14 +30,19 @@ public class PathService {
 
     public PathResponse findShortestPath(Long upStationId, Long downStationId, int age) {
         validateNotSameStations(upStationId, downStationId);
-        final GraphPath<Station, ShortestPathEdge> graphPath = findGraphPath(upStationId, downStationId);
-        validatePathExist(graphPath);
+        final Path shortestPath = makePath(upStationId, downStationId);
 
-        final List<Station> stations = graphPath.getVertexList();
-        final int shortestDistance = (int) graphPath.getWeight();
-        final int extraFare = findMaximumExtraFare(graphPath);
+        final List<Station> stations = shortestPath.getStations();
+        final int shortestDistance = shortestPath.getDistance();
+        final int extraFare = findMaximumExtraFare(shortestPath);
         final Fare fare = Fare.of(shortestDistance, extraFare, age);
         return new PathResponse(stations, shortestDistance, fare.getValue());
+    }
+
+    private Path makePath(Long upStationId, Long downStationId) {
+        final PathFinder pathFinder = new ShortestPathFinder(stationDao);
+        final List<Section> sections = sectionDao.findAll();
+        return pathFinder.findShortestPath(sections, upStationId, downStationId);
     }
 
     private void validateNotSameStations(Long upStationId, Long downStationId) {
@@ -47,56 +51,9 @@ public class PathService {
         }
     }
 
-    private GraphPath<Station, ShortestPathEdge> findGraphPath(Long upStationId, Long downStationId) {
-        final DijkstraShortestPath<Station, ShortestPathEdge> dijkstraShortestPath =
-                new DijkstraShortestPath<>(initSubwayMap());
-
-        final Station upStation = findStation(upStationId);
-        final Station downStation = findStation(downStationId);
-        return dijkstraShortestPath.getPath(upStation, downStation);
-    }
-
-    private void validatePathExist(GraphPath<Station, ShortestPathEdge> graphPath) {
-        if (graphPath == null) {
-            throw new IllegalArgumentException("해당 역 사이 경로가 존재하지 않습니다.");
-        }
-    }
-
-    private WeightedMultigraph<Station, ShortestPathEdge> initSubwayMap() {
-        final WeightedMultigraph<Station, ShortestPathEdge> graph
-                = new WeightedMultigraph<>(ShortestPathEdge.class);
-        addAllStations(graph);
-        addAllSections(graph);
-        return graph;
-    }
-
-    private void addAllStations(WeightedMultigraph<Station, ShortestPathEdge> graph) {
-        final List<Station> stations = stationDao.findAll();
-        for (Station station : stations) {
-            graph.addVertex(station);
-        }
-    }
-
-    private void addAllSections(WeightedMultigraph<Station, ShortestPathEdge> graph) {
-        final List<Section> sections = sectionDao.findAll();
-        for (Section section : sections) {
-            final Station upStation = findStation(section.getUpStationId());
-            final Station downStation = findStation(section.getDownStationId());
-            final Long lineId = section.getLineId();
-            final int distance = section.getDistance();
-            graph.addEdge(upStation, downStation, new ShortestPathEdge(lineId, distance));
-        }
-    }
-
-    private Station findStation(Long id) {
-        return stationDao.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 역이 존재하지 않습니다."));
-    }
-
-    private int findMaximumExtraFare(GraphPath<Station, ShortestPathEdge> graphPath) {
-        return graphPath.getEdgeList().stream()
-                .map(ShortestPathEdge::getLineId)
-                .distinct()
+    private int findMaximumExtraFare(Path shortestPath) {
+        return shortestPath.getLineIds()
+                .stream()
                 .map(lineId -> lineDao.findById(lineId)
                         .orElseThrow(() -> new NoSuchElementException("경로 라인을 찾는 과정 중 오류가 발생했습니다.")))
                 .max(Comparator.comparingInt(Line::getExtraFare))
