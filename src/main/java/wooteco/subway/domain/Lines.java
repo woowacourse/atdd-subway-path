@@ -3,6 +3,7 @@ package wooteco.subway.domain;
 import java.util.List;
 
 public class Lines {
+
     private final List<Line> lines;
 
     public Lines(List<Line> lines) {

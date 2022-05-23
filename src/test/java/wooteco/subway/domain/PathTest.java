@@ -161,4 +161,54 @@ public class PathTest {
                 .map(station -> station.getId())
                 .collect(Collectors.toList());
     }
+
+    @Test
+    @DisplayName("하나의 노선을 이용하는 경우 추가 요금을 계산한다.")
+    void calculateExtraFare() {
+        Stations stations = new Stations(
+                List.of(
+                        new Station(1L, "미금역"),
+                        new Station(2L, "정자역"),
+                        new Station(3L, "수내역"),
+                        new Station(4L, "서현역")
+                )
+        );
+        Sections sections = new Sections(List.of(new Section(1L, 1L, 2L, 5), new Section(1L, 3L, 4L, 5)));
+        Lines lines = new Lines(
+                List.of(
+                        new Line(1L, "2호선", "bg-red-600", 800)
+                )
+        );
+        Path path = new Path(stations, sections, lines);
+
+        assertThat(path.calculateExtraFare(1L, 2L)).isEqualTo(800);
+    }
+
+    @Test
+    @DisplayName("여러개의 노선을 이용하는 경우의 추가 요금을 계산한다.")
+    void calculateExtraFareWithManyLines() {
+        Stations stations = new Stations(
+                List.of(
+                        new Station(1L, "미금역"),
+                        new Station(2L, "정자역"),
+                        new Station(3L, "수내역"),
+                        new Station(4L, "서현역")
+                )
+        );
+        Sections sections = new Sections(
+                List.of(
+                        new Section(1L, 1L, 2L, 5),
+                        new Section(2L, 2L, 3L, 5)
+                )
+        );
+        Lines lines = new Lines(
+                List.of(
+                        new Line(1L, "2호선", "bg-red-600", 800),
+                        new Line(2L, "신분당선", "bg-red-600", 1600)
+                )
+        );
+        Path path = new Path(stations, sections, lines);
+
+        assertThat(path.calculateExtraFare(1L, 3L)).isEqualTo(1600);
+    }
 }

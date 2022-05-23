@@ -11,10 +11,9 @@ public class FareCalculator {
     private static final int FIRST_STANDARD_UNIT = 5;
     private static final int SECOND_STANDARD_UNIT = 8;
     private static final int SURCHARGE_UNIT_COUNT = 8;
-    private static final int DEFAULT_VALUE = 0;
 
-    public static int calculate(int distance, List<Integer> extraFares, int age) {
-        int fare = calculateByDistance(distance) + calculateExtraFare(extraFares);
+    public static int calculate(int distance, int extraFares, int age) {
+        int fare = calculateByDistance(distance) + extraFares;
         return calculateByAge(fare, age);
     }
 
@@ -32,13 +31,6 @@ public class FareCalculator {
                     * SURCHARGE_PER_UNIT);
         }
         return DEFAULT_FARE;
-    }
-
-    private static int calculateExtraFare(List<Integer> extraFares) {
-        return extraFares.stream()
-                .mapToInt(extraFare -> extraFare)
-                .max()
-                .orElse(DEFAULT_VALUE);
     }
 
     private static int calculateByAge(int fare, int age) {

@@ -34,12 +34,10 @@ public class PathService {
 
         List<Station> shortestPath = path.calculateShortestPath(source, target);
         int shortestDistance = path.calculateShortestDistance(source, target);
-        List<Long> shortestPathLines = path.calculateShortestPathLines(source, target);
-        List<Integer> extraFares = convertExtraFare(shortestPathLines);
-
+        int extraFare = path.calculateExtraFare(source, target);
         List<StationResponse> stationResponses = createStationResponses(shortestPath);
 
-        return new PathResponse(stationResponses, shortestDistance, FareCalculator.calculate(shortestDistance, extraFares, age));
+        return new PathResponse(stationResponses, shortestDistance, FareCalculator.calculate(shortestDistance, extraFare, age));
     }
 
     private List<StationResponse> createStationResponses(List<Station> shortestPath) {

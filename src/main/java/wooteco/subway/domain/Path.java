@@ -7,13 +7,13 @@ import org.jgrapht.graph.WeightedMultigraph;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.stream.Collectors;
 
 public class Path {
 
     private static final String NOT_EXIST_STATION = "출발지, 도착지 모두 존재해야 됩니다.";
     private static final String NO_REACHABLE = "출발지에서 도착지로 갈 수 없습니다.";
+    private static final int DEFAULT_EXTRA_FARE = 0;
 
     private final WeightedMultigraph<Long, SectionEdge> graph = new WeightedMultigraph<>(SectionEdge.class);
     private final Stations stations;
@@ -74,52 +74,33 @@ public class Path {
         return path;
     }
 
-    public List<Long> calculateShortestPathLines(long source, long target) {
-        List<Long> lines = new ArrayList<>();
+    public int calculateExtraFare(long source, long target) {
         Optional<GraphPath<Long, SectionEdge>> path = makeGraphPath(source, target);
         List<SectionEdge> edges = path.orElseThrow(() -> new IllegalArgumentException(NO_REACHABLE))
                 .getEdgeList();
 
-        for (SectionEdge edge : edges) {
-            lines.add(getMinWeightEdgeLineId(edge));
-        }
-
-        return lines;
+        return edges.stream()
+                .mapToInt(this::getExtraFare)
+                .max()
+                .orElse(DEFAULT_EXTRA_FARE);
     }
 
-    private Long getMinWeightEdgeLineId(SectionEdge edge) {
+    private int getExtraFare(SectionEdge edge) {
         long source = graph.getEdgeSource(edge);
         long target = graph.getEdgeTarget(edge);
-        if (isAnotherEdge(source, target, edge.getDistance())) {
-            return getSectionWithMinExtraFare(source, target, edge.getDistance()).getLineId();
-        }
-        return edge.getLineId();
+        int distance = edge.getDistance();
+        int extraFare = calculateMinExtraFare(source, target, distance);
+
+        return extraFare;
     }
 
-    private Section getSectionWithMinExtraFare(long source, long target, int distance) {
-        int minExtraFare = getMinExtraFare(source, target, distance);
-        return sections.getSections().stream()
-                .filter(section -> section.isContainStationId(source) && section.isContainStationId(target))
-                .filter(section -> lines.getLineByLineId(section.getLineId()).isSameExtraFare(minExtraFare))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 구간입니다."));
-    }
-
-    private int getMinExtraFare(long source, long target, int distance) {
+    private int calculateMinExtraFare(long source, long target, int distance) {
         return sections.getSections().stream()
                 .filter(section -> section.isContainStationId(source) && section.isContainStationId(target))
                 .filter(section -> section.isSameDistance(distance))
                 .map(section -> lines.getLineByLineId(section.getLineId()))
-                .map(Line::getExtraFare)
-                .mapToInt(fare -> fare)
+                .mapToInt(Line::getExtraFare)
                 .min()
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 구간입니다."));
-    }
-
-    private boolean isAnotherEdge(long source, long target, int distance) {
-        return sections.getSections().stream()
-                .filter(section -> section.isContainStationId(source) && section.isContainStationId(target) &&
-                        section.isSameDistance(distance))
-                .count() > 1;
     }
 }
