@@ -42,7 +42,7 @@ public class SectionDaoTest {
     private Station 선릉역 = new Station(선릉, "선릉역");
     private Station 잠실역 = new Station(잠실, "잠실역");
 
-    private Line 지하철_2호선 = new Line("지하철2호선", "green");
+    private Line 지하철_2호선 = new Line("지하철2호선", "green", 300);
 
     @BeforeEach
     void setUp() {
@@ -62,7 +62,7 @@ public class SectionDaoTest {
     @DisplayName("새로운 구간을 추가한다.")
     @Test
     void insert() {
-        Line newLine = lineDao.insert(new Line("신분당선", "orange"));
+        Line newLine = lineDao.insert(new Line("신분당선", "orange", 300));
 
         assertThatCode(() ->
                 sectionDao.insert(new Section(newLine.getId(), 강남, 선릉, 5)))
