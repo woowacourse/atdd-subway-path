@@ -15,22 +15,32 @@ public class PathTest {
         var stations = List.of(
                 new Station(1L, "테스트1역"),
                 new Station(2L, "테스트2역"),
-                new Station(3L, "테스트3역")
+                new Station(3L, "테스트3역"),
+                new Station(4L, "테스트4역"),
+                new Station(5L, "테스트5역")
         );
 
         var sections = List.of(
-                new Section(1L, 2L, 2),
-                new Section(1L, 3L, 2),
-                new Section(2L, 3L, 100)
+                new Section(1L, 2L, 10, 1L),
+                new Section(2L, 3L, 10, 1L),
+                new Section(2L, 4L, 1, 2L),
+                new Section(4L, 5L, 1, 2L),
+                new Section(5L, 3L, 1, 2L)
         );
 
-        var path = new Path(stations, sections);
+        var lines = List.of(
+                new Line(1L, "테스트1호선", "테스트1색", 1000),
+                new Line(2L, "테스트2호선", "테스트2색", 500)
+        );
 
-        var graphPath = path.getPath(2L, 3L);
+        var path = new Path(new Stations(stations), new Sections(sections), new Lines(lines));
+
+        var pathResult = path.getPath(1L, 3L);
 
         assertAll(
-                () -> assertThat(graphPath.getVertexList().size()).isEqualTo(3),
-                () -> assertThat(graphPath.getWeight()).isEqualTo(4)
+                () -> assertThat(pathResult.getStations().size()).isEqualTo(5),
+                () -> assertThat(pathResult.getDistance()).isEqualTo(13),
+                () -> assertThat(pathResult.getFare()).isEqualTo(2350)
         );
     }
 }

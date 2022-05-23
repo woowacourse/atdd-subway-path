@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class StationAdvice {
+public class SubwayAdvice {
     @ExceptionHandler({Exception.class})
     public ResponseEntity<String> handle(Exception e) {
         return ResponseEntity.badRequest().body(e.getMessage());

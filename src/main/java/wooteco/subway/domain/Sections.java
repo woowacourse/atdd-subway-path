@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -68,5 +69,17 @@ public class Sections {
 
     public Section getSecondSection() {
         return sections.get(1);
+    }
+
+    public List<Section> get() {
+        return sections;
+    }
+
+    public Section findByStationIds(List<Long> ids) {
+        return sections.stream()
+                .filter(it -> it.getUpStationId().equals(ids.get(0)))
+                .filter(it -> it.getDownStationId().equals(ids.get(1)))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("[ERROR] 구간에 등록되지 않은 역 아이디입니다."));
     }
 }

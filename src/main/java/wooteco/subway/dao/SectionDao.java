@@ -17,7 +17,8 @@ public class SectionDao {
         var upStationId = rs.getLong("up_station_id");
         var downStationId = rs.getLong("down_station_id");
         var distance = rs.getInt("distance");
-        return new Section(id, upStationId, downStationId, distance);
+        var lineId = rs.getLong("line_id");
+        return new Section(id, upStationId, downStationId, distance, lineId);
     };
 
     public SectionDao(JdbcTemplate jdbcTemplate) {
@@ -76,5 +77,14 @@ public class SectionDao {
         var sql = "SELECT * FROM section WHERE up_station_id = ? OR down_station_id = ?";
 
         return jdbcTemplate.query(sql, sectionRowMapper, id, id);
+    }
+
+    public List<Section> findByStationId(List<Long> ids) {
+        var upStationId = ids.get(0);
+        var downStationId = ids.get(1);
+
+        var sql = "SELECT * FROM section WHERE up_station_id = ? AND down_station_id = ?";
+
+        return jdbcTemplate.query(sql, sectionRowMapper, upStationId, downStationId);
     }
 }

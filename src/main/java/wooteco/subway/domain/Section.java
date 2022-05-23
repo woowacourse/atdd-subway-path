@@ -7,6 +7,7 @@ public final class Section {
     private final Long downStationId;
     private final Long upStationId;
     private final int distance;
+    private Long lineId;
 
     public Section(Long id, Long upStationId, Long downStationId, int distance) {
         this.id = id;
@@ -15,10 +16,25 @@ public final class Section {
         this.distance = distance;
     }
 
+    public Section(Long id, Long upStationId, Long downStationId, int distance, Long lineId) {
+        this.id = id;
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
+        this.distance = distance;
+        this.lineId = lineId;
+    }
+
     public Section(Long upStationId, Long downStationId, int distance) {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+    }
+
+    public Section(long upStationId, long downStationId, int distance, long lineId) {
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
+        this.distance = distance;
+        this.lineId = lineId;
     }
 
     public static Section createWhenSameUpStation(Section target, Section subSection) {
@@ -79,6 +95,10 @@ public final class Section {
 
     public boolean isSameStationId(Long stationId) {
         return downStationId.equals(stationId) || upStationId.equals(stationId);
+    }
+
+    public Long getLineId() {
+        return lineId;
     }
 
     @Override

@@ -24,7 +24,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
                         "color", "테스트1색상",
                         "upStationId", getId(stationResponse1),
                         "downStationId", getId(stationResponse2),
-                        "distance", "4"
+                        "distance", "4",
+                        "extraFare", "1000"
                 )
         );
 
@@ -33,7 +34,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
                         "color", "테스트2색상",
                         "upStationId", getId(stationResponse1),
                         "downStationId", getId(stationResponse2),
-                        "distance", "4"
+                        "distance", "4",
+                        "extraFare", "500"
                 )
         );
 
@@ -74,7 +76,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(pathResponse.body().jsonPath().getList("stations").size()).isEqualTo(5),
                 () -> assertThat(pathResponse.body().jsonPath().getInt("distance")).isEqualTo(16),
-                () -> assertThat(pathResponse.body().jsonPath().getInt("fare")).isEqualTo(1450)
+                () -> assertThat(pathResponse.body().jsonPath().getInt("fare")).isEqualTo(2450)
         );
     }
 }

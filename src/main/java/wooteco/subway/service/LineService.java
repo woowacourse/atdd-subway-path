@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.Line;
 import wooteco.subway.dto.line.LineRequest;
 import wooteco.subway.dto.line.LineResponse;
 import wooteco.subway.dto.section.SectionRequest;
@@ -42,7 +43,7 @@ public class LineService {
 
     public List<LineResponse> findAll() {
         return lineDao.findAll().stream()
-                .map(LineResponse::getId)
+                .map(Line::getId)
                 .map(this::find)
                 .collect(Collectors.toList());
     }

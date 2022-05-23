@@ -16,6 +16,10 @@ public class Fare {
         fare = calculateFare((int) distance);
     }
 
+    public Fare(double distance, int fare) {
+        this.fare = calculateFare((int) distance) + fare;
+    }
+
     private int calculateFare(int distance) {
         if (distance > DEFAULT_FARE_DISTANCE) {
             return DEFAULT_FARE + calculateOverFare(distance);

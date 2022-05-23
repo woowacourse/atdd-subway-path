@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import wooteco.subway.domain.Line;
 import wooteco.subway.dto.line.LineRequest;
 import wooteco.subway.dto.line.LineResponse;
 
@@ -27,12 +28,12 @@ class LineDaoTest {
     private LineDao lineDao;
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    private LineResponse lineResponse;
+    private Line line;
 
     @BeforeEach
     void setUp() {
         lineDao = new LineDao(jdbcTemplate);
-        lineResponse = lineDao.create(new LineRequest(LINE_NAME, LINE_COLOR, LINE_EXTRA_FARE));
+        line = lineDao.create(new LineRequest(LINE_NAME, LINE_COLOR, LINE_EXTRA_FARE));
     }
 
     @Test
@@ -42,10 +43,10 @@ class LineDaoTest {
 
         //then
         assertAll(
-                () -> assertThat(lineResponse.getId()).isEqualTo(id),
-                () -> assertThat(lineResponse.getName()).isEqualTo(LINE_NAME),
-                () -> assertThat(lineResponse.getColor()).isEqualTo(LINE_COLOR),
-                () -> assertThat(lineResponse.getExtraFare()).isEqualTo(LINE_EXTRA_FARE)
+                () -> assertThat(line.getId()).isEqualTo(id),
+                () -> assertThat(line.getName()).isEqualTo(LINE_NAME),
+                () -> assertThat(line.getColor()).isEqualTo(LINE_COLOR),
+                () -> assertThat(line.getExtraFare()).isEqualTo(LINE_EXTRA_FARE)
         );
     }
 
@@ -64,7 +65,7 @@ class LineDaoTest {
     @Test
     void findById() {
         //given
-        var id = lineResponse.getId();
+        var id = line.getId();
 
         //when
         var actual = lineDao.find(id);
@@ -101,13 +102,13 @@ class LineDaoTest {
 
         //then
         var names = lines.stream()
-                .map(LineResponse::getName)
+                .map(Line::getName)
                 .collect(Collectors.toList());
         var colors = lines.stream()
-                .map(LineResponse::getColor)
+                .map(Line::getColor)
                 .collect(Collectors.toList());
         var extraFares = lines.stream()
-                .map(LineResponse::getExtraFare)
+                .map(Line::getExtraFare)
                 .collect(Collectors.toList());
 
         assertAll(
@@ -120,7 +121,7 @@ class LineDaoTest {
     @Test
     void update() {
         //given
-        var id = lineResponse.getId();
+        var id = line.getId();
         var newName = "테스트2호선";
         var newColor = "테스트2색";
         var newExtraFare = 200;
@@ -189,7 +190,7 @@ class LineDaoTest {
     @Test
     void delete() {
         //given
-        var id = lineResponse.getId();
+        var id = line.getId();
 
         //when
         lineDao.deleteById(id);

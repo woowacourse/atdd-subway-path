@@ -9,13 +9,13 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import wooteco.subway.domain.Line;
 import wooteco.subway.dto.line.LineRequest;
-import wooteco.subway.dto.line.LineResponse;
 
 @Component
 public class LineDao {
 
-    private final RowMapper<LineResponse> lineRowMapper = (rs, rowNum) -> new LineResponse(
+    private final RowMapper<Line> lineRowMapper = (rs, rowNum) -> new Line(
             rs.getLong("id"),
             rs.getString("name"),
             rs.getString("color"),
@@ -28,11 +28,11 @@ public class LineDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public LineResponse create(LineRequest line) {
+    public Line create(LineRequest line) {
         var sql = "INSERT INTO line (name, color, extraFare) VALUES(?, ?, ?)";
         var keyHolder = new GeneratedKeyHolder();
         create(line, sql, keyHolder);
-        return new LineResponse(keyHolder.getKey().longValue(), line.getName(), line.getColor(), line.getExtraFare());
+        return new Line(keyHolder.getKey().longValue(), line.getName(), line.getColor(), line.getExtraFare());
     }
 
     private void create(LineRequest line, String sql, KeyHolder keyHolder) {
@@ -49,7 +49,7 @@ public class LineDao {
         }
     }
 
-    public LineResponse find(Long id) {
+    public Line find(Long id) {
         var sql = "SELECT * FROM line WHERE id=?";
 
         try {
@@ -59,7 +59,7 @@ public class LineDao {
         }
     }
 
-    public List<LineResponse> findAll() {
+    public List<Line> findAll() {
         var sql = "SELECT * FROM line";
         return jdbcTemplate.query(sql, lineRowMapper);
     }
