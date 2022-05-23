@@ -17,6 +17,9 @@ public class StationControllerAdvice {
 
     @ExceptionHandler(BindException.class)
     public ResponseEntity<String> handleMissingParams(BindException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getBindingResult()
+                .getAllErrors()
+                .get(0)
+                .getDefaultMessage());
     }
 }

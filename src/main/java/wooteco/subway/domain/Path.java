@@ -5,6 +5,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.exception.ClientException;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class Path {
@@ -41,7 +42,24 @@ public class Path {
             graph.addEdge(section.getUpStationId(), section.getDownStationId(),
                     new SectionWeightEdge(section.getLineId(), section.getUpStationId(), section.getDownStationId(), section.getDistance()));
         }
-        return new DijkstraShortestPath(graph).getPath(source, target);
+
+        return makePath(source, target, graph);
+    }
+
+    private static GraphPath makePath(Long source, Long target, WeightedMultigraph<Long, SectionWeightEdge> graph) {
+        try {
+            GraphPath path = new DijkstraShortestPath(graph).getPath(source, target);
+            validateImpossiblePath(path);
+            return path;
+        } catch (IllegalArgumentException exception) {
+            throw new ClientException("구간에 등록되지 않은 역입니다.");
+        }
+    }
+
+    private static void validateImpossiblePath(GraphPath path) {
+        if (path == null) {
+            throw new ClientException("갈 수 없는 경로입니다.");
+        }
     }
 
     public double calculateFare(List<Line> lines, Long age) {
