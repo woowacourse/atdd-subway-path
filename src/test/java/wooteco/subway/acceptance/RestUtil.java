@@ -25,12 +25,30 @@ public class RestUtil {
         return ids;
     }
 
+    public static ExtractableResponse<Response> get(String url) {
+        return RestAssured.given()
+            .when()
+            .get(url)
+            .then()
+            .extract();
+    }
+
     public static ExtractableResponse<Response> post(StationRequest stationRequest) {
         return RestAssured.given()
             .body(stationRequest)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
             .post("/stations")
+            .then()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> post(String url, Object request) {
+        return RestAssured.given()
+            .body(request)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .post(url)
             .then()
             .extract();
     }
@@ -55,10 +73,20 @@ public class RestUtil {
             .extract();
     }
 
-    static ExtractableResponse<Response> get(String url) {
+    public static ExtractableResponse<Response> put(String url, Object request) {
+        return RestAssured.given()
+            .body(request)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .put(url)
+            .then()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> delete(String url) {
         return RestAssured.given()
             .when()
-            .get(url)
+            .delete(url)
             .then()
             .extract();
     }

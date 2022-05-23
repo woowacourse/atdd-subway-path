@@ -2,6 +2,7 @@ package wooteco.subway.controller;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static wooteco.subway.acceptance.RestUtil.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,11 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import com.ori.acceptancetest.SpringBootAcceptanceTest;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import wooteco.subway.acceptance.RestUtil;
@@ -25,13 +24,14 @@ import wooteco.subway.controller.dto.StationRequest;
 @SpringBootAcceptanceTest
 public class LineControllerTest {
 
+    private final String DEFAULT_LINE_URL = "/lines";
     private Long stationId1;
     private Long stationId2;
 
     @BeforeEach
     void setStation() {
-        ExtractableResponse<Response> stationResponse1 = RestUtil.post(new StationRequest("강남역"));
-        ExtractableResponse<Response> stationResponse2 = RestUtil.post(new StationRequest("역삼역"));
+        ExtractableResponse<Response> stationResponse1 = post(new StationRequest("강남역"));
+        ExtractableResponse<Response> stationResponse2 = post(new StationRequest("역삼역"));
         stationId1 = RestUtil.getIdFromStation(stationResponse1);
         stationId2 = RestUtil.getIdFromStation(stationResponse2);
     }
@@ -40,14 +40,8 @@ public class LineControllerTest {
     @Test
     void createLineWithNullName() {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(new LineRequest(null, "bg-red-600", stationId1, stationId2, 10, 1000))
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines")
-            .then().log().all()
-            .extract();
-
+        LineRequest lineRequest = new LineRequest(null, "bg-red-600", stationId1, stationId2, 10, 1000);
+        ExtractableResponse<Response> response = post(DEFAULT_LINE_URL, lineRequest);
         // then
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
@@ -59,14 +53,8 @@ public class LineControllerTest {
     @Test
     void createLineWithNullColor() {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(new LineRequest("2호선", null, stationId1, stationId2, 10, 1000))
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines")
-            .then().log().all()
-            .extract();
-
+        LineRequest lineRequest = new LineRequest("2호선", null, stationId1, stationId2, 10, 1000);
+        ExtractableResponse<Response> response = post(DEFAULT_LINE_URL, lineRequest);
         // then
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
@@ -78,14 +66,8 @@ public class LineControllerTest {
     @Test
     void createLineWithNullUpStationId() {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(new LineRequest("2호선", "bg-red-600", null, stationId2, 10, 1000))
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines")
-            .then().log().all()
-            .extract();
-
+        LineRequest lineRequest = new LineRequest("2호선", "bg-red-600", null, stationId2, 10, 1000);
+        ExtractableResponse<Response> response = post(DEFAULT_LINE_URL, lineRequest);
         // then
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
@@ -97,13 +79,8 @@ public class LineControllerTest {
     @Test
     void createLineWithNullDownStationId() {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(new LineRequest("2호선", "bg-red-600", stationId1, null, 10, 1000))
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines")
-            .then().log().all()
-            .extract();
+        LineRequest lineRequest = new LineRequest("2호선", "bg-red-600", stationId1, null, 10, 1000);
+        ExtractableResponse<Response> response = post(DEFAULT_LINE_URL, lineRequest);
 
         // then
         assertAll(
@@ -117,13 +94,8 @@ public class LineControllerTest {
     @ValueSource(ints = {0, -1})
     void createLineWithLessThan1(int distance) {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(new LineRequest("2호선", "bg-red-600", stationId1, stationId2, distance, 1000))
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines")
-            .then().log().all()
-            .extract();
+        LineRequest lineRequest = new LineRequest("2호선", "bg-red-600", stationId1, stationId2, distance, 1000);
+        ExtractableResponse<Response> response = post(DEFAULT_LINE_URL, lineRequest);
 
         // then
         assertAll(
@@ -136,14 +108,8 @@ public class LineControllerTest {
     @Test
     void createLineWithNegative() {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(new LineRequest("2호선", "bg-red-600", stationId1, stationId2, 10, -1))
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines")
-            .then().log().all()
-            .extract();
-
+        LineRequest lineRequest = new LineRequest("2호선", "bg-red-600", stationId1, stationId2, 10, -1);
+        ExtractableResponse<Response> response = post(DEFAULT_LINE_URL, lineRequest);
         // then
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
@@ -155,14 +121,8 @@ public class LineControllerTest {
     @Test
     void updateLineWithNullName() {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(new LineUpdateRequest(null, "bg-red-600", 1000))
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .put("/lines/1")
-            .then().log().all()
-            .extract();
-
+        LineUpdateRequest lineUpdateRequest = new LineUpdateRequest(null, "bg-red-600", 1000);
+        ExtractableResponse<Response> response = put(DEFAULT_LINE_URL + "/" + 1, lineUpdateRequest);
         // then
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
@@ -174,13 +134,8 @@ public class LineControllerTest {
     @Test
     void updateLineWithNullColor() {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(new LineUpdateRequest("2호선", null, 1000))
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .put("/lines/1")
-            .then().log().all()
-            .extract();
+        LineUpdateRequest lineUpdateRequest = new LineUpdateRequest("2호선", null, 1000);
+        ExtractableResponse<Response> response = put(DEFAULT_LINE_URL + "/" + 1, lineUpdateRequest);
 
         // then
         assertAll(
@@ -193,13 +148,8 @@ public class LineControllerTest {
     @Test
     void updateLineWithNullExtraFare() {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(new LineUpdateRequest("2호선", "bg-red-600", -1))
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .put("/lines/1")
-            .then().log().all()
-            .extract();
+        LineUpdateRequest lineUpdateRequest = new LineUpdateRequest("2호선", "bg-red-600", -1);
+        ExtractableResponse<Response> response = put(DEFAULT_LINE_URL + "/" + 1, lineUpdateRequest);
 
         // then
         assertAll(
@@ -212,14 +162,8 @@ public class LineControllerTest {
     @Test
     void createSectionWithNullUpStationId() {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(new SectionRequest(null, stationId2, 10))
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines/1/sections")
-            .then().log().all()
-            .extract();
-
+        SectionRequest sectionRequest = new SectionRequest(null, stationId2, 10);
+        ExtractableResponse<Response> response = post(DEFAULT_LINE_URL + "/1/sections", sectionRequest);
         // then
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
@@ -231,13 +175,8 @@ public class LineControllerTest {
     @Test
     void createSectionWithNullDownStationId() {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(new SectionRequest(stationId1, null, 10))
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines/1/sections")
-            .then().log().all()
-            .extract();
+        SectionRequest sectionRequest = new SectionRequest(stationId1, null, 10);
+        ExtractableResponse<Response> response = post(DEFAULT_LINE_URL + "/1/sections", sectionRequest);
 
         // then
         assertAll(
@@ -250,13 +189,8 @@ public class LineControllerTest {
     @Test
     void createSectionWithDistanceLessThan1() {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(new SectionRequest(stationId1, stationId2, -1))
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines/1/sections")
-            .then().log().all()
-            .extract();
+        SectionRequest sectionRequest = new SectionRequest(stationId1, stationId2, -1);
+        ExtractableResponse<Response> response = post(DEFAULT_LINE_URL + "/1/sections", sectionRequest);
 
         // then
         assertAll(

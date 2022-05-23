@@ -2,6 +2,7 @@ package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static wooteco.subway.acceptance.RestUtil.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,11 +11,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import com.ori.acceptancetest.SpringBootAcceptanceTest;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import wooteco.subway.controller.dto.LineRequest;
@@ -30,6 +29,7 @@ class SectionAcceptanceTest {
     private Long upStationId;
     private Long downStationId;
     private Long lineId;
+    private final String DEFAULT_LINE_URL = "/lines/";
 
     @BeforeEach
     void init() {
@@ -56,13 +56,7 @@ class SectionAcceptanceTest {
         SectionRequest sectionRequest = new SectionRequest(downStationId, newStationId, 10);
 
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(sectionRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines/" + lineId + "/sections")
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = post(DEFAULT_LINE_URL + lineId + "/sections", sectionRequest);
 
         // then
         List<String> stationNames = extractStationNames();
@@ -82,13 +76,7 @@ class SectionAcceptanceTest {
         SectionRequest sectionRequest = new SectionRequest(newStationId, upStationId, 10);
 
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(sectionRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines/" + lineId + "/sections")
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = post(DEFAULT_LINE_URL + lineId + "/sections", sectionRequest);
 
         // then
         List<String> stationNames = extractStationNames();
@@ -111,21 +99,8 @@ class SectionAcceptanceTest {
         SectionRequest sectionRequest2 = new SectionRequest(newStationId2, downStationId, 3);
 
         // when
-        ExtractableResponse<Response> response1 = RestAssured.given().log().all()
-            .body(sectionRequest1)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines/" + lineId + "/sections")
-            .then().log().all()
-            .extract();
-
-        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
-            .body(sectionRequest2)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines/" + lineId + "/sections")
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response1 = post(DEFAULT_LINE_URL + lineId + "/sections", sectionRequest1);
+        ExtractableResponse<Response> response2 = post(DEFAULT_LINE_URL + lineId + "/sections", sectionRequest2);
 
         // then
         List<String> stationNames = extractStationNames();
@@ -139,7 +114,7 @@ class SectionAcceptanceTest {
 
     private List<String> extractStationNames() {
         return RestUtil.toResponseDto(
-                RestUtil.get("/lines/" + lineId), LineResponse.class
+                RestUtil.get(DEFAULT_LINE_URL + lineId), LineResponse.class
             ).getStations()
             .stream()
             .map(StationResponse::getName)
@@ -157,13 +132,7 @@ class SectionAcceptanceTest {
         SectionRequest sectionRequest = new SectionRequest(newStationId1, newStationId2, 10);
 
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(sectionRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines/" + lineId + "/sections")
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = post(DEFAULT_LINE_URL + lineId + "/sections", sectionRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -178,13 +147,7 @@ class SectionAcceptanceTest {
         SectionRequest sectionRequest = new SectionRequest(upStationId, newStationId, 10);
 
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(sectionRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines/" + lineId + "/sections")
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = post(DEFAULT_LINE_URL + lineId + "/sections", sectionRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());

@@ -2,6 +2,7 @@ package wooteco.subway.controller;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static wooteco.subway.acceptance.RestUtil.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,7 +12,6 @@ import org.springframework.http.HttpStatus;
 
 import com.ori.acceptancetest.SpringBootAcceptanceTest;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
@@ -22,11 +22,7 @@ public class PathControllerTest {
     @Test
     void pathEmptyUpStationId() {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .when()
-            .get("/paths?source=" + "&target=" + 1L + "&age=15")
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = get("/paths?source=" + "&target=" + 1L + "&age=15");
 
         // then
         assertAll(
@@ -39,11 +35,7 @@ public class PathControllerTest {
     @Test
     void pathEmptyDownStationId() {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .when()
-            .get("/paths?source=" + 1L + "&target=" + "&age=15")
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = get("/paths?source=" + 1L + "&target=" + "&age=15");
 
         // then
         assertAll(
@@ -57,11 +49,7 @@ public class PathControllerTest {
     @CsvSource(value = {":convert", "-1:연령 값은 음수일 수 없습니다."}, delimiter = ':')
     void pathInvalidAge(String age, String message) {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .when()
-            .get("/paths?source=" + 1L + "&target=" + 2L + "&age=" + age)
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = get("/paths?source=" + 1L + "&target=" + 2L + "&age=" + age);
 
         // then
         assertAll(

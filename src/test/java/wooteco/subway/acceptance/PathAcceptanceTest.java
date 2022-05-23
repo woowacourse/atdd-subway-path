@@ -2,6 +2,7 @@ package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static wooteco.subway.acceptance.RestUtil.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +17,6 @@ import org.springframework.http.HttpStatus;
 
 import com.ori.acceptancetest.SpringBootAcceptanceTest;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import wooteco.subway.controller.dto.LineRequest;
@@ -71,12 +71,9 @@ class PathAcceptanceTest {
         //given
         Long source = stations.get("강남역").getId();
         Long target = stations.get("잠실역").getId();
+
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .when()
-            .get("/paths?source=" + source + "&target=" + target + "&age=19")
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = get("/paths?source=" + source + "&target=" + target + "&age=19");
 
         // then
         PathResponse pathResponse = RestUtil.toResponseDto(response, PathResponse.class);
@@ -97,12 +94,9 @@ class PathAcceptanceTest {
         //given
         Long source = stations.get("강남역").getId();
         Long target = stations.get("잠실역").getId();
+
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .when()
-            .get("/paths?source=" + source + "&target=" + target + "&age=" + age)
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = get("/paths?source=" + source + "&target=" + target + "&age=" + age);
 
         // then
         PathResponse pathResponse = RestUtil.toResponseDto(response, PathResponse.class);
@@ -124,11 +118,8 @@ class PathAcceptanceTest {
 
         // when
         Long stationId = RestUtil.getIdFromStation(stationResponse);
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .when()
-            .get("/paths?source=" + stations.get("강남역").getId() + "&target=" + stationId + "&age=15")
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = get(
+            "/paths?source=" + stations.get("강남역").getId() + "&target=" + stationId + "&age=15");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());

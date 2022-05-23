@@ -2,6 +2,7 @@ package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static wooteco.subway.acceptance.RestUtil.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,11 +11,9 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import com.ori.acceptancetest.SpringBootAcceptanceTest;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import wooteco.subway.controller.dto.LineRequest;
@@ -26,18 +25,13 @@ import wooteco.subway.service.dto.StationResponse;
 class StationAcceptanceTest {
 
     private final StationRequest stationRequest = new StationRequest("강남역");
+    private final String DEFAULT_STATION_URL = "/stations";
 
     @DisplayName("지하철역을 생성한다.")
     @Test
     void createStation() {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(stationRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = post(DEFAULT_STATION_URL, stationRequest);
 
         // then
         StationResponse stationResponse = RestUtil.toResponseDto(response, StationResponse.class);
@@ -57,14 +51,7 @@ class StationAcceptanceTest {
         RestUtil.post(stationRequest);
 
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(stationRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/stations")
-            .then()
-            .log().all()
-            .extract();
+        ExtractableResponse<Response> response = post(DEFAULT_STATION_URL, stationRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -78,11 +65,7 @@ class StationAcceptanceTest {
         ExtractableResponse<Response> createResponse2 = RestUtil.post(new StationRequest("역삼역"));
 
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .when()
-            .get("/stations")
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = get(DEFAULT_STATION_URL);
 
         // then
         List<Long> expectedLineIds = extractExpectedIds(createResponse1, createResponse2);
@@ -108,11 +91,7 @@ class StationAcceptanceTest {
 
         // when
         String uri = createResponse.header("Location");
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .when()
-            .delete(uri)
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = delete(uri);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -122,11 +101,7 @@ class StationAcceptanceTest {
     @Test
     void deleteStationBadRequest() {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .when()
-            .delete("/stations/1")
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = delete(DEFAULT_STATION_URL + "/" + 1);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
@@ -141,11 +116,7 @@ class StationAcceptanceTest {
         RestUtil.post(new LineRequest("2호선", "red", upStationId, downStationId, 10, 200));
 
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .when()
-            .delete("/stations/" + upStationId)
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = delete(DEFAULT_STATION_URL + "/" + upStationId);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
