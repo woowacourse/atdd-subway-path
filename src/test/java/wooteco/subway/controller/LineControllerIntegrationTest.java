@@ -30,10 +30,10 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.LineDto;
+import wooteco.subway.dao.entity.LineEntity;
 import wooteco.subway.dto.LineEditRequest;
 import wooteco.subway.dto.LineRequest;
-import wooteco.subway.dto.SectionDto;
+import wooteco.subway.dao.entity.SectionEntity;
 import wooteco.subway.dto.SectionRequest;
 
 @SpringBootTest
@@ -84,7 +84,7 @@ public class LineControllerIntegrationTest {
     @Test
     void 존재하는_노선_이름_생성_400예외() throws Exception {
         String duplicated = "A호선";
-        lineDao.save(new LineDto(duplicated, "bg-red-300"));
+        lineDao.save(new LineEntity(duplicated, "bg-red-300"));
         Station A = stationDao.save(new Station("A역"));
         Station B = stationDao.save(new Station("B역"));
         Section AtoB = new Section(A, B, 10);
@@ -104,8 +104,8 @@ public class LineControllerIntegrationTest {
     void 노선_조회() throws Exception {
         Station A = stationDao.save(new Station("A역"));
         Station B = stationDao.save(new Station("B역"));
-        LineDto line = lineDao.save(new LineDto("A호선", "bg-red-300"));
-        sectionDao.save(new SectionDto(line.getId(), A.getId(), B.getId(), 10));
+        LineEntity line = lineDao.save(new LineEntity("A호선", "bg-red-300"));
+        sectionDao.save(new SectionEntity(line.getId(), A.getId(), B.getId(), 10));
 
         mockMvc.perform(get("/lines/" + line.getId()))
                 .andExpect(status().isOk())
@@ -129,8 +129,8 @@ public class LineControllerIntegrationTest {
     void 노선_수정() throws Exception {
         Station A = stationDao.save(new Station("A역"));
         Station B = stationDao.save(new Station("B역"));
-        LineDto line = lineDao.save(new LineDto("A호선", "bg-red-300"));
-        sectionDao.save(new SectionDto(line.getId(), A.getId(), B.getId(), 10));
+        LineEntity line = lineDao.save(new LineEntity("A호선", "bg-red-300"));
+        sectionDao.save(new SectionEntity(line.getId(), A.getId(), B.getId(), 10));
 
         LineEditRequest request = new LineEditRequest("알파벳호선", "bg_blue_400");
 
@@ -146,8 +146,8 @@ public class LineControllerIntegrationTest {
     void 노선_삭제() throws Exception {
         Station A = stationDao.save(new Station("A역"));
         Station B = stationDao.save(new Station("B역"));
-        LineDto line = lineDao.save(new LineDto("A호선", "bg-red-300"));
-        sectionDao.save(new SectionDto(line.getId(), A.getId(), B.getId(), 10));
+        LineEntity line = lineDao.save(new LineEntity("A호선", "bg-red-300"));
+        sectionDao.save(new SectionEntity(line.getId(), A.getId(), B.getId(), 10));
 
         mockMvc.perform(delete("/lines/" + line.getId()))
                 .andExpect(status().isNoContent())
@@ -162,8 +162,8 @@ public class LineControllerIntegrationTest {
     void 구간_추가() throws Exception {
         Station A = stationDao.save(new Station("A역"));
         Station C = stationDao.save(new Station("C역"));
-        LineDto line = lineDao.save(new LineDto("A호선", "bg-red-300"));
-        sectionDao.save(new SectionDto(line.getId(), A.getId(), C.getId(), 10));
+        LineEntity line = lineDao.save(new LineEntity("A호선", "bg-red-300"));
+        sectionDao.save(new SectionEntity(line.getId(), A.getId(), C.getId(), 10));
 
         Station B = stationDao.save(new Station("B역"));
         SectionRequest request = new SectionRequest(A.getId(), B.getId(), 5);
@@ -174,7 +174,7 @@ public class LineControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andDo(print());
 
-        List<SectionDto> sections = sectionDao.findByLineId(line.getId());
+        List<SectionEntity> sections = sectionDao.findByLineId(line.getId());
         assertThat(sections.size()).isEqualTo(2);
     }
 
@@ -184,15 +184,15 @@ public class LineControllerIntegrationTest {
         Station A = stationDao.save(new Station("A역"));
         Station B = stationDao.save(new Station("B역"));
         Station C = stationDao.save(new Station("C역"));
-        LineDto line = lineDao.save(new LineDto("A호선", "bg-red-300"));
-        sectionDao.save(new SectionDto(line.getId(), A.getId(), B.getId(), 10));
-        sectionDao.save(new SectionDto(line.getId(), B.getId(), C.getId(), 10));
+        LineEntity line = lineDao.save(new LineEntity("A호선", "bg-red-300"));
+        sectionDao.save(new SectionEntity(line.getId(), A.getId(), B.getId(), 10));
+        sectionDao.save(new SectionEntity(line.getId(), B.getId(), C.getId(), 10));
 
         mockMvc.perform(delete("/lines/" + line.getId() + "/sections?stationId=" + B.getId()))
                 .andExpect(status().isOk())
                 .andDo(print());
 
-        List<SectionDto> sections = sectionDao.findByLineId(line.getId());
+        List<SectionEntity> sections = sectionDao.findByLineId(line.getId());
         assertThat(sections.size()).isEqualTo(1);
     }
 

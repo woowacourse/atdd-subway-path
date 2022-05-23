@@ -17,8 +17,8 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.LineDto;
-import wooteco.subway.dto.SectionDto;
+import wooteco.subway.dao.entity.LineEntity;
+import wooteco.subway.dao.entity.SectionEntity;
 import wooteco.subway.dto.SectionRequest;
 
 @SpringBootTest
@@ -44,7 +44,7 @@ public class SectionRepositoryTest {
     void 구간_저장() {
         Station A = stationDao.save(new Station("A역"));
         Station B = stationDao.save(new Station("B역"));
-        LineDto line = lineDao.save(new LineDto("A호선", "red"));
+        LineEntity line = lineDao.save(new LineEntity("A호선", "red"));
         Section section = new Section(A, B, 10);
 
         Section result = sectionRepository.save(line.getId(),
@@ -62,8 +62,8 @@ public class SectionRepositoryTest {
     void 구간_조회() {
         Station A = stationDao.save(new Station("A역"));
         Station B = stationDao.save(new Station("B역"));
-        LineDto line = lineDao.save(new LineDto("A호선", "red"));
-        SectionDto saved = sectionDao.save(new SectionDto(line.getId(), A.getId(), B.getId(), 10));
+        LineEntity line = lineDao.save(new LineEntity("A호선", "red"));
+        SectionEntity saved = sectionDao.save(new SectionEntity(line.getId(), A.getId(), B.getId(), 10));
 
         Section result = sectionRepository.findById(saved.getId());
 

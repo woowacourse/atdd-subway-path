@@ -19,8 +19,8 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.LineDto;
-import wooteco.subway.dto.SectionDto;
+import wooteco.subway.dao.entity.LineEntity;
+import wooteco.subway.dao.entity.SectionEntity;
 
 @SpringBootTest
 @Sql("/testSchema.sql")
@@ -49,7 +49,7 @@ public class LineRepositoryTest {
         Line line = new Line("A호선", "yellow", new Sections(section));
 
         Long lineId = lineRepository.save(line);
-        LineDto result = lineDao.findById(lineId);
+        LineEntity result = lineDao.findById(lineId);
 
         assertAll(
                 () -> assertThat(result.getName()).isEqualTo("A호선"),
@@ -65,8 +65,8 @@ public class LineRepositoryTest {
         Section section = new Section(A, B, 10);
         Line line = new Line("A호선", "yellow", new Sections(section));
 
-        LineDto savedLine = lineDao.save(LineDto.from(line));
-        sectionDao.save(SectionDto.of(section, savedLine.getId()));
+        LineEntity savedLine = lineDao.save(LineEntity.from(line));
+        sectionDao.save(SectionEntity.of(section, savedLine.getId()));
 
         Line result = lineRepository.findById(savedLine.getId());
 

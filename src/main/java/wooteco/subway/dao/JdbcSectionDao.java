@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import wooteco.subway.dto.SectionDto;
+import wooteco.subway.dao.entity.SectionEntity;
 
 @Repository
 public class JdbcSectionDao implements SectionDao {
@@ -27,45 +27,45 @@ public class JdbcSectionDao implements SectionDao {
     }
 
     @Override
-    public SectionDto save(SectionDto sectionDto) {
+    public SectionEntity save(SectionEntity sectionEntity) {
         Long id = insertActor.executeAndReturnKey(
-                        Map.of("line_id", sectionDto.getLineId(),
-                                "up_station_id", sectionDto.getUpStationId(),
-                                "down_station_id", sectionDto.getDownStationId(),
-                                "distance", sectionDto.getDistance()))
+                        Map.of("line_id", sectionEntity.getLineId(),
+                                "up_station_id", sectionEntity.getUpStationId(),
+                                "down_station_id", sectionEntity.getDownStationId(),
+                                "distance", sectionEntity.getDistance()))
                 .longValue();
         return findById(id);
     }
 
     @Override
-    public int saveAll(List<SectionDto> sectionDtos) {
-        int[] inserted = insertActor.executeBatch(SqlParameterSourceUtils.createBatch(sectionDtos));
+    public int saveAll(List<SectionEntity> sectionEntities) {
+        int[] inserted = insertActor.executeBatch(SqlParameterSourceUtils.createBatch(sectionEntities));
         return inserted.length;
     }
 
     @Override
-    public List<SectionDto> findAll() {
+    public List<SectionEntity> findAll() {
         String sql = "select * from SECTION";
         return jdbcTemplate.query(sql, mapper());
     }
 
     @Override
-    public SectionDto findById(Long id) {
+    public SectionEntity findById(Long id) {
         String sql = "select * from SECTION where id = :id";
         return jdbcTemplate.queryForObject(sql, Map.of("id", id), mapper());
     }
 
     @Override
-    public List<SectionDto> findByLineId(Long id) {
+    public List<SectionEntity> findByLineId(Long id) {
         String sql = "select * from SECTION where line_id = :id";
         return jdbcTemplate.query(sql, Map.of("id", id), mapper());
     }
 
     @Override
-    public void update(SectionDto sectionDto) {
+    public void update(SectionEntity sectionEntity) {
         String sql = "update SECTION set up_station_id = :upStationId, down_station_id = :downStationId where id = :id";
-        jdbcTemplate.update(sql, Map.of("upStationId", sectionDto.getUpStationId(),
-                "downStationId", sectionDto.getDownStationId(), "id", sectionDto.getId()));
+        jdbcTemplate.update(sql, Map.of("upStationId", sectionEntity.getUpStationId(),
+                "downStationId", sectionEntity.getDownStationId(), "id", sectionEntity.getId()));
     }
 
     @Override
@@ -74,9 +74,9 @@ public class JdbcSectionDao implements SectionDao {
         jdbcTemplate.update(sql, Map.of("id", id));
     }
 
-    private RowMapper<SectionDto> mapper() {
+    private RowMapper<SectionEntity> mapper() {
         return (resultSet, rowNum) ->
-                new SectionDto(
+                new SectionEntity(
                         resultSet.getLong("id"),
                         resultSet.getLong("line_id"),
                         resultSet.getLong("up_station_id"),

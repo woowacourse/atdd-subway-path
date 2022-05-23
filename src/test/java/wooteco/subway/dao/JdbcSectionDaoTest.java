@@ -16,8 +16,8 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.LineDto;
-import wooteco.subway.dto.SectionDto;
+import wooteco.subway.dao.entity.LineEntity;
+import wooteco.subway.dao.entity.SectionEntity;
 
 @JdbcTest
 class JdbcSectionDaoTest {
@@ -40,10 +40,10 @@ class JdbcSectionDaoTest {
         Station down = stationDao.save(new Station("홍대입구역"));
         Section section = new Section(up, down, 1);
         Line line = new Line("2호선", "green", new Sections(section));
-        LineDto savedId = lineDao.save(LineDto.from(line));
+        LineEntity savedId = lineDao.save(LineEntity.from(line));
 
-        SectionDto expect = SectionDto.of(section, savedId.getId());
-        SectionDto result = sectionDao.save(expect);
+        SectionEntity expect = SectionEntity.of(section, savedId.getId());
+        SectionEntity result = sectionDao.save(expect);
 
         assertAll(
                 () -> assertThat(result.getLineId()).isEqualTo(expect.getLineId()),
@@ -65,10 +65,10 @@ class JdbcSectionDaoTest {
 
         Line line = new Line("2호선", "green",
                 new Sections(new LinkedList<>(List.of(included1, included2))));
-        LineDto savedLine = lineDao.save(LineDto.from(line));
+        LineEntity savedLine = lineDao.save(LineEntity.from(line));
 
-        sectionDao.save(SectionDto.of(included1, savedLine.getId()));
-        sectionDao.save(SectionDto.of(included2, savedLine.getId()));
+        sectionDao.save(SectionEntity.of(included1, savedLine.getId()));
+        sectionDao.save(SectionEntity.of(included2, savedLine.getId()));
 
         assertThat(sectionDao.findByLineId(savedLine.getId()).size()).isEqualTo(2);
     }
@@ -80,9 +80,9 @@ class JdbcSectionDaoTest {
         Station down = stationDao.save(new Station("홍대입구역"));
         Section section = new Section(up, down, 1);
         Line line = new Line("2호선", "green", new Sections(section));
-        LineDto savedId = lineDao.save(LineDto.from(line));
+        LineEntity savedId = lineDao.save(LineEntity.from(line));
 
-        SectionDto savedSection = sectionDao.save(SectionDto.of(section, savedId.getId()));
+        SectionEntity savedSection = sectionDao.save(SectionEntity.of(section, savedId.getId()));
 
         sectionDao.delete(savedSection.getId());
 

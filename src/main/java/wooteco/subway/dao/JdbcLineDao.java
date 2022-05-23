@@ -7,8 +7,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import wooteco.subway.domain.Line;
-import wooteco.subway.dto.LineDto;
+import wooteco.subway.dao.entity.LineEntity;
 
 @Repository
 public class JdbcLineDao implements LineDao {
@@ -27,27 +26,27 @@ public class JdbcLineDao implements LineDao {
     }
 
     @Override
-    public LineDto save(LineDto lineDto) {
+    public LineEntity save(LineEntity lineEntity) {
         Long id = insertActor.executeAndReturnKey(
-                Map.of("name", lineDto.getName(), "color", lineDto.getColor())).longValue();
+                Map.of("name", lineEntity.getName(), "color", lineEntity.getColor())).longValue();
         return findById(id);
     }
 
     @Override
-    public List<LineDto> findAll() {
+    public List<LineEntity> findAll() {
         String sql = "select * from LINE";
         return jdbcTemplate.query(sql, generateMapper());
     }
 
     @Override
-    public LineDto findById(Long id) {
+    public LineEntity findById(Long id) {
         String sql = "select * from LINE where id = :id";
         return jdbcTemplate.queryForObject(sql, Map.of("id", id), generateMapper());
     }
 
-    private RowMapper<LineDto> generateMapper() {
+    private RowMapper<LineEntity> generateMapper() {
         return (resultSet, rowNum) ->
-                new LineDto(
+                new LineEntity(
                         resultSet.getLong("id"),
                         resultSet.getString("name"),
                         resultSet.getString("color")
@@ -55,12 +54,12 @@ public class JdbcLineDao implements LineDao {
     }
 
     @Override
-    public LineDto update(LineDto lineDto) {
+    public LineEntity update(LineEntity lineEntity) {
         String sql = "update LINE set name = :name, color = :color where id = :id";
         jdbcTemplate.update(sql,
-                Map.of("id", lineDto.getId(), "name", lineDto.getName(), "color", lineDto.getColor()));
+                Map.of("id", lineEntity.getId(), "name", lineEntity.getName(), "color", lineEntity.getColor()));
 
-        return findById(lineDto.getId());
+        return findById(lineEntity.getId());
     }
 
     @Override

@@ -14,7 +14,7 @@ import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.SectionDto;
+import wooteco.subway.dao.entity.SectionEntity;
 import wooteco.subway.dto.SectionRequest;
 
 @Repository
@@ -32,29 +32,29 @@ public class SectionRepository {
         Station up = stationDao.findById(request.getUpStationId());
         Station down = stationDao.findById(request.getDownStationId());
         Section section = new Section(up, down, request.getDistance());
-        SectionDto saved = sectionDao.save(SectionDto.of(section, lineId));
+        SectionEntity saved = sectionDao.save(SectionEntity.of(section, lineId));
         return new Section(saved.getId(), section.getUp(), section.getDown(), section.getDistance());
     }
 
     public Sections findAll() {
-        List<SectionDto> sectionDtos = sectionDao.findAll();
-        List<Station> stations = stationDao.findByIdIn(collectStationIds(sectionDtos));
-        return buildSections(sectionDtos, stations);
+        List<SectionEntity> sectionEntities = sectionDao.findAll();
+        List<Station> stations = stationDao.findByIdIn(collectStationIds(sectionEntities));
+        return buildSections(sectionEntities, stations);
     }
 
-    private List<Long> collectStationIds(List<SectionDto> sectionDtos) {
+    private List<Long> collectStationIds(List<SectionEntity> sectionEntities) {
         List<Long> stationIds = new ArrayList<>();
-        for (SectionDto sectionDto : sectionDtos) {
-            stationIds.add(sectionDto.getUpStationId());
+        for (SectionEntity sectionEntity : sectionEntities) {
+            stationIds.add(sectionEntity.getUpStationId());
         }
-        stationIds.add(sectionDtos.get(sectionDtos.size() - 1).getDownStationId());
+        stationIds.add(sectionEntities.get(sectionEntities.size() - 1).getDownStationId());
         return stationIds;
     }
 
-    private Sections buildSections(List<SectionDto> sectionDtos, List<Station> stations) {
+    private Sections buildSections(List<SectionEntity> sectionEntities, List<Station> stations) {
         Map<Long, Station> allStations = new HashMap<>();
         stations.forEach(station -> allStations.put(station.getId(), station));
-        List<Section> sections = sectionDtos.stream()
+        List<Section> sections = sectionEntities.stream()
                 .map(sectionDto -> new Section(sectionDto.getId(),
                         allStations.get(sectionDto.getUpStationId()),
                         allStations.get(sectionDto.getDownStationId()),
@@ -64,17 +64,17 @@ public class SectionRepository {
     }
 
     public Section findById(Long id) {
-        SectionDto sectionDto = sectionDao.findById(id);
-        Station up = stationDao.findById(sectionDto.getUpStationId());
-        Station down = stationDao.findById(sectionDto.getDownStationId());
-        return new Section(sectionDto.getId(), up, down, sectionDto.getDistance());
+        SectionEntity sectionEntity = sectionDao.findById(id);
+        Station up = stationDao.findById(sectionEntity.getUpStationId());
+        Station down = stationDao.findById(sectionEntity.getDownStationId());
+        return new Section(sectionEntity.getId(), up, down, sectionEntity.getDistance());
     }
 
     public void delete(Long id) {
         sectionDao.delete(id);
     }
 
-    public void update(SectionDto sectionDto) {
-        sectionDao.update(sectionDto);
+    public void update(SectionEntity sectionEntity) {
+        sectionDao.update(sectionEntity);
     }
 }

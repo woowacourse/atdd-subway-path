@@ -1,18 +1,18 @@
 package wooteco.subway.dao;
 
 import java.util.List;
-import wooteco.subway.domain.Line;
-import wooteco.subway.dto.LineDto;
+
+import wooteco.subway.dao.entity.LineEntity;
 
 public interface LineDao {
 
-    LineDto save(LineDto lineDto);
+    LineEntity save(LineEntity lineEntity);
 
-    List<LineDto> findAll();
+    List<LineEntity> findAll();
 
-    LineDto findById(Long id);
+    LineEntity findById(Long id);
 
-    LineDto update(LineDto lineDto);
+    LineEntity update(LineEntity lineEntity);
 
     void deleteById(Long id);
 }

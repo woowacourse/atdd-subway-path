@@ -18,7 +18,7 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.LineDto;
+import wooteco.subway.dao.entity.LineEntity;
 import wooteco.subway.dto.LineEditRequest;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
@@ -121,7 +121,7 @@ class LineServiceTest {
     void 중복노선_업데이트_예외발생() {
         Station up = stationDao.save(new Station("신용산역"));
         Station down = stationDao.save(new Station("삼각지역"));
-        lineDao.save(new LineDto("2호선", "bg-green-400"));
+        lineDao.save(new LineEntity("2호선", "bg-green-400"));
         Line savedLine = lineService.save(new LineRequest("4호선", "bg-purple-600", up.getId(), down.getId(), 3));
 
         assertThatThrownBy(() -> lineService.update(savedLine.getId(), new LineEditRequest("2호선", "bg-brown-600")))

@@ -9,9 +9,9 @@ import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.LineDto;
+import wooteco.subway.dao.entity.LineEntity;
 import wooteco.subway.dto.PathResponse;
-import wooteco.subway.dto.SectionDto;
+import wooteco.subway.dao.entity.SectionEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -41,15 +41,15 @@ public class PathServiceTest {
         Station 잠실역 = stationDao.save(new Station("잠실역"));
         Station 홍대역 = stationDao.save(new Station("홍대입구역"));
 
-        LineDto 일호선 = lineDao.save(new LineDto("1호선", "green"));
-        LineDto 이호선 = lineDao.save(new LineDto("2호선", "pink"));
-        LineDto 삼호선 = lineDao.save(new LineDto("3호선", "blue"));
+        LineEntity 일호선 = lineDao.save(new LineEntity("1호선", "green"));
+        LineEntity 이호선 = lineDao.save(new LineEntity("2호선", "pink"));
+        LineEntity 삼호선 = lineDao.save(new LineEntity("3호선", "blue"));
 
-        SectionDto 강남_선릉 = sectionDao.save(new SectionDto(일호선.getId(), 강남역.getId(), 선릉역.getId(), 3));
-        SectionDto 강남_잠실 = sectionDao.save(new SectionDto(삼호선.getId(), 강남역.getId(), 잠실역.getId(), 3));
-        SectionDto 강남_홍대 = sectionDao.save(new SectionDto(이호선.getId(), 강남역.getId(), 홍대역.getId(), 10));
-        SectionDto 선릉_홍대 = sectionDao.save(new SectionDto(일호선.getId(), 선릉역.getId(), 홍대역.getId(), 2));
-        SectionDto 잠실_홍대 = sectionDao.save(new SectionDto(삼호선.getId(), 잠실역.getId(), 홍대역.getId(), 5));
+        SectionEntity 강남_선릉 = sectionDao.save(new SectionEntity(일호선.getId(), 강남역.getId(), 선릉역.getId(), 3));
+        SectionEntity 강남_잠실 = sectionDao.save(new SectionEntity(삼호선.getId(), 강남역.getId(), 잠실역.getId(), 3));
+        SectionEntity 강남_홍대 = sectionDao.save(new SectionEntity(이호선.getId(), 강남역.getId(), 홍대역.getId(), 10));
+        SectionEntity 선릉_홍대 = sectionDao.save(new SectionEntity(일호선.getId(), 선릉역.getId(), 홍대역.getId(), 2));
+        SectionEntity 잠실_홍대 = sectionDao.save(new SectionEntity(삼호선.getId(), 잠실역.getId(), 홍대역.getId(), 5));
 
         //when
         PathResponse response = pathService.findPath(강남역.getId(), 홍대역.getId(), 10);

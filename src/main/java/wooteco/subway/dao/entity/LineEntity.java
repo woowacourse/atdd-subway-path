@@ -1,29 +1,29 @@
-package wooteco.subway.dto;
+package wooteco.subway.dao.entity;
 
 import wooteco.subway.domain.Line;
 
-public class LineDto {
+public class LineEntity {
 
     private Long id;
     private String name;
     private String color;
 
-    private LineDto() {
+    private LineEntity() {
     }
 
-    public LineDto(Long id, String name, String color) {
+    public LineEntity(Long id, String name, String color) {
         this.id = id;
         this.name = name;
         this.color = color;
     }
 
-    public LineDto(String name, String color) {
+    public LineEntity(String name, String color) {
         this.name = name;
         this.color = color;
     }
 
-    public static LineDto from(Line line) {
-        return new LineDto(line.getId(), line.getName(), line.getColor());
+    public static LineEntity from(Line line) {
+        return new LineEntity(line.getId(), line.getName(), line.getColor());
     }
 
     public Long getId() {
