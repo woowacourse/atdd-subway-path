@@ -1,6 +1,6 @@
 package wooteco.subway.domain;
 
-public enum Age {
+public enum AgeRange {
 
     INFANT(0L, 5L, 0),
     CHILDREN(6L, 12L, 0.5),
@@ -10,7 +10,7 @@ public enum Age {
     private final Long maxAge;
     private final double discountRate;
 
-    Age(Long minAge, Long maxAge, double discountRate) {
+    AgeRange(Long minAge, Long maxAge, double discountRate) {
         this.minAge = minAge;
         this.maxAge = maxAge;
         this.discountRate = discountRate;
