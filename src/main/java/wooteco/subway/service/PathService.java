@@ -27,7 +27,7 @@ public class PathService {
         this.lineDao = lineDao;
     }
 
-    public PathResponse getPath(Long sourceId, Long targetId, int age) {
+    public PathResponse getPath(long sourceId, long targetId, int age) {
         PathFinder pathFinder = new PathFinder();
         Path path = pathFinder.getShortestPath(getStationById(sourceId), getStationById(targetId),
                 new Sections(sectionDao.findAll()));

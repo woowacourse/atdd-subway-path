@@ -38,14 +38,14 @@ public class StationService {
     }
 
     @Transactional
-    public void remove(final Long id) {
+    public void remove(final long id) {
         if (!checkExistById(id)) {
             throw new IllegalArgumentException("해당 지하철역이 존재하지 않습니다.");
         }
         stationDao.deleteById(id);
     }
 
-    private boolean checkExistById(final Long id) {
+    private boolean checkExistById(final long id) {
         return stationDao.findById(id).isPresent();
     }
 }

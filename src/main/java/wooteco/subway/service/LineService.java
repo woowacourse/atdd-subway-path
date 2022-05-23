@@ -47,18 +47,18 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    private List<Station> getStationsByLine(Long lineId) {
+    private List<Station> getStationsByLine(long lineId) {
         return stationDao.findAllByLineId(lineId);
     }
 
     @Transactional(readOnly = true)
-    public LineResponse getById(final Long id) {
+    public LineResponse getById(final long id) {
         final Line line = extractLine(lineDao.findById(id));
         return LineResponse.from(line, getStationsByLine(line.getId()));
     }
 
     @Transactional
-    public void modify(final Long id, final LineRequest lineRequest) {
+    public void modify(final long id, final LineRequest lineRequest) {
         validateNameExist(lineRequest);
         final Line line = lineRequest.toEntity();
         extractLine(lineDao.findById(id));
@@ -72,7 +72,7 @@ public class LineService {
     }
 
     @Transactional
-    public void remove(final Long id) {
+    public void remove(final long id) {
         extractLine(lineDao.findById(id));
         lineDao.deleteById(id);
     }
