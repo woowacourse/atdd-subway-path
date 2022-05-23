@@ -25,7 +25,7 @@ class PathTest {
         // when
         Path path = new Path(list);
         // then
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = path.createShortestPath(강남역, 삼성역);
+        GraphPath<Station, ShortestPathEdge> shortestPath = path.createShortestPath(강남역, 삼성역);
         assertThat(shortestPath.getVertexList()).containsExactly(강남역, 역삼역, 삼성역);
     }
 
@@ -62,7 +62,7 @@ class PathTest {
         // when
         Path path = new Path(list);
         // then
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = path.createShortestPath(강남역, 삼성역);
+        GraphPath<Station, ShortestPathEdge> shortestPath = path.createShortestPath(강남역, 삼성역);
         assertThat(shortestPath.getWeight()).isEqualTo(20);
     }
 
