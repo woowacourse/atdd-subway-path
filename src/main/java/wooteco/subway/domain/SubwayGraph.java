@@ -5,6 +5,8 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.exception.CalculatePathsException;
+import wooteco.subway.exception.duplicatename.StationDuplicateException;
 
 public class SubwayGraph {
 
@@ -38,8 +40,12 @@ public class SubwayGraph {
     }
 
     private GraphPath<Station, DefaultWeightedEdge> createSubwayGraphResult(final Station source, final Station target) {
-        DijkstraShortestPath<Station, DefaultWeightedEdge> pathFinder = new DijkstraShortestPath<>(subwayGraph);
-        return pathFinder.getPath(source, target);
+        try {
+            DijkstraShortestPath<Station, DefaultWeightedEdge> pathFinder = new DijkstraShortestPath<>(subwayGraph);
+            return pathFinder.getPath(source, target);
+        } catch (IllegalArgumentException e) {
+            throw new CalculatePathsException("출발역과 도착역 중, 노선에 등록되지 않은 역이 있습니다.");
+        }
     }
 
     private int createFare(final double distance) {
