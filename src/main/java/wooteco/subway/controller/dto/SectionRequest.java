@@ -11,7 +11,7 @@ public class SectionRequest {
     @NotNull(message = "하행 역의 id 가 비었습니다.")
     private Long downStationId;
 
-    @Min(value = 1, message = "거리는 1보다 커야합니다.")
+    @Min(value = 1, message = "거리는 1 이상이어야 합니다.")
     private int distance;
 
     public SectionRequest() {

@@ -15,7 +15,7 @@ import wooteco.subway.controller.dto.SectionRequest;
 import wooteco.subway.controller.dto.StationRequest;
 import wooteco.subway.service.dto.StationResponse;
 
-class RestUtil {
+public class RestUtil {
 
     static List<Long> postStations(String... names) {
         List<Long> ids = new ArrayList<>();
@@ -25,7 +25,7 @@ class RestUtil {
         return ids;
     }
 
-    static ExtractableResponse<Response> post(StationRequest stationRequest) {
+    public static ExtractableResponse<Response> post(StationRequest stationRequest) {
         return RestAssured.given()
             .body(stationRequest)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -63,7 +63,7 @@ class RestUtil {
             .extract();
     }
 
-    static Long getIdFromStation(ExtractableResponse<Response> response) {
+    public static Long getIdFromStation(ExtractableResponse<Response> response) {
         return response.jsonPath()
             .getObject(".", StationResponse.class)
             .getId();
