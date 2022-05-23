@@ -1,13 +1,21 @@
 package wooteco.subway.domain.fare;
 
 import java.util.Objects;
+import wooteco.subway.exception.NotNegativeFareException;
 
 public class Fare {
 
     private final int value;
 
     public Fare(int value) {
+        validateNotNegative(value);
         this.value = value;
+    }
+
+    private void validateNotNegative(int value) {
+        if (value < 0) {
+            throw new NotNegativeFareException();
+        }
     }
 
     public Fare discount(int deduct, double discountRate) {
