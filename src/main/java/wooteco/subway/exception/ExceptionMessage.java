@@ -22,7 +22,8 @@ public enum ExceptionMessage {
     NOT_FOUND_STATION("해당 역을 찾지 못했습니다."),
     NOT_FOUND_LINE("해당 노선을 찾지 못했습니다."),
     NOT_FOUND_SECTION("해당 구간을 찾지 못했습니다."),
-    NOT_FOUND_PATH("경로를 찾지 못했습니다.");
+    NOT_FOUND_PATH("경로를 찾지 못했습니다."),
+    NOT_FOUND_EXTRA_FARE("추가 요금을 찾지 못했습니다.");
 
     private final String content;
 

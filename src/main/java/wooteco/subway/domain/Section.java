@@ -102,6 +102,10 @@ public class Section {
         return distance;
     }
 
+    public Long getExtraFare() {
+        return line.getExtraFare();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

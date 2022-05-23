@@ -1,15 +1,21 @@
-package wooteco.subway.domain;
+package wooteco.subway.jgraph;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Path;
+import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Station;
 import wooteco.subway.exception.DomainException;
 
-class PathFinderTest {
+class JGraphPathGeneratorTest {
+
+    JGraphPathGenerator pathGenerator;
 
     Station station1 = new Station(1L, "station1");
     Station station2 = new Station(2L, "station2");
@@ -17,8 +23,8 @@ class PathFinderTest {
     Station station4 = new Station(4L, "station4");
 
     Line line1 = new Line(1L, "1호선", "blue", 100L);
-    Line line2 = new Line(2L, "2호선", "red", 200L);;
-    Line line3 = new Line(3L, "3호선", "green", 300L);;
+    Line line2 = new Line(2L, "2호선", "red", 200L);
+    Line line3 = new Line(3L, "3호선", "green", 300L);
     Line line4 = new Line(4L, "4호선", "white", 400L);
 
     // given
@@ -29,46 +35,32 @@ class PathFinderTest {
     Section section4 = new Section(line4, station3, station4, 100);
     List<Section> unconnectedSect = List.of(section1, section4);
 
-    @Test
-    @DisplayName("구간들로 경로 객체를 생성한다")
-    void createPath() {
-
-        assertThatCode(() -> JGraphPathFinder.of(sections))
-                .doesNotThrowAnyException();
+    @BeforeEach
+    void setUp() {
+        pathGenerator = new JGraphPathGenerator();
     }
 
     @Test
     @DisplayName("두 역의 경로 거리를 반환한다.")
     void calculateDistance() {
-        // given
-        PathFinder path = JGraphPathFinder.of(sections);
-
         // when
-        int distance = path.calculateDistance(station1, station3);
+        Path path = pathGenerator.findPath(sections, station1, station3);
 
         // then
-        assertThat(distance).isEqualTo(20);
+        assertThat(path.getDistance()).isEqualTo(20);
     }
 
     @Test
     @DisplayName("역이 경로에 포함되지 않는 경우 예외를 던진다.")
     void calculateDistance_notFoundPath_exception() {
-        // given
-        PathFinder path = JGraphPathFinder.of(sections);
-
-        // then
-        assertThatThrownBy(() -> path.calculateDistance(station1, station4))
+        assertThatThrownBy(() -> pathGenerator.findPath(sections, station1, station4))
                 .isInstanceOf(DomainException.class);
     }
 
     @Test
     @DisplayName("두 역의 경로가 연결되지 않은 경우 예외를 던진다.")
     void calculateDistance_notConnectedPath_exception() {
-        // given
-        PathFinder path = JGraphPathFinder.of(unconnectedSect);
-
-        // then
-        assertThatThrownBy(() -> path.calculateDistance(station1, station4))
+        assertThatThrownBy(() -> pathGenerator.findPath(unconnectedSect, station1, station4))
                 .isInstanceOf(DomainException.class);
     }
 
@@ -76,14 +68,26 @@ class PathFinderTest {
     @DisplayName("두 역의 경로 거리를 반환한다.")
     void calculateStationPath() {
         // given
-        PathFinder pathFinder = JGraphPathFinder.of(sections);
+        Path path = pathGenerator.findPath(sections, station1, station3);
 
         // when
-        List<Station> path = pathFinder.calculatePath(station1, station3);
+        List<Station> stations = path.getStations();
 
         // then
-        assertThat(path.size()).isEqualTo(3);
-        assertThat(path).containsExactly(station1, station2, station3);
+        assertThat(stations.size()).isEqualTo(3);
+        assertThat(stations).containsExactly(station1, station2, station3);
     }
 
+    @Test
+    @DisplayName("추가 요금이 드는 구간을 지나는 경우를 경로에 적용할 수 있다.")
+    void calculatePath_extraFare() {
+        // given
+        Path path = pathGenerator.findPath(sections, station1, station3);
+
+        // when
+        long extraFare = path.getExtraFare();
+
+        // then
+        assertThat(extraFare).isEqualTo(line2.getExtraFare());
+    }
 }
