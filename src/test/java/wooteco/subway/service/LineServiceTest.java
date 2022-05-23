@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dto.request.LineRequest;
 import wooteco.subway.dto.response.LineResponse;
 import wooteco.subway.exception.DuplicateLineException;
+import wooteco.subway.exception.NotFoundLineException;
 
 @SpringBootTest
 @Transactional
@@ -61,7 +62,7 @@ class LineServiceTest {
         lineService.delete(deleteId);
 
         assertThatThrownBy(() -> lineService.findById(deleteId))
-                .isInstanceOf(NoSuchElementException.class);
+                .isInstanceOf(NotFoundLineException.class);
     }
 
     @Test

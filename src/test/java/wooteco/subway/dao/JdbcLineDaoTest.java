@@ -31,7 +31,7 @@ class JdbcLineDaoTest {
     void LineCreateTest() {
         final Long lineId = lineDao.save(Line.createWithoutId("신분당선", "red", 0));
 
-        assertThat(lineDao.findById(lineId))
+        assertThat(lineDao.findById(lineId).get())
                 .extracting("name", "color")
                 .containsExactly("신분당선", "red");
     }
@@ -41,7 +41,7 @@ class JdbcLineDaoTest {
     void LineReadTest() {
         final Long lineId = lineDao.save(Line.createWithoutId("1호선", "dark-blue", 0));
 
-        final Line line = lineDao.findById(lineId);
+        final Line line = lineDao.findById(lineId).get();
 
         assertThat(line)
                 .extracting("name", "color")
@@ -55,8 +55,7 @@ class JdbcLineDaoTest {
 
         lineDao.deleteById(lineId);
 
-        assertThatThrownBy(() -> lineDao.findById(lineId))
-                .isInstanceOf(NoSuchElementException.class);
+        assertThat(lineDao.findById(lineId)).isEmpty();
     }
 
     @Test
@@ -79,7 +78,7 @@ class JdbcLineDaoTest {
 
         lineDao.update(lineId, Line.createWithoutId("분당선", "yellow", 0));
 
-        final Line newLine = lineDao.findById(lineId);
+        final Line newLine = lineDao.findById(lineId).get();
 
         assertThat(newLine)
                 .extracting("name", "color")

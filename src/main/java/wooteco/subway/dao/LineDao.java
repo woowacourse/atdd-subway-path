@@ -1,6 +1,7 @@
 package wooteco.subway.dao;
 
 import java.util.List;
+import java.util.Optional;
 import wooteco.subway.domain.Line;
 
 public interface LineDao {
@@ -11,7 +12,7 @@ public interface LineDao {
 
     void deleteById(final Long lineId);
 
-    Line findById(final Long lineId);
+    Optional<Line> findById(final Long lineId);
 
     void update(final Long lineId, final Line line);
 

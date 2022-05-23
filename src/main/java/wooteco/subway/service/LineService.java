@@ -13,6 +13,7 @@ import wooteco.subway.dto.request.SectionRequest;
 import wooteco.subway.dto.response.LineResponse;
 import wooteco.subway.dto.response.StationResponse;
 import wooteco.subway.exception.DuplicateLineException;
+import wooteco.subway.exception.NotFoundLineException;
 
 @Service
 @Transactional
@@ -38,7 +39,9 @@ public class LineService {
         final Long lineId = lineDao.save(newLine);
         final SectionRequest sectionRequest = extractSectionRequest(lineRequest);
         sectionService.firstSave(lineId, sectionRequest);
-        return createLineResponse(lineDao.findById(lineId), getStationsByStationIds(lineId));
+        final Line line = lineDao.findById(lineId)
+                .orElseThrow(() -> new NotFoundLineException("존재하지 않는 노선입니다."));
+        return createLineResponse(line, getStationsByStationIds(lineId));
     }
 
     private void validateCreateRequest(final Line line) {
@@ -85,7 +88,8 @@ public class LineService {
 
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public LineResponse findById(final Long lineId) {
-        final Line line = lineDao.findById(lineId);
+        final Line line = lineDao.findById(lineId)
+                .orElseThrow(() -> new NotFoundLineException("존재하지 않는 노선입니다."));
         return createLineResponse(line, getStationsByStationIds(line.getId()));
     }
 

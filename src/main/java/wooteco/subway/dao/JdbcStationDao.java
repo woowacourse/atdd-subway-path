@@ -2,7 +2,9 @@ package wooteco.subway.dao;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import javax.sql.DataSource;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -47,21 +49,25 @@ public class JdbcStationDao implements StationDao {
     }
 
     @Override
-    public Station findById(final Long stationId) {
+    public Optional<Station> findById(final Long stationId) {
         final String sql = "SELECT * FROM STATION WHERE id = (?)";
-        return jdbcTemplate.queryForObject(sql, stationRowMapper, stationId);
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, stationRowMapper, stationId));
+        } catch (final EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
     @Override
     public boolean existByName(final Station station) {
         final String sql = "SELECT EXISTS (SELECT * FROM STATION WHERE name = (?))";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, station.getName());
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, station.getName()));
     }
 
     @Override
     public boolean existById(final Long stationId) {
         final String sql = "SELECT EXISTS (SELECT * FROM STATION WHERE id = (?))";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, stationId);
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, stationId));
     }
 
     @Override

@@ -30,7 +30,9 @@ public class StationService {
         validateName(newStation);
 
         final Long stationId = stationDao.save(newStation);
-        return createStationResponse(stationDao.findById(stationId));
+        final Station station = stationDao.findById(stationId)
+                .orElseThrow(() -> new NotFoundStationException("존재하지 않는 지하철 역입니다."));
+        return createStationResponse(station);
     }
 
     private void validateName(final Station station) {
