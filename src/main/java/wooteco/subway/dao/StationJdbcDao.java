@@ -43,6 +43,7 @@ public class StationJdbcDao implements StationDao{
                 new Station(rs.getLong("id"), rs.getString("name")), id);
     }
 
+    @Override
     public List<Station> findByIds(List<Long> ids) {
         String sql = String.join(",", Collections.nCopies(ids.size(), "?"));
 

@@ -1,6 +1,7 @@
 package wooteco.subway.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
@@ -26,6 +27,7 @@ public class PathService {
         this.stationDao = stationDao;
     }
 
+    @Transactional(readOnly = true)
     public PathResponse findShortestPath(PathRequest pathRequest) {
         Path path = Path.of(sectionDao.findAll(), pathRequest.getSource(), pathRequest.getTarget());
         List<Station> stations = stationDao.findByIds(new ArrayList<>(path.getStationIds()));
