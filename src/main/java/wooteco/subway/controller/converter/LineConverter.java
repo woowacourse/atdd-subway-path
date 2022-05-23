@@ -1,4 +1,4 @@
-package wooteco.subway.dto.controller.converter;
+package wooteco.subway.controller.converter;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,8 +1,8 @@
-package wooteco.subway.dto.controller.converter;
+package wooteco.subway.controller.converter;
 
+import wooteco.subway.dto.controller.request.SectionRequest;
 import wooteco.subway.dto.service.request.SectionCreateRequest;
 import wooteco.subway.dto.service.request.SectionDeleteRequest;
-import wooteco.subway.dto.controller.request.SectionRequest;
 
 public class SectionConverter {
 

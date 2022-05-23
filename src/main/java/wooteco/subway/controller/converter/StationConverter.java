@@ -1,4 +1,4 @@
-package wooteco.subway.dto.controller.converter;
+package wooteco.subway.controller.converter;
 
 import wooteco.subway.dto.controller.request.StationRequest;
 import wooteco.subway.dto.controller.response.StationResponse;

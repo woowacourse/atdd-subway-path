@@ -53,6 +53,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         );
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        // assertThat(response.body()).isEqualTo()
     }
 
     @DisplayName("상행역, 하행역이 이미 노선에 있는 구간을 등록 요청한다.(400에러)")
