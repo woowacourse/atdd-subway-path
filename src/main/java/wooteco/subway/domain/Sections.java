@@ -216,12 +216,6 @@ public class Sections {
                 .noneMatch(section -> section.getDownStationId().equals(upStationId));
     }
 
-    public List<Section> getSectionsByStationId(long upStationId, long downStationId) {
-        return sections.stream()
-                .filter(section -> section.isContainStationId(upStationId) && section.isContainStationId(downStationId))
-                .collect(Collectors.toList());
-    }
-
     public List<Section> getSections() {
         return new ArrayList<>(sections);
     }

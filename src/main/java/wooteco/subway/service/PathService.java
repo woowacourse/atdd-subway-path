@@ -45,11 +45,4 @@ public class PathService {
                 .map(station -> new StationResponse(station.getId(), station.getName()))
                 .collect(Collectors.toList());
     }
-
-    private List<Integer> convertExtraFare(List<Long> lineIds) {
-        return lineIds.stream()
-                .map(lineDao::findById)
-                .map(Line::getExtraFare)
-                .collect(Collectors.toList());
-    }
 }
