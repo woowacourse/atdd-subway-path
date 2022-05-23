@@ -232,7 +232,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     class Describe_Line_Delete_API {
 
         @Nested
-        @DisplayName("존재하는 노선 id를 입력받는 경우 구간이 삭제되고")
+        @DisplayName("존재하는 노선 id를 입력받는 경우")
         class Context_Delete_Id {
 
             private long lineId;
@@ -245,7 +245,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             }
 
             @Test
-            @DisplayName("204 응답을 한다.")
+            @DisplayName("구간이 삭제되고 204 응답을 한다.")
             void it_returns_200() {
                 ExtractableResponse<Response> response = 노선_삭제(lineId);
 
