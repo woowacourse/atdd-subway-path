@@ -39,7 +39,13 @@ public class LineRepository {
     }
 
     public void update(Line line) {
+        checkLineExists(line.getId());
         lineDao.update(LineEntity.from(line));
+    }
+
+    private void checkLineExists(Long id) {
+        lineDao.findById(id)
+                .orElseThrow(this::throwNotFoundException);
     }
 
     public Line save(Line line) {
@@ -48,8 +54,7 @@ public class LineRepository {
     }
 
     public void deleteById(Long id) {
-        lineDao.findById(id)
-                .orElseThrow(this::throwNotFoundException);
+        checkLineExists(id);
         lineDao.deleteById(id);
     }
 }
