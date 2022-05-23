@@ -1,6 +1,7 @@
 package wooteco.subway.ui;
 
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,7 +24,7 @@ public class ExceptionControllerAdvice {
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handle(NotExistException e) {
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND.value()).body(new ErrorResponse(e.getMessage()));
     }
 
     @ExceptionHandler
@@ -33,6 +34,6 @@ public class ExceptionControllerAdvice {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handle(RuntimeException e) {
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
 }

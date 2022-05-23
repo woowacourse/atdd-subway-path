@@ -8,8 +8,12 @@ import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpStatus;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
@@ -37,6 +41,39 @@ class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.as(LineResponse.class).getName()).isEqualTo("신분당선");
         assertThat(response.as(LineResponse.class).getColor()).isEqualTo("bg-red-600");
         assertThat(response.as(LineResponse.class).getExtraFare()).isEqualTo(0);
+    }
+
+    @DisplayName("노선을 등록 시 입력된 값을 검증한다.")
+    @ParameterizedTest
+    @MethodSource("validateParameters")
+    void validateArgument(String name, String color, int distance, int extractFare) {
+        // given
+        final Long upStationId = extractIdByStationName("지하철역");
+        final Long downStationId = extractIdByStationName("새로운지하철역");
+
+        final LineRequest params = new LineRequest(name, color, upStationId, downStationId, distance, extractFare);
+
+        // when
+        ExtractableResponse<Response> response = AcceptanceFixture.post(params, "/lines");
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static Stream<Arguments> validateParameters() {
+        return Stream.of(
+                Arguments.of("", "red", 10, 100),
+                Arguments.of(null, "red", 10, 100),
+                Arguments.of(
+                        "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789",
+                        "red", 10, 100),
+                Arguments.of("1호선", "", 10, 100),
+                Arguments.of("1호선", null, 10, 100),
+                Arguments.of("1호선", "123456789123456789123", 10, 100),
+                Arguments.of("1호선", "red", -1, 100),
+                Arguments.of("1호선", "red", 0, 100),
+                Arguments.of("1호선", "red", 0, -1)
+        );
     }
 
     @Test
@@ -122,6 +159,9 @@ class LineAcceptanceTest extends AcceptanceTest {
         Map<String, Object> updateParams = new HashMap<>();
         updateParams.put("name", "다른분당선");
         updateParams.put("color", "bg-red-600");
+        updateParams.put("upStationId", upStationId);
+        updateParams.put("downStationId", downStationId);
+        updateParams.put("distance", 10);
         updateParams.put("extraFare", 0);
 
         ExtractableResponse<Response> response = AcceptanceFixture.put(updateParams, "/lines/" + savedId);
