@@ -29,7 +29,7 @@ public class LineDao {
 
     public Line save(Line line) {
         Long id = insertActor.executeAndReturnKey(
-                Map.of("name", line.getName(), "color", line.getColor())).longValue();
+                Map.of("name", line.getName(), "color", line.getColor(), "extraFare", line.getExtraFare())).longValue();
         return findById(id).get();
     }
 
@@ -57,14 +57,16 @@ public class LineDao {
                 new Line(
                         resultSet.getLong("id"),
                         resultSet.getString("name"),
-                        resultSet.getString("color")
+                        resultSet.getString("color"),
+                        resultSet.getInt("extraFare")
                 );
     }
 
     public void update(Long id, Line updateLine) {
-        String sql = "update LINE set name = :name, color = :color where id = :id";
+        String sql = "update LINE set name = :name, color = :color, extraFare = :extraFare where id = :id";
         jdbcTemplate.update(sql,
-                Map.of("id", id, "name", updateLine.getName(), "color", updateLine.getColor()));
+                Map.of("id", id, "name", updateLine.getName(), "color", updateLine.getColor(), "extraFare",
+                        updateLine.getExtraFare()));
     }
 
     public void deleteById(Long id) {

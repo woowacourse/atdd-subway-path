@@ -62,7 +62,7 @@ public class SectionDao {
 
     public Optional<Section> findById(Long id) {
         String sql = "select s.id, "
-                + "s.line_id, l.name as line_name, l.color as line_color, "
+                + "s.line_id, l.name as line_name, l.color as line_color, l.extraFare as line_extraFare, "
                 + "s.up_station_id, up.name as up_station_name, "
                 + "s.down_station_id, down.name as down_station_name, "
                 + "s.distance "
@@ -80,7 +80,7 @@ public class SectionDao {
 
     public List<Section> findByLineId(Long lineId) {
         String sql = "select s.id, "
-                + "s.line_id, l.name as line_name, l.color as line_color, "
+                + "s.line_id, l.name as line_name, l.color as line_color, l.extraFare as line_extraFare, "
                 + "s.up_station_id, up.name as up_station_name, "
                 + "s.down_station_id, down.name as down_station_name, "
                 + "s.distance "
@@ -95,7 +95,7 @@ public class SectionDao {
 
     public List<Section> findAll() {
         String sql = "select s.id, "
-                + "s.line_id, l.name as line_name, l.color as line_color, "
+                + "s.line_id, l.name as line_name, l.color as line_color, l.extraFare as line_extraFare, "
                 + "s.up_station_id, up.name as up_station_name, "
                 + "s.down_station_id, down.name as down_station_name, "
                 + "s.distance "
@@ -114,7 +114,8 @@ public class SectionDao {
             Long lineId = resultSet.getLong("line_id");
             String lineName = resultSet.getString("line_name");
             String lineColor = resultSet.getString("line_color");
-            Line line = new Line(lineId, lineName, lineColor);
+            int extraFare = resultSet.getInt("line_extraFare");
+            Line line = new Line(lineId, lineName, lineColor, extraFare);
 
             Long upStationId = resultSet.getLong("up_station_id");
             String upStationName = resultSet.getString("up_station_name");

@@ -34,7 +34,7 @@ class SectionDaoTest {
     @DisplayName("구간을 저장한다.")
     @Test
     void 구간_저장() {
-        Line line = generateLine("2호선", "bg-green-600");
+        Line line = generateLine("2호선", "bg-green-600", 0);
         Station upStation = generateStation("선릉역");
         Station downStation = generateStation("잠실역");
         Integer distance = 10;
@@ -52,7 +52,7 @@ class SectionDaoTest {
     @DisplayName("노선 조작 기능")
     @TestFactory
     Stream<DynamicTest> dynamicTestFromLine() {
-        Line line = generateLine("2호선", "bg-green-600");
+        Line line = generateLine("2호선", "bg-green-600", 0);
         Station upStation1 = generateStation("선릉역");
         Station downStation1 = generateStation("잠실역");
         Integer distance1 = 10;
@@ -77,11 +77,11 @@ class SectionDaoTest {
                 })
         );
     }
-    
+
     @DisplayName("구간을 전체 저장한다.")
     @Test
     void 구간_전체_저장() {
-        Line line = generateLine("2호선", "bg-green-600");
+        Line line = generateLine("2호선", "bg-green-600", 0);
         Station upStation1 = generateStation("선릉역");
         Station downStation1 = generateStation("잠실역");
         Integer distance1 = 10;
@@ -97,8 +97,8 @@ class SectionDaoTest {
         assertThat(sections.size()).isEqualTo(2);
     }
 
-    private Line generateLine(String name, String color) {
-        return lineDao.save(new Line(name, color));
+    private Line generateLine(String name, String color, int extraFare) {
+        return lineDao.save(new Line(name, color, extraFare));
     }
 
     private Station generateStation(String name) {

@@ -48,7 +48,7 @@ class LineServiceTest {
                     String name = "2호선";
                     String color = "bg-green-600";
                     LineRequest lineRequest = new LineRequest(
-                            name, color, upStation.getId(), downStation.getId(), 10);
+                            name, color, upStation.getId(), downStation.getId(), 10, 0);
 
                     LineResponse lineResponse = lineService.save(lineRequest);
 
@@ -63,7 +63,7 @@ class LineServiceTest {
                     String name = "2호선";
                     String color = "bg-green-600";
                     LineRequest lineRequest = new LineRequest(
-                            name, color, upStation.getId(), downStation.getId(), 10);
+                            name, color, upStation.getId(), downStation.getId(), 10, 0);
 
                     assertThatThrownBy(() -> lineService.save(lineRequest))
                             .isInstanceOf(IllegalArgumentException.class)
@@ -73,7 +73,7 @@ class LineServiceTest {
                 dynamicTest("노선의 저장 시 상행과 하행이 같은 지하철역인 경우 예외를 던진다.", () -> {
                     Station station = generateStation("중동역");
                     LineRequest lineRequest = new LineRequest(
-                            "3호선", "bg-green-600", station.getId(), station.getId(), 10);
+                            "3호선", "bg-green-600", station.getId(), station.getId(), 10, 0);
 
                     assertThatThrownBy(() -> lineService.save(lineRequest))
                             .isInstanceOf(IllegalArgumentException.class)
@@ -86,7 +86,7 @@ class LineServiceTest {
     @Test
     void 존재하지_않는_지하철역으로_노선_등록_예외발생() {
         LineRequest lineRequest = new LineRequest(
-                "2호선", "bg-green-600", 1L, 2L, 10);
+                "2호선", "bg-green-600", 1L, 2L, 10, 0);
 
         assertThatThrownBy(() -> lineService.save(lineRequest))
                 .isInstanceOf(NotFoundException.class)
@@ -103,7 +103,7 @@ class LineServiceTest {
         String color1 = "bg-green-600";
         Integer distance1 = 7;
         LineResponse lineResponse1 = lineService.save(
-                new LineRequest(name1, color1, upStation.getId(), downStation.getId(), distance1));
+                new LineRequest(name1, color1, upStation.getId(), downStation.getId(), distance1, 0));
 
         Station upStation2 = generateStation("중동역");
         Station downStation2 = generateStation("신도림역");
@@ -112,7 +112,7 @@ class LineServiceTest {
         String color2 = "bg-blue-600";
         Integer distance2 = 10;
         LineResponse lineResponse2 = lineService.save(
-                new LineRequest(name2, color2, upStation2.getId(), downStation2.getId(), distance2));
+                new LineRequest(name2, color2, upStation2.getId(), downStation2.getId(), distance2, 0));
 
         return Stream.of(
                 dynamicTest("노선을 조회한다.", () -> {
@@ -130,7 +130,7 @@ class LineServiceTest {
 
                 dynamicTest("존재하는 노선을 수정한다.", () -> {
                     String updateColor = "bg-blue-600";
-                    LineUpdateRequest updateRequest = new LineUpdateRequest(name1, updateColor);
+                    LineUpdateRequest updateRequest = new LineUpdateRequest(name1, updateColor, 0);
                     lineService.update(lineResponse1.getId(), updateRequest);
 
                     LineResponse updatedResponse = lineService.findById(lineResponse1.getId());
@@ -143,7 +143,7 @@ class LineServiceTest {
                 dynamicTest("중복된 이름을 가진 노선으로 수정할 경우 예외를 던진다.", () -> {
                     String updateName = "2호선";
                     String updateColor = "bg-green-600";
-                    LineUpdateRequest updateRequest = new LineUpdateRequest(updateName, updateColor);
+                    LineUpdateRequest updateRequest = new LineUpdateRequest(updateName, updateColor, 0);
 
                     assertThatThrownBy(() -> lineService.update(lineResponse2.getId(), updateRequest))
                             .isInstanceOf(IllegalArgumentException.class)
@@ -172,7 +172,7 @@ class LineServiceTest {
     void 존재하지_않는_노선_수정_예외발생() {
         String name = "2호선";
         String updateColor = "bg-blue-600";
-        LineUpdateRequest updateRequest = new LineUpdateRequest(name, updateColor);
+        LineUpdateRequest updateRequest = new LineUpdateRequest(name, updateColor, 0);
 
         assertThatThrownBy(() -> lineService.update(0L, updateRequest))
                 .isInstanceOf(NotFoundException.class)
@@ -196,7 +196,7 @@ class LineServiceTest {
 
         String name = "1호선";
         String color = "bg-blue-600";
-        LineResponse line = generateLine(name, color, basedUpStationId, basedDownStationId, basedDistance);
+        LineResponse line = generateLine(name, color, basedUpStationId, basedDownStationId, basedDistance, 0);
 
         return Stream.of(
                 dynamicTest("상행 종점이 같은 경우 가장 앞단의 구간 보다 길이가 크거나 같으면 예외를 던진다.", () -> {
@@ -327,7 +327,7 @@ class LineServiceTest {
         Long stationId4 = generateStation("부천역").getId();
         Long stationId5 = generateStation("중동역").getId();
 
-        LineResponse response = generateLine("1호선", "bg-blue-600", stationId1, stationId2, 10);
+        LineResponse response = generateLine("1호선", "bg-blue-600", stationId1, stationId2, 10, 0);
         Long lineId = response.getId();
 
         lineService.addSection(lineId, new SectionRequest(stationId2, stationId3, 10));
@@ -362,8 +362,8 @@ class LineServiceTest {
     }
 
     private LineResponse generateLine(String name, String color, Long upStationId, Long downStationId,
-                                      Integer distance) {
-        return lineService.save(new LineRequest(name, color, upStationId, downStationId, distance));
+                                      Integer distance, int extraFare) {
+        return lineService.save(new LineRequest(name, color, upStationId, downStationId, distance, extraFare));
     }
 
     private Station generateStation(String name) {
