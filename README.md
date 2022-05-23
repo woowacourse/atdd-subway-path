@@ -13,6 +13,6 @@
 - [x] distance, extraFare 도메인에 검증 로직 작성
 - [ ] 경로 검색 예외 처리 기능 추가
   - [ ] 출발지와 도착지가 구간으로 연결되어 있지 않아 경로를 찾을 수 없는 경우 예외 발생
-- [ ] calculateShortestPath, calculateShortestDistance 내부에서 최단 경로 구하는 로직이 중복 제거
+- [x] calculateShortestPath, calculateShortestDistance 내부에서 최단 경로 구하는 로직이 중복 제거
 - [x] stations 검증부 가독성 높이도록 수정
 - [x] soft delete 방식 활용하도록 save 수정

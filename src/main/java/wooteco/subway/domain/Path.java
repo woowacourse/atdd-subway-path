@@ -4,25 +4,25 @@ import java.util.List;
 
 public class Path {
 
-    private final Sections sections;
+    private final List<Station> stations;
+    private final double distance;
+    private final int fare;
 
-    public Path(Sections sections) {
-        this.sections = sections;
+    public Path(List<Station> stations, double distance, int fare) {
+        this.stations = stations;
+        this.distance = distance;
+        this.fare = fare;
     }
 
-    public List<Station> calculateShortestPath(final Station source, final Station target) {
-        SubwayGraph subwayGraph = initSubwayGraph();
-        return subwayGraph.findShortestPath(source, target);
+    public List<Station> getStations() {
+        return stations;
     }
 
-    public double calculateShortestDistance(final Station source, final Station target) {
-        SubwayGraph subwayGraph = initSubwayGraph();
-        return subwayGraph.findShortestDistance(source, target);
+    public double getDistance() {
+        return distance;
     }
 
-    private SubwayGraph initSubwayGraph() {
-        SubwayGraph subwayGraph = new SubwayGraph();
-        subwayGraph.init(sections);
-        return subwayGraph;
+    public int getFare() {
+        return fare;
     }
 }

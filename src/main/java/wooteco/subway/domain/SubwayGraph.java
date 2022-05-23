@@ -34,12 +34,12 @@ public class SubwayGraph {
         }
     }
 
-    public List<Station> findShortestPath(final Station source, final Station target) {
-        return graphResult(source, target).getVertexList();
-    }
-
-    public double findShortestDistance(final Station source, final Station target) {
-        return graphResult(source, target).getWeight();
+    public Path findShortestPath(final Station source, final Station target) {
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = graphResult(source, target);
+        List<Station> stations = shortestPath.getVertexList();
+        double distance = shortestPath.getWeight();
+        int fare = new FareCalculator(distance).calculateFare();
+        return new Path(stations, distance, fare);
     }
 
     private GraphPath<Station, DefaultWeightedEdge> graphResult(final Station source, final Station target) {

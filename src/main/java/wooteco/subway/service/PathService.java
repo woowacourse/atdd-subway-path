@@ -1,16 +1,13 @@
 package wooteco.subway.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.FareCalculator;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.SubwayGraph;
 import wooteco.subway.dto.PathResponse;
-import wooteco.subway.dto.StationResponse;
 
 @Service
 public class PathService {
@@ -30,26 +27,14 @@ public class PathService {
     }
 
     private PathResponse createPathResponse(final Station source, final Station target) {
-        Path path = initPath();
-        List<Station> stations = path.calculateShortestPath(source, target);
-        double distance = path.calculateShortestDistance(source, target);
-        int fare = createFare(distance);
-        return new PathResponse(convertToStationResponses(stations), distance, fare);
+        Path path = findPath(source, target);
+        return PathResponse.from(path);
     }
 
-    private Path initPath() {
-        Sections sections = new Sections(sectionDao.findAll());
-        return new Path(sections);
+    private Path findPath(final Station source, final Station target) {
+        SubwayGraph subwayGraph = new SubwayGraph();
+        subwayGraph.init(new Sections(sectionDao.findAll()));
+        return subwayGraph.findShortestPath(source, target);
     }
 
-    private int createFare(final double distance) {
-        FareCalculator fareCalculator = new FareCalculator(distance);
-        return fareCalculator.calculateFare();
-    }
-
-    private List<StationResponse> convertToStationResponses(final List<Station> stations) {
-        return stations.stream()
-                .map(StationResponse::from)
-                .collect(Collectors.toList());
-    }
 }
