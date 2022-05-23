@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Objects;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -48,6 +50,24 @@ public class StationControllerIntegrationTest {
         // then
         response.andExpect(status().isCreated())
                 .andExpect(jsonPath("name").value(STATION_1));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", " "})
+    @DisplayName("이름이 없는 역 생성을 요청한다.")
+    void create_noName(final String name) throws Exception {
+        // given
+        final CreateStationRequest request = new CreateStationRequest(name);
+        final String requestContent = objectMapper.writeValueAsString(request);
+
+        // when
+        final ResultActions response = mockMvc.perform(post("/stations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestContent))
+                .andDo(print());
+
+        // then
+        response.andExpect(status().isBadRequest());
     }
 
     @Test

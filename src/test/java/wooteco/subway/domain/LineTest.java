@@ -25,22 +25,4 @@ public class LineTest {
             assertThat(line.getColor()).isEqualTo(color);
         });
     }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"", " "})
-    @DisplayName("노선 이름이 공백인 경우, 예외를 발생한다.")
-    void createEmptyName(final String name) {
-        assertThatThrownBy(() -> new Line(name, "bg-red-600", 500))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("노선 이름은 공백일 수 없습니다.");
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"", " "})
-    @DisplayName("색상이 공백인 경우, 예외를 발생한다.")
-    void createEmptyColor(final String color) {
-        assertThatThrownBy(() -> new Line("신분당선", color, 500))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("색상이 공백일 수 없습니다.");
-    }
 }

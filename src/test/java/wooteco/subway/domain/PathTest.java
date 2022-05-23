@@ -6,6 +6,7 @@ import static wooteco.subway.Fixtures.STATION_2;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -37,5 +38,11 @@ class PathTest {
         final List<Station> routeStations = List.of(new Station(STATION_1), new Station(STATION_2));
         final Path path = new Path(routeStations, distance);
         assertThat(path.calculateFare()).isEqualTo(fare);
+    }
+
+    @Test
+    @DisplayName("노선의 추가 요금이 부과되는가")
+    void calculateFare_extraFare() {
+
     }
 }

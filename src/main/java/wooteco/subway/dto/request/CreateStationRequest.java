@@ -4,7 +4,7 @@ import javax.validation.constraints.NotBlank;
 
 public class CreateStationRequest {
 
-    @NotBlank(message = "역이름은 공백일 수 없습니다.")
+    @NotBlank(message = "역 이름은 공백일 수 없습니다.")
     private String name;
 
     private CreateStationRequest() {
