@@ -35,7 +35,7 @@ public class PathService {
         final Distance distance = subwayMap.searchDistance(sourceStation, targetStation);
         final int extraFare = subwayMap.calculateMaxExtraFare(sourceStation, targetStation);
         final Fare fare = Fare.from(extraFare)
-                .addByDistance(distance)
+                .addExtraFareByDistance(distance)
                 .discountByAge(age);
 
         return PathResponse.of(stations, distance, fare);

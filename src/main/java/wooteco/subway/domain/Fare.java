@@ -1,6 +1,8 @@
 package wooteco.subway.domain;
 
 import java.util.Objects;
+import wooteco.subway.domain.strategy.extrafare.ExtraFareStrategy;
+import wooteco.subway.domain.strategy.extrafare.ExtraFareStrategyMapper;
 
 public class Fare {
 
@@ -12,11 +14,6 @@ public class Fare {
     private static final int TEENAGER_AGE_LOWE_BOUND = 13;
     private static final int TEENAGER_AGE_UPPER_BOUND = 19;
     private static final int DEDUCTIBLE_AMOUNT = 350;
-    private static final int DISTANCE_OF_BASIC_FARE = 10;
-    private static final int DISTANCE_OF_OVER_FARE = 50;
-    private static final int STANDARD_OF_OVER_FARE = 100;
-    private static final int STANDARD_DISTANCE_OF_OVER_FARE = 5;
-    private static final int MAX_STANDARD_DISTANCE_OF_OVER_FARE = 8;
 
     private final int value;
 
@@ -28,23 +25,10 @@ public class Fare {
         return new Fare(BASIC_VALUE + extraFare);
     }
 
-    public Fare addByDistance(final Distance distance) {
-        if (distance.isLessThanOrEqual(DISTANCE_OF_BASIC_FARE)) {
-            return this;
-        }
-        if (distance.isLessThanOrEqual(DISTANCE_OF_OVER_FARE)) {
-            final int extraFare = calculateOverFare(distance.getValue() - DISTANCE_OF_BASIC_FARE,
-                    STANDARD_DISTANCE_OF_OVER_FARE);
-            return new Fare(value + extraFare);
-        }
-        final int extraFare = calculateOverFare(DISTANCE_OF_OVER_FARE - DISTANCE_OF_BASIC_FARE,
-                STANDARD_DISTANCE_OF_OVER_FARE) +
-                calculateOverFare(distance.getValue() - DISTANCE_OF_OVER_FARE, MAX_STANDARD_DISTANCE_OF_OVER_FARE);
+    public Fare addExtraFareByDistance(final Distance distance) {
+        final ExtraFareStrategy strategy = ExtraFareStrategyMapper.findStrategyBy(distance);
+        final int extraFare = strategy.calculateByDistance(distance);
         return new Fare(value + extraFare);
-    }
-
-    private int calculateOverFare(final int value, final int standardValue) {
-        return (int) ((Math.ceil((value - 1) / standardValue) + 1) * STANDARD_OF_OVER_FARE);
     }
 
     public Fare discountByAge(final int age) {

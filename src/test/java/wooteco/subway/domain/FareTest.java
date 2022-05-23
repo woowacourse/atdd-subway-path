@@ -20,7 +20,7 @@ class FareTest {
         final Fare fare = Fare.from(0);
 
         // when
-        final Fare actual = fare.addByDistance(distance);
+        final Fare actual = fare.addExtraFareByDistance(distance);
 
         // then
         assertThat(actual.getValue()).isEqualTo(expected);
