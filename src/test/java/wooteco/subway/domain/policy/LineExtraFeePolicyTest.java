@@ -7,7 +7,7 @@ import static wooteco.subway.domain.fixtures.TestFixtures.이호선;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.policy.line.LineExtraFeePolicy;
+import wooteco.subway.domain.fare.policy.line.LineExtraFeePolicy;
 
 class LineExtraFeePolicyTest {
 
