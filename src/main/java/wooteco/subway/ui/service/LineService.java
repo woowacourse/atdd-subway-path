@@ -33,7 +33,8 @@ public class LineService {
         String name = lineRequest.getName();
         String color = lineRequest.getColor();
         Section section = getSection(lineRequest);
-        Line line = new Line(name, color, section);
+        int extraFare = lineRequest.getExtraFare();
+        Line line = new Line(name, color, extraFare, section);
         return save(section, line);
     }
 
@@ -68,7 +69,7 @@ public class LineService {
     }
 
     public void modify(Long id, LineRequest lineRequest) {
-        Line line = new Line(id, lineRequest.getName(), lineRequest.getColor());
+        Line line = new Line(id, lineRequest.getName(), lineRequest.getColor(), 900);
         lineDao.update(line);
     }
 

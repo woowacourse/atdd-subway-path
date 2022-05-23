@@ -35,7 +35,7 @@ public class SectionDaoTest {
         stationDao.save(station);
 
         Section section = new Section(upTermination, downTermination, 10);
-        line = new Line("신분당선", "bg-red-600", section);
+        line = new Line("신분당선", "bg-red-600", 900, section);
         line = lineDao.save(line);
     }
 

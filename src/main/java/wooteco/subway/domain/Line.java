@@ -8,31 +8,33 @@ public class Line {
     private final Long id;
     private final String name;
     private final String color;
+    private final int extraFare;
     private final Sections sections;
 
     public Line(Long id, Line line) {
-        this(id, line.getName(), line.getColor(), line.getSections());
+        this(id, line.getName(), line.getColor(), line.extraFare, line.getSections());
     }
 
-    public Line(Long id, String name, String color, Sections sections) {
-        this(id, name, color, sections.getSections());
+    public Line(String name, String color, int extraFare, Section section) {
+        this(null, name, color, extraFare, List.of(section));
     }
 
-    public Line(String name, String color, Section section) {
-        this(null, name, color, List.of(section));
+    public Line(Long id, String name, String color, int extraFare) {
+        this(id, name, color, extraFare, new LinkedList<>());
     }
 
-    public Line(Long id, String name, String color) {
-        this(id, name, color, new LinkedList<>());
+    public Line(Long id, String name, String color, int extraFare, List<Section> sections) {
+        this(id, name, color, extraFare, new Sections(sections));
     }
 
-    public Line(Long id, String name, String color, List<Section> sections) {
+    public Line(Long id, String name, String color, int extraFare, Sections sections) {
         validateNotNull(name, "name");
         validateNotNull(color, "color");
         this.id = id;
         this.name = name;
         this.color = color;
-        this.sections = new Sections(sections);
+        this.extraFare = extraFare;
+        this.sections = sections;
     }
 
     private void validateNotNull(String input, String param) {

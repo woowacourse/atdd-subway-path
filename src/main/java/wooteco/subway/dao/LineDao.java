@@ -42,6 +42,7 @@ public class LineDao {
                 resultSet.getLong("id"),
                 resultSet.getString("name"),
                 resultSet.getString("color"),
+                resultSet.getInt("extra_fare"),
                 findSectionsById(resultSet.getLong("id")));
     }
 

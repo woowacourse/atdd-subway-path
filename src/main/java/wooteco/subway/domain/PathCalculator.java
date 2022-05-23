@@ -5,49 +5,63 @@ import java.util.List;
 import java.util.Set;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class PathCalculator {
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
+    private final DijkstraShortestPath<Station, ShortestPathEdge> dijkstraShortestPath;
 
     private PathCalculator(
-            DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath) {
+            DijkstraShortestPath<Station, ShortestPathEdge> dijkstraShortestPath) {
         this.dijkstraShortestPath = dijkstraShortestPath;
     }
 
-    public static PathCalculator from(List<Section> sections) {
-        Set<Station> stations = extractStations(sections);
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = getMultiGraph(stations, sections);
+    public static PathCalculator from(List<Line> lines) {
+        Set<Station> stations = extractStations(lines);
+        WeightedMultigraph<Station, ShortestPathEdge> graph = getMultiGraph(stations, lines);
         return new PathCalculator(new DijkstraShortestPath<>(graph));
     }
 
-    private static Set<Station> extractStations(List<Section> sections) {
+    private static Set<Station> extractStations(List<Line> lines) {
         Set<Station> stations = new HashSet<>();
-        for (Section section : sections) {
-            stations.add(section.getUpStation());
-            stations.add(section.getDownStation());
+        for (Line line : lines) {
+            Sections sections = line.getSections();
+            extractSections(stations, sections);
         }
         return stations;
     }
 
-    private static WeightedMultigraph<Station, DefaultWeightedEdge> getMultiGraph(Set<Station> stations,
-            List<Section> sections) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    private static void extractSections(Set<Station> stations, Sections sections) {
+        for (Section section : sections.getSections()) {
+            stations.add(section.getUpStation());
+            stations.add(section.getDownStation());
+        }
+    }
+
+    private static WeightedMultigraph<Station, ShortestPathEdge> getMultiGraph(Set<Station> stations,
+            List<Line> lines) {
+        WeightedMultigraph<Station, ShortestPathEdge> graph = new WeightedMultigraph<>(ShortestPathEdge.class);
         addVertex(stations, graph);
-        addEdge(sections, graph);
+        addEdge(lines, graph);
         return graph;
     }
 
-    private static void addVertex(Set<Station> stations, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private static void addVertex(Set<Station> stations, WeightedMultigraph<Station, ShortestPathEdge> graph) {
         for (Station station : stations) {
             graph.addVertex(station);
         }
     }
 
-    private static void addEdge(List<Section> sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        for (Section section : sections) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+    private static void addEdge(List<Line> lines, WeightedMultigraph<Station, ShortestPathEdge> graph) {
+        for (Line line : lines) {
+            Sections sections = line.getSections();
+            addEdgeInfo(graph, line, sections);
+        }
+    }
+
+    private static void addEdgeInfo(WeightedMultigraph<Station, ShortestPathEdge> graph, Line line, Sections sections) {
+        for (Section section : sections.getSections()) {
+            graph.addEdge(section.getUpStation(), section.getDownStation(), new ShortestPathEdge(line.getId(),
+                    section.getDistance()));
         }
     }
 
