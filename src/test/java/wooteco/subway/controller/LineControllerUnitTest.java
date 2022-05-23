@@ -49,11 +49,11 @@ class LineControllerUnitTest {
         Section section = new Section(
                 new Station(1L, "서울역"),
                 new Station(2L, "용산역"), 10);
-        Line line = new Line(1L, "1호선", "bg-darkblue-600", new Sections(section));
+        Line line = new Line(1L, "1호선", "bg-darkblue-600", 0, new Sections(section));
         LineResponse mockLineResponse = LineResponse.from(line);
         given(lineService.save(any(LineRequest.class))).willReturn(mockLineResponse);
 
-        LineRequest request = new LineRequest("1호선", "bg-darkblue-600", 1L, 2L, 10);
+        LineRequest request = new LineRequest("1호선", "bg-darkblue-600", 1L, 2L, 10, 0);
 
         mockMvc.perform(post("/lines")
                         .content(objectMapper.writeValueAsString(request))
@@ -72,7 +72,7 @@ class LineControllerUnitTest {
     void 존재하는_노선_이름_생성_400예외() throws Exception {
         given(lineService.save(any(LineRequest.class))).willThrow(DuplicateKeyException.class);
 
-        LineRequest request = new LineRequest("1호선", "bg-darkblue-600", 1L, 2L, 10);
+        LineRequest request = new LineRequest("1호선", "bg-darkblue-600", 1L, 2L, 10, 0);
 
         mockMvc.perform(post("/lines")
                         .content(objectMapper.writeValueAsString(request))
@@ -90,7 +90,7 @@ class LineControllerUnitTest {
         Section section2 = new Section(
                 new Station(2L, "합정역"),
                 new Station(3L, "상수역"), 10);
-        LineResponse mockLine = LineResponse.from(new Line(1L, "6호선", "bg-brown-600",
+        LineResponse mockLine = LineResponse.from(new Line(1L, "6호선", "bg-brown-600", 0,
                 new Sections(new LinkedList<>(List.of(section1, section2)))));
 
         given(lineService.findById(1L)).willReturn(mockLine);

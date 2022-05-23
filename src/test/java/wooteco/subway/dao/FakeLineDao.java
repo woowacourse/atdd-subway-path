@@ -49,7 +49,7 @@ public class FakeLineDao implements LineDao {
     public LineEntity update(LineEntity updateLine) {
         lines.remove(findById(updateLine.getId()));
 
-        LineEntity line = new LineEntity(updateLine.getId(), updateLine.getName(), updateLine.getColor());
+        LineEntity line = new LineEntity(updateLine.getId(), updateLine.getName(), updateLine.getColor(), updateLine.getFare());
         lines.add(line);
 
         return line;

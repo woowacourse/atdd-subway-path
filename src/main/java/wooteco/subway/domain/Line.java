@@ -8,30 +8,32 @@ public class Line {
     private Long id;
     private String name;
     private String color;
+    private int extraFare;
     private Sections sections;
 
     private Line() {
     }
 
-    public Line(String name, String color) {
+    public Line(String name, String color, int extraFare) {
         validateNameNotEmpty(name);
         validateColorNotEmpty(color);
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
     }
 
-    public Line(Long id, String name, String color) {
-        this(name, color);
+    public Line(Long id, String name, String color, int extraFare) {
+        this(name, color, extraFare);
         this.id = id;
     }
 
-    public Line(String name, String color, Sections sections) {
-        this(name, color);
+    public Line(String name, String color, int extraFare, Sections sections) {
+        this(name, color, extraFare);
         this.sections = sections;
     }
 
-    public Line(Long id, String name, String color, Sections sections) {
-        this(name, color, sections);
+    public Line(Long id, String name, String color, int extraFare, Sections sections) {
+        this(name, color, extraFare, sections);
         this.id = id;
     }
 
@@ -80,6 +82,10 @@ public class Line {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     @Override

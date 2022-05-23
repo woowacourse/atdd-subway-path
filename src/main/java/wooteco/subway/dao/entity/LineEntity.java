@@ -7,14 +7,16 @@ public class LineEntity {
     private Long id;
     private String name;
     private String color;
+    private int fare;
 
     private LineEntity() {
     }
 
-    public LineEntity(Long id, String name, String color) {
+    public LineEntity(Long id, String name, String color, int fare) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.fare = fare;
     }
 
     public LineEntity(String name, String color) {
@@ -23,7 +25,7 @@ public class LineEntity {
     }
 
     public static LineEntity from(Line line) {
-        return new LineEntity(line.getId(), line.getName(), line.getColor());
+        return new LineEntity(line.getId(), line.getName(), line.getColor(), line.getExtraFare());
     }
 
     public Long getId() {
@@ -36,5 +38,9 @@ public class LineEntity {
 
     public String getColor() {
         return color;
+    }
+
+    public int getFare() {
+        return fare;
     }
 }

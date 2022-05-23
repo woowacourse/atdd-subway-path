@@ -15,16 +15,29 @@ public class LineRequest {
     private Long downStationId;
     @NotNull
     private int distance;
+    @NotNull
+    private int extraFare;
 
     public LineRequest() {
     }
 
-    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
+    // 지금까지 tc 안깨지도록
+//    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
+//        this.name = name;
+//        this.color = color;
+//        this.upStationId = upStationId;
+//        this.downStationId = downStationId;
+//        this.distance = distance;
+//        this.extraFare = 0;
+//    }
+
+    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance, int extraFare) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+        this.extraFare = extraFare;
     }
 
     public String getName() {

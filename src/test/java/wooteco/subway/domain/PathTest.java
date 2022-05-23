@@ -131,6 +131,17 @@ class PathTest {
         Station 홍대 = new Station("홍대입구역");
         Station 신촌 = new Station("신촌역");
 
+        Section 잠실_홍대 = new Section(잠실, 홍대, 3);
+        Section 홍대_신촌 = new Section(홍대, 신촌, 5);
+
+        Sections sections = new Sections(List.of(잠실_홍대, 홍대_신촌));
+
+        Line 일호선 = new Line("1호선", "green", 0, sections);
+
+        Path path = new Path(sections.findShortestPath(잠실, 신촌));
+
+        int fare = Fare.chargeFare(path);
+
 
     }
 }

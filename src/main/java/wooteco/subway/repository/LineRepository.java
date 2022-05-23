@@ -58,7 +58,7 @@ public class LineRepository {
     private Line toLine(LineEntity lineEntity, List<SectionEntity> sectionEntities) {
         List<Station> stations = stationDao.findByIdIn(collectStationIds(sectionEntities));
         Sections sections = toSections(sectionEntities, stations);
-        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), sections);
+        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), lineEntity.getFare(), sections);
     }
 
     private Sections toSections(List<SectionEntity> sectionEntities, List<Station> stations) {

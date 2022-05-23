@@ -63,10 +63,10 @@ public class LineControllerIntegrationTest {
         Station A = stationDao.save(new Station("A역"));
         Station B = stationDao.save(new Station("B역"));
         Section AtoB = new Section(A, B, 10);
-        Line line = new Line("A호선", "bg-red-300", new Sections(AtoB));
+        Line line = new Line("A호선", "bg-red-300", 0, new Sections(AtoB));
 
         LineRequest request = new LineRequest(line.getName(), line.getColor(),
-                A.getId(), B.getId(), AtoB.getDistance());
+                A.getId(), B.getId(), AtoB.getDistance(), line.getExtraFare());
 
         mockMvc.perform(post("/lines")
                         .content(objectMapper.writeValueAsString(request))
@@ -88,10 +88,10 @@ public class LineControllerIntegrationTest {
         Station A = stationDao.save(new Station("A역"));
         Station B = stationDao.save(new Station("B역"));
         Section AtoB = new Section(A, B, 10);
-        Line line = new Line(duplicated, "bg-red-300", new Sections(AtoB));
+        Line line = new Line(duplicated, "bg-red-300", 0, new Sections(AtoB));
 
         LineRequest request = new LineRequest(line.getName(), line.getColor(),
-                A.getId(), B.getId(), AtoB.getDistance());
+                A.getId(), B.getId(), AtoB.getDistance(), line.getExtraFare());
 
         mockMvc.perform(post("/lines")
                         .content(objectMapper.writeValueAsString(request))

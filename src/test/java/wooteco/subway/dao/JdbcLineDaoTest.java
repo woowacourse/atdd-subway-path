@@ -27,7 +27,7 @@ public class JdbcLineDaoTest {
     @DisplayName("노선을 저장한다")
     @Test
     void 노선_저장() {
-        Line line = new Line("2호선", "bg-green-600");
+        Line line = new Line("2호선", "bg-green-600", 0);
 
         LineEntity result = lineDao.save(LineEntity.from(line));
 
@@ -40,7 +40,7 @@ public class JdbcLineDaoTest {
     @DisplayName("중복된 노선을 저장할 경우 예외가 발생한다.")
     @Test
     void 중복된_노선_예외발생() {
-        Line line = new Line("2호선", "bg-green-600");
+        Line line = new Line("2호선", "bg-green-600", 0);
 
         lineDao.save(LineEntity.from(line));
 
@@ -58,10 +58,10 @@ public class JdbcLineDaoTest {
     @DisplayName("노선을 수정한다.")
     @Test
     void 노선_수정() {
-        Line line = new Line("2호선", "bg-green-600");
+        Line line = new Line("2호선", "bg-green-600", 0);
         LineEntity saved = lineDao.save(LineEntity.from(line));
 
-        LineEntity updated = lineDao.update(new LineEntity(saved.getId(), "2호선", "bg-yellow-600"));
+        LineEntity updated = lineDao.update(new LineEntity(saved.getId(), "2호선", "bg-yellow-600", 0));
 
         assertAll(
                 () -> assertThat(updated.getName()).isEqualTo("2호선"),

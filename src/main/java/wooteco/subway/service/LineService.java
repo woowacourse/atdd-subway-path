@@ -38,7 +38,7 @@ public class LineService {
     public LineResponse save(LineRequest lineRequest) {
         Section section = new Section(stationRepository.findById(lineRequest.getUpStationId()),
                 stationRepository.findById(lineRequest.getDownStationId()), lineRequest.getDistance());
-        Line line = new Line(lineRequest.getName(), lineRequest.getColor(), new Sections(section));
+        Line line = new Line(lineRequest.getName(), lineRequest.getColor(), 0, new Sections(section));
         try {
             Line savedLine = lineRepository.save(line);
             return LineResponse.from(savedLine);

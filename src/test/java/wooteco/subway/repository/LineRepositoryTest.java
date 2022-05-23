@@ -46,7 +46,7 @@ public class LineRepositoryTest {
         Station A = stationDao.save(new Station("A"));
         Station B = stationDao.save(new Station("B"));
         Section section = new Section(A, B, 10);
-        Line line = new Line("A호선", "yellow", new Sections(section));
+        Line line = new Line("A호선", "yellow", 0, new Sections(section));
 
         Line savedLine = lineRepository.save(line);
 
@@ -62,7 +62,7 @@ public class LineRepositoryTest {
         Station A = stationDao.save(new Station("A"));
         Station B = stationDao.save(new Station("B"));
         Section section = new Section(A, B, 10);
-        Line line = new Line("A호선", "yellow", new Sections(section));
+        Line line = new Line("A호선", "yellow", 0, new Sections(section));
 
         LineEntity savedLine = lineDao.save(LineEntity.from(line));
         sectionDao.save(SectionEntity.of(section, savedLine.getId()));
