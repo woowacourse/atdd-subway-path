@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,34 +18,52 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.section.Sections;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.LineUpdateRequest;
+import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.StationResponse;
+import wooteco.subway.exception.BothUpAndDownStationDoNotExistException;
+import wooteco.subway.exception.BothUpAndDownStationExistException;
+import wooteco.subway.exception.CanNotInsertSectionException;
 import wooteco.subway.exception.DuplicateNameException;
 import wooteco.subway.exception.NotFoundLineException;
+import wooteco.subway.exception.OnlyOneSectionException;
 
 @Transactional
 @JdbcTest
 class LineServiceTest {
 
-
     @Autowired
     private JdbcTemplate jdbcTemplate;
     private LineService lineService;
 
-    private StationResponse createdStation1;
-    private StationResponse createdStation2;
+    private LineResponse lineResponse;
+    private LineDao lineDao;
+
+    private StationResponse stationResponse1;
+    private StationResponse stationResponse2;
+    private StationResponse stationResponse3;
+    private StationResponse stationResponse4;
+    private StationResponse stationResponse5;
 
     @BeforeEach
     void setUp() {
-        lineService = new LineService(new LineDao(jdbcTemplate), new StationDao(jdbcTemplate),
-                new SectionDao(jdbcTemplate));
+        lineDao = new LineDao(jdbcTemplate);
+        lineService = new LineService(lineDao, new StationDao(jdbcTemplate), new SectionDao(jdbcTemplate));
         StationService stationService = new StationService(new StationDao(jdbcTemplate));
 
-        createdStation1 = stationService.createStation(new StationRequest("선릉역"));
-        createdStation2 = stationService.createStation(new StationRequest("잠실역"));
+        stationResponse1 = stationService.createStation(new StationRequest("선릉역"));
+        stationResponse2 = stationService.createStation(new StationRequest("삼성역"));
+        stationResponse3 = stationService.createStation(new StationRequest("종합운동장역"));
+        stationResponse4 = stationService.createStation(new StationRequest("잠실새내역"));
+        stationResponse5 = stationService.createStation(new StationRequest("잠실역"));
+
+        lineResponse = lineService.createLine(
+                new LineRequest("2호선", "bg-green-600", 500, stationResponse2.getId(), stationResponse4.getId(), 10));
     }
 
     // TODO: stations 도 함께 LineResponse에 포함해야함
@@ -51,11 +71,11 @@ class LineServiceTest {
     @Test
     void createLine() {
         // given
-        String name = "2호선";
+        String name = "3호선";
         String color = "bg-green-600";
         Integer extraFare = 500;
-        Long upStationId = createdStation1.getId();
-        Long downStationId = createdStation2.getId();
+        Long upStationId = stationResponse1.getId();
+        Long downStationId = stationResponse2.getId();
         Integer distance = 10;
 
         LineRequest lineRequest = new LineRequest(name, color, extraFare, upStationId, downStationId, distance);
@@ -77,12 +97,11 @@ class LineServiceTest {
         String name = "2호선";
         String color = "bg-green-600";
         Integer extraFare = 500;
-        Long upStationId = createdStation1.getId();
-        Long downStationId = createdStation2.getId();
+        Long upStationId = stationResponse1.getId();
+        Long downStationId = stationResponse2.getId();
         Integer distance = 10;
 
         LineRequest lineRequest = new LineRequest(name, color, extraFare, upStationId, downStationId, distance);
-        lineService.createLine(lineRequest);
 
         // when & then
         assertThatThrownBy(() -> lineService.createLine(lineRequest))
@@ -92,20 +111,6 @@ class LineServiceTest {
     @DisplayName("등록된 모든 노선을 반환한다.")
     @Test
     void getAllLines() {
-        // given
-        String lineName1 = "1호선";
-        String lineColor1 = "bg-blue-600";
-        String lineName2 = "2호선";
-        String lineColor2 = "bg-green-600";
-        Integer extraFare = 500;
-        LineRequest lineRequest1 = new LineRequest(lineName1, lineColor1, extraFare, createdStation1.getId(),
-                createdStation2.getId(), 10);
-        LineRequest lineRequest2 = new LineRequest(lineName2, lineColor2, extraFare, createdStation1.getId(),
-                createdStation2.getId(), 10);
-
-        lineService.createLine(lineRequest1);
-        lineService.createLine(lineRequest2);
-
         // when
         List<String> actualNames = lineService.getAllLines()
                 .stream()
@@ -117,8 +122,8 @@ class LineServiceTest {
                 .map(LineResponse::getColor)
                 .collect(Collectors.toList());
 
-        List<String> expectedNames = List.of("1호선", "2호선");
-        List<String> expectedColors = List.of("bg-blue-600", "bg-green-600");
+        List<String> expectedNames = List.of("2호선");
+        List<String> expectedColors = List.of("bg-green-600");
 
         // then
         assertAll(
@@ -134,8 +139,8 @@ class LineServiceTest {
         String lineName = "1호선";
         String lineColor = "bg-blue-600";
         Integer extraFare = 500;
-        LineRequest lineRequest = new LineRequest(lineName, lineColor, extraFare, createdStation1.getId(),
-                createdStation2.getId(), 10);
+        LineRequest lineRequest = new LineRequest(lineName, lineColor, extraFare, stationResponse1.getId(),
+                stationResponse2.getId(), 10);
 
         LineResponse createdLine = lineService.createLine(lineRequest);
 
@@ -157,13 +162,13 @@ class LineServiceTest {
         String lineName = "1호선";
         String lineColor = "bg-blue-600";
         Integer extraFare = 500;
-        LineRequest lineRequest = new LineRequest(lineName, lineColor, extraFare, createdStation1.getId(),
-                createdStation2.getId(),
+        LineRequest lineRequest = new LineRequest(lineName, lineColor, extraFare, stationResponse1.getId(),
+                stationResponse2.getId(),
                 10);
         LineResponse createdLine = lineService.createLine(lineRequest);
 
         // when
-        String newLineName = "2호선";
+        String newLineName = "새로운 호선";
         String newLineColor = "bg-red-600";
         LineUpdateRequest lineUpdateRequest = new LineUpdateRequest(newLineName, newLineColor);
         lineService.update(createdLine.getId(), lineUpdateRequest);
@@ -196,8 +201,8 @@ class LineServiceTest {
         String lineName = "1호선";
         String lineColor = "bg-blue-600";
         Integer extraFare = 500;
-        LineRequest lineRequest = new LineRequest(lineName, lineColor, extraFare, createdStation1.getId(),
-                createdStation2.getId(),
+        LineRequest lineRequest = new LineRequest(lineName, lineColor, extraFare, stationResponse1.getId(),
+                stationResponse2.getId(),
                 10);
         LineResponse createdLine = lineService.createLine(lineRequest);
 
@@ -219,5 +224,186 @@ class LineServiceTest {
     void delete_throwsExceptionIfLineIdIsNotExisting() {
         assertThatThrownBy(() -> lineService.delete(1L))
                 .isInstanceOf(NotFoundLineException.class);
+    }
+
+    @DisplayName("노선에 새로운 구간을 상행선 방향으로 추가")
+    @Test
+    void createSection_upStation() {
+        // given
+        Long lineId = lineResponse.getId();
+
+        System.out.println(lineResponse);
+
+        Long upStationId = stationResponse1.getId();
+        Long downStationId = stationResponse2.getId();
+        SectionRequest sectionRequest = new SectionRequest(upStationId, downStationId, 10);
+
+        // when
+        lineService.createSection(lineId, sectionRequest);
+
+        // then
+        Line line = lineDao.findById(lineId).get();
+        boolean isCreatedSectionExisting = line.getSections().getValue()
+                .stream()
+                .anyMatch(section -> section.getUpStation().getId().equals(sectionRequest.getUpStationId())
+                        && section.getDownStation().getId().equals(sectionRequest.getDownStationId()));
+
+        assertThat(isCreatedSectionExisting).isTrue();
+    }
+
+    @DisplayName("노선에 새로운 구간을 하행선 방향으로 추가")
+    @Test
+    void createSection_downStation() {
+        // given
+        Long lineId = lineResponse.getId();
+        Long upStationId = stationResponse4.getId();
+        Long downStationId = stationResponse5.getId();
+        SectionRequest sectionRequest = new SectionRequest(upStationId, downStationId, 10);
+
+        // when
+        lineService.createSection(lineId, sectionRequest);
+
+        // then
+        Sections sections = lineDao.findById(lineId).get().getSections();
+        boolean isCreatedSectionExisting = sections.getValue()
+                .stream()
+                .anyMatch(section -> section.getUpStation().getId().equals(sectionRequest.getUpStationId())
+                        && section.getDownStation().getId().equals(sectionRequest.getDownStationId()));
+
+        assertThat(isCreatedSectionExisting).isTrue();
+    }
+
+    @DisplayName("노선에 새로운 구간을 이미 존재하는 구간 사이에 삽입")
+    @Test
+    void createSection_inserting() {
+        // given
+        Long lineId = lineResponse.getId();
+        Long upStationId = stationResponse2.getId();
+        Long downStationId = stationResponse3.getId();
+        SectionRequest sectionRequest = new SectionRequest(upStationId, downStationId, 5);
+
+        // when
+        lineService.createSection(lineId, sectionRequest);
+
+        // then
+        Sections sections = lineDao.findById(lineId).get().getSections();
+        boolean isCreatedSectionExisting = sections.getValue()
+                .stream()
+                .anyMatch(section -> section.getUpStation().getId().equals(sectionRequest.getUpStationId())
+                        && section.getDownStation().getId().equals(sectionRequest.getDownStationId()));
+
+        assertThat(isCreatedSectionExisting).isTrue();
+    }
+
+    @DisplayName("삽입하려는 구간이 기존 구간보다 길이가 같거나 긴 경우 예외가 발생한다")
+    @ParameterizedTest
+    @ValueSource(ints = {10, 11, 100})
+    void createSection_throwsExceptionOnInsertingIfInsertedSectionIsLongerThanBaseSection(int distance) {
+        // given
+        Long lineId = lineResponse.getId();
+        Long upStationId = stationResponse2.getId();
+        Long downStationId = stationResponse3.getId();
+        SectionRequest sectionRequest = new SectionRequest(upStationId, downStationId, distance);
+
+        // when & then
+        assertThatThrownBy(() -> lineService.createSection(lineId, sectionRequest))
+                .isInstanceOf(CanNotInsertSectionException.class);
+    }
+
+    @DisplayName("추가하려는 구간의 모든 역이 이미 구간 목록에 모두 존재할 경우 예외가 발생한다")
+    @Test
+    void createSection_throwsExceptionIfBothUpAndDownStationAreAlreadyExisting() {
+        // given
+        Long lineId = lineResponse.getId();
+        Long upStationId = stationResponse2.getId();
+        Long downStationId = stationResponse4.getId();
+        SectionRequest sectionRequest = new SectionRequest(upStationId, downStationId, 10);
+
+        // when & then
+        assertThatThrownBy(() -> lineService.createSection(lineId, sectionRequest))
+                .isInstanceOf(BothUpAndDownStationExistException.class);
+    }
+
+    @DisplayName("추가하려는 구간의 모든 역이 구간 목록에 모두 존재하지 않을 경우 예외가 발생한다")
+    @Test
+    void createSection_throwsExceptionIfBothUpAndDownStationAreNotExisting() {
+        // given
+        Long lineId = lineResponse.getId();
+        Long upStationId = stationResponse1.getId();
+        Long downStationId = stationResponse5.getId();
+        SectionRequest sectionRequest = new SectionRequest(upStationId, downStationId, 10);
+
+        // when & then
+        assertThatThrownBy(() -> lineService.createSection(lineId, sectionRequest))
+                .isInstanceOf(BothUpAndDownStationDoNotExistException.class);
+    }
+
+    @DisplayName("상행종점역 제거")
+    @Test
+    void deleteStationById_upStation() {
+        // given
+        Long lineId = lineResponse.getId();
+        Long upStationId = stationResponse1.getId();
+        Long downStationId = stationResponse2.getId();
+        SectionRequest sectionRequest = new SectionRequest(upStationId, downStationId, 10);
+
+        lineService.createSection(lineId, sectionRequest);
+
+        // when
+        lineService.deleteStationById(lineId, upStationId);
+
+        // then
+        int actual = lineDao.findById(lineId).get().getSections().getValue().size();
+        assertThat(actual).isOne();
+    }
+
+    @DisplayName("하행종점역 제거")
+    @Test
+    void deleteStationById_downStation() {
+        // given
+        Long lineId = lineResponse.getId();
+        Long upStationId = stationResponse4.getId();
+        Long downStationId = stationResponse5.getId();
+        SectionRequest sectionRequest = new SectionRequest(upStationId, downStationId, 10);
+
+        lineService.createSection(lineId, sectionRequest);
+
+        // when
+        lineService.deleteStationById(lineId, downStationId);
+
+        // then
+        int actual = lineDao.findById(lineId).get().getSections().getValue().size();
+        assertThat(actual).isOne();
+    }
+
+    @DisplayName("중간역 제거")
+    @Test
+    void deleteStationById_betweenStation() {
+        // given
+        Long lineId = lineResponse.getId();
+        Long upStationId = stationResponse2.getId();
+        Long downStationId = stationResponse3.getId();
+        SectionRequest sectionRequest = new SectionRequest(upStationId, downStationId, 5);
+
+        lineService.createSection(lineId, sectionRequest);
+
+        // when
+        lineService.deleteStationById(lineId, downStationId);
+
+        // then
+        int actual = lineDao.findById(lineId).get().getSections().getValue().size();
+        assertThat(actual).isOne();
+    }
+
+    @DisplayName("구간이 단 하나인 구간 목록에서 역을 제거하면 예외가 발생한다")
+    @Test
+    void deleteStationById_throwsExceptionIfSectionsSizeIsOne() {
+        // given
+        Long lineId = lineResponse.getId();
+        Long deleteStationId = stationResponse2.getId();
+
+        // when & then
+        assertThatThrownBy(() -> lineService.deleteStationById(lineId, deleteStationId))
+                .isInstanceOf(OnlyOneSectionException.class);
     }
 }

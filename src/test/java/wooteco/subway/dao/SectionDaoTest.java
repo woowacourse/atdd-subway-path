@@ -107,7 +107,7 @@ class SectionDaoTest {
     }
 
     private void saveSections(Long lineId, Sections sections) {
-        sectionDao.removeAllSectionsByLineId(lineId);
+        sectionDao.deleteAllSectionsByLineId(lineId);
 
         for (Section section : sections.getValue()) {
             sectionDao.save(lineId, section);

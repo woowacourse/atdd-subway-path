@@ -9,7 +9,6 @@ import static wooteco.subway.Fixtures.강남역;
 import static wooteco.subway.Fixtures.부개역;
 import static wooteco.subway.Fixtures.부평역;
 import static wooteco.subway.Fixtures.삼호선;
-import static wooteco.subway.Fixtures.선릉_삼성_구간;
 import static wooteco.subway.Fixtures.역삼역;
 
 import java.util.List;
@@ -19,7 +18,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.LineRequest;
@@ -87,8 +85,7 @@ class LineDaoTest {
     void update() {
         Long targetLineId = savedLine.getId();
 
-        Line newLine = new Line("새로운 호선", COLOR3, new Fare(500), 선릉_삼성_구간);
-        lineDao.update(targetLineId, newLine);
+        lineDao.update(targetLineId, "새로운 호선", COLOR3);
 
         assertAll(
                 () -> assertThat(lineDao.findById(targetLineId).get().getName()).isEqualTo("새로운 호선"),
