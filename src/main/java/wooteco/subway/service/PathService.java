@@ -3,13 +3,9 @@ package wooteco.subway.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import wooteco.subway.domain.element.Section;
 import wooteco.subway.domain.element.Station;
-import wooteco.subway.domain.fare.Fare;
+import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.SubwayGraph;
-import wooteco.subway.domain.fare.AgeDiscountPolicy;
-import wooteco.subway.domain.policy.line.LineExtraFeePolicy;
-import wooteco.subway.domain.fare.PolicyFactory;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
 import wooteco.subway.service.dto.request.PathsRequest;
@@ -29,22 +25,19 @@ public class PathService {
     }
 
     public PathResponse showPaths(PathsRequest pathsRequest) {
-        List<Section> sections = sectionRepository.findAll();
-        SubwayGraph subwayGraph = new SubwayGraph(sections);
-
-        Station source = stationRepository.findById(pathsRequest.getSource());
-        Station target = stationRepository.findById(pathsRequest.getTarget());
-        List<Station> route = subwayGraph.getShortestRoute(source, target);
-        int distance = subwayGraph.getShortestDistance(source, target);
-        int fare = getFare(pathsRequest, subwayGraph, source, target, distance);
-        return new PathResponse(toStationResponse(route), distance, fare);
+        return toPathResponse(Path.create(
+                new SubwayGraph(sectionRepository.findAll()),
+                stationRepository.findById(pathsRequest.getSource()),
+                stationRepository.findById(pathsRequest.getTarget()),
+                pathsRequest.getAge()
+        ));
     }
 
-    private int getFare(PathsRequest pathsRequest, SubwayGraph subwayGraph, Station source, Station target,
-                        int distance) {
-        LineExtraFeePolicy lineFee = PolicyFactory.createLineFee(subwayGraph.getLines(source, target));
-        AgeDiscountPolicy ageDiscount = PolicyFactory.createAgeDiscount(pathsRequest.getAge());
-        return new Fare(List.of(lineFee, ageDiscount)).getFare(distance);
+    private PathResponse toPathResponse(Path path) {
+        return new PathResponse(
+                toStationResponse(path.getStations()),
+                path.getDistance(),
+                path.getFare());
     }
 
     private List<StationResponse> toStationResponse(List<Station> route) {
@@ -52,6 +45,4 @@ public class PathService {
                 .map(station -> new StationResponse(station.getId(), station.getName()))
                 .collect(Collectors.toList());
     }
-
 }
-
