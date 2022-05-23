@@ -1,7 +1,6 @@
 package wooteco.subway.utils;
 
 import wooteco.subway.domain.Section;
-import wooteco.subway.utils.StationFixture;
 
 public class SectionFixture {
 
@@ -15,7 +14,7 @@ public class SectionFixture {
 
     public static final Section LINE3_SECTION1 = new Section(StationFixture.STATION7, StationFixture.STATION3, 10);
     public static final Section LINE3_SECTION2 = new Section(StationFixture.STATION3, StationFixture.STATION8, 15);
-    public static final Section LINE3_SECTION3 = new Section(StationFixture.STATION8, StationFixture.STATION9,23);
+    public static final Section LINE3_SECTION3 = new Section(StationFixture.STATION8, StationFixture.STATION9, 23);
 
     public static final Section LINE4_SECTION1 = new Section(StationFixture.STATION10, StationFixture.STATION11, 10);
 }

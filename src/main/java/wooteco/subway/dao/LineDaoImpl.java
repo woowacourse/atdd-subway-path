@@ -112,7 +112,7 @@ public class LineDaoImpl implements LineDao {
                 + "LEFT JOIN STATION AS ds ON ds.id = s.down_station_id "
                 + "WHERE l.id = ?";
         try {
-            List<LineSection> lineSections = jdbcTemplate.  query(sql, joinRowMapper(), id);
+            List<LineSection> lineSections = jdbcTemplate.query(sql, joinRowMapper(), id);
             if (lineSections.isEmpty()) {
                 return Optional.empty();
             }

@@ -88,7 +88,7 @@ public class SubwayMapTest {
 
         assertAll(
                 () -> assertThat(path.getStations())
-                        .containsExactly(STATION1, STATION2,  STATION3, STATION8,  STATION9),
+                        .containsExactly(STATION1, STATION2, STATION3, STATION8, STATION9),
                 () -> assertThat(path.getDistance()).isEqualTo(58)
         );
     }
@@ -96,7 +96,7 @@ public class SubwayMapTest {
     @Test
     @DisplayName("출발역과 도착역이 연결되어있지 않으면 예외를 던져야 한다.")
     void findInvalidPath() {
-        assertThatThrownBy(() -> subwayMap.findShortestPath( STATION1, STATION10))
+        assertThatThrownBy(() -> subwayMap.findShortestPath(STATION1, STATION10))
                 .hasMessage("출발역과 도착역 사이에 연결된 경로가 없습니다.")
                 .isInstanceOf(EmptyResultException.class);
     }
