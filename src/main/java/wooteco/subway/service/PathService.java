@@ -29,8 +29,8 @@ public class PathService {
         Sections sections = sectionService.findAll();
         Path path = new Path(pathRequestDto.getSource(), pathRequestDto.getTarget(), stationIds, sections);
         Fare fare = new Fare();
-        List<StationResponse> stations = path.getShortestPath().stream()
-                .map(stationService::findById)
+        List<StationResponse> stations = stationService.findAll().stream()
+                .filter(it -> path.getShortestPath().contains(it.getId()))
                 .map(StationResponse::new)
                 .collect(Collectors.toList());
         return new PathResponse(stations, path.getTotalDistance(), fare.calculateFare(path.getTotalDistance()));

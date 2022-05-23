@@ -52,4 +52,8 @@ public class StationService {
             throw new NoSuchElementException("[ERROR] 존재하지 않는 역 입니다.");
         }
     }
+
+    public List<Station> findAll() {
+        return stationDao.findAll();
+    }
 }
