@@ -45,6 +45,7 @@ public class PathFixture {
                 .upStationId(선릉역_ID)
                 .downStationId(선정릉역_ID)
                 .distance(50)
+                .extraFare(0)
                 .build();
         ExtractableResponse<Response> 노선_1_응답 = post(LINE, 노선_1_요청);
         노선_1_ID = extractId(노선_1_응답);
@@ -69,6 +70,7 @@ public class PathFixture {
                 .upStationId(선정릉역_ID)
                 .downStationId(모란역_ID)
                 .distance(6)
+                .extraFare(0)
                 .build();
         ExtractableResponse<Response> 노선_2_응답 = post(LINE, 노선_2_요청);
         노선_2_ID = extractId(노선_2_응답);
@@ -79,6 +81,7 @@ public class PathFixture {
                 .upStationId(기흥역_ID)
                 .downStationId(모란역_ID)
                 .distance(10)
+                .extraFare(0)
                 .build();
         ExtractableResponse<Response> 노선_3_응답 = post(LINE, 노선_3_요청);
         노선_3_ID = extractId(노선_3_응답);
