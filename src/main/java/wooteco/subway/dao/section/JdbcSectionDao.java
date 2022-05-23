@@ -12,15 +12,13 @@ import wooteco.subway.domain.section.Section;
 @Repository
 public class JdbcSectionDao implements SectionDao {
 
-    private final RowMapper<Section> sectionRowMapper = (resultSet, rowNum) -> {
-        return new Section(
-                resultSet.getLong("id"),
-                resultSet.getLong("line_id"),
-                resultSet.getLong("up_station_id"),
-                resultSet.getLong("down_station_id"),
-                resultSet.getInt("distance")
-        );
-    };
+    private final RowMapper<Section> sectionRowMapper = (resultSet, rowNum) -> new Section(
+            resultSet.getLong("id"),
+            resultSet.getLong("line_id"),
+            resultSet.getLong("up_station_id"),
+            resultSet.getLong("down_station_id"),
+            resultSet.getInt("distance")
+    );
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -74,6 +72,6 @@ public class JdbcSectionDao implements SectionDao {
     @Override
     public boolean existSectionById(Long id) {
         final String sql = "select exists (select * from SECTION where id = ?)";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, id);
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, id));
     }
 }
