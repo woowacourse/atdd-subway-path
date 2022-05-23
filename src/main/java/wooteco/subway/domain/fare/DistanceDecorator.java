@@ -1,7 +1,5 @@
 package wooteco.subway.domain.fare;
 
-import wooteco.subway.domain.DistanceExtraFare;
-
 public class DistanceDecorator extends Decorator{
     private final int distance;
 

@@ -1,7 +1,5 @@
 package wooteco.subway.domain.fare;
 
-import wooteco.subway.domain.AgeFare;
-
 public class AgeDecorator extends Decorator{
 
     private final int age;
