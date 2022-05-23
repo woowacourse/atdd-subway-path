@@ -2,7 +2,9 @@ package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -32,5 +34,16 @@ class FareTest {
     @CsvSource({"51,2150", "56,2150", "59,2250"})
     void FirstRoleRoleOverDistanceFare(int distance, int actualFare) {
         assertThat(fare.calculateFare(distance)).isEqualTo(actualFare);
+    }
+
+    @DisplayName("노선별 Max 추가 요금을 찾는다.")
+    @Test
+    void calculateMaxExtraFare() {
+        // given
+        List<Line> lines = List.of(new Line(1L, "1호선", "노랑색", 100),
+                new Line(2L, "2호선", "파란색", 2000),
+                new Line(3L, "3호선", "주황색", 1000));
+
+        assertThat(fare.calculateMaxLineExtraFare(lines)).isEqualTo(2000);
     }
 }

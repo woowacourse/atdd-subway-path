@@ -49,8 +49,8 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-path/blob/maste
 
 ### 노선별 추가요금
 
-- [ ] 추가요금이 있는 노선을 이용할 경우, 측정된 요금에 추가한다.
-    -[ ] 경로 중 추가요금이 여러개 있을 경우, Max 값만 적용한다.
+- [x] 추가요금이 있는 노선을 이용할 경우, 측정된 요금에 추가한다.
+    -[x] 경로 중 추가요금이 여러개 있을 경우, Max 값만 적용한다.
 
 ### 연령별 요금 할인
 
