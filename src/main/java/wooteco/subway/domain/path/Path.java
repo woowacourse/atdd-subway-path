@@ -13,7 +13,7 @@ public class Path {
 
     private final DijkstraShortestPath<Long, ShortestPathEdge> dijkstraShortestPath;
 
-    public Path(DijkstraShortestPath<Long, ShortestPathEdge> dijkstraShortestPath) {
+    private Path(DijkstraShortestPath<Long, ShortestPathEdge> dijkstraShortestPath) {
         this.dijkstraShortestPath = dijkstraShortestPath;
     }
 
