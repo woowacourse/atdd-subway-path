@@ -25,11 +25,12 @@ public class Fare {
         }
     }
 
-    public static Fare from(final Distance distance) {
-        return new Fare(calculateFare(distance));
+    public static Fare from(final Distance distance, final int extraFare, final int age) {
+        int fareValue = calculateFareByDistance(distance) + extraFare;
+        return new Fare(DiscountByAgePolicy.find(age).applyDiscount(fareValue));
     }
 
-    public static int calculateFare(final Distance distance) {
+    private static int calculateFareByDistance(final Distance distance) {
         if (distance.isLessThanOrEqualByValue(DISTANCE_OF_BASIC_FARE)) {
             return BASIC_FARE;
         }
