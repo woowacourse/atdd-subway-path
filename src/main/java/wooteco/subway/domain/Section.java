@@ -17,7 +17,6 @@ public class Section {
 
     public Section(final Long id, final Station upStation, final Station downStation, final int distance) {
         validateSameStationId(upStation, downStation);
-        validateDistance(distance);
         this.id = id;
         this.upStation = upStation;
         this.downStation = downStation;
@@ -27,12 +26,6 @@ public class Section {
     private void validateSameStationId(final Station upStation, final Station downStation) {
         if (upStation.equals(downStation)) {
             throw new IllegalArgumentException("상행, 하행 역은 서로 달라야합니다.");
-        }
-    }
-
-    private void validateDistance(final int distance) {
-        if (distance <= MIN_DISTANCE) {
-            throw new IllegalArgumentException("구간의 거리는 0보다 커야합니다.");
         }
     }
 
