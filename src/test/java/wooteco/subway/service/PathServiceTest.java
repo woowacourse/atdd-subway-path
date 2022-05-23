@@ -80,4 +80,13 @@ public class PathServiceTest {
 
         assertThat(fare).isEqualTo(1850);
     }
+
+    @Test
+    @DisplayName("나이가 7살인 경우 350원을 공제한 요금 50%를 할인 받는다.")
+    void calculateFareWithChildDiscount() {
+        PathResponse pathResponse = pathService.findPath(1L, 2L, 7);
+        int fare = pathResponse.getFare();
+
+        assertThat(fare).isEqualTo(1100);
+    }
 }

@@ -138,6 +138,25 @@ public class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    @Test
+    @DisplayName("추가 요금이 존재하지 않고 노선 안의 구간의 거리가 12km이고 사용자가 7살일때, 요금은 850원이다.")
+    void calculateFareWithChildDiscount() {
+        Long lineId = createLine("테스트선", "bg-red-600", 강남역_ID, 선릉역_ID, 12, 0);
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .get("/paths?source=" + 강남역_ID + "&target=" + 선릉역_ID + "&age=" + 7)
+                .then().log().all()
+                .extract();
+
+        int fare = response.body().jsonPath().getInt("fare");
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(fare).isEqualTo(850)
+        );
+    }
+
     private ExtractableResponse<Response> createSection(final Long lineId, final Long upStationId,
                                                         final Long downStationId, final Integer distance) {
         Map<String, Object> params = new HashMap<>();
