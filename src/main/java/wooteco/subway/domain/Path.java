@@ -19,17 +19,9 @@ public class Path {
     }
 
     public int finalFare(int age) {
-        int fare = BASIC_FARE + lineExtraFare + distanceExtraFare();
-        int discount = ageDiscount(fare, age);
+        int fare = BASIC_FARE + lineExtraFare + DistanceCharge.calculateDistanceCharge(distance);
+        int discount = AgeDiscount.calculateAgeDiscount(age, fare);
         return fare - discount;
-    }
-
-    private int ageDiscount(int fare, int age) {
-        return AgeDiscount.findAgeDiscount(age).calculate(fare);
-    }
-
-    private int distanceExtraFare() {
-        return DistanceCharge.findDistanceCharge(distance).calculate(distance);
     }
 
     public List<Station> getStations() {

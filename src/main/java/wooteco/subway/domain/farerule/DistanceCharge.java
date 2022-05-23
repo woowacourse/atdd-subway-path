@@ -22,10 +22,11 @@ public enum DistanceCharge implements Predicate<Integer> {
         return this.calculateCharge.apply(distance);
     }
 
-    public static DistanceCharge findDistanceCharge(int distance) {
+    public static int calculateDistanceCharge(int distance) {
         return Arrays.stream(DistanceCharge.values())
                 .filter(type -> type.test(distance))
                 .findFirst()
+                .map(distanceCharge -> distanceCharge.calculate(distance))
                 .orElseThrow(() -> new IllegalArgumentException("거리는 음수가 될 수 없습니다."));
     }
 

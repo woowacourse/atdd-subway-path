@@ -23,10 +23,11 @@ public enum AgeDiscount implements Predicate<Integer> {
         return this.calculateDiscount.apply(fare);
     }
 
-    public static AgeDiscount findAgeDiscount(int age) {
+    public static int calculateAgeDiscount(int age, int fare) {
         return Arrays.stream(AgeDiscount.values())
                 .filter(type -> type.test(age))
                 .findFirst()
+                .map(ageDiscount -> ageDiscount.calculate(fare))
                 .orElseThrow(() -> new IllegalArgumentException("나이는 음수가 될 수 없습니다."));
     }
 
