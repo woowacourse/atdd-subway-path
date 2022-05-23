@@ -28,13 +28,13 @@ public class LineService {
     }
 
     @Transactional
-    public LineResponse save(String name, String color, Long upStationId, Long downStationId, int distance) {
+    public LineResponse save(String name, String color, Long upStationId, Long downStationId, int distance, int extraFare) {
         validateName(name);
 
         final Station upStation = stationService.findStationById(upStationId);
         final Station downStation = stationService.findStationById(downStationId);
 
-        final Line line = Line.initialCreateWithoutId(name, color, upStation, downStation, distance);
+        final Line line = Line.initialCreateWithoutId(name, color, upStation, downStation, distance, extraFare);
         final Line savedLine = lineDao.save(line);
         sectionDao.save(line.getSections(), savedLine.getId());
         return new LineResponse(savedLine, List.of(new StationResponse(upStation), new StationResponse(downStation)));
@@ -54,10 +54,10 @@ public class LineService {
     }
 
     @Transactional
-    public void updateLine(Long id, String name, String color) {
+    public void updateLine(Long id, String name, String color, int extraFare) {
         validateName(name);
 
-        lineDao.updateLineById(id, name, color);
+        lineDao.updateLineById(id, name, color, extraFare);
     }
 
     @Transactional(readOnly = true)
@@ -98,5 +98,9 @@ public class LineService {
     private void updateSection(Long lineId, Line line) {
         sectionDao.deleteByLineId(lineId);
         sectionDao.save(line.getSections(), lineId);
+    }
+
+    public int findMaxExtraFareByLineIds(List<Long> usedLines) {
+        return lineDao.findMaxExtraFareByLineIds(usedLines);
     }
 }

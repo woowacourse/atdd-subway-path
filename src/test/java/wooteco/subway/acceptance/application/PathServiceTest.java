@@ -3,6 +3,7 @@ package wooteco.subway.acceptance.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
 
@@ -16,6 +17,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import wooteco.subway.application.LineService;
 import wooteco.subway.application.PathService;
 import wooteco.subway.application.StationService;
 import wooteco.subway.dao.SectionDao;
@@ -33,6 +35,8 @@ class PathServiceTest {
     @Mock
     private StationService stationService;
     @Mock
+    private LineService lineService;
+    @Mock
     private SectionDao sectionDao;
 
     @DisplayName("최단 경로와 거리에 비례한 요금이 정확힌지 확인")
@@ -46,6 +50,7 @@ class PathServiceTest {
         final List<Section> sections = List.of(Section.createWithoutId(강남역, 역삼역, distance));
 
         given(sectionDao.findAll()).willReturn(sections);
+        given(lineService.findMaxExtraFareByLineIds(any())).willReturn(0);
         doReturn(강남역).when(stationService).findStationById(1L);
         doReturn(역삼역).when(stationService).findStationById(2L);
         // when
@@ -77,5 +82,32 @@ class PathServiceTest {
         //then
         assertThatThrownBy(() -> pathService.getPath(1L, 3L))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("추가 요금이 있는 노선을 지나면 요금이 추가된다.")
+    @Test
+    void getPathHavingExtraFareLine() {
+        //given
+        final Station 강남역 = new Station("강남역");
+        final Station 역삼역 = new Station("역삼역");
+        final Station 삼성역 = new Station("삼성역");
+
+        final List<Section> sections = List.of(Section.createWithLine(1L, 1L, 강남역, 역삼역, 5),
+                Section.createWithLine(2L, 2L, 역삼역, 삼성역, 5));
+        given(sectionDao.findAll()).willReturn(sections);
+        given(lineService.findMaxExtraFareByLineIds(any())).willReturn(900);
+        doReturn(강남역).when(stationService).findStationById(1L);
+        doReturn(삼성역).when(stationService).findStationById(3L);
+        //when
+        PathResponse pathResponse = pathService.getPath(1L, 3L);
+        //then
+        final List<String> stationNames = pathResponse.getStations().stream()
+                .map(StationResponse::getName)
+                .collect(Collectors.toList());
+        assertAll(
+                () -> assertThat(pathResponse.getFare()).isEqualTo(2150),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(10),
+                () -> assertThat(stationNames).containsExactly("강남역", "역삼역", "삼성역")
+        );
     }
 }

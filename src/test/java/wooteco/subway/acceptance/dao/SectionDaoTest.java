@@ -3,10 +3,10 @@ package wooteco.subway.acceptance.dao;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import javax.sql.DataSource;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
@@ -22,9 +22,9 @@ public class SectionDaoTest {
     private final SectionDao sectionDao;
 
     @Autowired
-    public SectionDaoTest(JdbcTemplate jdbcTemplate) {
-        lineDao = new LineDao(jdbcTemplate);
-        sectionDao = new SectionDao(jdbcTemplate);
+    public SectionDaoTest(DataSource dataSource) {
+        lineDao = new LineDao(dataSource);
+        sectionDao = new SectionDao(dataSource);
     }
 
     @Test

@@ -3,6 +3,7 @@ package wooteco.subway.dao;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+import javax.sql.DataSource;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -14,8 +15,8 @@ public class SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public SectionDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public SectionDao(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     public void save(List<Section> sections, Long lineId) {
@@ -24,12 +25,14 @@ public class SectionDao {
 
     public List<Section> findAll() {
         final String sql =
-                "select s.id sid, s.distance sdistance, us.id usid, us.name usname, ds.id dsid, ds.name dsname " +
+                "select s.id sid, s.line_id slid, s.distance sdistance, us.id usid, us.name usname, ds.id dsid, ds.name dsname " +
                         "from sections s " +
                         "join station us on s.up_station_id = us.id " +
                         "join station ds on s.down_station_id = ds.id";
         return jdbcTemplate.query(sql, ((rs, rowNum) -> {
-            return Section.createWithId(rs.getLong("sid"), new Station(rs.getLong("usid"), rs.getString("usname")),
+            return Section.createWithLine(rs.getLong("sid"),
+                    rs.getLong("slid"),
+                    new Station(rs.getLong("usid"), rs.getString("usname")),
                     new Station(rs.getLong("dsid"), rs.getString("dsname")), rs.getInt("sdistance"));
         }));
     }

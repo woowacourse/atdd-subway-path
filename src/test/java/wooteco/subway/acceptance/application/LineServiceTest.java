@@ -42,14 +42,14 @@ class LineServiceTest {
         //given
         final String name = "신분당선";
         final String color = "빨강이";
-        final Line line = Line.initialCreateWithoutId(name, color, 강남역, 청계산입구역, 1);
+        final Line line = Line.initialCreateWithoutId(name, color, 강남역, 청계산입구역, 1, 0);
         given(lineDao.existsByName(name)).willReturn(false);
         given(lineDao.save(any())).willReturn(line);
         doReturn(강남역).when(stationService).findStationById(1L);
         doReturn(청계산입구역).when(stationService).findStationById(2L);
 
         //when
-        final LineResponse lineResponse = lineService.save(name, color, 1L, 2L, 1);
+        final LineResponse lineResponse = lineService.save(name, color, 1L, 2L, 1, 0);
 
         //then
         assertThat(lineResponse.getName()).isEqualTo(name);
@@ -63,15 +63,15 @@ class LineServiceTest {
         final String color = "빨강이";
         given(lineDao.existsByName(name)).willReturn(true);
         //then
-        assertThatThrownBy(() -> lineService.save(name, color, 1L, 2L, 1))
+        assertThatThrownBy(() -> lineService.save(name, color, 1L, 2L, 1, 0))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void showLines() {
         //given
-        final List<Line> lines = List.of(Line.initialCreateWithoutId("신분당선", "빨강이", 강남역, 청계산입구역, 1),
-                Line.initialCreateWithoutId("2호선", "초록이", 강남역, 청계산입구역, 2));
+        final List<Line> lines = List.of(Line.initialCreateWithoutId("신분당선", "빨강이", 강남역, 청계산입구역, 1, 0),
+                Line.initialCreateWithoutId("2호선", "초록이", 강남역, 청계산입구역, 2, 0));
         given(lineDao.findAll()).willReturn(lines);
         //when
         final List<LineResponse> lineResponses = lineService.showLines();
@@ -82,7 +82,7 @@ class LineServiceTest {
     @Test
     void showLine() {
         //given
-        final Line line = Line.createWithId(1L, "신분당선", "color", List.of(Section.createWithId(1L, 강남역, 청계산입구역, 5)));
+        final Line line = Line.createWithId(1L, "신분당선", "color", 0, List.of(Section.createWithId(1L, 강남역, 청계산입구역, 5)));
         given(lineDao.findById(1L)).willReturn(line);
         //when
         final LineResponse lineResponse = lineService.showLine(1L);

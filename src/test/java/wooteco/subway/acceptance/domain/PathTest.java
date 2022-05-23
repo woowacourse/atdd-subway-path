@@ -76,18 +76,4 @@ class PathTest {
         // then
         assertThat(actual).containsExactly(강남역, 역삼역, 선릉역, 삼성역, 종합운동장역, 잠실새내역);
     }
-
-    @DisplayName("강남역에서 잠실역까지의 요금은 1650원이다.")
-    @Test
-    void fare_of_shortest_path() {
-        // given
-        Path createdPath = Path.from(sections, 강남역, 잠실역);
-
-        // when
-        int actual = createdPath.getFare();
-
-        // then
-        int expected = 1650;
-        assertThat(actual).isEqualTo(expected);
-    }
 }
