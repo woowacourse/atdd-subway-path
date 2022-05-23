@@ -7,9 +7,9 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.fare.AgeDiscount;
 import wooteco.subway.domain.fare.FareCalculator;
 import wooteco.subway.domain.fare.strategy.fare.DefaultFareStrategy;
-import wooteco.subway.domain.fare.strategy.utils.AgeDiscountStrategyFinder;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.PathFinder;
 import wooteco.subway.dto.PathResponse;
@@ -34,7 +34,7 @@ public class PathService {
         List<Long> passedLineIds = path.findPassedLineIds();
 
         FareCalculator fareCalculator = new FareCalculator(new DefaultFareStrategy(),
-                AgeDiscountStrategyFinder.findStrategy(age));
+                AgeDiscount.findAgeDiscount(age));
 
         int maxExtraFare = lineDao.getMaxFareByLineIds(passedLineIds);
 

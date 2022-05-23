@@ -36,6 +36,6 @@
 ### 피드백 반영
 - [x] 누락된 테스트 코드 작성
 - [x] id 인자에 primitive type 사용해보기
-- [ ] 연령과 할인율에 enum 사용해보기
+- [x] 연령과 할인율에 enum 사용해보기
 - [ ] findPassedLineIds() 와 lineDao.getMaxFareByLineIds(passedLineIds)의 비즈니스 로직을 도메인 객체 안으로 숨겨보기
 - [ ] 테스트 최적화 해보기 ( 테스트 속도개선 )

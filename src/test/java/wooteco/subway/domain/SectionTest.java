@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.utils.TestConstants.PARAMETERIZED_NAME;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,7 +11,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 class SectionTest {
 
     @DisplayName("기존 거리보다 더 크거나 같은지 확인한다.")
-    @ParameterizedTest
+    @ParameterizedTest(name = PARAMETERIZED_NAME)
     @CsvSource(value = {"10,true", "11,true", "9,false", "1,false"})
     void isGreaterOrEqualTo(final int distance, final boolean expected) {
         // given

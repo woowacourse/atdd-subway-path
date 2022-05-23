@@ -3,6 +3,7 @@ package wooteco.subway.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static wooteco.subway.utils.TestConstants.PARAMETERIZED_NAME;
 
 import java.util.List;
 import java.util.Optional;
@@ -50,7 +51,7 @@ class SectionsTest {
     }
 
     @DisplayName("상행 구간 등록시 역 사이 거리가 기존 구간보다 크거나 같을 경우 예외를 발생한다.")
-    @ParameterizedTest
+    @ParameterizedTest(name = PARAMETERIZED_NAME)
     @ValueSource(ints = {10, 11, 15})
     void add_throwsUpSectionDistanceException(final int distance) {
         // given
@@ -70,7 +71,7 @@ class SectionsTest {
     }
 
     @DisplayName("하행 구간 등록시 역 사이 거리가 기존 구간보다 크거나 같을 경우 예외를 발생한다.")
-    @ParameterizedTest
+    @ParameterizedTest(name = PARAMETERIZED_NAME)
     @ValueSource(ints = {10, 11, 15})
     void add_throwsDownSectionDistanceException(final int distance) {
         // given
@@ -253,7 +254,7 @@ class SectionsTest {
     }
 
     @DisplayName("종점 구간의 역을 삭제한다.")
-    @ParameterizedTest
+    @ParameterizedTest(name = PARAMETERIZED_NAME)
     @ValueSource(longs = {2, 3})
     void deleteEndSection(final long stationId) {
         // given
