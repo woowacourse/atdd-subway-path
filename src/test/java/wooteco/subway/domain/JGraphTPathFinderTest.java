@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.path.JGraphTPathFinder;
+import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.path.PathFinder;
 import wooteco.subway.exception.notfound.NotFoundPathException;
 import wooteco.subway.exception.notfound.NotFoundStationException;
 
@@ -39,10 +42,10 @@ class JGraphTPathFinderTest {
                 .sum();
         final List<Station> expectedStations = List.of(강남역, 역삼역, 선릉역, 성담빌딩);
 
-        final Path path = pathFinder.searchShortestPath(sections, 강남역, 성담빌딩);
+        final Path path = pathFinder.searchShortestPath(new Sections(sections), 강남역, 성담빌딩);
 
         // when
-        final int distance = path.getDistance();
+        final long distance = path.getDistance();
         final List<Station> stations = path.getStations();
 
         // then
@@ -61,10 +64,10 @@ class JGraphTPathFinderTest {
                 .sum();
         final List<Station> expectedStations = List.of(성담빌딩, 선릉역, 역삼역, 강남역);
 
-        final Path path = pathFinder.searchShortestPath(sections, 성담빌딩, 강남역);
+        final Path path = pathFinder.searchShortestPath(new Sections(sections), 성담빌딩, 강남역);
 
         // when
-        final int distance = path.getDistance();
+        final long distance = path.getDistance();
         final List<Station> stations = path.getStations();
 
         // then
@@ -82,7 +85,7 @@ class JGraphTPathFinderTest {
         final Station target = 압구정역;
 
         // when & then
-        assertThatThrownBy(() -> pathFinder.searchShortestPath(sections, source, target))
+        assertThatThrownBy(() -> pathFinder.searchShortestPath(new Sections(sections), source, target))
                 .isInstanceOf(NotFoundStationException.class);
     }
 
@@ -95,7 +98,7 @@ class JGraphTPathFinderTest {
         final Station target = 선릉역;
 
         // when & then
-        assertThatThrownBy(() -> pathFinder.searchShortestPath(sections, source, target))
+        assertThatThrownBy(() -> pathFinder.searchShortestPath(new Sections(sections), source, target))
                 .isInstanceOf(NotFoundPathException.class);
     }
 }
