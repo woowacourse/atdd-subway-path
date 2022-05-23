@@ -51,28 +51,28 @@ class PathServiceTest {
     }
 
     private void createLine1() {
-        Long lineId1 = lineDao.save(new Line("1", "red", 20));
+        Long lineId1 = lineDao.save(new Line("1", "red", 0));
         sectionDao.save(new Section(stations.get(0), stations.get(1), 5), lineId1);
         sectionDao.save(new Section(stations.get(1), stations.get(2), 15), lineId1);
         sectionDao.save(new Section(stations.get(2), stations.get(3), 10), lineId1);
     }
 
     private void createLine2() {
-        Long lineId2 = lineDao.save(new Line("2", "greed", 20));
+        Long lineId2 = lineDao.save(new Line("2", "greed", 500));
         sectionDao.save(new Section(stations.get(1), stations.get(4), 4), lineId2);
         sectionDao.save(new Section(stations.get(4), stations.get(5), 7), lineId2);
         sectionDao.save(new Section(stations.get(5), stations.get(6), 4), lineId2);
     }
 
     private void createLine3() {
-        Long lineId3 = lineDao.save(new Line("3", "orange", 20));
+        Long lineId3 = lineDao.save(new Line("3", "orange", 900));
         sectionDao.save(new Section(stations.get(6), stations.get(2), 10), lineId3);
         sectionDao.save(new Section(stations.get(2), stations.get(7), 15), lineId3);
         sectionDao.save(new Section(stations.get(7), stations.get(8), 23), lineId3);
     }
 
     private void createLine4() {
-        Long lineId4 = lineDao.save(new Line("4", "blue", 20));
+        Long lineId4 = lineDao.save(new Line("4", "blue", 900));
         sectionDao.save(new Section(stations.get(9), stations.get(10), 10), lineId4);
     }
 
@@ -98,7 +98,7 @@ class PathServiceTest {
                 StationResponse.from(stations.get(8))
         );
         assertThat(pathResponse.getDistance()).isEqualTo(58);
-        assertThat(pathResponse.getFare()).isEqualTo(2150);
+        assertThat(pathResponse.getFare()).isEqualTo(3050);
     }
 
     @Test
@@ -108,5 +108,19 @@ class PathServiceTest {
         assertThatThrownBy(() -> pathService.findShortestPath(pathRequest))
                 .hasMessage("출발역과 도착역이 동일합니다.")
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("노선 추가 요금을 더해서 반환한다.")
+    void findShortestPath_lineFare() {
+        PathRequest pathRequest = new PathRequest(stations.get(0).getId(), stations.get(4).getId(), 20);
+        PathResponse pathResponse = pathService.findShortestPath(pathRequest);
+        assertThat(pathResponse.getStations()).containsExactly(
+                StationResponse.from(stations.get(0)),
+                StationResponse.from(stations.get(1)),
+                StationResponse.from(stations.get(4))
+        );
+        assertThat(pathResponse.getDistance()).isEqualTo(9);
+        assertThat(pathResponse.getFare()).isEqualTo(1750);
     }
 }
