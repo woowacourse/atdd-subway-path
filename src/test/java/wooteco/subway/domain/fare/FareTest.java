@@ -42,19 +42,19 @@ public class FareTest {
         PathFindingStrategy pathFindingStrategy = new TestPathFindingStrategy(Integer.parseInt(distance),
             List.of(1L, 2L, 3L));
         Fare fare = new Fare(new DistanceFareStrategy(), new AgeDiscountStrategy());
-        Path path = new Path(new Lines(List.of(line1, line2)), pathFindingStrategy, new Station("강남역"),
+        Path path = new Path(new Lines(List.of(line1, line2, line3)), pathFindingStrategy, new Station("강남역"),
             new Station("선릉역"));
         assertThat(fare.calculate(path, 18)).isEqualTo(Integer.parseInt(resultFare));
     }
 
     @DisplayName("운임에 따른 요금을 반환한다(13세 이상 19세 미만)")
     @ParameterizedTest(name = "{displayName} : {arguments}")
-    @CsvSource(value = {"9,900", "12,950", "16,1000", "58,1350"})
+    @CsvSource(value = {"9,700", "12,750", "16,800", "58,1150"})
     void getFareOver6Under13(String distance, String resultFare) {
         PathFindingStrategy pathFindingStrategy = new TestPathFindingStrategy(Integer.parseInt(distance),
             List.of(1L, 2L, 3L));
         Fare fare = new Fare(new DistanceFareStrategy(), new AgeDiscountStrategy());
-        Path path = new Path(new Lines(List.of(line1, line2)), pathFindingStrategy, new Station("강남역"),
+        Path path = new Path(new Lines(List.of(line3, line2)), pathFindingStrategy, new Station("강남역"),
             new Station("선릉역"));
         assertThat(fare.calculate(path, 6)).isEqualTo(Integer.parseInt(resultFare));
     }
