@@ -1,16 +1,19 @@
 package wooteco.subway.service;
 
 import java.util.List;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.BasicFareStrategy;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
+import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.request.PathRequest;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.exception.NotFoundStationException;
+import wooteco.subway.utils.Jgrapht;
 
 @Service
 public class PathService {
@@ -31,12 +34,15 @@ public class PathService {
         Station target = stationDao.findById(pathRequest.getTarget())
                 .orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE));
 
-        Path path = new Path(sectionDao.findAll());
-        List<Station> shortestPath = path.createShortestPath(source, target);
-        int distance = path.calculateDistance(source, target);
+        List<Section> sections = sectionDao.findAll();
+        DijkstraShortestPath shortestPath = Jgrapht.initSectionGraph(sections);
+        List<Station> stations = Jgrapht.createShortestPath(shortestPath, source, target);
+        int distance = Jgrapht.calculateDistance(shortestPath, source, target);
+
+        Path path = new Path(stations, distance);
         Fare fare = new Fare();
 
-        return new PathResponse(shortestPath, distance,
-                fare.calculateFare(distance, new BasicFareStrategy()));
+        return new PathResponse(path, fare.calculateFare(distance, new BasicFareStrategy()));
     }
+
 }
