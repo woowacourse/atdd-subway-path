@@ -99,4 +99,8 @@ public class SectionService {
 
         sectionDao.updateLineOrderByDec(lineId, section.getLineOrder());
     }
+
+    public List<Section> findAll() {
+        return sectionDao.findAll();
+    }
 }

@@ -1,7 +1,10 @@
 package wooteco.subway.domain;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -83,5 +86,12 @@ public class Path {
         return path.stream()
             .mapToInt(Section::getDistance)
             .sum();
+    }
+
+    public List<Long> getLineIds() {
+        return path.stream()
+            .map(Section::getLineId)
+            .distinct()
+            .collect(Collectors.toList());
     }
 }

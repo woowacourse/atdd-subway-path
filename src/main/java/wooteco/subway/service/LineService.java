@@ -110,4 +110,8 @@ public class LineService {
     public void delete(Long lineId) {
         lineDao.deleteById(lineId);
     }
+
+    public int getMaxExtraFare(List<Long> lineIds) {
+        return lineDao.findMaxExtraFare(lineIds);
+    }
 }

@@ -65,4 +65,20 @@ class PathTest {
             .isInstanceOf(NotFoundPathException.class)
             .hasMessageContaining("같은 위치로는 경로를 찾을 수 없습니다.");
     }
+
+    @Test
+    @DisplayName("경로에 포함된 노선들의 ID 반환")
+    void getLineIdsInPath() {
+        List<Section> sections = List.of(
+            new Section(1L, 1L, 1L, 2L, 5, 1L),
+            new Section(2L, 1L, 2L, 3L, 5, 2L),
+            new Section(3L, 2L, 3L, 4L, 5, 1L),
+            new Section(3L, 3L, 3L, 5L, 5, 1L)
+        );
+        Path path = Path.of(new Sections(sections), 1L, 5L);
+
+        List<Long> lineIds = path.getLineIds();
+
+        assertThat(lineIds).containsExactly(1L, 3L);
+    }
 }

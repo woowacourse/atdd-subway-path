@@ -22,4 +22,6 @@ public interface LineDao {
     boolean existByNameExceptSameId(Long lineId, Line line);
 
     boolean existByColorExceptSameId(Long lineId, Line line);
+
+    int findMaxExtraFare(List<Long> lineIds);
 }
