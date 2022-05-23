@@ -1,30 +1,73 @@
 package wooteco.subway.dao;
 
-import org.springframework.util.ReflectionUtils;
+import java.sql.PreparedStatement;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Station;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
+@Repository
 public class StationDao {
-    private static Long seq = 0L;
-    private static List<Station> stations = new ArrayList<>();
 
-    public static Station save(Station station) {
-        Station persistStation = createNewObject(station);
-        stations.add(persistStation);
-        return persistStation;
+    private static final RowMapper<Station> STATION_ROW_MAPPER = (resultSet, rowNum) -> {
+        return new Station(
+                resultSet.getLong("id"),
+                resultSet.getString("name")
+        );
+    };
+
+    private final JdbcTemplate jdbcTemplate;
+
+    public StationDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
-    public static List<Station> findAll() {
-        return stations;
+    public long save(final Station station) {
+        final String sql = "insert into STATION (name) values (?)";
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, new String[]{"id"});
+            preparedStatement.setString(1, station.getName());
+            return preparedStatement;
+        }, keyHolder);
+
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
-    private static Station createNewObject(Station station) {
-        Field field = ReflectionUtils.findField(Station.class, "id");
-        field.setAccessible(true);
-        ReflectionUtils.setField(field, station, ++seq);
-        return station;
+    public Optional<Station> findById(final Long id) {
+        final String sql = "select id, name from STATION where id = ?";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, STATION_ROW_MAPPER, id));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
+    }
+
+    public boolean existStationById(final Long id) {
+        final String sql = "select exists (select * from STATION where id = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, id);
+    }
+
+    public boolean existStationByName(final String name) {
+        final String sql = "select exists (select * from STATION where name = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, name);
+    }
+
+    public List<Station> findAll() {
+        final String sql = "select id, name from STATION";
+        return jdbcTemplate.query(sql, STATION_ROW_MAPPER);
+    }
+
+    public void delete(final Long id) {
+        final String sql = "delete from STATION where id = ?";
+        jdbcTemplate.update(sql, id);
     }
 }
