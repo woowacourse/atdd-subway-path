@@ -10,12 +10,6 @@ public class Fare {
     private static final int ABOVE_FIFTY_KM_POLICY = 8;
     private static final int MAXIMUM_ADDITIONAL_FAIR_PRICE_BELOW_FIFTY_KM_POLICY = 800;
 
-    private final int price;
-
-    public Fare(final int price) {
-        this.price = price;
-    }
-
     public static int calculate(final int distance,
                                 final int extraFareByLine,
                                 final AgeDiscountPolicy ageDiscountPolicy) {
@@ -23,7 +17,7 @@ public class Fare {
         return ageDiscountPolicy.getDiscountedFare(fare);
     }
 
-    public static int calculateFareByDistance(final double distance) {
+    private static int calculateFareByDistance(final double distance) {
         if (distance <= MINIMUM_DISTANCE_BOUNDARY) {
             return MINIMUM_FARE_PRICE;
         }
@@ -42,9 +36,5 @@ public class Fare {
 
     private static int calculateByPolicy(final double overFaredDistance, final int policy) {
         return (int) ((Math.ceil((overFaredDistance) / policy)) * OVER_FARE_PRICE);
-    }
-
-    public int getPrice() {
-        return price;
     }
 }
