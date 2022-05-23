@@ -8,8 +8,6 @@ import wooteco.subway.service.dto.LineServiceResponse;
 import wooteco.subway.service.dto.SectionServiceDeleteRequest;
 import wooteco.subway.ui.dto.SectionRequest;
 
-import javax.validation.Valid;
-
 @RestController
 @RequestMapping("/lines/{id}/sections")
 public class SectionController {
