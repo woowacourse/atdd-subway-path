@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestConstructor;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
@@ -27,7 +28,7 @@ import static wooteco.subway.utils.SectionFixture.*;
 import static wooteco.subway.utils.StationFixture.*;
 
 @SpringBootTest
-@Transactional
+@Sql(scripts = {"classpath:schema-reset.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 class PathServiceTest {
     private final LineDao lineDao;
@@ -83,7 +84,8 @@ class PathServiceTest {
     private void createStations() {
         List<Station> stations = List.of(STATION1, STATION2, STATION3, STATION4, STATION5, STATION6, STATION7, STATION8, STATION9, STATION10, STATION11);
         for (Station station : stations) {
-            stationDao.save(station);
+            Station save = stationDao.save(station);
+            System.out.println(save.getId());
         }
     }
 
