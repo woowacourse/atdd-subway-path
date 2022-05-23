@@ -36,7 +36,8 @@ public class LineService {
 
     public LineResponse create(LineRequest lineRequest) {
         validateDuplicateNameOrColor(lineRequest.getName(), lineRequest.getColor());
-        Line line = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
+        Line line = new Line(lineRequest.getName(), lineRequest.getColor(),
+                lineRequest.getExtraFare());
         Station upStation = getStation(lineRequest.getUpStationId());
         Station downStation = getStation(lineRequest.getDownStationId());
 
@@ -102,9 +103,9 @@ public class LineService {
     private void isDeleteOrSave(Section removedSection) {
         if (removedSection.getId() == null) {
             sectionRepository.save(removedSection);
-        } else {
-            sectionRepository.deleteById(removedSection.getId());
+            return;
         }
+        sectionRepository.deleteById(removedSection.getId());
     }
 
     private Station getStation(Long stationId) {
