@@ -34,7 +34,7 @@ public class PathControllerTest {
         final Station departure = stationService.findStationById(1L);
         final Station arrival = stationService.findStationById(3L);
 
-        mockMvc.perform(get("/paths?source=" + departure.getId() + "&target=" + arrival.getId()))
+        mockMvc.perform(get("/paths?source=" + departure.getId() + "&target=" + arrival.getId() + "&age=" + 20))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("distance").value(10))
                 .andExpect(jsonPath("fare").value(1250))
@@ -50,7 +50,7 @@ public class PathControllerTest {
         final Station arrival = stationService.findStationById(6L);
         final int expectedFare = 1750;
 
-        mockMvc.perform(get("/paths?source=" + departure.getId() + "&target=" + arrival.getId()))
+        mockMvc.perform(get("/paths?source=" + departure.getId() + "&target=" + arrival.getId() + "&age=" + 20))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("distance").value(10))
                 .andExpect(jsonPath("fare").value(expectedFare))
