@@ -6,18 +6,18 @@ public enum Fare {
 
     BASIC(9, 0, 0, 0),
     FIRST_SECTION(50, 10, 5, 1250),
-    SECOND_SECTION(51, 50, 8, 2050);
+    SECOND_SECTION(51, 50, 8, 1250 + 800);
 
     private static final int BASIC_FARE = 1250;
 
     private final int section;
-    private final int basicSection;
+    private final int previousSection;
     private final int unit;
     private final int previousSectionFare;
 
-    Fare(int section, int basicSection, int unit, int previousSectionFare) {
+    Fare(int section, int previousSection, int unit, int previousSectionFare) {
         this.section = section;
-        this.basicSection = basicSection;
+        this.previousSection = previousSection;
         this.unit = unit;
         this.previousSectionFare = previousSectionFare;
     }
@@ -33,7 +33,7 @@ public enum Fare {
         if (this == BASIC) {
             return BASIC_FARE;
         }
-        distance -= basicSection;
+        distance -= previousSection;
         int fare = 0;
         fare += (distance / unit) * 100;
         if (distance % unit > 0 || (distance / unit == 0)) {

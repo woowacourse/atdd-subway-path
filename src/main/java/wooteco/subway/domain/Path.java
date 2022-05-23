@@ -1,11 +1,6 @@
 package wooteco.subway.domain;
 
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.exception.ClientException;
-
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class Path {
@@ -13,53 +8,9 @@ public class Path {
     private final List<SectionWeightEdge> edges;
     private final int distance;
 
-    private Path(List<SectionWeightEdge> edges, int distance) {
+    public Path(List<SectionWeightEdge> edges, int distance) {
         this.edges = edges;
         this.distance = distance;
-    }
-
-    public static Path of(List<Section> sections, Long source, Long target) {
-        GraphPath path = initPathGraph(sections, gatherStationIds(sections), source, target);
-        return new Path(path.getEdgeList(), (int) path.getWeight());
-    }
-
-    private static Set<Long> gatherStationIds(List<Section> sections) {
-        Set<Long> ids = new HashSet<>();
-        for (Section section : sections) {
-            ids.add(section.getUpStationId());
-            ids.add(section.getDownStationId());
-        }
-        return ids;
-    }
-
-    private static GraphPath initPathGraph(List<Section> sections, Set<Long> ids, Long source, Long target) {
-        WeightedMultigraph<Long, SectionWeightEdge> graph = new WeightedMultigraph(SectionWeightEdge.class);
-        for (Long id : ids) {
-            graph.addVertex(id);
-        }
-
-        for (Section section : sections) {
-            graph.addEdge(section.getUpStationId(), section.getDownStationId(),
-                    new SectionWeightEdge(section.getLineId(), section.getUpStationId(), section.getDownStationId(), section.getDistance()));
-        }
-
-        return makePath(source, target, graph);
-    }
-
-    private static GraphPath makePath(Long source, Long target, WeightedMultigraph<Long, SectionWeightEdge> graph) {
-        try {
-            GraphPath path = new DijkstraShortestPath(graph).getPath(source, target);
-            validateImpossiblePath(path);
-            return path;
-        } catch (IllegalArgumentException exception) {
-            throw new ClientException("구간에 등록되지 않은 역입니다.");
-        }
-    }
-
-    private static void validateImpossiblePath(GraphPath path) {
-        if (path == null) {
-            throw new ClientException("갈 수 없는 경로입니다.");
-        }
     }
 
     public double calculateFare(List<Line> lines, Long age) {
