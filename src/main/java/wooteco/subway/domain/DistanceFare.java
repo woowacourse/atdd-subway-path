@@ -6,7 +6,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public enum DistanceFare {
-    BASIC_DISTANCE((distance) -> distance < 10, (distance) -> Constants.BASIC_FARE),
+    BASIC_DISTANCE((distance) -> distance <= 10, (distance) -> Constants.BASIC_FARE),
 
     ADDITIONAL_DISTANCE((distance) -> distance < 50,
             (distance) -> Constants.BASIC_FARE + (int) ((Math.ceil(((distance - 10) - 1) / 5) + 1) * 100)),
