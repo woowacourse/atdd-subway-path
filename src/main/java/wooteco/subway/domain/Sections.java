@@ -47,7 +47,6 @@ public class Sections {
     }
 
     private List<Section> insertMiddleSection(Section section) {
-        // 1-2-3 , 1-2-4-3
         if (hasStationId(section.getUpStationId())) {
             return updateDownStationSection(section);
         }
@@ -55,7 +54,6 @@ public class Sections {
     }
 
     private List<Section> updateDownStationSection(Section section) {
-        // 1 - 3 -> 1-2-3
         Section sectionByDownStation = findSectionByUpStationId(section.getUpStationId());
         validateUpdateDistance(sectionByDownStation, section);
         int distance = sectionByDownStation.getDistance() - section.getDistance();
