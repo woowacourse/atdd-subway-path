@@ -60,13 +60,13 @@ public class JdbcStationDao implements StationDao {
 
     @Override
     public boolean existByName(final Station station) {
-        final String sql = "SELECT EXISTS (SELECT * FROM STATION WHERE name = (?))";
+        final String sql = "SELECT EXISTS (SELECT * FROM STATION WHERE name = (?) LIMIT 1)";
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, station.getName()));
     }
 
     @Override
     public boolean existById(final Long stationId) {
-        final String sql = "SELECT EXISTS (SELECT * FROM STATION WHERE id = (?))";
+        final String sql = "SELECT EXISTS (SELECT * FROM STATION WHERE id = (?) LIMIT 1)";
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, stationId));
     }
 

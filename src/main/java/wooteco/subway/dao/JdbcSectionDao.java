@@ -48,7 +48,7 @@ public class JdbcSectionDao implements SectionDao {
     @Override
     public boolean existByLineId(final long lineId) {
         final String sql = "SELECT EXISTS ("
-                + "SELECT * FROM \"SECTION\" WHERE line_id = (?)"
+                + "SELECT * FROM \"SECTION\" WHERE line_id = (?) LIMIT 1"
                 + ")";
         return jdbcTemplate.queryForObject(sql, boolean.class, lineId);
     }

@@ -68,25 +68,25 @@ public class JdbcLineDao implements LineDao {
 
     @Override
     public boolean existByName(final Line line) {
-        final String sql = "SELECT EXISTS (SELECT * FROM LINE WHERE name = (?))";
+        final String sql = "SELECT EXISTS (SELECT * FROM LINE WHERE name = (?) LIMIT 1)";
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, line.getName()));
     }
 
     @Override
     public boolean existByColor(final Line line) {
-        final String sql = "SELECT EXISTS (SELECT * FROM LINE WHERE color = (?))";
+        final String sql = "SELECT EXISTS (SELECT * FROM LINE WHERE color = (?) LIMIT 1)";
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, line.getColor()));
     }
 
     @Override
     public boolean existByNameExceptSameId(final Long lineId, final Line line) {
-        final String sql = "SELECT EXISTS (SELECT * FROM LINE WHERE name = (?) AND NOT id = (?))";
+        final String sql = "SELECT EXISTS (SELECT * FROM LINE WHERE name = (?) AND NOT id = (?) LIMIT 1)";
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, line.getName(), lineId));
     }
 
     @Override
     public boolean existByColorExceptSameId(final Long lineId, final Line line) {
-        final String sql = "SELECT EXISTS (SELECT * FROM LINE WHERE color = (?) AND NOT id = (?))";
+        final String sql = "SELECT EXISTS (SELECT * FROM LINE WHERE color = (?) AND NOT id = (?) LIMIT 1)";
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, line.getColor(), lineId));
     }
 }
