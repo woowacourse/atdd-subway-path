@@ -8,6 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import wooteco.subway.domain.Station;
+import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.service.PathService;
 
@@ -32,7 +33,7 @@ class PathControllerTest {
     void findStation() throws Exception {
         PathResponse pathResponse = new PathResponse(List.of(new Station("강남역")), 10, 10);
 
-        given(pathService.findShortestPath(1L, 2L, 10L)).willReturn(pathResponse);
+        given(pathService.findShortestPath(new PathRequest(1L, 2L, 10L))).willReturn(pathResponse);
 
         mockMvc.perform(get("/paths")
                 .param("source", String.valueOf(1L))

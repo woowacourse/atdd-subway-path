@@ -5,10 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.dto.LineRequest;
-import wooteco.subway.dto.PathResponse;
-import wooteco.subway.dto.StationRequest;
-import wooteco.subway.dto.StationResponse;
+import wooteco.subway.dto.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,7 +30,7 @@ class PathServiceTest {
         LineRequest line = new LineRequest("9호선", "red", firstStation.getId(), secondStation.getId(), 10, 100);
 
         lineService.save(line);
-        PathResponse shortestPath = pathService.findShortestPath(firstStation.getId(), secondStation.getId(), 0L);
+        PathResponse shortestPath = pathService.findShortestPath(new PathRequest(firstStation.getId(), secondStation.getId(), 0L));
 
         assertThat(shortestPath.getDistance()).isEqualTo(10);
     }
