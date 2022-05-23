@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.domain.Line;
 
-public class LineJdbcDaoTest extends DaoImplTest{
+public class LineJdbcDaoTest extends DaoImplTest {
 
     private LineDao lineDao;
 
@@ -67,7 +67,7 @@ public class LineJdbcDaoTest extends DaoImplTest{
     @DisplayName("노선 정보를 변경한다.")
     @Test
     void update() {
-        Line line = new Line(1L,"7호선", "blue", 900);
+        Line line = new Line(1L, "7호선", "blue", 900);
         Line newLine = new Line(1L, "8호선", "red", 900);
 
         lineDao.save(line);
