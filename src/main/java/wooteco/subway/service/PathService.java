@@ -41,7 +41,7 @@ public class PathService {
         final List<StationResponse> stations = getStationResponses(shortestPath);
 
         final int distance = path.getShortestPathWeight();
-        final int extraFare = getExtraFare(sections, shortestPath);
+        final int extraFare = getMaximumExtraFaByLineIds(sections, shortestPath);
 
         final Fare fare = Fare.of(distance, extraFare);
 
@@ -59,10 +59,10 @@ public class PathService {
                 .collect(toList());
     }
 
-    private int getExtraFare(Sections sections, List<Long> path) {
+    private int getMaximumExtraFaByLineIds(Sections sections, List<Long> lineIds) {
         List<Integer> extraFares = new ArrayList<>();
-        for (int index = 0; index < path.size() - 1; index++) {
-            Section section = sections.getSectionByStationIds(path.get(index), path.get(index + 1));
+        for (int index = 0; index < lineIds.size() - 1; index++) {
+            Section section = sections.getSectionByStationIds(lineIds.get(index), lineIds.get(index + 1));
             final Line line = lineDao.findById(section.getLineId())
                     .orElseThrow(() -> new IllegalArgumentException("해당하는 line이 존재하지 않습니다."));
             extraFares.add(line.getExtraFare());
