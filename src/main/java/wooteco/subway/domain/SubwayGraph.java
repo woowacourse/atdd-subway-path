@@ -5,6 +5,7 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.exception.NotLinkPathException;
 
 public class SubwayGraph {
 
@@ -51,7 +52,7 @@ public class SubwayGraph {
 
     private void validateSourceToTargetLink(GraphPath<Station, DefaultWeightedEdge> path) {
         if (path == null) {
-            throw new IllegalArgumentException("출발역과 도착역이 연결되어 있지 않습니다.");
+            throw new NotLinkPathException("출발역과 도착역이 연결되어 있지 않습니다.");
         }
     }
 

@@ -22,8 +22,8 @@ public class Line {
     }
 
     private void validatePositiveExtraFare(final int extraFare) {
-        if (extraFare <= 0) {
-            throw new PositiveDigitException("추가 요금이 양수가 아닙니다.");
+        if (extraFare < 0) {
+            throw new PositiveDigitException("추가 요금이 0보다 작습니다.");
         }
     }
 

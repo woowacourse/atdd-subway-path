@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.exception.NotLinkPathException;
 
 class SubwayGraphTest {
 
@@ -53,7 +54,7 @@ class SubwayGraphTest {
         Station target = new Station(4L, "건대역");
 
         assertThatThrownBy(() -> subwayGraph.findShortestPath(source, target))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NotLinkPathException.class)
                 .hasMessage("출발역과 도착역이 연결되어 있지 않습니다.");
     }
 }
