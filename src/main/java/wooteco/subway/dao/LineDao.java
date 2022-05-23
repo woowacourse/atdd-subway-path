@@ -17,7 +17,10 @@ import wooteco.subway.exception.line.LineNotFoundException;
 @Repository
 public class LineDao {
     private static final RowMapper<Line> ACTOR_ROW_MAPPER = (resultSet, rowNum) ->
-            new Line(resultSet.getLong("id"), resultSet.getString("name"), resultSet.getString("color"));
+            new Line(resultSet.getLong("id"),
+                    resultSet.getString("name"),
+                    resultSet.getString("color"),
+                    resultSet.getInt("extra_fare"));
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert insertActor;
@@ -32,11 +35,11 @@ public class LineDao {
     public Line insert(Line line) {
         SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(line);
         Long id = insertActor.executeAndReturnKey(parameterSource).longValue();
-        return new Line(id, line.getName(), line.getColor());
+        return new Line(id, line.getName(), line.getColor(), line.getExtraFare());
     }
 
     public List<Line> findAll() {
-        String sql = "select id, name, color from LINE";
+        String sql = "select id, name, color, extra_fare from LINE";
         return namedParameterJdbcTemplate.query(sql, ACTOR_ROW_MAPPER);
     }
 
@@ -48,7 +51,7 @@ public class LineDao {
 
     public Line getById(Long id) {
         try {
-            String sql = "select id, name, color from LINE where id = :id";
+            String sql = "select id, name, color, extra_fare from LINE where id = :id";
             SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
             return namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, ACTOR_ROW_MAPPER);
         } catch(EmptyResultDataAccessException e) {
@@ -57,7 +60,7 @@ public class LineDao {
     }
 
     public void edit(Line line) {
-        String sql = "update LINE set name = :name, color = :color where id = :id";
+        String sql = "update LINE set name = :name, color = :color, extra_fare = :extraFare where id = :id";
         SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(line);
         namedParameterJdbcTemplate.update(sql, sqlParameterSource);
     }

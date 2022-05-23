@@ -1,5 +1,7 @@
 package wooteco.subway.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,11 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.LineRequest;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Sql("classpath:truncate.sql")
@@ -32,14 +31,14 @@ public class LineServiceTest {
         stationDao.insert(new Station("선릉역"));
         stationDao.insert(new Station("잠실역"));
 
-        lineService.save(new LineRequest("1호선", "blue", 1L, 2L, 30));
-        lineService.save(new LineRequest("2호선", "green", 2L, 3L, 20));
+        lineService.save(new LineRequest("1호선", "blue", 1L, 2L, 30, 300));
+        lineService.save(new LineRequest("2호선", "green", 2L, 3L, 20, 300));
     }
 
     @Test
     @DisplayName("노선을 생성한다.")
     void saveLine(){
-        assertThat(lineService.save(new LineRequest("3호선", "red", 1L, 2L, 10))
+        assertThat(lineService.save(new LineRequest("3호선", "red", 1L, 2L, 10, 300))
                 .getName()).isEqualTo("3호선");
     }
 
@@ -65,7 +64,7 @@ public class LineServiceTest {
     @Test
     @DisplayName("노선을 수정한다.")
     void editLine(){
-        lineService.edit(1L, "4호선", "green");
+        lineService.edit(1L, "4호선", "green", 300);
         assertThat(lineService.findById(1L).getName()).isEqualTo("4호선");
     }
 }

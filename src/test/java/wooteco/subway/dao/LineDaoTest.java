@@ -29,14 +29,14 @@ class LineDaoTest {
     @BeforeEach
     void setUp() {
         lineDao = new LineDao(dataSource);
-        line = lineDao.insert(new Line("신분당선", "red"));
+        line = lineDao.insert(new Line("신분당선", "red", 300));
     }
 
     @DisplayName("이름값을 받아 해당 이름값을 가진 노선이 있는지 확인한다.")
     @ParameterizedTest
     @CsvSource({"2호선, red, true", "신분당선, blue, true", "신분당선, red, true", "2호선, blue, false"})
     void existByNameOrColor(String name, String color, boolean expected) {
-        boolean actual = lineDao.existByNameOrColor(new Line(name, color));
+        boolean actual = lineDao.existByNameOrColor(new Line(name, color, 300));
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -59,7 +59,7 @@ class LineDaoTest {
     @DisplayName("모든 노선의 정보를 가져온다.")
     @Test
     void findAll() {
-        lineDao.insert(new Line("8호선", "pink"));
+        lineDao.insert(new Line("8호선", "pink", 300));
 
         List<Line> actual = lineDao.findAll();
 
@@ -69,7 +69,7 @@ class LineDaoTest {
     @DisplayName("id에 해당하는 노선의 정보를 바꾼다.")
     @Test
     void edit() {
-        Line updatingLine = new Line(line.getId(), "7호선", "darkGreen");
+        Line updatingLine = new Line(line.getId(), "7호선", "darkGreen", 300);
         lineDao.edit(updatingLine);
 
         Line updated = lineDao.getById(line.getId());
