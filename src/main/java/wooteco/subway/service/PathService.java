@@ -1,14 +1,12 @@
 package wooteco.subway.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.BasicFareStrategy;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
-import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.request.PathRequest;
 import wooteco.subway.dto.response.PathResponse;
@@ -28,23 +26,17 @@ public class PathService {
     }
 
     public PathResponse createShortestPath(PathRequest pathRequest) {
-        Long source = pathRequest.getSource();
-        Long target = pathRequest.getTarget();
+        Station source = stationDao.findById(pathRequest.getSource())
+                .orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE));
+        Station target = stationDao.findById(pathRequest.getTarget())
+                .orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE));
 
-        List<Section> sections = sectionDao.findAll();
-
-        Path path = new Path(sections);
-        List<Long> shortestPath = path.createShortestPath(source, target);
-
-        List<Station> stations = shortestPath.stream()
-                .map(station -> stationDao.findById(station)
-                        .orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE)))
-                .collect(Collectors.toList());
-
+        Path path = new Path(sectionDao.findAll());
+        List<Station> shortestPath = path.createShortestPath(source, target);
         int distance = path.calculateDistance(source, target);
         Fare fare = new Fare();
 
-        return new PathResponse(stations, distance,
+        return new PathResponse(shortestPath, distance,
                 fare.calculateFare(distance, new BasicFareStrategy()));
     }
 }

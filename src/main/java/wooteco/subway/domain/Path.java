@@ -9,7 +9,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class Path {
 
-    private final WeightedMultigraph<Long, DefaultWeightedEdge> graph;
+    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
     public Path(List<Section> sections) {
         graph = new WeightedMultigraph(DefaultWeightedEdge.class);
@@ -17,24 +17,29 @@ public class Path {
         addEdge(sections);
     }
 
-    public List<Long> createShortestPath(Long upStationId, Long downStationId) {
+    public List<Station> createShortestPath(Station upStation, Station downStation) {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
 
-        List<Long> shortestPath = dijkstraShortestPath.getPath(upStationId,
-                downStationId).getVertexList();
-
-        return shortestPath;
+        return dijkstraShortestPath.getPath(upStation,
+                downStation).getVertexList();
     }
 
-    public int calculateDistance(Long upStationId, Long downStationId) {
+    public int calculateDistance(Station upStation, Station downStation) {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        return (int) (dijkstraShortestPath.getPath(upStationId, downStationId).getWeight());
+        return (int) (dijkstraShortestPath.getPath(upStation, downStation).getWeight());
     }
 
     private void addVertex(List<Section> sections) {
         Set<Station> stations = getStations(sections);
         for (Station station : stations) {
-            graph.addVertex(station.getId());
+            graph.addVertex(station);
+        }
+    }
+
+    private void addEdge(List<Section> sections) {
+        for (Section section : sections) {
+            graph.setEdgeWeight(graph.addEdge(section.getUpStation(),
+                    section.getDownStation()), section.getDistance());
         }
     }
 
@@ -45,12 +50,5 @@ public class Path {
             stations.add(section.getDownStation());
         }
         return stations;
-    }
-
-    private void addEdge(List<Section> sections) {
-        for (Section section : sections) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation().getId(),
-                    section.getDownStation().getId()), section.getDistance());
-        }
     }
 }
