@@ -18,7 +18,7 @@ public class LineDao {
 
     private static final RowMapper<LineEntity> mapper = (rs, rowNum) -> new LineEntity(
             rs.getLong("id"), rs.getString("name"),
-            rs.getString("color"));
+            rs.getString("color"), rs.getInt("extraFare"));
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
@@ -33,7 +33,8 @@ public class LineDao {
         SqlParameterSource parameters = new MapSqlParameterSource()
                 .addValue("id", line.getId())
                 .addValue("name", line.getName())
-                .addValue("color", line.getColor());
+                .addValue("color", line.getColor())
+                .addValue("extraFare", line.getExtraFare());
         return simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
     }
 

@@ -21,7 +21,7 @@ public class JdbcLineDaoTest {
     @Test
     @DisplayName("노선 저장")
     void save() {
-        Line line = new Line("1호선", "blue");
+        Line line = new Line("1호선", "blue", 0);
         Line savedLine = jdbcLineDao.save(line);
         assertThat(savedLine.getId()).isNotNull();
         assertThat(savedLine.getName()).isEqualTo("1호선");
@@ -30,7 +30,7 @@ public class JdbcLineDaoTest {
     @Test
     @DisplayName("지하철 역 이름 중복 여부 조회")
     void duplicateName() {
-        Line line = new Line("1호선", "blue");
+        Line line = new Line("1호선", "blue", 0);
         jdbcLineDao.save(line);
         assertThat(jdbcLineDao.existByNameAndColor("1호선", "blue")).isTrue();
     }
@@ -38,7 +38,7 @@ public class JdbcLineDaoTest {
     @Test
     @DisplayName("id로 노선 조회")
     void findById() {
-        Line line = jdbcLineDao.save(new Line("1호선", "blue"));
+        Line line = jdbcLineDao.save(new Line("1호선", "blue", 0));
         Line findLine = jdbcLineDao.findById(line.getId()).get();
         assertThat(findLine.getId()).isNotNull();
         assertThat(findLine.getName()).isEqualTo("1호선");
@@ -47,8 +47,8 @@ public class JdbcLineDaoTest {
     @Test
     @DisplayName("노선 전체 조회")
     void findAll() {
-        Line line1 = new Line("1호선", "blue");
-        Line line2 = new Line("2호선", "red");
+        Line line1 = new Line("1호선", "blue", 0);
+        Line line2 = new Line("2호선", "red", 0);
         jdbcLineDao.save(line1);
         jdbcLineDao.save(line2);
         List<Line> liens = jdbcLineDao.findAll();
@@ -58,8 +58,8 @@ public class JdbcLineDaoTest {
     @Test
     @DisplayName("id로 노선 수정")
     void modifyById() {
-        Line savedLine = jdbcLineDao.save(new Line("1호선", "blue"));
-        jdbcLineDao.modifyById(savedLine.getId(), new Line("2호선", "red"));
+        Line savedLine = jdbcLineDao.save(new Line("1호선", "blue", 0));
+        jdbcLineDao.modifyById(savedLine.getId(), new Line("2호선", "red", 0));
         Line updateLine = jdbcLineDao.findById(savedLine.getId()).get();
         assertThat(updateLine.getName()).isEqualTo("2호선");
         assertThat(updateLine.getColor()).isEqualTo("red");
@@ -68,7 +68,7 @@ public class JdbcLineDaoTest {
     @Test
     @DisplayName("id로 노선 삭제")
     void deleteById() {
-        Line savedLine = jdbcLineDao.save(new Line("1호선", "blue"));
+        Line savedLine = jdbcLineDao.save(new Line("1호선", "blue", 0));
         jdbcLineDao.deleteById(savedLine.getId());
         assertThat(jdbcLineDao.findAll()).hasSize(0);
     }

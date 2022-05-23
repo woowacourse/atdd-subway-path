@@ -68,6 +68,6 @@ public class SectionRepository {
     private Line findLine(SectionEntity entity) {
         LineEntity lineEntity = lineDao.findById(entity.getLineId())
                 .orElseThrow(() -> new IllegalArgumentException("조회하려는 노선이 없습니다."));
-        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
+        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), lineEntity.getExtraFare());
     }
 }

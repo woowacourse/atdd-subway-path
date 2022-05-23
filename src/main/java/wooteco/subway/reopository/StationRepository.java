@@ -5,11 +5,8 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
-import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
-import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.reopository.dao.StationDao;
-import wooteco.subway.reopository.entity.LineEntity;
 import wooteco.subway.reopository.entity.StationEntity;
 
 @Repository
@@ -28,7 +25,7 @@ public class StationRepository {
     public Optional<Station> findById(Long id) {
         StationEntity stationEntity = stationDao.findById(id).orElse(null);
         if (stationEntity == null) {
-           return Optional.ofNullable(null);
+            return Optional.ofNullable(null);
         }
         return Optional.ofNullable(new Station(stationEntity.getId(), stationEntity.getName()));
     }

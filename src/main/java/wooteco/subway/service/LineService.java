@@ -41,12 +41,12 @@ public class LineService {
     }
 
     public LineResponse create(LineRequest lineRequest) {
-        Line line = new Line(lineRequest.getName(), lineRequest.getColor());
+        Line line = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         validateDuplicateNameAndColor(line.getName(), line.getColor());
 
         Station upStation = findStation(lineRequest.getUpStationId(), "조회하려는 상행역이 없습니다.");
         Station downStation = findStation(lineRequest.getDownStationId(), "조회하려는 하행역이 없습니다.");
-        line = new Line(lineRepository.save(line), line.getName(), line.getColor());
+        line = new Line(lineRepository.save(line), line.getName(), line.getColor(), line.getExtraFare());
         sectionRepository.save(new Section(line, upStation, downStation, lineRequest.getDistance()));
         return LineResponse.of(line, List.of(upStation, downStation));
     }

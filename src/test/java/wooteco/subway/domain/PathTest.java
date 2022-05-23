@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +14,7 @@ class PathTest {
     @Test
     void createShortestPath() {
         // given
-        Line 일호선 = new Line(1L, "1호선", "blue");
+        Line 일호선 = new Line(1L, "1호선", "blue", 0);
         Station 강남역 = new Station(1L, "강남역");
         Station 역삼역 = new Station(2L, "역삼역");
         Station 삼성역 = new Station(3L, "삼성역");
@@ -33,7 +32,7 @@ class PathTest {
     @Test
     void createShortestPathFalse() {
         // given
-        Line 일호선 = new Line(1L, "1호선", "blue");
+        Line 일호선 = new Line(1L, "1호선", "blue", 0);
         Station 강남역 = new Station(1L, "강남역");
         Station 역삼역 = new Station(2L, "역삼역");
         Station 삼성역 = new Station(3L, "삼성역");
@@ -52,7 +51,7 @@ class PathTest {
     @Test
     void calculateDistance() {
         // given
-        Line 일호선 = new Line(1L, "1호선", "blue");
+        Line 일호선 = new Line(1L, "1호선", "blue", 0);
         Station 강남역 = new Station(1L, "강남역");
         Station 역삼역 = new Station(2L, "역삼역");
         Station 삼성역 = new Station(3L, "삼성역");

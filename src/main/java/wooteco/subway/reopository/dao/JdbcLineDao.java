@@ -18,7 +18,8 @@ public class JdbcLineDao {
             new Line(
                     rs.getLong("id"),
                     rs.getString("name"),
-                    rs.getString("color")
+                    rs.getString("color"),
+                    rs.getInt("extraFare")
             );
 
     private final JdbcTemplate jdbcTemplate;
@@ -36,7 +37,7 @@ public class JdbcLineDao {
                 .addValue("name", line.getName())
                 .addValue("color", line.getColor());
         long id = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
-        return new Line(id, line.getName(), line.getColor());
+        return new Line(id, line.getName(), line.getColor(), line.getExtraFare());
     }
 
     public Optional<Line> findById(Long id) {

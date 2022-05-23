@@ -19,7 +19,7 @@ public class LineRepository {
     }
 
     public Long save(Line line) {
-        return lineDao.save(new LineEntity(line.getName(), line.getColor()));
+        return lineDao.save(new LineEntity(line.getName(), line.getColor(), line.getExtraFare()));
     }
 
     public Optional<Line> findById(Long id) {
@@ -27,18 +27,19 @@ public class LineRepository {
         if (lineEntity == null) {
             return Optional.ofNullable(null);
         }
-        return Optional.ofNullable(new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor()));
+        return Optional.of(new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(),
+                lineEntity.getExtraFare()));
     }
 
     public List<Line> findAll() {
         List<LineEntity> list = lineDao.findAll();
         return list.stream()
-                .map(entity -> new Line(entity.getId(), entity.getName(), entity.getColor()))
+                .map(entity -> new Line(entity.getId(), entity.getName(), entity.getColor(), entity.getExtraFare()))
                 .collect(toList());
     }
 
     public void modifyById(Long id, Line line) {
-        lineDao.modifyById(id, new LineEntity(line.getName(), line.getColor()));
+        lineDao.modifyById(id, new LineEntity(line.getName(), line.getColor(), line.getExtraFare()));
     }
 
     public void deleteById(Long id) {
