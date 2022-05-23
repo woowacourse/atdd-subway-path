@@ -7,7 +7,7 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.exception.NotFoundPathException;
 
-public class ShortestPath {
+public final class ShortestPath {
 
     private final ShortestPathStrategy shortestPathStrategy;
     private final List<Section> path;
@@ -17,7 +17,7 @@ public class ShortestPath {
         this.path = calculateShortestPath(sections, sourceId, targetId);
     }
 
-    private List<Section> calculateShortestPath(Sections sections, Long sourceId, Long targetId){
+    private List<Section> calculateShortestPath(Sections sections, Long sourceId, Long targetId) {
         validateMovement(sourceId, targetId);
         List<Long> shortestPath = shortestPathStrategy.findShortestPath(sections, sourceId, targetId);
         return toSections(sections, shortestPath);
@@ -54,7 +54,7 @@ public class ShortestPath {
         return stationIds;
     }
 
-    public List<Long> getLineIds(){
+    public List<Long> getLineIds() {
         return path.stream()
                 .map(Section::getLineId)
                 .distinct()

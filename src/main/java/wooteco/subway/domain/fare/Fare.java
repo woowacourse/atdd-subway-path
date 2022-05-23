@@ -3,7 +3,7 @@ package wooteco.subway.domain.fare;
 import java.util.Objects;
 import wooteco.subway.exception.NotNegativeFareException;
 
-public class Fare {
+public final class Fare {
 
     private final int value;
 

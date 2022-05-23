@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import wooteco.subway.exception.NotFoundSectionException;
 
-public class Sections {
+public final class Sections {
 
     private final List<Section> sections;
 

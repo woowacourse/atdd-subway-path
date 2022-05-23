@@ -10,7 +10,7 @@ import wooteco.subway.domain.Sections;
 import wooteco.subway.exception.NotFoundPathException;
 import wooteco.subway.exception.NotFoundStationException;
 
-public class DistanceShortestPathStrategy implements ShortestPathStrategy {
+public final class DistanceShortestPathStrategy implements ShortestPathStrategy {
 
     @Override
     public List<Long> findShortestPath(Sections sections, Long sourceId, Long targetId) {

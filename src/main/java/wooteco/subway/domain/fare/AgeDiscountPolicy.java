@@ -1,6 +1,6 @@
 package wooteco.subway.domain.fare;
 
-public class AgeDiscountPolicy implements DiscountPolicy {
+public final class AgeDiscountPolicy implements DiscountPolicy {
 
     private static final int DEDUCT = 350;
     private static final double TEENAGER_DISCOUNT_RATE = 0.2;
@@ -8,10 +8,10 @@ public class AgeDiscountPolicy implements DiscountPolicy {
 
     @Override
     public Fare discountFare(Fare fare, int age) {
-        if(isChild(age)){
+        if (isChild(age)) {
             return fare.discount(DEDUCT, CHILD_DISCOUNT_RATE);
         }
-        if (isTeenager(age)){
+        if (isTeenager(age)) {
             return fare.discount(DEDUCT, TEENAGER_DISCOUNT_RATE);
         }
         return fare;

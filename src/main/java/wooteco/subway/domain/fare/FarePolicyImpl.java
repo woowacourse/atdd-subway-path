@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import wooteco.subway.domain.Line;
 
-public class FarePolicyImpl implements FarePolicy {
+public final class FarePolicyImpl implements FarePolicy {
 
     private static final int STANDARD_DISTANCE = 10;
     private static final int STANDARD_FARE = 1250;
