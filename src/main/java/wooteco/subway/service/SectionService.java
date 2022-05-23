@@ -103,14 +103,23 @@ public class SectionService {
         }
     }
 
-    public PathResponse findShortestPath(Long source, Long target) {
+    public PathResponse findShortestPath(Long source, Long target, Long age) {
         Sections sections = new Sections(sectionDao.findAll());
-        Path shortestPath = sections.findShortestPath(source, target);
-        List<Station> stations = shortestPath.getStationIds().stream()
+        Path path = sections.findShortestPath(source, target);
+        int distance = path.getDistance();
+        Fare fare = new Fare(distance, findExtraFareOfPath(path), age);
+        return new PathResponse(findStationsOfPath(path), distance, fare.calculateFare());
+    }
+
+    private List<Station> findStationsOfPath(final Path path) {
+        return path.getStationIds().stream()
                 .map(stationDao::findById)
                 .collect(Collectors.toList());
+    }
 
-        int distance = shortestPath.getDistance();
-        return new PathResponse(stations, distance, shortestPath.calculateFare());
+    private int findExtraFareOfPath(Path path) {
+        return path.getLineIds().stream()
+                .mapToInt(it -> lineDao.findById(it).getExtraFare())
+                .max().getAsInt();
     }
 }
