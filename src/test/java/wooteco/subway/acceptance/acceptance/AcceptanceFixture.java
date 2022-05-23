@@ -52,6 +52,28 @@ public class AcceptanceFixture {
         }
     };
 
+    public static final Map<String, String> 경의선 = new HashMap<>() {
+        {
+            put("name", "경의선");
+            put("color", "민트");
+            put("upStationId", "1");
+            put("downStationId", "2");
+            put("distance", "5");
+            put("extraFare", "500");
+        }
+    };
+
+    public static final Map<String, String> 호선2 = new HashMap<>() {
+        {
+            put("name", "2호선");
+            put("color", "초록이");
+            put("upStationId", "2");
+            put("downStationId", "3");
+            put("distance", "5");
+            put("extraFare", "700");
+        }
+    };
+
     public static final String STATION_URL = "/stations";
     public static final String LINE_URL = "/lines";
 
