@@ -34,18 +34,11 @@ public class Fare {
     }
 
     private int calculateExtraLineFare(final List<Station> stations, final List<Line> lines) {
-        int maxExtraLineFare = DEFAULT_EXTRA_LINE_FARE;
-        for (Line line : lines) {
-            maxExtraLineFare = Math.max(maxExtraLineFare, findExtraLineFare(line, stations));
-        }
-        return maxExtraLineFare;
-    }
-
-    private int findExtraLineFare(final Line line, final List<Station> stations) {
-        if (doesLineContainStation(line, stations)) {
-            return line.getExtraFare();
-        }
-        return DEFAULT_EXTRA_LINE_FARE;
+        return lines.stream()
+                .filter(line -> doesLineContainStation(line, stations))
+                .mapToInt(Line::getExtraFare)
+                .max()
+                .orElse(DEFAULT_EXTRA_LINE_FARE);
     }
 
     private boolean doesLineContainStation(final Line line, final List<Station> stations) {
