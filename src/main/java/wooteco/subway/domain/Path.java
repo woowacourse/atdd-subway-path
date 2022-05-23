@@ -3,6 +3,8 @@ package wooteco.subway.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import wooteco.subway.domain.fare.Fare;
+
 public class Path {
 
 	private final List<Station> stations;
@@ -29,6 +31,10 @@ public class Path {
 		}
 	}
 
+	public Path disCountByAge(int age) {
+		return new Path(stations, distance, fare.discountByAge(age));
+	}
+
 	public List<Station> getStations() {
 		return new ArrayList<>(stations);
 	}
@@ -39,9 +45,5 @@ public class Path {
 
 	public int getDistance() {
 		return distance;
-	}
-
-	public Path disCountByAge(int age) {
-		return new Path(stations, distance, fare.discountByAge(age));
 	}
 }

@@ -1,11 +1,8 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.fare;
+
+import static wooteco.subway.domain.fare.FareConstant.*;
 
 public class Fare {
-
-	private static final int BASIC_FARE = 1250;
-	private static final int INCREASE_FARE = 100;
-	private static final int PER_DISTANCE_OVER_TEN = 5;
-	private static final int PER_DISTANCE_OVER_FIFTY = 8;
 
 	private final int value;
 
@@ -44,21 +41,10 @@ public class Fare {
 	}
 
 	public Fare discountByAge(int age) {
-		if (isTeenager(age)) {
-			return new Fare((int)(350 + (value - 350) * 0.8));
-		}
-		if (isChile(age)) {
-			return new Fare((int)(350 + (value - 350) * 0.5));
-		}
-		return this;
-	}
-
-	private boolean isChile(int age) {
-		return age >= 6 && age < 13;
-	}
-
-	private boolean isTeenager(int age) {
-		return age >= 13 && age < 19;
+		return new Fare(
+			DiscountPolicy.from(age)
+				.apply(value)
+		);
 	}
 
 	public int getValue() {

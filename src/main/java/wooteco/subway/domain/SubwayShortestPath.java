@@ -11,11 +11,11 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-public class Lines {
+public class SubwayShortestPath {
 
 	private final Map<Section, Line> values;
 
-	public Lines(List<Line> lines) {
+	public SubwayShortestPath(List<Line> lines) {
 		values = new HashMap<>();
 		for (Line line : lines) {
 			line.getSections()
@@ -23,7 +23,7 @@ public class Lines {
 		}
 	}
 
-	public Path findPath(Station source, Station target) {
+	public Path find(Station source, Station target) {
 		GraphPath<Station, SectionEdge> path = new DijkstraShortestPath<>(initGraph(values.keySet()))
 			.getPath(source, target);
 		return new Path(path.getVertexList(), (int) path.getWeight(), getMaxExtraFare(path));

@@ -10,13 +10,13 @@ import org.junit.jupiter.api.Test;
 
 import wooteco.subway.LinesFixture;
 
-class LinesTest {
+class SubwayShortestPathTest {
 
-	private Lines lines;
+	private SubwayShortestPath subwayShortestPath;
 
 	@BeforeEach
 	void init() {
-		lines = new Lines(LinesFixture.toList());
+		subwayShortestPath = new SubwayShortestPath(LinesFixture.toList());
 	}
 
 	@DisplayName("한 라인에서 경로를 순방향 조회한다.")
@@ -27,7 +27,7 @@ class LinesTest {
 		Station target = new Station("논현역");
 
 		// when
-		List<Station> stations = lines.findPath(source, target)
+		List<Station> stations = subwayShortestPath.find(source, target)
 			.getStations();
 
 		// then
@@ -44,7 +44,7 @@ class LinesTest {
 		Station target = new Station("내방역");
 
 		// when
-		List<Station> stations = lines.findPath(source, target)
+		List<Station> stations = subwayShortestPath.find(source, target)
 			.getStations();
 
 		// then
@@ -61,7 +61,7 @@ class LinesTest {
 		Station target = new Station("논현역");
 
 		// when
-		List<Station> stations = lines.findPath(source, target)
+		List<Station> stations = subwayShortestPath.find(source, target)
 			.getStations();
 
 		// then
@@ -78,7 +78,7 @@ class LinesTest {
 		Station target = new Station("사평역");
 
 		// when
-		List<Station> stations = lines.findPath(source, target)
+		List<Station> stations = subwayShortestPath.find(source, target)
 			.getStations();
 
 		// then
@@ -95,7 +95,7 @@ class LinesTest {
 		Station target = new Station("사평역");
 
 		// when
-		Path path = lines.findPath(source, target);
+		Path path = subwayShortestPath.find(source, target);
 
 		// then
 		assertThat(path.getFare()).isEqualTo(2250);
@@ -109,7 +109,7 @@ class LinesTest {
 		Station target = new Station("서초역");
 
 		// when
-		Path path = lines.findPath(source, target);
+		Path path = subwayShortestPath.find(source, target);
 
 		// then
 		assertThat(path.getFare()).isEqualTo(2050);
