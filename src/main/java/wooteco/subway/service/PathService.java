@@ -35,6 +35,6 @@ public class PathService {
         Path path = new Path(sections.findShortestPath(source, target, lines));
         List<Station> stations = path.findStationsOnPath();
 
-        return new PathResponse(stations, path.calculateShortestDistance(), Fare.chargeFare(path, lines, stations));
+        return new PathResponse(stations, path.calculateShortestDistance(), Fare.chargeFare(path));
     }
 }

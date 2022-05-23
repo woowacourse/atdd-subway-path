@@ -23,12 +23,36 @@ public class FareTest {
 
         Line 일호선 = new Line("1호선", "green", 1000, sections);
         List<Line> lines = List.of(일호선);
-        List<Station> stations = List.of(잠실, 홍대, 신촌);
 
         Path path = new Path(sections.findShortestPath(잠실, 신촌, lines));
 
-        int fare = Fare.chargeFare(path, lines, stations);
+        int fare = Fare.chargeFare(path);
 
         assertThat(fare).isEqualTo(2250);
+    }
+
+    @DisplayName("환승하는 경우 비싼 노선의 추가금액을 이용한다.")
+    @Test
+    void calculateTransferAdditionalFare() {
+        Station 잠실 = new Station("잠실역");
+        Station 홍대 = new Station("홍대입구역");
+        Station 신촌 = new Station("신촌역");
+
+        Section 잠실_홍대 = new Section(잠실, 홍대, 3);
+        Section 홍대_신촌 = new Section(홍대, 신촌, 5);
+
+        Sections 일호선구간 = new Sections(List.of(잠실_홍대));
+        Sections 이호선구간 = new Sections(List.of(홍대_신촌));
+        Sections 전체구간 = new Sections(List.of(잠실_홍대, 홍대_신촌));
+
+        Line 일호선 = new Line("1호선", "green", 1000, 일호선구간);
+        Line 이호선 = new Line("2호선", "blue", 1500, 이호선구간);
+        List<Line> lines = List.of(일호선, 이호선);
+
+        Path path = new Path(전체구간.findShortestPath(잠실, 신촌, lines));
+
+        int fare = Fare.chargeFare(path);
+
+        assertThat(fare).isEqualTo(2750);
     }
 }

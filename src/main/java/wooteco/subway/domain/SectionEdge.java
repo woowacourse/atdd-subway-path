@@ -11,6 +11,10 @@ public class SectionEdge extends DefaultWeightedEdge {
         this.line = line;
     }
 
+    public Line getLine() {
+        return line;
+    }
+
     @Override
     protected double getWeight() {
         return distance;
