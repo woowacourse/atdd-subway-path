@@ -1,8 +1,8 @@
-package wooteco.subway.domain.path;
+package wooteco.subway.domain.path.graphpath;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-class WeightedEdgeWithLineId extends DefaultWeightedEdge {
+public class WeightedEdgeWithLineId extends DefaultWeightedEdge {
 
     private final Long lineId;
     private final int distance;
@@ -12,7 +12,7 @@ class WeightedEdgeWithLineId extends DefaultWeightedEdge {
         this.distance = distance;
     }
 
-    Long getLineId() {
+    public Long getLineId() {
         return lineId;
     }
 

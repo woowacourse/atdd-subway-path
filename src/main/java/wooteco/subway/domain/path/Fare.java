@@ -34,7 +34,7 @@ public class Fare {
     }
 
     private int calculateAgeDiscounted(int fare) {
-        return DiscountPolicy.from(age).getFare(fare);
+        return AgeDiscountPolicy.from(age).getFare(fare);
     }
 
     private int getOverFare(int progressiveInterval, int perDistanceOverInterval, int MaxFareInterval) {
