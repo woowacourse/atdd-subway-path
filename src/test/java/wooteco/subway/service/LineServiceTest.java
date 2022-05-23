@@ -43,7 +43,8 @@ class LineServiceTest {
     void save() {
         Station upStation = stationDao.findById(stationDao.save(new Station("오리")));
         Station downStation = stationDao.findById(stationDao.save(new Station("배카라")));
-        LineSaveRequest lineSaveRequest = new LineSaveRequest("신분당선", "bg-red-600", upStation.getId(), downStation.getId(), 1, 900);
+        LineSaveRequest lineSaveRequest = new LineSaveRequest("신분당선", "bg-red-600", upStation.getId(),
+                downStation.getId(), 1, 900);
 
         assertThat(lineService.save(lineSaveRequest)).isNotNull();
     }

@@ -1,8 +1,5 @@
 package wooteco.subway.acceptance;
 
-import static wooteco.subway.acceptance.LineAcceptanceTest.postLines;
-import static wooteco.subway.acceptance.StationAcceptanceTest.postStations;
-
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,15 +10,6 @@ import wooteco.subway.dto.section.SectionSaveRequest;
 import wooteco.subway.dto.station.StationSaveRequest;
 
 public class SectionAcceptanceTest extends AcceptanceTest {
-
-    public static void postSections(final Long lineId, final SectionSaveRequest sectionSaveRequest) {
-        RestAssured.given().log().all()
-                .body(sectionSaveRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines/" + lineId + "/sections")
-                .then().log().all();
-    }
 
     @Test
     @DisplayName("구간을 추가한다.")

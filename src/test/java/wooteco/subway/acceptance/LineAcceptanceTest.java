@@ -1,32 +1,16 @@
 package wooteco.subway.acceptance;
 
-import static wooteco.subway.acceptance.StationAcceptanceTest.postStations;
-
 import io.restassured.RestAssured;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import wooteco.subway.dto.line.LineResponse;
 import wooteco.subway.dto.line.LineSaveRequest;
 import wooteco.subway.dto.line.LineUpdateRequest;
 import wooteco.subway.dto.station.StationSaveRequest;
 
 class LineAcceptanceTest extends AcceptanceTest {
-
-    public static Long postLines(final LineSaveRequest lineSaveRequest) {
-        return RestAssured.given().log().all()
-                .body(lineSaveRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines")
-                .then().log().all()
-                .extract()
-                .response()
-                .as(LineResponse.class)
-                .getId();
-    }
 
     @Test
     @DisplayName("노선을 추가한다.")

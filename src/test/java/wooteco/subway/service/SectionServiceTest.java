@@ -14,7 +14,6 @@ import wooteco.subway.dao.station.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.line.LineSaveRequest;
 import wooteco.subway.dto.section.SectionSaveRequest;
 
 @SpringBootTest
@@ -29,9 +28,6 @@ class SectionServiceTest {
 
     @Autowired
     private StationDao stationDao;
-
-    @Autowired
-    private LineService lineService;
 
     @Autowired
     private SectionService sectionService;
@@ -71,9 +67,9 @@ class SectionServiceTest {
 
         // then
         assertThat(sectionDao.findAllByLineId(lineId)).hasSize(1)
-            .extracting(Section::getUpStation, Section::getDownStation)
-            .containsExactly(
-                    tuple(station1, station3)
-            );
+                .extracting(Section::getUpStation, Section::getDownStation)
+                .containsExactly(
+                        tuple(station1, station3)
+                );
     }
 }

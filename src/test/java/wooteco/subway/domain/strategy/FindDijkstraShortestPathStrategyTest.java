@@ -49,10 +49,10 @@ class FindDijkstraShortestPathStrategyTest {
 
         Sections sections = new Sections(
                 List.of(
-                new Section(1L, line1, station1, station2, 2),
-                new Section(2L, line1, station2, station3, 2),
-                new Section(3L, line2, station1, station4, 3),
-                new Section(4L, line2, station4, station3, 3)));
+                        new Section(1L, line1, station1, station2, 2),
+                        new Section(2L, line1, station2, station3, 2),
+                        new Section(3L, line2, station1, station4, 3),
+                        new Section(4L, line2, station4, station3, 3)));
 
         //when
         FindPathStrategy findPathStrategy = new FindDijkstraShortestPathStrategy();

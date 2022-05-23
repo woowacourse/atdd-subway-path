@@ -28,7 +28,7 @@ class JdbcLineDaoTest {
     @Test
     @DisplayName("Line을 등록할 수 있다.")
     void save() {
-        Line line = new Line("신분당선",  "bg-red-600", 900);
+        Line line = new Line("신분당선", "bg-red-600", 900);
 
         assertThat(lineDao.save(line)).isNotNull();
     }

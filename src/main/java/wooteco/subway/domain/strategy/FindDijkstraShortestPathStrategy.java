@@ -24,19 +24,9 @@ public class FindDijkstraShortestPathStrategy implements FindPathStrategy {
         addVertexStation(sections, graph);
         addEdgeWeightStation(sections, graph);
 
-        DijkstraShortestPath<Station, ShortestPathEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        GraphPath<Station, ShortestPathEdge> shortestPath =
-                Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
-                        .orElseThrow(() -> new NotFoundException("갈 수 있는 경로를 찾을 수 없습니다."));
+        GraphPath<Station, ShortestPathEdge> shortestPath = getStationShortestPathEdgeGraphPath(source, target, graph);
         List<Line> lines = getLines(shortestPath);
         return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight(), lines);
-    }
-
-    private List<Line> getLines(GraphPath<Station, ShortestPathEdge> shortestPath) {
-        List<ShortestPathEdge> edges = shortestPath.getEdgeList();
-        return edges.stream()
-                .map(ShortestPathEdge::getLine)
-                .collect(Collectors.toList());
     }
 
     private void addVertexStation(final Sections sections,
@@ -51,7 +41,24 @@ public class FindDijkstraShortestPathStrategy implements FindPathStrategy {
                                       final WeightedMultigraph<Station, ShortestPathEdge> graph) {
         List<Section> allSections = sections.getSections();
         for (Section section : allSections) {
-            graph.addEdge(section.getUpStation(), section.getDownStation(), new ShortestPathEdge(section.getLine(), section.getDistance()));
+            graph.addEdge(section.getUpStation(), section.getDownStation(),
+                    new ShortestPathEdge(section.getLine(), section.getDistance()));
         }
+    }
+
+    private GraphPath<Station, ShortestPathEdge> getStationShortestPathEdgeGraphPath(Station source, Station target,
+                                                                                     WeightedMultigraph<Station, ShortestPathEdge> graph) {
+        DijkstraShortestPath<Station, ShortestPathEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        GraphPath<Station, ShortestPathEdge> shortestPath =
+                Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
+                        .orElseThrow(() -> new NotFoundException("갈 수 있는 경로를 찾을 수 없습니다."));
+        return shortestPath;
+    }
+
+    private List<Line> getLines(final GraphPath<Station, ShortestPathEdge> shortestPath) {
+        List<ShortestPathEdge> edges = shortestPath.getEdgeList();
+        return edges.stream()
+                .map(ShortestPathEdge::getLine)
+                .collect(Collectors.toList());
     }
 }
