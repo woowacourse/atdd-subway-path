@@ -47,8 +47,8 @@ public class PathService {
         List<Long> shortestPathLines = path.findShortestPathLines();
         return shortestPathLines.stream()
                 .map(lineService::findLineById)
+                .max(Comparator.comparingInt(Line::getExtraFare))
                 .map(Line::getExtraFare)
-                .max(Comparator.comparingInt(extraFare -> extraFare))
                 .orElseThrow(() -> new IllegalArgumentException("잘못된 요금입니다."));
     }
 

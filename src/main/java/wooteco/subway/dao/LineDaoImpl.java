@@ -45,7 +45,7 @@ public class LineDaoImpl implements LineDao {
 
     @Override
     public List<Line> findAll() {
-        final String sql = "SELECT l.id as line_id, l.name as line_name, l.color as line_color, l.extraFare as extraFare, "
+        final String sql = "SELECT l.id as line_id, l.name as line_name, l.color as line_color, l.extraFare as line_extraFare, "
                 + "s.id as section_id, s.up_station_id, us.name as up_station_name, s.down_station_id, "
                 + "ds.name as down_station_name, s.distance "
                 + "FROM LINE as l "
@@ -74,7 +74,8 @@ public class LineDaoImpl implements LineDao {
             final Long lineId = resultSet.getLong("line_id");
             final String name = resultSet.getString("line_name");
             final String color = resultSet.getString("line_color");
-            Line line = new Line(lineId, name, color, resultSet.getInt("extraFare"));
+            int extraFare = resultSet.getInt("line_extraFare");
+            Line line = new Line(lineId, name, color, extraFare);
 
             Section section = serializeSection(resultSet);
             return new LineSection(line, section);
@@ -102,7 +103,7 @@ public class LineDaoImpl implements LineDao {
 
     @Override
     public Optional<Line> findById(Long id) {
-        final String sql = "SELECT l.id as line_id, l.name as line_name, l.color as line_color, l.extraFare as extraFare, "
+        final String sql = "SELECT l.id as line_id, l.name as line_name, l.color as line_color, l.extraFare as line_extraFare, "
                 + "s.id as section_id, s.up_station_id, us.name as up_station_name, s.down_station_id, "
                 + "ds.name as down_station_name, s.distance "
                 + "FROM LINE as l "
@@ -111,7 +112,7 @@ public class LineDaoImpl implements LineDao {
                 + "LEFT JOIN STATION AS ds ON ds.id = s.down_station_id "
                 + "WHERE l.id = ?";
         try {
-            List<LineSection> lineSections = jdbcTemplate.query(sql, joinRowMapper(), id);
+            List<LineSection> lineSections = jdbcTemplate.  query(sql, joinRowMapper(), id);
             if (lineSections.isEmpty()) {
                 return Optional.empty();
             }
