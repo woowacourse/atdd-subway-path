@@ -68,7 +68,8 @@ class SubwayMapTest {
     @DisplayName("경로를 찾을 수 없는 경우 예외를 던진다.")
     void SearchPath_InvalidPath_ExceptionThrown() {
         assertThatThrownBy(() -> subwayMap.searchPath(gangnam, oksu))
-                .isInstanceOf(NoSuchPathException.class);
+                .isInstanceOf(NoSuchPathException.class)
+                .hasMessageContaining(gangnam.getName(), oksu.getName());
     }
 
     @Test

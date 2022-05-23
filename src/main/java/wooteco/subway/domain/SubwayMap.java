@@ -30,7 +30,7 @@ public class SubwayMap {
                 .getPath(sourceStation, targetStation);
 
         if (shortestPath == null) {
-            throw new NoSuchPathException();
+            throw new NoSuchPathException(sourceStation.getName(), targetStation.getName());
         }
         return shortestPath;
     }
