@@ -51,15 +51,17 @@ public class Subway {
 
     public Path findShortestPath(Station source, Station target) {
         validateSameStation(source, target);
-        GraphPath<Station, ShortestPathEdge> path = pathFinder.getPath(source, target);
-
-        validateEmptyPath(path);
-        List<Line> lines = path.getEdgeList().stream()
-            .map(ShortestPathEdge::getLine)
-            .distinct()
-            .collect(Collectors.toList());
-
-        return Path.of(path.getVertexList(), path.getWeight(), new Lines(lines));
+        try {
+            GraphPath<Station, ShortestPathEdge> path = pathFinder.getPath(source, target);
+            validateEmptyPath(path);
+            List<Line> lines = path.getEdgeList().stream()
+                .map(ShortestPathEdge::getLine)
+                .distinct()
+                .collect(Collectors.toList());
+            return Path.of(path.getVertexList(), path.getWeight(), new Lines(lines));
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalArgumentException("해당 역을 찾지 못했습니다.");
+        }
     }
 
     private void validateSameStation(Station source, Station target) {

@@ -112,4 +112,12 @@ public class SubwayTest {
             .hasMessage("출발역과 도착역이 동일합니다.")
             .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    @DisplayName("역이 존재하지 않으면 예외를 던져야 한다.")
+    void findNonStationPath() {
+        assertThatThrownBy(() -> subway.findShortestPath(new Station("없는역"), stations.get(0)))
+            .hasMessage("해당 역을 찾지 못했습니다.")
+            .isInstanceOf(IllegalArgumentException.class);
+    }
 }
