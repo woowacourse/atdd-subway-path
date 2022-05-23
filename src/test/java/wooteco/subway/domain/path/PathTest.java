@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.exception.SubwayException;
 
-public class PathTest {
+class PathTest {
 
     private final List<Section> sections = List.of(
             new Section(1L, 1L, 1L, 2L, 2),
