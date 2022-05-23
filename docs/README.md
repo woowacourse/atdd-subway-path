@@ -104,6 +104,6 @@
 - [ ] (PathService) `containsStationInSection()`, `getExtraFare()`가 이곳에 있는 것이 적절할까?
 - [x] (DijkstraShortestPathStationTest) `@DisplayName`을 잘 쓰자!
 - [ ] 역이 어느 구간에도 포함되어 있지 않을 때 에러를 더 구체적으로 처리하면 좋을 것 같다.
-- [ ] 출발역과 도착역이 같은 경우 어떤 일이 발생할까?
+- [x] 출발역과 도착역이 같은 경우 어떤 일이 발생할까?
 - [ ] 노선의 역 정보를 출력할 때 순서대로 출력이 되면 어떨까?
 - [ ] source, target, age 중 들어오지 않은 값이 있으면 어떻게 되나요?

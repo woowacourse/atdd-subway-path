@@ -67,6 +67,27 @@ public class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    @DisplayName("출발역과 도착역이 같은 경우 에러가 발생한다.")
+    @Test
+    void getShortestPathSameSourceAndTarget() {
+        createStation("신림역");
+        createStation("강남역");
+        createStation("역삼역");
+        createStation("선릉역");
+        createStation("잠실역");
+
+        createLine("1호선", "blue", "1", "2", "3", "900");
+        createLine("2호선", "green", "2", "3", "4", "900");
+        createLine("3호선", "orange", "1", "3", "10", "900");
+
+        ExtractableResponse<Response> response = RequestFrame.get("/paths?source=1&target=1&age=30");
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(response.body().asString()).contains("출발역과 도착역이 같습니다.")
+        );
+    }
+
     @DisplayName("추가 요금은 가장 높은 금액의 추가 요금만 적용한다")
     @Test
     void extraFareWithMultiLines() {

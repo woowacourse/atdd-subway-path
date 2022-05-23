@@ -42,6 +42,7 @@ public class PathService {
     public PathServiceResponse getShortestPath(PathServiceRequest pathServiceRequest) {
         validateExists(pathServiceRequest.getSource());
         validateExists(pathServiceRequest.getTarget());
+        validateNotSameStation(pathServiceRequest.getSource(), pathServiceRequest.getTarget());
 
         Station source = stationDao.getStation(pathServiceRequest.getSource());
         Station target = stationDao.getStation(pathServiceRequest.getTarget());
@@ -109,6 +110,12 @@ public class PathService {
     private void validateExists(Long id) {
         if (!stationDao.existById(id)) {
             throw new NoSuchElementException(ERROR_MESSAGE_NOT_EXISTS_ID);
+        }
+    }
+
+    private void validateNotSameStation(long source, long target) {
+        if (source == target) {
+            throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
         }
     }
 }
