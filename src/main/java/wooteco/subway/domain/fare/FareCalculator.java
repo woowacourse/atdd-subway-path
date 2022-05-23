@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.fare;
 
 public class FareCalculator {
 
@@ -10,7 +10,7 @@ public class FareCalculator {
 
     public int calculateFare(final int age) {
         int distanceFare = FareByDistance.findFare(distance);
-        return distanceFare;
+        return FareByAge.findFare(age, distanceFare);
     }
 
 }
