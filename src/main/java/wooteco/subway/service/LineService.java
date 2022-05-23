@@ -55,17 +55,17 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    public LineResponse findById(Long id) {
+    public LineResponse findById(Long lineId) {
         try {
-            return LineResponse.from(lineRepository.findById(id));
+            return LineResponse.from(lineRepository.findById(lineId));
         } catch (EmptyResultDataAccessException e) {
             throw new EmptyResultDataAccessException("존재하지 않는 노선입니다", 1);
         }
     }
 
     @Transactional
-    public void update(Long id, LineEditRequest lineEditRequest) {
-        Line line = lineRepository.findById(id);
+    public void update(Long lineId, LineEditRequest lineEditRequest) {
+        Line line = lineRepository.findById(lineId);
         line.updateNameAndColor(lineEditRequest.getName(), lineEditRequest.getColor());
         try {
             lineRepository.update(line);
@@ -75,8 +75,8 @@ public class LineService {
     }
 
     @Transactional
-    public void addSection(Long id, SectionRequest request) {
-        Line line = lineRepository.findById(id);
+    public void addSection(Long lineId, SectionRequest request) {
+        Line line = lineRepository.findById(lineId);
         Station up = stationRepository.findById(request.getUpStationId());
         Station down = stationRepository.findById(request.getDownStationId());
         Section section = new Section(up, down, request.getDistance());
@@ -103,13 +103,13 @@ public class LineService {
     }
 
     @Transactional
-    public void deleteById(Long id) {
-        lineRepository.delete(id);
+    public void deleteById(Long lineId) {
+        lineRepository.delete(lineId);
     }
 
     @Transactional
-    public void deleteSection(Long id, Long stationId) {
-        Line line = lineRepository.findById(id);
+    public void deleteSection(Long lineId, Long stationId) {
+        Line line = lineRepository.findById(lineId);
         Station station = stationRepository.findById(stationId);
 
         Sections before = new Sections(line.getSections());

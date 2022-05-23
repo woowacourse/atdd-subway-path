@@ -33,9 +33,9 @@ public class StationService {
         }
     }
 
-    public StationResponse findById(Long id) {
+    public StationResponse findById(Long stationId) {
         try {
-            return StationResponse.from(stationRepository.findById(id));
+            return StationResponse.from(stationRepository.findById(stationId));
         } catch (EmptyResultDataAccessException e) {
             throw new EmptyResultDataAccessException("존재하지 않는 역입니다.", 1);
         }
@@ -49,7 +49,7 @@ public class StationService {
     }
 
     @Transactional
-    public void deleteById(Long id) {
-        stationRepository.deleteById(id);
+    public void deleteById(Long stationId) {
+        stationRepository.deleteById(stationId);
     }
 }
