@@ -38,7 +38,7 @@
 
 This project is [MIT](https://github.com/woowacourse/atdd-subway-path/blob/master/LICENSE) licensed.
 
-### 기능 요구 사항
+## 기능 요구 사항
 1. 최단 경로 기능
    - 출발역과 도착역을 입력받아 최단 거리를 구한다.
    - 출발역과 도착역이 존재하지 않는 역인 경우 예외를 발생시킨다.
@@ -48,3 +48,12 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-path/blob/maste
    - 10km까지는 1250원
    - 10km~50km까지는 5km마다 100원 추가
    - 50km~는 8km마다 100원 추가
+
+## 2단계 기능 요구 사항
+### 노선별 추가 요금
+- 추가 요금이 있는 노선을 이용 할 경우 측정된 요금에 추가
+
+### 연령별 요금 할인
+- 나이가 13세 이상이고 19세 미만이면 금액의 20%를 할인해준다.
+- 나이가 6세 이상이고 13세 미만이면 금액의 50%를 할인해준다.
+
