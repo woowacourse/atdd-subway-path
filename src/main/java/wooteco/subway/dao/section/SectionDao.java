@@ -5,7 +5,7 @@ import wooteco.subway.domain.section.Section;
 
 public interface SectionDao {
 
-    long save(Section section);
+    Long save(Section section);
 
     List<Section> findAllByLineId(Long lineId);
 
