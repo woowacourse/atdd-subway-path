@@ -53,18 +53,19 @@ public class PathServiceTest {
         secondSection = sectionDao.save(
                 new SectionEntity(null, line2.getId(), sungsuStationEntity.getId(), yongdapStationEntity.getId(), 2));
         thirdSection = sectionDao.save(
-                new SectionEntity(null, line1.getId(), sinseolStationEntity.getId(), yongdapStationEntity.getId(),1000));
+                new SectionEntity(null, line1.getId(), sinseolStationEntity.getId(), yongdapStationEntity.getId(),
+                        1000));
     }
 
     @Test
     @DisplayName("경로 조회한다")
     void getPath() throws Exception {
         // given
-        PathResponse pathResponse = pathService.getPath(yongdapStationEntity.getId(), sinseolStationEntity.getId());
+        PathResponse pathResponse = pathService.getPath(yongdapStationEntity.getId(), sinseolStationEntity.getId(), 21);
 
         // then
         assertThat(pathResponse.getStations()).hasSize(3);
         assertThat(pathResponse.getDistance()).isEqualTo(48);
-        assertThat(pathResponse.getFare()).isEqualTo(2050L);
+        assertThat(pathResponse.getFare()).isEqualTo(2050);
     }
 }

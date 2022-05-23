@@ -9,7 +9,15 @@ public abstract class Fare {
     protected static final int DEFAULT_UNIT = 5;
     protected static final int EXTRA_UNIT = 8;
 
-    public abstract int calculateFare(int distance, int extraFare);
+    protected int distance;
+    protected int extraFare;
+
+    public Fare(int distance, int extraFare) {
+        this.distance = distance;
+        this.extraFare = extraFare;
+    }
+
+    public abstract int calculateFare();
 
     protected int calculateOverFare(int distance, int perUnit) {
         return (int) ((Math.ceil((distance - 1) / perUnit) + 1) * PER_UNIT_FEE_AMOUNT);

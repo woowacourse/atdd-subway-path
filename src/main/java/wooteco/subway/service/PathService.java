@@ -7,6 +7,8 @@ import wooteco.subway.domain.PathFinder;
 import wooteco.subway.domain.PathFinderFactory;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.policy.DiscountPolicy;
+import wooteco.subway.domain.policy.DiscountPolicyFactory;
 import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.fare.FareFactory;
 import wooteco.subway.dto.PathResponse;
@@ -27,7 +29,7 @@ public class PathService {
         this.pathFinderFactory = pathFinderFactory;
     }
 
-    public PathResponse getPath(Long from, Long to) throws Exception {
+    public PathResponse getPath(Long from, Long to, int age) throws Exception {
         PathFinder pathFinder = pathFinderFactory.getObject();
         Station fromStation = stationRepository.findById(from);
         Station toStation = stationRepository.findById(to);
@@ -35,8 +37,9 @@ public class PathService {
         List<Section> sections = pathFinder.calculateSections(fromStation, toStation);
         int extraFare = calculateMaxExtraFare(sections);
         int distance = pathFinder.calculateDistance(fromStation, toStation);
-        Fare fare = new FareFactory().getFare(distance);
-        return PathResponse.of(stations, distance, fare.calculateFare(distance, extraFare));
+        Fare fare = new FareFactory().getFare(distance, extraFare);
+        DiscountPolicy discountPolicy = new DiscountPolicyFactory().getDiscountPolicy(age);
+        return PathResponse.of(stations, distance, discountPolicy.calculateDiscountFare(fare));
     }
 
     private int calculateMaxExtraFare(List<Section> sections) {

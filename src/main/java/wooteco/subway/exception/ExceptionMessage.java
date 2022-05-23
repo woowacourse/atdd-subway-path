@@ -17,6 +17,7 @@ public enum ExceptionMessage {
     NEAR_SECTIONS_OVER_SIZE("근접한 역이 너무 많습니다."),
     SECTIONS_NOT_DELETABLE("구간을 삭제할 수 없습니다."),
     UNDER_MIN_DISTANCE("거리가 최소 허용치보다 낮습니다."),
+    UNDER_MIN_AGE("나이가 최소 허용치보다 낮습니다."),
 
     NOT_FOUND_STATION("해당 역을 찾지 못했습니다."),
     NOT_FOUND_LINE("해당 노선을 찾지 못했습니다."),

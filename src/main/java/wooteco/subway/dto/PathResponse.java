@@ -19,12 +19,6 @@ public class PathResponse {
         this.fare = fare;
     }
 
-//    public static PathResponse of(List<Station> stations, int distance, Fare1 fare1) {
-//        List<StationResponse> stationResponses = stations.stream()
-//                .map(station -> new StationResponse(station.getId(), station.getName()))
-//                .collect(Collectors.toList());
-//        return new PathResponse(stationResponses, distance, fare1.getValue());
-//    }
     public static PathResponse of(List<Station> stations, int distance, int fare) {
         List<StationResponse> stationResponses = stations.stream()
                 .map(station -> new StationResponse(station.getId(), station.getName()))
