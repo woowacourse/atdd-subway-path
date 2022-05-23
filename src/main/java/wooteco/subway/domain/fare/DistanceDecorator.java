@@ -1,6 +1,6 @@
 package wooteco.subway.domain.fare;
 
-public class DistanceDecorator extends Decorator{
+public class DistanceDecorator extends Decorator {
     private final int distance;
 
     public DistanceDecorator(final Fare fare, final int distance) {

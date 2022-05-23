@@ -1,6 +1,6 @@
 package wooteco.subway.domain.fare;
 
-public class BaseFare implements Fare{
+public class BaseFare implements Fare {
 
     private final int extraFare;
 

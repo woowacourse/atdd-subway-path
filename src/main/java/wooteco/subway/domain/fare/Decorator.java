@@ -1,6 +1,6 @@
 package wooteco.subway.domain.fare;
 
-public class Decorator implements Fare{
+public class Decorator implements Fare {
     private final Fare fare;
 
     public Decorator(final Fare fare) {

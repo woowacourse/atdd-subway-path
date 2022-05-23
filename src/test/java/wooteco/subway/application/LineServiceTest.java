@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import wooteco.subway.application.LineService;
-import wooteco.subway.application.SectionService;
 import wooteco.subway.dao.*;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineResponse;

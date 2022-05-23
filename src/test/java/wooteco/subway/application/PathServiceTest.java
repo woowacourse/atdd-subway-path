@@ -8,16 +8,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.dao.*;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @JdbcTest
 class PathServiceTest {
@@ -31,7 +28,7 @@ class PathServiceTest {
     private PathService pathService;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         stationDao = new StationJdbcDao(jdbcTemplate);
         sectionDao = new SectionJdbcDao(jdbcTemplate);
         lineDao = new LineJdbcDao(jdbcTemplate);
