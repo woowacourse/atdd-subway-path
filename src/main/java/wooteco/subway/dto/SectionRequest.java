@@ -1,8 +1,12 @@
 package wooteco.subway.dto;
 
+import javax.validation.constraints.Positive;
+
 public class SectionRequest {
     private Long upStationId;
     private Long downStationId;
+
+    @Positive(message = "거리는 양수여야합니다.")
     private int distance;
 
     public SectionRequest() {
