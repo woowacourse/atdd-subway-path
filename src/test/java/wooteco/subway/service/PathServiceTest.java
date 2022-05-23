@@ -235,18 +235,12 @@ class PathServiceTest {
         final Long 분당선id = lineService.save(분당선).getId();
 
         // when
-        final PathResponse pathResponse1 = pathService.findPath(response1.getId(), response6.getId(), 3);
-        final PathResponse pathResponse2 = pathService.findPath(response1.getId(), response6.getId(), 6);
-        final PathResponse pathResponse3 = pathService.findPath(response1.getId(), response6.getId(), 13);
-        final PathResponse pathResponse4 = pathService.findPath(response1.getId(), response6.getId(), 19);
+        final PathResponse pathResponse = pathService.findPath(response1.getId(), response6.getId(), 20);
 
         // then
         assertAll(
-                () -> assertEquals(pathResponse1.getDistance(), 19),
-                () -> assertEquals(pathResponse1.getFare(), 0),
-                () -> assertEquals(pathResponse2.getFare(), 1350),
-                () -> assertEquals(pathResponse3.getFare(), 1950),
-                () -> assertEquals(pathResponse4.getFare(), 2350)
+                () -> assertEquals(pathResponse.getDistance(), 19),
+                () -> assertEquals(pathResponse.getFare(), 1450 + 분당선.getExtraFare())
         );
     }
 }
