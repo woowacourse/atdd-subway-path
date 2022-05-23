@@ -43,7 +43,7 @@ public class LineRepository {
 
     public List<Line> findAll() {
         return lineDao.findAll().stream()
-                .map(lineDto -> findById(lineDto.getId()))
+                .map(lineEntity -> toLine(lineEntity, sectionDao.findByLineId(lineEntity.getId())))
                 .collect(Collectors.toList());
     }
 
