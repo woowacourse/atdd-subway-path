@@ -45,11 +45,9 @@ class StationControllerTest extends ControllerTest {
     void createDuplicateStation() {
         // given
         StationRequest stationRequest = new StationRequest("강남역");
-
-        // when
         stationController.createStation(stationRequest);
 
-        // then
+        // when
         assertThatThrownBy(() -> stationController.createStation(stationRequest))
                 .isInstanceOf(DuplicateKeyException.class);
     }
