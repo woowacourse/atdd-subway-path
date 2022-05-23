@@ -3,31 +3,23 @@ package wooteco.subway.domain.path;
 import java.util.List;
 import wooteco.subway.domain.element.Line;
 import wooteco.subway.domain.element.Station;
-import wooteco.subway.domain.fare.Fare;
-import wooteco.subway.domain.fare.PolicyFactory;
 
 public class Path {
     private final List<Station> stations;
     private final int distance;
-    private final Fare fare;
+    private final List<Line> lines;
 
-    private Path(List<Station> stations, int distance, Fare fare) {
+    private Path(List<Station> stations, int distance, List<Line> lines) {
         this.stations = stations;
         this.distance = distance;
-        this.fare = fare;
+        this.lines = lines;
     }
 
-    public static Path create(SubwayGraph graph, Station source, Station target, int age) {
+    public static Path create(SubwayGraph graph, Station source, Station target) {
         return new Path(graph.getShortestRoute(source, target),
                 graph.getShortestDistance(source, target),
-                getFare(graph.getLines(source,target), age));
-    }
-
-    private static Fare getFare(List<Line> lines, int age) {
-        return new Fare(List.of(
-                PolicyFactory.createLineFee(lines),
-                PolicyFactory.createAgeDiscount(age)
-        ));
+                graph.getLines(source, target)
+        );
     }
 
     public List<Station> getStations() {
@@ -38,7 +30,7 @@ public class Path {
         return distance;
     }
 
-    public int getFare() {
-        return fare.getFare(distance);
+    public List<Line> getLines() {
+        return lines;
     }
 }

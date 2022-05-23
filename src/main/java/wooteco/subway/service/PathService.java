@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.element.Station;
+import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.SubwayGraph;
 import wooteco.subway.repository.SectionRepository;
@@ -28,16 +29,16 @@ public class PathService {
         return toPathResponse(Path.create(
                 new SubwayGraph(sectionRepository.findAll()),
                 stationRepository.findById(pathsRequest.getSource()),
-                stationRepository.findById(pathsRequest.getTarget()),
-                pathsRequest.getAge()
-        ));
+                stationRepository.findById(pathsRequest.getTarget())
+        ), pathsRequest.getAge());
     }
 
-    private PathResponse toPathResponse(Path path) {
+    private PathResponse toPathResponse(Path path, int age) {
         return new PathResponse(
                 toStationResponse(path.getStations()),
                 path.getDistance(),
-                path.getFare());
+                Fare.create(path, age).getFare(path.getDistance())
+        );
     }
 
     private List<StationResponse> toStationResponse(List<Station> route) {
