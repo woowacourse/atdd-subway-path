@@ -6,7 +6,8 @@ import java.util.function.IntUnaryOperator;
 
 public enum DiscountPolicy {
     CHILDREN(age -> age >= 13 && age < 19, value -> (int) (value - ((value - 350) * 0.2))),
-    TEENAGER(age -> age >= 6 && age < 13, value -> (int) (value - ((value - 350) * 0.5)));
+    TEENAGER(age -> age >= 6 && age < 13, value -> (int) (value - ((value - 350) * 0.5))),
+    NO_DISCOUNT_AGE_GROUP(age -> false, value -> value);
 
     private final IntPredicate agePolicy;
     private final IntUnaryOperator fareDiscountPolicy;
@@ -24,7 +25,7 @@ public enum DiscountPolicy {
         return Arrays.stream(DiscountPolicy.values())
             .filter(ageGroup -> ageGroup.getAgePolicy().test(age))
             .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("일치하는 그룹이 존재하지 않습니다."));
+            .orElse(NO_DISCOUNT_AGE_GROUP);
     }
 
     public IntPredicate getAgePolicy() {
