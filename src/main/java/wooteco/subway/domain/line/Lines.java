@@ -30,13 +30,13 @@ public class Lines {
 
     private boolean containsName(Line line) {
         return lines.stream()
-                .filter(it -> !it.isSameId(line))
+                .filter(it -> it.isDifferentId(line))
                 .anyMatch(it -> it.isSameName(line));
     }
 
     private boolean containsColor(Line line) {
         return lines.stream()
-                .filter(it -> !it.isSameId(line))
+                .filter(it -> it.isDifferentId(line))
                 .anyMatch(it -> it.isSameColor(line));
     }
 

@@ -7,19 +7,26 @@ public class Line {
     private final String color;
     private final int extraFare;
 
-    public Line(String name, String color, int extraFare) {
-        this(null, name, color, extraFare);
-    }
-
     public Line(Long id, String name, String color, int extraFare) {
+        validateExtraFare(extraFare);
         this.id = id;
         this.name = name;
         this.color = color;
         this.extraFare = extraFare;
     }
 
-    public boolean isSameId(Line line) {
-        return id.equals(line.getId());
+    public Line(String name, String color, int extraFare) {
+        this(null, name, color, extraFare);
+    }
+
+    private void validateExtraFare(int extraFare) {
+        if (extraFare % 10 != 0) {
+            throw new IllegalArgumentException("추가 요금은 10원 단위로 입력해야합니다.");
+        }
+    }
+
+    public boolean isDifferentId(Line line) {
+        return !id.equals(line.getId());
     }
 
     public boolean isSameName(Line line) {

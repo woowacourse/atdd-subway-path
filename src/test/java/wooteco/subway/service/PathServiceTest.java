@@ -49,7 +49,7 @@ class PathServiceTest {
         stationId5 = stationDao.save(new Station("교대역"));
 
         LineDao lineDao = new JdbcLineDao(jdbcTemplate);
-        long lineId1 = lineDao.save(new Line("2호선", "bg-green-600", 200));
+        long lineId1 = lineDao.save(new Line("2호선", "bg-green-600", 0));
         long lineId2 = lineDao.save(new Line("다른2호선", "bg-green-800", 500));
 
         SectionDao sectionDao = new JdbcSectionDao(jdbcTemplate);
@@ -65,10 +65,28 @@ class PathServiceTest {
         pathService = new PathService(stationService, sectionService, lineService);
     }
 
-    @DisplayName("경로를 조회한다.")
+    @DisplayName("추가 요금이 없는 경로를 조회한다.")
     @Test
     void findPath() {
-        PathResponse pathResponse = pathService.findPath(stationId1, stationId4);
+        PathResponse pathResponse = pathService.findPath(stationId1, stationId2, 20);
+        assertAll(
+                () -> assertThat(pathResponse.getStations())
+                        .extracting(StationResponse::getId, StationResponse::getName)
+                        .containsExactly(
+                                tuple(stationId1, "선릉역"),
+                                tuple(stationId2, "잠실역")
+                        ),
+                () -> assertThat(pathResponse.getDistance())
+                        .isEqualTo(2),
+                () -> assertThat(pathResponse.getFare())
+                        .isEqualTo(1250)
+        );
+    }
+
+    @DisplayName("추가 요금이 있는 경로를 조회한다.")
+    @Test
+    void findPathWithExtraFares() {
+        PathResponse pathResponse = pathService.findPath(stationId1, stationId4, 20);
         assertAll(
                 () -> assertThat(pathResponse.getStations())
                         .extracting(StationResponse::getId, StationResponse::getName)
@@ -85,10 +103,76 @@ class PathServiceTest {
         );
     }
 
+    @DisplayName("추가 요금 노선 여러개를 이용하는 경로를 조회한다.")
+    @Test
+    void findPathWithExtraFare() {
+        StationDao stationDao = new JdbcStationDao(jdbcTemplate);
+        Long stationId6 = stationDao.save(new Station("홍대역"));
+        LineDao lineDao = new JdbcLineDao(jdbcTemplate);
+        long lineId3 = lineDao.save(new Line("3호선", "bg-yellow-600", 700));
+        SectionDao sectionDao = new JdbcSectionDao(jdbcTemplate);
+        sectionDao.save(new Section(6L, lineId3, stationId5, stationId6, 7));
+
+        PathResponse pathResponse = pathService.findPath(stationId2, stationId6, 20);
+        assertAll(
+                () -> assertThat(pathResponse.getStations())
+                        .extracting(StationResponse::getId, StationResponse::getName)
+                        .containsExactly(
+                                tuple(stationId2, "잠실역"),
+                                tuple(stationId5, "교대역"),
+                                tuple(stationId6, "홍대역")
+                        ),
+                () -> assertThat(pathResponse.getDistance())
+                        .isEqualTo(10),
+                () -> assertThat(pathResponse.getFare())
+                        .isEqualTo(1950)
+        );
+    }
+
+    @DisplayName("어린이가 이용하는 노선의 금액을 조회한다.")
+    @Test
+    void findPathOfChild() {
+        PathResponse pathResponse = pathService.findPath(stationId1, stationId4, 6);
+        assertAll(
+                () -> assertThat(pathResponse.getStations())
+                        .extracting(StationResponse::getId, StationResponse::getName)
+                        .containsExactly(
+                                tuple(stationId1, "선릉역"),
+                                tuple(stationId2, "잠실역"),
+                                tuple(stationId5, "교대역"),
+                                tuple(stationId4, "강남역")
+                        ),
+                () -> assertThat(pathResponse.getDistance())
+                        .isEqualTo(9),
+                () -> assertThat(pathResponse.getFare())
+                        .isEqualTo(700)
+        );
+    }
+
+    @DisplayName("청소년이 이용하는 노선의 금액을 조회한다.")
+    @Test
+    void findPathOfAdolescent() {
+        PathResponse pathResponse = pathService.findPath(stationId1, stationId4, 13);
+        assertAll(
+                () -> assertThat(pathResponse.getStations())
+                        .extracting(StationResponse::getId, StationResponse::getName)
+                        .containsExactly(
+                                tuple(stationId1, "선릉역"),
+                                tuple(stationId2, "잠실역"),
+                                tuple(stationId5, "교대역"),
+                                tuple(stationId4, "강남역")
+                        ),
+                () -> assertThat(pathResponse.getDistance())
+                        .isEqualTo(9),
+                () -> assertThat(pathResponse.getFare())
+                        .isEqualTo(1120)
+        );
+    }
+
     @DisplayName("출발역과 도착역이 같은 경우 예외가 발생한다.")
     @Test
     void findPathSameTargetAndSource() {
-        assertThatThrownBy(() -> pathService.findPath(stationId1, stationId1))
+        assertThatThrownBy(() -> pathService.findPath(stationId1, stationId1, 20))
                 .isInstanceOf(SubwayException.class)
                 .hasMessage("출발역과 도착역이 같을 수 없습니다.");
     }
@@ -96,7 +180,7 @@ class PathServiceTest {
     @DisplayName("역이 존재하지 않는 경우 예외가 발생한다.")
     @Test
     void findPathNotExistStation() {
-        assertThatThrownBy(() -> pathService.findPath(100L, stationId1))
+        assertThatThrownBy(() -> pathService.findPath(100L, stationId1, 20))
                 .isInstanceOf(DataNotExistException.class)
                 .hasMessage("존재하지 않는 역입니다.");
     }

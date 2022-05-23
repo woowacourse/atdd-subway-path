@@ -9,23 +9,35 @@ public class Fare {
 
     private final int distance;
     private final int extraCharge;
+    private final int age;
 
-    public Fare(int distance, int extraCharge) {
+    public Fare(int distance, int extraCharge, int age) {
         this.distance = distance;
         this.extraCharge = extraCharge;
+        this.age = age;
     }
 
     public int calculate() {
         if (distance <= FIRST_DISTANCE) {
-            return BASIC_FARE + extraCharge;
+            return discount(BASIC_FARE + extraCharge);
         }
         if (distance <= SECOND_DISTANCE) {
-            return BASIC_FARE + calculateFareOverFirstDistance(distance) + extraCharge;
+            return discount(BASIC_FARE + calculateFareOverFirstDistance(distance) + extraCharge);
         }
-        return BASIC_FARE
+        return discount(BASIC_FARE
                 + calculateFareOverFirstDistance(SECOND_DISTANCE)
                 + calculateFareOverSecondDistance()
-                + extraCharge;
+                + extraCharge);
+    }
+
+    private int discount(int totalCharge) {
+        if (6 <= age && age < 13) {
+            return (int) ((totalCharge - 350) * 0.5);
+        }
+        if (age < 19) {
+            return (int) ((totalCharge - 350) * 0.8);
+        }
+        return totalCharge;
     }
 
     private int calculateFareOverFirstDistance(int distance) {

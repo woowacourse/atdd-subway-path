@@ -44,9 +44,31 @@ class PathAcceptanceTest extends AcceptanceTest {
         lineId2 = postLineId(다른분당선);
     }
 
-    @DisplayName("지하철 경로를 조회한다.")
+    @DisplayName("추가 요금이 없는 지하철 경로를 조회한다.")
     @Test
     void findPath() {
+        // given
+        LineRequest 무료노선 = new LineRequest("무료노선", "bg-white-600", stationId3, stationId4, 50, 0);
+        postLineId(무료노선);
+
+        // when
+        ValidatableResponse validatableResponse = RestAssured.given()
+                .log().all()
+                .when()
+                .get("/paths?source=" + stationId3 + "&target=" + stationId4 + "&age=" + 20)
+                .then().log().all();
+
+        // then
+        assertThat(validatableResponse.extract().statusCode()).isEqualTo(HttpStatus.OK.value());
+        validatableResponse
+                .body("stations.id", contains(stationId3.intValue(), stationId4.intValue()))
+                .body("distance", equalTo(50))
+                .body("fare", equalTo(2050));
+    }
+
+    @DisplayName("추가 요금이 있는 지하철 경로를 조회한다.")
+    @Test
+    void findPathWithExtraFare() {
         // given
         SectionRequest section1 = new SectionRequest(stationId2, stationId3, 2);
         SectionRequest section2 = new SectionRequest(stationId3, stationId4, 7);
@@ -60,7 +82,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         ValidatableResponse validatableResponse = RestAssured.given()
                 .log().all()
                 .when()
-                .get("/paths?source=" + stationId1 + "&target=" + stationId4)
+                .get("/paths?source=" + stationId1 + "&target=" + stationId4 + "&age=" + 20)
                 .then().log().all();
 
         // then
@@ -88,7 +110,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         ValidatableResponse validatableResponse = RestAssured.given()
                 .log().all()
                 .when()
-                .get("/paths?source=" + stationId1 + "&target=" + stationId4)
+                .get("/paths?source=" + stationId1 + "&target=" + stationId4 + "&age=" + 20)
                 .then().log().all();
 
         // then

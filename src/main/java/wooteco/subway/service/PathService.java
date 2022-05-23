@@ -25,7 +25,7 @@ public class PathService {
         this.lineService = lineService;
     }
 
-    public PathResponse findPath(Long source, Long target) {
+    public PathResponse findPath(Long source, Long target, int age) {
         Stations stations = stationService.findAll();
         validateStation(stations, source, target);
 
@@ -33,7 +33,7 @@ public class PathService {
         List<Long> shortestPath = path.findPath(source, target);
         List<Long> lineIds = path.getLineIds(source, target);
         int distance = path.findDistance(source, target);
-        return getPathResponse(stations, shortestPath, lineIds, distance);
+        return getPathResponse(stations, shortestPath, lineIds, distance, age);
     }
 
     private void validateStation(Stations stations, Long source, Long target) {
@@ -54,13 +54,14 @@ public class PathService {
         }
     }
 
-    private PathResponse getPathResponse(Stations stations, List<Long> shortestPath, List<Long> lineIds, int distance) {
+    private PathResponse getPathResponse(Stations stations, List<Long> shortestPath, List<Long> lineIds, int distance,
+                                         int age) {
         List<StationResponse> stationsResponses = getStationsResponses(stations, shortestPath);
         List<Line> lines = lineService.findByIds(lineIds);
         int extraCharge = lines.stream().distinct().mapToInt(Line::getExtraFare).max()
                 .orElse(0);
 
-        Fare fare = new Fare(distance, extraCharge);
+        Fare fare = new Fare(distance, extraCharge, age);
         return new PathResponse(stationsResponses, distance, fare.calculate());
     }
 
