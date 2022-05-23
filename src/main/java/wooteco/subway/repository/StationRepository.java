@@ -35,6 +35,8 @@ public class StationRepository {
     }
 
     public Integer deleteById(Long id) {
+        stationDao.findById(id)
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.NOT_FOUND_STATION.getContent()));
         return stationDao.deleteById(id);
     }
 
