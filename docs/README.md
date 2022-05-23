@@ -98,12 +98,14 @@
 - [ ] `Path`라는 이름이 많이 추상적인 것 같다. 이 객체가 담고있는 정보는 무엇인가?
 - [ ] util이란 무엇일까?
 - [ ] 사용하지 않는 메서드는 제거하자
-- [ ] `DijkstraShortestPathStation`를 사용하면서 객체지향과 거리가 먼 코드가 된 것 같다. 또 중요한 로직이 다 여기에 있어서 `Path`가 하는일이 하나도 없어보인다. 
-  - 이러한 방식을 채택한 이유와 장점은 무엇일까?
+- [ ] `DijkstraShortestPathStation`를 사용하면서 객체지향과 거리가 먼 코드가 된 것 같다. 또 중요한 로직이 다 여기에 있어서 `Path`가 하는일이 하나도 없어보인다.
+    - 이러한 방식을 채택한 이유와 장점은 무엇일까?
 - [ ] (PathService) `getShortestPath()` 메서드가 너무 커진 것 같다. 역할을 좀 더 이해하기 쉽게 개선해볼 수 없을까?
 - [ ] (PathService) `containsStationInSection()`, `getExtraFare()`가 이곳에 있는 것이 적절할까?
 - [x] (DijkstraShortestPathStationTest) `@DisplayName`을 잘 쓰자!
 - [x] 역이 어느 구간에도 포함되어 있지 않을 때 에러를 더 구체적으로 처리하면 좋을 것 같다.
 - [x] 출발역과 도착역이 같은 경우 어떤 일이 발생할까?
 - [ ] 노선의 역 정보를 출력할 때 순서대로 출력이 되면 어떨까?
-- [ ] source, target, age 중 들어오지 않은 값이 있으면 어떻게 되나요?
+- [x] source, target, age 중 들어오지 않은 값이 있으면 어떻게 되나요?
+    - 위 값은 모두 `@RequestParam`으로 받는다. `@RequestParam`은 기본적으로 required 옵션이 true이고 무조건 값이 있어야 한다.
+    - 따라서 source, target, age 중 어떤 하나라도 빠지면 `MissingServletRequestParameterException` 예외가 발생한다. 

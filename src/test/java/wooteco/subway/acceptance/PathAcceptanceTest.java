@@ -220,6 +220,23 @@ public class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    @DisplayName("경로 조회 시 출발역, 도착역, 나이 중 하나라도 입력을 하지 않으면 400 상태 코드를 응답한다.")
+    @Test
+    void missingRequestParam() {
+        createStation("신림역");
+        createStation("강남역");
+        createStation("선릉역");
+
+        createLine("1호선", "blue", "1", "2", "3", "900");
+
+        ExtractableResponse<Response> response = RequestFrame.get("/paths?source=1&target=3");
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(response.body().asString()).contains("age")
+        );
+    }
+
     private void createStation(String stationName) {
         Map<String, String> params = new HashMap<>();
         params.put("name", stationName);
