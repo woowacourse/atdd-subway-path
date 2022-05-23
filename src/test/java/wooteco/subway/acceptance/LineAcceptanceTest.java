@@ -35,7 +35,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         하계역_상계역_등록();
 
         //when 노선을 등록한다.
-        LineRequest requestBody = new LineRequest(lineName, lineColor, 하계_id, 상계_id, 10);
+        LineRequest requestBody = new LineRequest(lineName, lineColor, 하계_id, 상계_id, 10, 100L);
         ExtractableResponse<Response> response = postWithBody("/lines", requestBody);
 
         // then 노선 등록에 성공한다.
@@ -50,6 +50,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             assertThat(lineResponse.getName()).isEqualTo(lineName);
             assertThat(lineResponse.getColor()).isEqualTo(lineColor);
             assertThat(lineResponse.getStations()).hasSize(2);
+            assertThat(lineResponse.getExtraFare()).isEqualTo(100L);
         });
     }
 

@@ -28,11 +28,11 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse getPath(Long from, Long to) {
+    public PathResponse getPath(Long from, Long to, int age) {
         List<Section> allSections = sectionRepository.findAll();
         Station fromStation = stationRepository.findById(from);
         Station toStation = stationRepository.findById(to);
         Path path = pathGenerator.findPath(allSections, fromStation, toStation);
-        return PathResponse.of(path, path.calculateFare(0));
+        return PathResponse.of(path, path.calculateFare(age));
     }
 }

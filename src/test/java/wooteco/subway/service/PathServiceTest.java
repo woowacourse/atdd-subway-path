@@ -53,11 +53,11 @@ public class PathServiceTest {
     @DisplayName("경로 조회한다")
     void getPath() {
         // given
-        PathResponse pathResponse = pathService.getPath(three.getId(), one.getId());
+        PathResponse pathResponse = pathService.getPath(three.getId(), one.getId(), 20);
 
         // then
         assertThat(pathResponse.getStations()).hasSize(3);
         assertThat(pathResponse.getDistance()).isEqualTo(48);
-        assertThat(pathResponse.getFare()).isEqualTo(2050L);
+        assertThat(pathResponse.getFare()).isEqualTo(2150L);
     }
 }
