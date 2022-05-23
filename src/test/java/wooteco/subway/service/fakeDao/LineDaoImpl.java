@@ -20,7 +20,7 @@ public class LineDaoImpl implements LineDao {
 
     @Override
     public Long save(LineRequest lineRequest) {
-        final Line line = new Line(0L, lineRequest.getName(), lineRequest.getColor(), 900);
+        final Line line = new Line(0L, lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         Line persistLine = createNewObject(line);
         if (hasLine(persistLine.getName())) {
             throw new IllegalArgumentException("같은 이름의 노선이 존재합니다.");

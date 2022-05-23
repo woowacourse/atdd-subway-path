@@ -27,16 +27,25 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private final Station 석촌 = new Station(4L, "석촌");
     private final Station 석촌고분 = new Station(5L, "석촌고분");
     private final Station 삼전 = new Station(6L, "삼전");
+    private final Station 선릉 = new Station(7L, "선릉");
+    private final Station 선정릉 = new Station(8L, "선정릉");
+    private final Station 강남구청 = new Station(9L, "강남구청");
 
     private final LineRequest 이호선 =
             new LineRequest("2호선", "bg-green-600",
-                    1L, 3L, 103, 900);
+                    1L, 3L, 103, 0);
     private final LineRequest 팔호선 =
             new LineRequest("8호선", "bg-red-600",
-                    1L, 4L, 10, 900);
+                    1L, 4L, 10, 0);
     private final LineRequest 구호선 =
             new LineRequest("9호선", "bg-gray-600",
-                    4L, 3L, 3, 900);
+                    4L, 3L, 3, 0);
+    private final LineRequest 수인분당선 =
+            new LineRequest("수인분당선", "bg-yellow-600",
+                    7L, 8L, 7, 500);
+    private final LineRequest 수인분당선2 =
+            new LineRequest("수인분당선2", "bg-yellow-600",
+                    8L, 9L, 7, 700);
 
     private final SectionRequest 잠실_잠실새내 = new SectionRequest(1L, 2L, 50);
     private final SectionRequest 석촌_석촌고분 = new SectionRequest(4L, 5L, 1);
@@ -50,10 +59,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
         createStationResponse(new StationRequest(석촌.getName()));
         createStationResponse(new StationRequest(석촌고분.getName()));
         createStationResponse(new StationRequest(삼전.getName()));
+        createStationResponse(new StationRequest(선릉.getName()));
+        createStationResponse(new StationRequest(선정릉.getName()));
+        createStationResponse(new StationRequest(강남구청.getName()));
 
         createLineResponse(이호선);
         createLineResponse(팔호선);
         createLineResponse(구호선);
+        createLineResponse(수인분당선);
+        createLineResponse(수인분당선2);
 
         createSectionResponse(1L, 잠실_잠실새내);
         createSectionResponse(3L, 석촌_석촌고분);
@@ -89,6 +103,29 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         final PathResponse actual = response.jsonPath().getObject(".", PathResponse.class);
         final PathResponse expected = new PathResponse(List.of(잠실새내, 종합운동장), 53, 2150);
+
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("초과 운임이 있을 경우 그 운임만큼 추가한다.")
+    void findShortestPathWithExtraFare() {
+        ExtractableResponse<Response> response = createPathResponse(7L, 8L, 10);
+
+        final PathResponse actual = response.jsonPath().getObject(".", PathResponse.class);
+        final PathResponse expected = new PathResponse(List.of(선릉, 선정릉), 7, 1750);
+
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+
+    @Test
+    @DisplayName("초과 운임이 겹치는 경우 가장 높은 초과운임만큼 추가한다.")
+    void findShortestPathWithExpensiveExtraFare() {
+        ExtractableResponse<Response> response = createPathResponse(7L, 9L, 10);
+
+        final PathResponse actual = response.jsonPath().getObject(".", PathResponse.class);
+        final PathResponse expected = new PathResponse(List.of(선릉, 선정릉, 강남구청), 14, 2050);
 
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
