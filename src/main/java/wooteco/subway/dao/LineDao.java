@@ -24,14 +24,16 @@ public class LineDao {
     private final RowMapper<Line> eventRowMapper = (resultSet, rowNum)
             -> new Line(resultSet.getLong("id")
             , resultSet.getString("name")
-            , resultSet.getString("color"));
+            , resultSet.getString("color")
+            , resultSet.getInt("extraFare")
+    );
 
     public LineDao(NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     public Long save(LineCreateRequest line) {
-        String sql = "insert into LINE (name, color) values (:name, :color)";
+        String sql = "insert into LINE (name, color, extraFare) values (:name, :color, :extraFare)";
         SqlParameterSource source = new BeanPropertySqlParameterSource(line);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(sql, source, keyHolder);
@@ -74,11 +76,12 @@ public class LineDao {
     }
 
     public void update(Long id, LineRequest lineRequest) {
-        String sql = "update LINE set name=:name, color=:color where id=:id";
+        String sql = "update LINE set name=:name, color=:color, extraFare=:extraFare where id=:id";
         MapSqlParameterSource source = new MapSqlParameterSource();
         source.addValue("id", id);
         source.addValue("color", lineRequest.getColor());
         source.addValue("name", lineRequest.getName());
+        source.addValue("extraFare", lineRequest.getExtraFare());
         jdbcTemplate.update(sql, source);
     }
 

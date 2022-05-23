@@ -24,7 +24,7 @@ class LineDaoTest {
     @Test
     void save() {
         // given
-        LineCreateRequest line = new LineCreateRequest("분당선", "yellow", 1L, 2L, 2);
+        LineCreateRequest line = new LineCreateRequest("분당선", "yellow", 1L, 2L, 2, 0);
 
         // when
         Long id = lineDao.save(line);
@@ -75,7 +75,7 @@ class LineDaoTest {
     @Test
     void findById() {
         // given
-        Line expected = new Line(1L, "신분당선", "red");
+        Line expected = new Line(1L, "신분당선", "red", 0);
 
         // when
         Optional<Line> line = lineDao.findById(1L);
@@ -102,7 +102,7 @@ class LineDaoTest {
     void update() {
         // given
         Long id = 1L;
-        LineRequest lineRequest = new LineRequest("신분당선", "pink");
+        LineRequest lineRequest = new LineRequest("신분당선", "pink", 0);
 
         // when
         lineDao.update(id, lineRequest);
@@ -111,8 +111,8 @@ class LineDaoTest {
         Optional<Line> line = lineDao.findById(id);
 
         assertThat(line.isPresent()).isTrue();
-        assertThat(line.get()).extracting(Line::getName, Line::getColor)
-                .contains(lineRequest.getName(), lineRequest.getColor());
+        assertThat(line.get()).extracting(Line::getName, Line::getColor, Line::getExtraFare)
+                .contains(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
     }
 
     @DisplayName("노선 삭제")
