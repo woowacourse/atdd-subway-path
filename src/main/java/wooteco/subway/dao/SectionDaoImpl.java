@@ -29,13 +29,13 @@ public class SectionDaoImpl implements SectionDao {
     @Override
     public Long save(Section section) {
         final String sql = "INSERT INTO section (line_id, up_station_id, down_station_id, distance) VALUES (:lineId, :upStationId, :downStationId, :distance)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        final Map<String, Object> params = new HashMap<>();
-        params.put("lineId", section.getLineId());
-        params.put("upStationId", section.getUpStationId());
-        params.put("downStationId", section.getDownStationId());
-        params.put("distance", section.getDistance());
-        jdbcTemplate.update(sql, new MapSqlParameterSource(params), keyHolder, new String[]{"id"});
+        final KeyHolder keyHolder = new GeneratedKeyHolder();
+        final MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("lineId", section.getLineId());
+        params.addValue("upStationId", section.getUpStationId());
+        params.addValue("downStationId", section.getDownStationId());
+        params.addValue("distance", section.getDistance());
+        jdbcTemplate.update(sql, params, keyHolder, new String[]{"id"});
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 

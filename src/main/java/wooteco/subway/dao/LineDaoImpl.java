@@ -27,12 +27,12 @@ public class LineDaoImpl implements LineDao {
     @Override
     public Long save(Line line) {
         final String sql = "INSERT INTO line (name, color, extraFare) VALUES (:name, :color, :extraFare)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        final Map<String, Object> param = new HashMap<>();
-        param.put("name", line.getName());
-        param.put("color", line.getColor());
-        param.put("extraFare", line.getExtraFare());
-        jdbcTemplate.update(sql, new MapSqlParameterSource(param), keyHolder, new String[]{"id"});
+        final KeyHolder keyHolder = new GeneratedKeyHolder();
+        final MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("name", line.getName());
+        params.addValue("color", line.getColor());
+        params.addValue("extraFare", line.getExtraFare());
+        jdbcTemplate.update(sql, params, keyHolder, new String[]{"id"});
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
