@@ -137,6 +137,6 @@ class DijkstraShortestPathStationTest {
                 station1,
                 station4
         ))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NoSuchElementException.class);
     }
 }

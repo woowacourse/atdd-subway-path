@@ -202,6 +202,24 @@ public class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    @DisplayName("출발역 또는 도착역을 지나는 구간이 없는경우 404를 응답한다.")
+    @Test
+    void notFoundPathStation() {
+        createStation("신림역");
+        createStation("강남역");
+        createStation("선릉역");
+
+        createLine("1호선", "blue", "1", "2", "3", "900");
+
+        ExtractableResponse<Response> response = RequestFrame.get("/paths?source=1&target=3&age=30");
+
+        String message = response.body().asString();
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value()),
+                () -> assertThat(message).contains("이동할 수 있는 경로가 없습니다.")
+        );
+    }
+
     private void createStation(String stationName) {
         Map<String, String> params = new HashMap<>();
         params.put("name", stationName);

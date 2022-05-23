@@ -14,6 +14,9 @@ import wooteco.subway.domain.Station;
 public class DijkstraShortestPathStation {
 
     public static Path getPath(Sections sections, Station source, Station target) {
+        validateExistInSections(sections, source);
+        validateExistInSections(sections, target);
+
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = getDijkstraShortestPath(sections);
         GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(source, target);
 
@@ -55,5 +58,11 @@ public class DijkstraShortestPathStation {
 
     private static int getDistance(GraphPath<Station, DefaultWeightedEdge> graphPath) {
         return (int) graphPath.getWeight();
+    }
+
+    private static void validateExistInSections(Sections sections, Station station) {
+        if (!sections.getStations().contains(station)) {
+            throw new NoSuchElementException("이동할 수 있는 경로가 없습니다.");
+        }
     }
 }
