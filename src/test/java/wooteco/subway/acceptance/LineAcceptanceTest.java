@@ -19,7 +19,7 @@ import wooteco.subway.dto.line.LineResponse;
 import wooteco.subway.dto.station.StationRequest;
 
 @DisplayName("지하철 노선 관련 기능")
-public class LineAcceptanceTest extends AcceptanceTest {
+class LineAcceptanceTest extends AcceptanceTest {
 
     private LineRequest 신분당선;
 
@@ -48,7 +48,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void beforeEach() {
-        신분당선 = new LineRequest("신분당선", "bg-red-600", postStationId(대흥역), postStationId(공덕역), 10);
+        신분당선 = new LineRequest("신분당선", "bg-red-600", postStationId(대흥역), postStationId(공덕역), 10, 900);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -69,7 +69,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         postLineResponse(신분당선);
 
         // when
-        LineRequest 초록신분당선 = new LineRequest("신분당선", "bg-green-600", 1L, 2L, 10);
+        LineRequest 초록신분당선 = new LineRequest("신분당선", "bg-green-600", 1L, 2L, 10, 900);
         ExtractableResponse<Response> response = postLineResponse(초록신분당선);
 
         // then
@@ -83,7 +83,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         postLineResponse(신분당선);
 
         // when
-        LineRequest 다른신분당선 = new LineRequest("다른신분당선", "bg-red-600", 1L, 2L, 10);
+        LineRequest 다른신분당선 = new LineRequest("다른신분당선", "bg-red-600", 1L, 2L, 10, 900);
         ExtractableResponse<Response> response = postLineResponse(다른신분당선);
 
         // then
@@ -99,7 +99,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         StationRequest 광흥창역 = new StationRequest("광흥창역");
         StationRequest 상수역 = new StationRequest("상수역");
         LineRequest 분당선 = new LineRequest("분당선", "bg-green-600",
-                postStationId(광흥창역), postStationId(상수역), 10);
+                postStationId(광흥창역), postStationId(상수역), 10, 900);
         ExtractableResponse<Response> createResponse2 = postLineResponse(분당선);
 
         // when
@@ -137,7 +137,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         StationRequest 광흥창역 = new StationRequest("광흥창역");
         StationRequest 상수역 = new StationRequest("상수역");
         LineRequest 초록다른분당선 = new LineRequest("다른분당선", "bg-green-600",
-                postStationId(광흥창역), postStationId(상수역), 20);
+                postStationId(광흥창역), postStationId(상수역), 20, 900);
 
         putLine(expectedLineId, 초록다른분당선);
 
@@ -145,7 +145,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         getLineById(expectedLineId)
                 .body("id", equalTo(expectedLineId))
                 .body("name", equalTo("다른분당선"))
-                .body("color", equalTo("bg-green-600"));
+                .body("color", equalTo("bg-green-600"))
+                .body("extraFare", equalTo(900));
     }
 
     @DisplayName("지하철 노선을 제거한다.")

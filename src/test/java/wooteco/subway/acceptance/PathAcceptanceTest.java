@@ -15,7 +15,7 @@ import wooteco.subway.dto.section.SectionRequest;
 import wooteco.subway.dto.station.StationRequest;
 
 @DisplayName("지하철 경로 관련 기능")
-public class PathAcceptanceTest extends AcceptanceTest {
+class PathAcceptanceTest extends AcceptanceTest {
 
     private static final StationRequest 강남역 = new StationRequest("강남역");
 
@@ -38,8 +38,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         stationId4 = postStationId(광흥창역);
         stationId5 = postStationId(상수역);
 
-        분당선 = new LineRequest("분당선", "bg-green-600", stationId1, stationId2, 2);
-        다른분당선 = new LineRequest("다른분당선", "bg-red-600", stationId2, stationId5, 3);
+        분당선 = new LineRequest("분당선", "bg-green-600", stationId1, stationId2, 2, 500);
+        다른분당선 = new LineRequest("다른분당선", "bg-red-600", stationId2, stationId5, 3, 900);
         lineId1 = postLineId(분당선);
         lineId2 = postLineId(다른분당선);
     }
