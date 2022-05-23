@@ -52,10 +52,8 @@ public class PathService {
     }
 
     private int findMaximumExtraFare(Path shortestPath) {
-        return shortestPath.getIncludeLineIds()
+        return lineDao.findByIds(shortestPath.getIncludeLineIds())
                 .stream()
-                .map(lineId -> lineDao.findById(lineId)
-                        .orElseThrow(() -> new NoSuchElementException("경로 라인을 찾는 과정 중 오류가 발생했습니다.")))
                 .max(Comparator.comparingInt(Line::getExtraFare))
                 .orElseThrow(() -> new NoSuchElementException("추가 요금을 찾는 과정 중 오류가 발생했습니다."))
                 .getExtraFare();
