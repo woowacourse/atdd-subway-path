@@ -1,15 +1,17 @@
 package wooteco.subway.dto.request;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import wooteco.subway.domain.Line;
 
 public class UpdateLineRequest {
 
-    @NotBlank
+    @NotBlank(message = "이름은 무조건 입력해야 합니다.")
     private String name;
-    @NotBlank
+    @NotBlank(message = "색상은 무조건 입력해야 합니다.")
     private String color;
-    private int extraFare;
+    @NotNull(message = "추가 금액은 무조건 입력해야 합니다.")
+    private Integer extraFare;
 
     private UpdateLineRequest() {
     }

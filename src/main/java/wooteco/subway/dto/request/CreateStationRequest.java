@@ -4,7 +4,7 @@ import javax.validation.constraints.NotBlank;
 
 public class CreateStationRequest {
 
-    @NotBlank
+    @NotBlank(message = "이름은 무조건 입력해야 합니다.")
     private String name;
 
     private CreateStationRequest() {

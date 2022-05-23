@@ -1,10 +1,15 @@
 package wooteco.subway.dto.request;
 
+import javax.validation.constraints.NotNull;
+
 public class CreateSectionRequest {
 
+    @NotNull(message = "상행역 ID는 무조건 입력해야 합니다.")
     private Long upStationId;
+    @NotNull(message = "하행역 ID는 무조건 입력해야 합니다.")
     private Long downStationId;
-    private int distance;
+    @NotNull(message = "거리는 무조건 입력해야 합니다.")
+    private Integer distance;
 
     private CreateSectionRequest() {
     }
