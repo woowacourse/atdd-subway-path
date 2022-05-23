@@ -1,8 +1,6 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.fare;
 
-import java.util.List;
-
-public class FareCalculator {
+public class FareCalculateWithDistanceAndAge implements FareCalculatePolicy{
 
     private static final int DEFAULT_FARE = 1250;
     private static final int SURCHARGE_PER_UNIT = 100;
@@ -11,13 +9,21 @@ public class FareCalculator {
     private static final int FIRST_STANDARD_UNIT = 5;
     private static final int SECOND_STANDARD_UNIT = 8;
     private static final int SURCHARGE_UNIT_COUNT = 8;
+    private static final int TEENAGER_MIN = 13;
+    private static final int TEENAGER_MAX = 19;
+    private static final int CHILD_MIN = 6;
+    private static final int CHILD_MAX = 13;
+    private static final int DISCOUNT_FARE = 350;
+    private static final double TEENAGER_RATE = 0.8;
+    private static final double CHILD_RATE = 0.5;
 
-    public static int calculate(int distance, int extraFares, int age) {
-        int fare = calculateByDistance(distance) + extraFares;
+    @Override
+    public int calculate(int distance, int extraFare, int age) {
+        int fare = calculateByDistance(distance) + extraFare;
         return calculateByAge(fare, age);
     }
 
-    public static int calculateByDistance(int distance) {
+    private static int calculateByDistance(int distance) {
         if (distance == 0) {
             return 0;
         }
@@ -34,11 +40,11 @@ public class FareCalculator {
     }
 
     private static int calculateByAge(int fare, int age) {
-        if (age >= 13 && age < 19) {
-            return (int) ((fare - 350) * 0.8);
+        if (age >= TEENAGER_MIN && age < TEENAGER_MAX) {
+            return (int) ((fare - DISCOUNT_FARE) * TEENAGER_RATE);
         }
-        if (age >= 6 && age < 13) {
-            return (int) ((fare - 350) * 0.5);
+        if (age >= CHILD_MIN && age < CHILD_MAX) {
+            return (int) ((fare - DISCOUNT_FARE) * CHILD_RATE);
         }
         return fare;
     }

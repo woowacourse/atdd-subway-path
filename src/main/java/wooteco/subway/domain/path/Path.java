@@ -1,10 +1,15 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.Lines;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Sections;
+import wooteco.subway.domain.station.Station;
+import wooteco.subway.domain.station.Stations;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

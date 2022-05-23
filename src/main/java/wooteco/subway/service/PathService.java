@@ -5,7 +5,13 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.*;
+import wooteco.subway.domain.fare.FareCalculateWithDistanceAndAge;
+import wooteco.subway.domain.fare.FareCalculator;
+import wooteco.subway.domain.line.Lines;
+import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.section.Sections;
+import wooteco.subway.domain.station.Station;
+import wooteco.subway.domain.station.Stations;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
 
@@ -36,8 +42,9 @@ public class PathService {
         int shortestDistance = path.calculateShortestDistance(source, target);
         int extraFare = path.calculateExtraFare(source, target);
         List<StationResponse> stationResponses = createStationResponses(shortestPath);
+        FareCalculator fareCalculator = new FareCalculator(new FareCalculateWithDistanceAndAge());
 
-        return new PathResponse(stationResponses, shortestDistance, FareCalculator.calculate(shortestDistance, extraFare, age));
+        return new PathResponse(stationResponses, shortestDistance, fareCalculator.calculate(shortestDistance, extraFare, age));
     }
 
     private List<StationResponse> createStationResponses(List<Station> shortestPath) {
