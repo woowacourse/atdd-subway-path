@@ -1,6 +1,8 @@
 package wooteco.subway.domain.path;
 
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -30,7 +32,8 @@ public class DijkstraPathFindingStrategy implements PathFindingStrategy {
     @Override
     public List<Long> getLineIds(Station source, Station target, Lines lines) {
         DijkstraShortestPath<Station, WeightEdgeWithLineId> dijkstraShortestPath = getDijkstraShortestPath(lines);
-        List<WeightEdgeWithLineId> edges = dijkstraShortestPath.getPath(source, target).getEdgeList();
+        Set<WeightEdgeWithLineId> edges = new LinkedHashSet<>(
+            dijkstraShortestPath.getPath(source, target).getEdgeList());
         return edges.stream()
             .map(WeightEdgeWithLineId::getLineId)
             .collect(Collectors.toList());
