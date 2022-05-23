@@ -13,8 +13,8 @@ import wooteco.subway.domain.Lines;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.path.DijkstraPathFindingStrategy;
 import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.path.PathFindingStrategy;
 import wooteco.subway.dto.LineEntity;
 import wooteco.subway.dto.SectionEntity;
 
@@ -25,11 +25,14 @@ public class DomainCreatorService {
     private final LineDao lineDao;
     private final SectionDao sectionDao;
     private final StationDao stationDao;
+    private final PathFindingStrategy pathFindingStrategy;
 
-    DomainCreatorService(LineDao lineDao, SectionDao sectionDao, StationDao stationDao) {
+    DomainCreatorService(LineDao lineDao, SectionDao sectionDao, StationDao stationDao,
+        PathFindingStrategy pathFindingStrategy) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
+        this.pathFindingStrategy = pathFindingStrategy;
     }
 
     Path createPath(Station source, Station target) {
@@ -37,7 +40,7 @@ public class DomainCreatorService {
         List<Line> lines = lineEntities.stream()
             .map(lineEntity -> createLine(lineEntity.getId()))
             .collect(Collectors.toList());
-        return new Path(new Lines(lines), new DijkstraPathFindingStrategy(), source, target);
+        return new Path(new Lines(lines), pathFindingStrategy, source, target);
     }
 
     Line createLine(Long lineId) {

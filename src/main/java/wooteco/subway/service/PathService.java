@@ -5,11 +5,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.fare.AgeDiscountStrategy;
-import wooteco.subway.domain.fare.DistanceFareStrategy;
 import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.dto.service.StationDto;
@@ -20,16 +17,14 @@ import wooteco.subway.dto.service.response.PathServiceResponse;
 public class PathService {
 
     private static final String ERROR_MESSAGE_NOT_EXISTS_ID = "존재하지 않는 지하철 역입니다.";
-
-    private final SectionDao sectionDao;
     private final StationDao stationDao;
     private final DomainCreatorService domainCreatorService;
+    private final Fare fare;
 
-    public PathService(SectionDao sectionDao, StationDao stationDao,
-        DomainCreatorService domainCreatorService) {
-        this.sectionDao = sectionDao;
+    public PathService(StationDao stationDao, DomainCreatorService domainCreatorService, Fare fare) {
         this.stationDao = stationDao;
         this.domainCreatorService = domainCreatorService;
+        this.fare = fare;
     }
 
     public PathServiceResponse getShortestPath(PathServiceRequest pathServiceRequest) {
@@ -44,8 +39,6 @@ public class PathService {
             .map(station -> new StationDto(station.getId(), station.getName()))
             .collect(Collectors.toList());
         int distance = path.getShortestDistance();
-        Fare fare = new Fare(new DistanceFareStrategy(), new AgeDiscountStrategy());
-
         return new PathServiceResponse(stationDtos, distance, fare.calculate(path, pathServiceRequest.getAge()));
     }
 

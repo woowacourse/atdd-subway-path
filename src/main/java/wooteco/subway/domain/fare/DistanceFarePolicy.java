@@ -1,6 +1,9 @@
 package wooteco.subway.domain.fare;
 
-public class DistanceFareStrategy implements FareStrategy {
+import org.springframework.stereotype.Component;
+
+@Component
+public class DistanceFarePolicy {
 
     private static final int BASE_FARE = 1250;
     private static final int EXTRA_FARE = 100;
@@ -8,8 +11,7 @@ public class DistanceFareStrategy implements FareStrategy {
     private static final int FIRST_STANDARD_DISTANCE_FOR_EXTRA_FARE = 10;
     private static final int SECOND_UNIT_DISTANCE_FOR_EXTRA_FARE = 8;
     private static final int FIRST_UNIT_DISTANCE_FOR_EXTRA_FARE = 5;
-
-    @Override
+    
     public int calculate(int distance) {
         int fee = BASE_FARE;
 

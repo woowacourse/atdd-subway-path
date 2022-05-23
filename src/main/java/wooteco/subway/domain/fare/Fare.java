@@ -1,12 +1,15 @@
 package wooteco.subway.domain.fare;
 
+import org.springframework.stereotype.Component;
+
 import wooteco.subway.domain.path.Path;
 
+@Component
 public class Fare {
-    private final FareStrategy fareStrategy;
-    private final DiscountStrategy discountStrategy;
+    private final DistanceFarePolicy fareStrategy;
+    private final AgeDiscountPolicy discountStrategy;
 
-    public Fare(FareStrategy fareStrategy, DiscountStrategy discountStrategy) {
+    public Fare(DistanceFarePolicy fareStrategy, AgeDiscountPolicy discountStrategy) {
         this.fareStrategy = fareStrategy;
         this.discountStrategy = discountStrategy;
     }

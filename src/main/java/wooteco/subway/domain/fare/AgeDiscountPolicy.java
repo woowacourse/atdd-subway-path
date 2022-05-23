@@ -1,7 +1,10 @@
 package wooteco.subway.domain.fare;
 
-public class AgeDiscountStrategy implements DiscountStrategy {
-    @Override
+import org.springframework.stereotype.Component;
+
+@Component
+public class AgeDiscountPolicy {
+
     public int discount(int totalFare, int age) {
         validateDiscount(totalFare);
         int fare = totalFare;
@@ -17,7 +20,7 @@ public class AgeDiscountStrategy implements DiscountStrategy {
         if (age >= 6) {
             return fare / 2;
         }
-        
+
         return 0;
     }
 

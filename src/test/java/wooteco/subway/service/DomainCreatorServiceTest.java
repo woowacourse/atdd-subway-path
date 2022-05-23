@@ -15,6 +15,7 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.path.DijkstraPathFindingStrategy;
 
 public class DomainCreatorServiceTest {
     private LineDao lineDao;
@@ -27,7 +28,8 @@ public class DomainCreatorServiceTest {
         lineDao = new FakeLineDao();
         sectionDao = new FakeSectionDao();
         stationDao = new FakeStationDao();
-        domainCreatorService = new DomainCreatorService(lineDao, sectionDao, stationDao);
+        domainCreatorService = new DomainCreatorService(lineDao, sectionDao, stationDao,
+            new DijkstraPathFindingStrategy());
 
         stationDao.save(new Station("강남역"));
         stationDao.save(new Station("선릉역"));

@@ -29,7 +29,7 @@ public class FareTest {
     void getFareOver19(String distance, String resultFare) {
         PathFindingStrategy pathFindingStrategy = new TestPathFindingStrategy(Integer.parseInt(distance),
             List.of(1L, 2L, 3L));
-        Fare fare = new Fare(new DistanceFareStrategy(), new AgeDiscountStrategy());
+        Fare fare = new Fare(new DistanceFarePolicy(), new AgeDiscountPolicy());
         Path path = new Path(new Lines(List.of(line1, line2)), pathFindingStrategy, new Station("강남역"),
             new Station("선릉역"));
         assertThat(fare.calculate(path, 19)).isEqualTo(Integer.parseInt(resultFare));
@@ -41,7 +41,7 @@ public class FareTest {
     void getFareOver13Under19(String distance, String resultFare) {
         PathFindingStrategy pathFindingStrategy = new TestPathFindingStrategy(Integer.parseInt(distance),
             List.of(1L, 2L, 3L));
-        Fare fare = new Fare(new DistanceFareStrategy(), new AgeDiscountStrategy());
+        Fare fare = new Fare(new DistanceFarePolicy(), new AgeDiscountPolicy());
         Path path = new Path(new Lines(List.of(line1, line2, line3)), pathFindingStrategy, new Station("강남역"),
             new Station("선릉역"));
         assertThat(fare.calculate(path, 18)).isEqualTo(Integer.parseInt(resultFare));
@@ -53,7 +53,7 @@ public class FareTest {
     void getFareOver6Under13(String distance, String resultFare) {
         PathFindingStrategy pathFindingStrategy = new TestPathFindingStrategy(Integer.parseInt(distance),
             List.of(1L, 2L, 3L));
-        Fare fare = new Fare(new DistanceFareStrategy(), new AgeDiscountStrategy());
+        Fare fare = new Fare(new DistanceFarePolicy(), new AgeDiscountPolicy());
         Path path = new Path(new Lines(List.of(line3, line2)), pathFindingStrategy, new Station("강남역"),
             new Station("선릉역"));
         assertThat(fare.calculate(path, 6)).isEqualTo(Integer.parseInt(resultFare));
