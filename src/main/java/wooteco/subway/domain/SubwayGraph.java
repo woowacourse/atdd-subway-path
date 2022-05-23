@@ -6,7 +6,6 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.exception.CalculatePathsException;
-import wooteco.subway.exception.duplicatename.StationDuplicateException;
 
 public class SubwayGraph {
 
@@ -39,7 +38,8 @@ public class SubwayGraph {
         return new Paths(stations, distance, fare);
     }
 
-    private GraphPath<Station, DefaultWeightedEdge> createSubwayGraphResult(final Station source, final Station target) {
+    private GraphPath<Station, DefaultWeightedEdge> createSubwayGraphResult(final Station source,
+                                                                            final Station target) {
         try {
             DijkstraShortestPath<Station, DefaultWeightedEdge> pathFinder = new DijkstraShortestPath<>(subwayGraph);
             return pathFinder.getPath(source, target);

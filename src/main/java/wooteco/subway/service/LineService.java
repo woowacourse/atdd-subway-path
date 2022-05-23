@@ -57,7 +57,6 @@ public class LineService {
         sectionDao.save(section);
     }
 
-
     private List<StationResponse> getStationsFromSection(long lineId) {
         final Sections sections = new Sections(sectionDao.findByLineId(lineId));
         List<Station> stations = sections.getSortedStations();
@@ -69,10 +68,10 @@ public class LineService {
     public int updateLine(final Long id, final LineRequest lineRequest) {
         validateDuplicate(lineRequest);
         Line line = lineDao.findById(id);
-        Line lineForUpdate = new Line(line.getId(), lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
+        Line lineForUpdate = new Line(line.getId(), lineRequest.getName(), lineRequest.getColor(),
+                lineRequest.getExtraFare());
         return lineDao.update(lineForUpdate);
     }
-
 
     public List<LineResponse> findLines() {
         final List<Line> lines = lineDao.findAll();

@@ -10,18 +10,22 @@ public class Section {
     private int distance;
 
     public Section(Long lineId, Station upStation, Station downStation, int distance) {
+        new Section(0L, lineId, upStation, downStation, distance);
+    }
+
+    public Section(Long id, Long lineId, Station upStation, Station downStation, int distance) {
+        validateDistanceOverThanZero(distance);
+        this.id = id;
         this.lineId = lineId;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
     }
 
-    public Section(Long id, Long lineId, Station upStation, Station downStation, int distance) {
-        this.id = id;
-        this.lineId = lineId;
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = distance;
+    private void validateDistanceOverThanZero(final int distance) {
+        if (distance <= 0) {
+            throw new AddSectionException("입력한 구간 거리가 0보다 작거나 같습니다");
+        }
     }
 
     public Long getId() {

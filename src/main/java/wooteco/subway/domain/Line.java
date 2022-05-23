@@ -2,7 +2,7 @@ package wooteco.subway.domain;
 
 public class Line {
 
-    private long id;
+    private Long id;
     private final String name;
     private final String color;
     private final int extraFare;
@@ -13,7 +13,7 @@ public class Line {
         this.extraFare = extraFare;
     }
 
-    public Line(long id, String name, String color, int extraFare) {
+    public Line(Long id, String name, String color, int extraFare) {
         this.id = id;
         this.name = name;
         this.color = color;
