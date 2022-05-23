@@ -37,20 +37,19 @@ class JGraphTPathFinderTest {
     @Test
     void findShortedPath() {
         // given
-        final int expectedDistanceSum = Stream.of(GANGNAM_TO_YEOKSAM, YEOKSAM_TO_SUNNEUNG, SUNNEUNG_TO_SUNGDAM)
-                .mapToInt(Section::getDistance)
-                .sum();
         final List<Station> expectedStations = List.of(강남역, 역삼역, 선릉역, 성담빌딩);
 
-        final Path path = pathFinder.searchShortestPath(new Sections(sections), 강남역, 성담빌딩);
-
         // when
+        final Path path = pathFinder.searchShortestPath(new Sections(sections), 강남역, 성담빌딩);
         final long distance = path.getDistance();
         final List<Station> stations = path.getStations();
 
         // then
         assertAll(
-                () -> assertThat(distance).isEqualTo(expectedDistanceSum),
+                () -> assertThat(distance).isEqualTo(
+                        Stream.of(GANGNAM_TO_YEOKSAM, YEOKSAM_TO_SUNNEUNG, SUNNEUNG_TO_SUNGDAM)
+                                .mapToInt(Section::getDistance)
+                                .sum()),
                 () -> assertThat(stations).isEqualTo(expectedStations)
         );
     }
