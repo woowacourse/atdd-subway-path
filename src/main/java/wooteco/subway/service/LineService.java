@@ -58,7 +58,7 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public LineResponse show(final Long id) {
-        final Line line = lineRepository.find(id);
+        final Line line = lineRepository.getById(id);
         final List<Station> stations = line.getSortedStations();
         return LineResponse.of(line, stations);
     }

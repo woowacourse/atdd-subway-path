@@ -54,11 +54,11 @@ public class PathServiceTest {
         final Long rightId = stationRepository.save(RIGHT);
         final Long downId = stationRepository.save(DOWN);
 
-        up = stationRepository.findById(upId);
-        left = stationRepository.findById(leftId);
-        center = stationRepository.findById(centerId);
-        right = stationRepository.findById(rightId);
-        down = stationRepository.findById(downId);
+        up = stationRepository.getById(upId);
+        left = stationRepository.getById(leftId);
+        center = stationRepository.getById(centerId);
+        right = stationRepository.getById(rightId);
+        down = stationRepository.getById(downId);
 
         final Long line2Id = lineRepository.save(new Line(LINE_1, RED));
         final Long line4Id = lineRepository.save(new Line(LINE_2, BLUE));

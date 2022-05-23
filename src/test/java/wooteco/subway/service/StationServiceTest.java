@@ -41,7 +41,7 @@ class StationServiceTest {
 
         // mocking
         given(stationRepository.save(any())).willReturn(id);
-        given(stationRepository.findById(id)).willReturn(savedStation);
+        given(stationRepository.getById(id)).willReturn(savedStation);
 
         // when
         final StationResponse response = stationService.createStation(request);
@@ -71,7 +71,7 @@ class StationServiceTest {
     @DisplayName("역을 조회한다.")
     void show() {
         // mocking
-        given(stationRepository.findById(any(Long.class))).willReturn(new Station(1L, STATION_1));
+        given(stationRepository.getById(any(Long.class))).willReturn(new Station(1L, STATION_1));
 
         // when
         final Station station = stationService.show(1L);
@@ -84,7 +84,7 @@ class StationServiceTest {
     @DisplayName("없는 역을 조회하면, 예외를 발생시킨다.")
     void showNotExistStation() {
         // mocking
-        given(stationRepository.findById(any(Long.class))).willThrow(NotFoundStationException.class);
+        given(stationRepository.getById(any(Long.class))).willThrow(NotFoundStationException.class);
 
         // when & then
         assertThatThrownBy(() -> stationService.show(1L))

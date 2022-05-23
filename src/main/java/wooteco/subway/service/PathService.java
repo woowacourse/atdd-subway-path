@@ -25,8 +25,8 @@ public class PathService {
     @Transactional(readOnly = true)
     public PathResponse findPath(final Long sourceId, final Long targetId) {
         final PathFinder pathFinder = createPathFinder();
-        final Station source = stationRepository.findById(sourceId);
-        final Station target = stationRepository.findById(targetId);
+        final Station source = stationRepository.getById(sourceId);
+        final Station target = stationRepository.getById(targetId);
         final Path path = pathFinder.find(source, target);
         return PathResponse.of(path.getRouteStations(), path.getDistance(), path.calculateFare());
     }

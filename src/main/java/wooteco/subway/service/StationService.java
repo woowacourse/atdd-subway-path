@@ -26,7 +26,7 @@ public class StationService {
         try {
             final Station station = new Station(request.getName());
             final Long id = repository.save(station);
-            final Station savedStation = repository.findById(id);
+            final Station savedStation = repository.getById(id);
             return StationResponse.from(savedStation);
         } catch (final DuplicateKeyException e) {
             throw new DuplicateStationException();
@@ -43,7 +43,7 @@ public class StationService {
 
     @Transactional(readOnly = true)
     public Station show(final Long id) {
-        return repository.findById(id);
+        return repository.getById(id);
     }
 
     public void deleteStation(final Long id) {

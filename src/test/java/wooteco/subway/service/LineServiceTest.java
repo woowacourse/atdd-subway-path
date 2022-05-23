@@ -69,7 +69,7 @@ class LineServiceTest {
         given(lineRepository.save(any(Line.class))).willReturn(1L);
         given(stationService.show(1L)).willReturn(new Station(1L, STATION_1));
         given(stationService.show(2L)).willReturn(new Station(2L, STATION_2));
-        given(lineRepository.find(any(Long.class))).willReturn(savedLine);
+        given(lineRepository.getById(any(Long.class))).willReturn(savedLine);
 
         // when
         final LineResponse response = lineService.create(request);
@@ -121,7 +121,7 @@ class LineServiceTest {
     @DisplayName("노선을 조회한다. 관련 역들도 함께 조회한다.")
     void show() {
         // mocking
-        given(lineRepository.find(1L)).willReturn(new Line(1L, LINE_1, RED, new Sections(SECTION_1_2)));
+        given(lineRepository.getById(1L)).willReturn(new Line(1L, LINE_1, RED, new Sections(SECTION_1_2)));
         // when
         final LineResponse response = lineService.show(1L);
         final StationResponse stationResponse1 = response.getStations().get(0);
@@ -143,7 +143,7 @@ class LineServiceTest {
     @DisplayName("없는 지하철 노선을 조회하면, 예외를 발생시킨다.")
     void showWhenNotWithExistLineId() {
         // mocking
-        given(lineRepository.find(1L)).willThrow(NotFoundLineException.class);
+        given(lineRepository.getById(1L)).willThrow(NotFoundLineException.class);
 
         // when & then
         assertThatThrownBy(() -> lineService.show(1L))

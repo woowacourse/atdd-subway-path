@@ -36,8 +36,8 @@ public class SectionRepository {
         final List<SectionEntity> entities = sectionDao.findAll();
         return entities.stream()
                 .map(e -> {
-                    final Station upStation = stationRepository.findById(e.getUpStationId());
-                    final Station downStation = stationRepository.findById(e.getDownStationId());
+                    final Station upStation = stationRepository.getById(e.getUpStationId());
+                    final Station downStation = stationRepository.getById(e.getDownStationId());
                     return new Section(e.getId(), upStation, downStation, e.getDistance());
                 }).collect(Collectors.toList());
     }
@@ -46,8 +46,8 @@ public class SectionRepository {
         final List<SectionEntity> entities = sectionDao.findAllByLineId(id);
         return new Sections(entities.stream()
                 .map(e -> {
-                    final Station upStation = stationRepository.findById(e.getUpStationId());
-                    final Station downStation = stationRepository.findById(e.getDownStationId());
+                    final Station upStation = stationRepository.getById(e.getUpStationId());
+                    final Station downStation = stationRepository.getById(e.getDownStationId());
                     return new Section(e.getId(), upStation, downStation, e.getDistance());
                 }).collect(Collectors.toList()));
     }

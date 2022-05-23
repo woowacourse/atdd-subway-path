@@ -20,7 +20,7 @@ public class StationRepository {
         return stationDao.save(StationEntity.from(station));
     }
 
-    public Station findById(final Long id) {
+    public Station getById(final Long id) {
         final StationEntity entity = stationDao.findById(id);
         return entity.toStation();
     }
