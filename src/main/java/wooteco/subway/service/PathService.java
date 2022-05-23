@@ -52,7 +52,7 @@ public class PathService {
     }
 
     private int findMaximumExtraFare(Path shortestPath) {
-        return shortestPath.getLineIds()
+        return shortestPath.getIncludeLineIds()
                 .stream()
                 .map(lineId -> lineDao.findById(lineId)
                         .orElseThrow(() -> new NoSuchElementException("경로 라인을 찾는 과정 중 오류가 발생했습니다.")))

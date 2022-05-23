@@ -29,26 +29,8 @@ public class ShortestPathFinder implements PathFinder {
         final Station target = findStation(targetId);
         final GraphPath<Station, ShortestPathEdge> graphPath = new DijkstraShortestPath<>(graph).getPath(source, target);
         validatePathExist(graphPath);
-        return getPath(graphPath);
+        return makePath(graphPath);
     }
-
-    private void validatePathExist(GraphPath<Station, ShortestPathEdge> graphPath) {
-        if (graphPath == null) {
-            throw new IllegalArgumentException("해당 역 사이 경로가 존재하지 않습니다.");
-        }
-    }
-
-    private Path getPath(GraphPath<Station, ShortestPathEdge> graphPath) {
-        final List<Station> stations = graphPath.getVertexList();
-        final List<Long> lineIds = graphPath.getEdgeList()
-                .stream()
-                .map(ShortestPathEdge::getLineId)
-                .distinct()
-                .collect(Collectors.toUnmodifiableList());
-        final int distance = (int) graphPath.getWeight();
-        return new Path(stations, lineIds, distance);
-    }
-
 
     private void addAllStations(WeightedMultigraph<Station, ShortestPathEdge> graph) {
         List<Station> stations = stationDao.findAll();
@@ -70,5 +52,22 @@ public class ShortestPathFinder implements PathFinder {
     private Station findStation(Long id) {
         return stationDao.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 역이 존재하지 않습니다."));
+    }
+
+    private void validatePathExist(GraphPath<Station, ShortestPathEdge> graphPath) {
+        if (graphPath == null) {
+            throw new IllegalArgumentException("해당 역 사이 경로가 존재하지 않습니다.");
+        }
+    }
+
+    private Path makePath(GraphPath<Station, ShortestPathEdge> graphPath) {
+        final List<Station> stations = graphPath.getVertexList();
+        final List<Long> lineIds = graphPath.getEdgeList()
+                .stream()
+                .map(ShortestPathEdge::getLineId)
+                .distinct()
+                .collect(Collectors.toUnmodifiableList());
+        final int distance = (int) graphPath.getWeight();
+        return new Path(stations, lineIds, distance);
     }
 }

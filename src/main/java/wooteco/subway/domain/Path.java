@@ -4,12 +4,12 @@ import java.util.List;
 
 public class Path {
     private final List<Station> stations;
-    private final List<Long> lineIds;
+    private final List<Long> includeLineIds;
     private final int distance;
 
-    public Path(List<Station> stations, List<Long> lineIds, int distance) {
+    public Path(List<Station> stations, List<Long> includeLineIds, int distance) {
         this.stations = stations;
-        this.lineIds = lineIds;
+        this.includeLineIds = includeLineIds;
         this.distance = distance;
     }
 
@@ -17,8 +17,8 @@ public class Path {
         return stations;
     }
 
-    public List<Long> getLineIds() {
-        return lineIds;
+    public List<Long> getIncludeLineIds() {
+        return includeLineIds;
     }
 
     public int getDistance() {
