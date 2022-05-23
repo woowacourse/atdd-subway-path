@@ -1,5 +1,6 @@
 package wooteco.subway.dto;
 
+import javax.validation.constraints.Min;
 import org.jetbrains.annotations.NotNull;
 
 public class PathRequest {
@@ -10,10 +11,10 @@ public class PathRequest {
     @NotNull
     private Long target;
 
-    @NotNull
+    @Min(0)
     private int age;
 
-    public PathRequest(@NotNull Long source, @NotNull Long target, @NotNull int age) {
+    public PathRequest(@NotNull Long source, @NotNull Long target, int age) {
         this.source = source;
         this.target = target;
         this.age = age;
