@@ -22,10 +22,6 @@ public class Line {
         this.extraFare = extraFare;
     }
 
-    public Line(Long id, String name, String color) {
-        this(id, name, color, 0L);
-    }
-
     public static Line withoutIdOf(String name, String color, Long extraFare) {
         return new Line(null, name, color, extraFare);
     }

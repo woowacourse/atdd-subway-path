@@ -21,13 +21,10 @@ import wooteco.subway.service.dto.SectionSaveRequest;
 @Transactional
 public class LineService {
 
-    private final StationService stationService;
     private final SectionService sectionService;
     private final LineRepository lineRepository;
 
-    public LineService(StationService stationService, SectionService sectionService,
-                       LineRepository lineRepository) {
-        this.stationService = stationService;
+    public LineService(SectionService sectionService, LineRepository lineRepository) {
         this.sectionService = sectionService;
         this.lineRepository = lineRepository;
     }
@@ -63,7 +60,7 @@ public class LineService {
     }
 
     public void updateById(final Long id, final LineRequest request) {
-        Line updated = new Line(id, request.getName(), request.getColor());
+        Line updated = new Line(id, request.getName(), request.getColor(), request.getExtraFare());
         lineRepository.update(updated);
     }
 
