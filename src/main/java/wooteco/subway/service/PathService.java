@@ -3,15 +3,16 @@ package wooteco.subway.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.FareCacluateSpecification;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.PathFindSpecification;
-import wooteco.subway.domain.path.PathFindStrategy;
-import wooteco.subway.domain.pricing.PricingStrategy;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.path.PathFindStrategy;
+import wooteco.subway.domain.pricing.PricingStrategy;
 import wooteco.subway.service.dto.PathResponse;
 import wooteco.subway.service.dto.StationResponse;
 import wooteco.subway.ui.dto.PathRequest;
@@ -20,10 +21,12 @@ import wooteco.subway.ui.dto.PathRequest;
 public class PathService {
 
     private final StationDao stationDao;
+    private final LineDao lineDao;
     private final SectionDao sectionDao;
 
-    public PathService(StationDao stationDao, SectionDao sectionDao) {
+    public PathService(StationDao stationDao, LineDao lineDao, SectionDao sectionDao) {
         this.stationDao = stationDao;
+        this.lineDao = lineDao;
         this.sectionDao = sectionDao;
     }
 
@@ -39,7 +42,7 @@ public class PathService {
     }
 
     private int getFare(PricingStrategy pricingStrategy, PathRequest pathRequest, Path path) {
-        FareCacluateSpecification fareCacluateSpecification = new FareCacluateSpecification(pathRequest.getAge(), path.getSectionsInPath());
+        FareCacluateSpecification fareCacluateSpecification = new FareCacluateSpecification(pathRequest.getAge(), path.getSectionsInPath(), lineDao.findAll());
         return pricingStrategy.calculateFee(fareCacluateSpecification);
     }
 
