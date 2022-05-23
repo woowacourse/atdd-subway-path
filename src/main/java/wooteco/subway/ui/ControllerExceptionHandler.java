@@ -1,6 +1,7 @@
 package wooteco.subway.ui;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -37,6 +38,12 @@ public class ControllerExceptionHandler {
     public ResponseEntity<ExceptionResponse> handleSqlException(DuplicateKeyException exception) {
         logger.error(exception.getMessage());
         return ResponseEntity.badRequest().body(new ExceptionResponse("이미 존재하는 데이터 입니다."));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ExceptionResponse> handleNoSuchException(NoSuchElementException exception) {
+        logger.error(exception.getMessage());
+        return ResponseEntity.badRequest().body(new ExceptionResponse(exception.getMessage()));
     }
 
     @ExceptionHandler
