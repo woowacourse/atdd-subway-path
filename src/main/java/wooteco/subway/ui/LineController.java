@@ -65,7 +65,7 @@ public class LineController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public LineResponse updateLine(@PathVariable Long id, @RequestBody LineRequest lineRequest) {
-        Line line = lineService.update(id, lineRequest.getName(), lineRequest.getColor());
+        Line line = lineService.update(id, lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         return new LineResponse(line.getId(), line.getName(), line.getColor());
     }
 

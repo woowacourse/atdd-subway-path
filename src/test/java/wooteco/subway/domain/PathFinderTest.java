@@ -29,7 +29,7 @@ class PathFinderTest {
                 new Section(4L, 6L, 5, 노선_2),
                 new Section(2L, 4L, 6, 노선_3)
         );
-        pathFinder = new PathFinder(sections);
+        pathFinder = new PathFinder(new Sections(sections));
     }
 
     @DisplayName("환승이 없는 경로를 구한다")

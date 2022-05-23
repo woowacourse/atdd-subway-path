@@ -8,7 +8,7 @@ import wooteco.subway.dto.request.StationRequest;
 
 import static wooteco.subway.utils.FixtureUtils.*;
 
-public class PathFixtureUtils {
+public class PathFixture {
 
     public long 선릉역_ID;
     public long 선정릉역_ID;
@@ -20,7 +20,7 @@ public class PathFixtureUtils {
     public long 노선_2_ID;
     public long 노선_3_ID;
 
-    public PathFixtureUtils() {
+    public PathFixture() {
         setUp();
     }
 

@@ -1,15 +1,13 @@
 package wooteco.subway.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
 public class LineRequest {
 
@@ -18,14 +16,13 @@ public class LineRequest {
     private Long upStationId;
     private Long downStationId;
     private Integer distance;
-
-    private LineRequest() {
-    }
+    private Integer extraFare;
 
     public Line toLine() {
         return new Line(
                 this.getName(),
-                this.getColor()
+                this.getColor(),
+                this.getExtraFare()
         );
     }
 

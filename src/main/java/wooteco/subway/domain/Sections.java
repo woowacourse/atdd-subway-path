@@ -5,9 +5,7 @@ import wooteco.subway.domain.constant.TerminalStation;
 import wooteco.subway.exception.constant.SectionNotDeleteException;
 import wooteco.subway.exception.constant.SectionNotRegisterException;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -41,13 +39,6 @@ public class Sections {
 
     public Section getLowerSection(long stationId) {
         return getSectionWithConditionToDelete(stationId, section -> section.getUpStationId().equals(stationId));
-    }
-
-    private Section getSectionWithConditionToDelete(long stationId, Predicate<Section> condition) {
-        return sections.stream()
-                .filter(condition)
-                .findAny()
-                .orElseThrow(() -> new SectionNotDeleteException());
     }
 
     public void joinSection(Section sectionToJoin, Section sectionToDelete) {
@@ -88,6 +79,28 @@ public class Sections {
     public Map<TerminalStation, Long> findTerminalStations() {
         LinkedList<Long> sortedStations = getSorted();
         return Map.of(TerminalStation.UP, sortedStations.getFirst(), TerminalStation.DOWN, sortedStations.getLast());
+    }
+
+    public Set<Long> distinctStationIds() {
+        Set<Long> stationIds = new HashSet<>();
+        for (Section section : sections) {
+            stationIds.add(section.getUpStationId());
+            stationIds.add(section.getDownStationId());
+        }
+        return stationIds;
+    }
+
+    public Set<Long> distinctLineIds() {
+        return sections.stream()
+                .map(section -> section.getLineId())
+                .collect(Collectors.toUnmodifiableSet());
+    }
+
+    private Section getSectionWithConditionToDelete(long stationId, Predicate<Section> condition) {
+        return sections.stream()
+                .filter(condition)
+                .findAny()
+                .orElseThrow(() -> new SectionNotDeleteException());
     }
 
     private Section getSectionWithCondition(Predicate<Section> condition) {
@@ -143,5 +156,9 @@ public class Sections {
         if (sectionWithSameUpStation == null && sectionWithSameDownStation == null) {
             throw new SectionNotRegisterException();
         }
+    }
+
+    public List<Section> values() {
+        return new ArrayList<>(sections);
     }
 }

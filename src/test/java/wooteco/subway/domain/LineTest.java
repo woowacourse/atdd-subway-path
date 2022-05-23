@@ -13,7 +13,7 @@ class LineTest {
     @ParameterizedTest
     @ValueSource(strings = {"", "  ", "     "})
     void saveEmptyName(String lineName) {
-        assertThatThrownBy(() -> new Line(lineName, "bg-red-600"))
+        assertThatThrownBy(() -> new Line(lineName, "red", 0))
                 .isInstanceOf(BlankArgumentException.class);
     }
 }

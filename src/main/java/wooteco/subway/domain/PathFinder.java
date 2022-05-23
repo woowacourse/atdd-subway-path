@@ -4,16 +4,17 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class PathFinder {
 
+    private Sections sections;
     private DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath;
 
-    public PathFinder(List<Section> sections) {
-        this.dijkstraShortestPath = initDijkstraShortestPath(sections);
+    public PathFinder(Sections sections) {
+        this.sections = sections;
+        this.dijkstraShortestPath = initDijkstraShortestPath();
     }
 
     public List<Long> findPath(Long from, Long to) {
@@ -24,22 +25,12 @@ public class PathFinder {
         return (int) dijkstraShortestPath.getPathWeight(from, to);
     }
 
-
-    private DijkstraShortestPath<Long, DefaultWeightedEdge> initDijkstraShortestPath(List<Section> sections) {
+    private DijkstraShortestPath<Long, DefaultWeightedEdge> initDijkstraShortestPath() {
         WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        Set<Long> stationIds = findNonDuplicateStationIds(sections);
+        Set<Long> stationIds = sections.distinctStationIds();
         fillVertexes(graph, stationIds);
-        fillEdges(sections, graph);
+        fillEdges(graph);
         return new DijkstraShortestPath<>(graph);
-    }
-
-    private Set<Long> findNonDuplicateStationIds(List<Section> sections) {
-        Set<Long> stationIds = new HashSet<>();
-        for (Section section : sections) {
-            stationIds.add(section.getUpStationId());
-            stationIds.add(section.getDownStationId());
-        }
-        return stationIds;
     }
 
     private void fillVertexes(WeightedMultigraph<Long, DefaultWeightedEdge> graph, Set<Long> stationIds) {
@@ -48,8 +39,8 @@ public class PathFinder {
         }
     }
 
-    private void fillEdges(List<Section> sections, WeightedMultigraph<Long, DefaultWeightedEdge> graph) {
-        for (Section section : sections) {
+    private void fillEdges(WeightedMultigraph<Long, DefaultWeightedEdge> graph) {
+        for (Section section : sections.values()) {
             Long upStationId = section.getUpStationId();
             Long downStationId = section.getDownStationId();
 

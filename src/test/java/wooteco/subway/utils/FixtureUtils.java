@@ -63,6 +63,7 @@ public class FixtureUtils {
                     .upStationId(1L)
                     .downStationId(2L)
                     .distance(7)
+                    .extraFare(0)
                     .build();
 
     public static LineRequest _7호선 =
@@ -72,6 +73,7 @@ public class FixtureUtils {
                     .upStationId(1L)
                     .downStationId(2L)
                     .distance(7)
+                    .extraFare(0)
                     .build();
 
     private FixtureUtils() {
@@ -122,6 +124,7 @@ public class FixtureUtils {
                 .name("신분당선")
                 .color("yellow")
                 .distance(7)
+                .extraFare(0)
                 .build();
     }
 
@@ -130,6 +133,7 @@ public class FixtureUtils {
                 .name("7호선")
                 .color("brown")
                 .distance(7)
+                .extraFare(0)
                 .build();
     }
 

@@ -1,12 +1,11 @@
 package wooteco.subway.Infrastructure.line;
 
 import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Station;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 public class MemoryLineDao implements LineDao {
 
@@ -16,8 +15,20 @@ public class MemoryLineDao implements LineDao {
 
     @Override
     public long save(Line line) {
-        lines.add(new Line(sequence.incrementAndGet(), line.getName(), line.getColor()));
+        lines.add(new Line(sequence.incrementAndGet(), line.getName(), line.getColor(), line.getExtraFare()));
         return sequence.get();
+    }
+
+    @Override
+    public List<Line> findAll() {
+        return Collections.unmodifiableList(lines);
+    }
+
+    @Override
+    public List<Line> findByIdIn(Collection<Long> lineIds) {
+        return this.lines.stream()
+                .filter(it -> lineIds.contains(it.getId()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -25,11 +36,6 @@ public class MemoryLineDao implements LineDao {
         return lines.stream()
                 .filter(line -> line.getId().equals(id))
                 .findAny();
-    }
-
-    @Override
-    public List<Line> findAll() {
-        return Collections.unmodifiableList(lines);
     }
 
     @Override
@@ -52,7 +58,11 @@ public class MemoryLineDao implements LineDao {
 
     @Override
     public void update(Line line) {
-        Line found = findById(line.getId()).get();
+        Line found = findById(line.getId())
+                .orElse(null);
+        if (found == null) {
+            return;
+        }
         lines.remove(found);
         lines.add(line);
     }
@@ -61,9 +71,10 @@ public class MemoryLineDao implements LineDao {
     public void deleteById(Long id) {
         Line found = findById(id)
                 .orElse(null);
-        if (found != null) {
-            lines.remove(found);
+        if (found == null) {
+            return;
         }
+        lines.remove(found);
     }
 
     @Override

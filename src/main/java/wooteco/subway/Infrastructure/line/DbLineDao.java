@@ -7,10 +7,13 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Station;
 
 import java.sql.PreparedStatement;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class DbLineDao implements LineDao {
@@ -19,7 +22,8 @@ public class DbLineDao implements LineDao {
         long newId = rs.getLong("id");
         String name = rs.getString("name");
         String color = rs.getString("color");
-        return new Line(newId, name, color);
+        int extraFare = rs.getInt("extra_fare");
+        return new Line(newId, name, color, extraFare);
     };
 
     private final JdbcTemplate jdbcTemplate;
@@ -34,9 +38,10 @@ public class DbLineDao implements LineDao {
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection
-                    .prepareStatement("INSERT INTO LINE(name, color) VALUES(?, ?)", new String[]{"id"});
+                    .prepareStatement("INSERT INTO LINE(name, color, extra_fare) VALUES(?, ?, ?)", new String[]{"id"});
             ps.setString(1, line.getName());
             ps.setString(2, line.getColor());
+            ps.setInt(3, line.getExtraFare());
             return ps;
         }, keyHolder);
 
@@ -45,10 +50,15 @@ public class DbLineDao implements LineDao {
     }
 
     @Override
+    public List<Line> findAll() {
+        return jdbcTemplate.query("SELECT * FROM LINE", ROW_MAPPER);
+    }
+
+    @Override
     public Optional<Line> findById(Long id) {
         try {
             Line line = jdbcTemplate
-                    .queryForObject("SELECT id, name, color FROM LINE WHERE id = ? ", ROW_MAPPER, id);
+                    .queryForObject("SELECT * FROM LINE WHERE id = ? ", ROW_MAPPER, id);
             return Optional.of(line);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -56,8 +66,13 @@ public class DbLineDao implements LineDao {
     }
 
     @Override
-    public List<Line> findAll() {
-        return jdbcTemplate.query("SELECT id, name, color FROM LINE", ROW_MAPPER);
+    public List<Line> findByIdIn(Collection<Long> lineIds) {
+        String idsString = lineIds.stream()
+                .map(it -> String.valueOf(it))
+                .collect(Collectors.joining(", "));
+        String selectInClauseQuery = String.format("SELECT * FROM LINE WHERE id IN (%s)", idsString);
+
+        return jdbcTemplate.query(selectInClauseQuery, ROW_MAPPER);
     }
 
     @Override
@@ -75,16 +90,18 @@ public class DbLineDao implements LineDao {
     @Override
     public boolean existByColor(String color) {
         return jdbcTemplate.queryForObject(
-                "SELECT EXISTS (SELECT color FROM LINE WHERE name = ? LIMIT 1 ) AS `exists`",
+                "SELECT EXISTS (SELECT color FROM LINE WHERE color = ? LIMIT 1 ) AS `exists`",
                 Boolean.class, color);
     }
 
     @Override
     public void update(Line line) {
-        jdbcTemplate.update("UPDATE LINE SET name = ?, color = ? WHERE id = ?",
+        jdbcTemplate.update("UPDATE LINE SET name = ?, color = ?, extra_fare = ? WHERE id = ?",
                 line.getName(),
                 line.getColor(),
-                line.getId());
+                line.getExtraFare(),
+                line.getId()
+        );
     }
 
     @Override

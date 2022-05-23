@@ -2,13 +2,19 @@ package wooteco.subway.utils;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import wooteco.subway.domain.Line;
 import wooteco.subway.dto.request.LineRequest;
+
+import java.util.function.Supplier;
 
 import static wooteco.subway.utils.FixtureUtils.*;
 
-public class LineFixtureUtils {
+public class LineFixtures {
 
-    private LineFixtureUtils() {
+    public static final Line 신분당선 = new Line("신분당선", "yellow", 0);
+    public static final Line _7호선 = new Line("7당선", "brown", 0);
+
+    private LineFixtures() {
     }
 
     public static ExtractableResponse<Response> _7호선_및_역_생성요청() {

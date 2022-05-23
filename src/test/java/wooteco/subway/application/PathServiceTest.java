@@ -26,6 +26,9 @@ class PathServiceTest {
     private final SectionDao sectionDao;
     private final LineDao lineDao;
     private final PathService pathService;
+    private long 노선1_ID;
+    private long 노선2_ID;
+    private long 노선3_ID;
 
     private long 선릉역_ID;
     private long 선정릉역_ID;
@@ -38,10 +41,17 @@ class PathServiceTest {
         stationDao = new MemoryStationDao();
         sectionDao = new MemorySectionDao();
         lineDao = new MemoryLineDao();
-        pathService = new PathService(new FareCalculator(), sectionDao, stationDao);
+        pathService = new PathService(new FareCalculator(), sectionDao, stationDao, lineDao);
 
+        setUpLines();
         setUpStations();
         setUpSections();
+    }
+
+    private void setUpLines() {
+        this.노선1_ID = lineDao.save(new Line("노선_1", "red", 0));
+        this.노선2_ID = lineDao.save(new Line("노선_2", "blue", 500));
+        this.노선3_ID = lineDao.save(new Line("노선_3", "green", 900));
     }
 
     void setUpStations() {
@@ -54,17 +64,13 @@ class PathServiceTest {
     }
 
     void setUpSections() {
-        Line 노선_1 = new Line("노선_1", "red");
-        Line 노선_2 = new Line("노선_2", "blue");
-        Line 노선_3 = new Line("노선_3", "green");
-
         List<Section> sections = List.of(
-                new Section(선릉역_ID, 선정릉역_ID, 50, 노선_1.getId()),
-                new Section(선정릉역_ID, 한티역_ID, 8, 노선_1.getId()),
-                new Section(한티역_ID, 강남역_ID, 20, 노선_1.getId()),
-                new Section(선정릉역_ID, 모란역_ID, 6, 노선_2.getId()),
-                new Section(기흥역_ID, 모란역_ID, 10, 노선_3.getId()),
-                new Section(모란역_ID, 강남역_ID, 5, 노선_3.getId())
+                new Section(선릉역_ID, 선정릉역_ID, 50, 노선1_ID),
+                new Section(선정릉역_ID, 한티역_ID, 8, 노선1_ID),
+                new Section(한티역_ID, 강남역_ID, 20, 노선1_ID),
+                new Section(선정릉역_ID, 모란역_ID, 6, 노선2_ID),
+                new Section(기흥역_ID, 모란역_ID, 10, 노선3_ID),
+                new Section(모란역_ID, 강남역_ID, 5, 노선3_ID)
         );
 
         for (Section section : sections) {
@@ -82,28 +88,7 @@ class PathServiceTest {
                 () -> assertThat(result.getStations().get(2).getId()).isEqualTo(선정릉역_ID),
                 () -> assertThat(result.getStations().get(3).getId()).isEqualTo(한티역_ID),
                 () -> assertThat(result.getDistance()).isEqualTo(24),
-                () -> assertThat(result.getFare()).isEqualTo(1550)
+                () -> assertThat(result.getFare()).isEqualTo(1550 + 900)
         );
-    }
-
-    @DisplayName("어린이 나이를 입력하여 조회한 요금을 확인한다")
-    @Test
-    void findPath_with_children_age() {
-        PathResponse result = pathService.findPath(기흥역_ID, 한티역_ID, 10);
-        assertThat(result.getFare()).isEqualTo(1550);
-    }
-
-    @DisplayName("청소년 나이를 입력하여 조회한 요금을 확인한다")
-    @Test
-    void findPath_with_youth_age() {
-        PathResponse result = pathService.findPath(기흥역_ID, 한티역_ID, 16);
-        assertThat(result.getFare()).isEqualTo(1550);
-    }
-
-    @DisplayName("성인 나이를 입력하여 조회한 요금을 확인한다")
-    @Test
-    void findPath_with_adult_age() {
-        PathResponse result = pathService.findPath(기흥역_ID, 한티역_ID, 25);
-        assertThat(result.getFare()).isEqualTo(1550);
     }
 }

@@ -24,15 +24,6 @@ public class LineService {
         this.sectionDao = sectionDao;
     }
 
-    public Line saveAndGet(String name, String color, Long upStationId, Long downStationId, Integer distance) {
-        if (lineDao.existByName(name) || lineDao.existByColor(name)) {
-            throw new DuplicateException();
-        }
-        long savedLineId = lineDao.save(new Line(name, color));
-        sectionDao.save(new Section(upStationId, downStationId, distance, savedLineId));
-        return new Line(savedLineId, name, color);
-    }
-
     public Line saveAndGet(Line line, Section section) {
         if (lineDao.existByName(line.getName()) || lineDao.existByColor(line.getColor())) {
             throw new DuplicateException();
@@ -40,7 +31,12 @@ public class LineService {
         long savedLineId = lineDao.save(line);
         section.setLineId(savedLineId);
         sectionDao.save(section);
-        return new Line(savedLineId, line.getName(), line.getColor());
+        return new Line(
+                savedLineId,
+                line.getName(),
+                line.getColor(),
+                line.getExtraFare()
+        );
     }
 
     @Transactional(readOnly = true)
@@ -54,16 +50,16 @@ public class LineService {
                 .orElseThrow(() -> new NotExistException(Which.LINE));
     }
 
-    public Line update(Long id, String name, String color) {
+    public Line update(Long id, String name, String color, Integer extraFare) {
         Line line = findById(id);
 
         if (isDuplicateName(line, name)) {
             throw new DuplicateException();
         }
 
-        lineDao.update(new Line(id, name, color));
+        lineDao.update(new Line(id, name, color, extraFare));
 
-        return new Line(id, name, color);
+        return new Line(id, name, color, extraFare);
     }
 
     private boolean isDuplicateName(Line line, String name) {

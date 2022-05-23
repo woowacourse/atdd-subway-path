@@ -17,6 +17,7 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.request.LineRequest;
 import wooteco.subway.dto.response.LineResponse;
+import wooteco.subway.utils.FixtureUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +26,9 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static wooteco.subway.utils.FixtureUtils.*;
-import static wooteco.subway.utils.LineFixtureUtils.*;
+import static wooteco.subway.utils.FixtureUtils._7호선;
+import static wooteco.subway.utils.FixtureUtils.신분당선;
+import static wooteco.subway.utils.LineFixtures.*;
 
 @DisplayName("지하철 노선 E2E")
 @Sql("/init.sql")
