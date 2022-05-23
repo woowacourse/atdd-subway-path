@@ -10,6 +10,7 @@ import wooteco.subway.dao.JdbcSectionDao;
 import wooteco.subway.dao.JdbcStationDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
@@ -71,6 +72,10 @@ public class SectionRepository {
 
     public void delete(Long id) {
         sectionDao.delete(id);
+    }
+
+    public void deleteByIdIn(List<Long> ids) {
+        sectionDao.deleteByIdIn(ids);
     }
 
     public void update(SectionEntity sectionEntity) {

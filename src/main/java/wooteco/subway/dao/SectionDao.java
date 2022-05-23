@@ -18,4 +18,6 @@ public interface SectionDao {
     void update(SectionEntity sectionEntity);
 
     void delete(Long id);
+
+    void deleteByIdIn(List<Long> ids);
 }

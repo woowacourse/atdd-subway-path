@@ -27,8 +27,10 @@ public class LineService {
     private final StationRepository stationRepository;
     private final SectionRepository sectionRepository;
 
-    public LineService(LineRepository lineRepository, StationRepository stationRepository,
-                       SectionRepository sectionRepository) {
+    public LineService(LineRepository lineRepository,
+                       StationRepository stationRepository,
+                       SectionRepository sectionRepository
+    ) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
         this.sectionRepository = sectionRepository;
@@ -91,9 +93,12 @@ public class LineService {
         List<Section> deleteTargets = before.findDifferentSections(after);
         List<Section> insertTargets = after.findDifferentSections(before);
 
-        for (Section deleteTarget : deleteTargets) {
-            sectionRepository.delete(deleteTarget.getId());
-        }
+        List<Long> deleteSectionIds = deleteTargets.stream()
+                .map(Section::getId)
+                .collect(Collectors.toList());
+
+        sectionRepository.deleteByIdIn(deleteSectionIds);
+        sectionRepository.saveAll(line, insertTargets);
 
         for (Section updateTarget : insertTargets) {
             sectionRepository.save(line.getId(),

@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -18,6 +20,16 @@ public class JdbcSectionDao implements SectionDao {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertActor;
+
+    private final static RowMapper<SectionEntity> mapper =
+            (resultSet, rowNum) ->
+                    new SectionEntity(
+                            resultSet.getLong("id"),
+                            resultSet.getLong("line_id"),
+                            resultSet.getLong("up_station_id"),
+                            resultSet.getLong("down_station_id"),
+                            resultSet.getInt("distance")
+                    );
 
     public JdbcSectionDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
@@ -46,19 +58,19 @@ public class JdbcSectionDao implements SectionDao {
     @Override
     public List<SectionEntity> findAll() {
         String sql = "select * from SECTION";
-        return jdbcTemplate.query(sql, mapper());
+        return jdbcTemplate.query(sql, mapper);
     }
 
     @Override
     public SectionEntity findById(Long id) {
         String sql = "select * from SECTION where id = :id";
-        return jdbcTemplate.queryForObject(sql, Map.of("id", id), mapper());
+        return jdbcTemplate.queryForObject(sql, Map.of("id", id), mapper);
     }
 
     @Override
     public List<SectionEntity> findByLineId(Long id) {
         String sql = "select * from SECTION where line_id = :id";
-        return jdbcTemplate.query(sql, Map.of("id", id), mapper());
+        return jdbcTemplate.query(sql, Map.of("id", id), mapper);
     }
 
     @Override
@@ -74,14 +86,11 @@ public class JdbcSectionDao implements SectionDao {
         jdbcTemplate.update(sql, Map.of("id", id));
     }
 
-    private RowMapper<SectionEntity> mapper() {
-        return (resultSet, rowNum) ->
-                new SectionEntity(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("line_id"),
-                        resultSet.getLong("up_station_id"),
-                        resultSet.getLong("down_station_id"),
-                        resultSet.getInt("distance")
-                );
+    @Override
+    public void deleteByIdIn(List<Long> ids) {
+        String sql = "DELETE FROM section WHERE id IN (:ids)";
+        SqlParameterSource parameters = new MapSqlParameterSource("ids", ids);
+
+        jdbcTemplate.update(sql, parameters);
     }
 }
