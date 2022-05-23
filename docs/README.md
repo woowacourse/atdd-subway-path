@@ -105,7 +105,8 @@
 - [x] (DijkstraShortestPathStationTest) `@DisplayName`을 잘 쓰자!
 - [x] 역이 어느 구간에도 포함되어 있지 않을 때 에러를 더 구체적으로 처리하면 좋을 것 같다.
 - [x] 출발역과 도착역이 같은 경우 어떤 일이 발생할까?
-- [ ] 노선의 역 정보를 출력할 때 순서대로 출력이 되면 어떨까?
+- [x] 노선의 역 정보를 출력할 때 순서대로 출력이 되면 어떨까?
+    - 상행역부터 하행역까지 순서대로 정렬하여 출력되도록 수정했습니다.
 - [x] source, target, age 중 들어오지 않은 값이 있으면 어떻게 되나요?
     - 위 값은 모두 `@RequestParam`으로 받는다. `@RequestParam`은 기본적으로 required 옵션이 true이고 무조건 값이 있어야 한다.
     - 따라서 source, target, age 중 어떤 하나라도 빠지면 `MissingServletRequestParameterException` 예외가 발생한다. 

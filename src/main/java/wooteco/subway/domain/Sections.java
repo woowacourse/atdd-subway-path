@@ -1,9 +1,11 @@
 package wooteco.subway.domain;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -96,6 +98,45 @@ public class Sections implements Iterable<Section> {
         stations.addAll(downStations);
 
         return new ArrayList<>(stations);
+    }
+
+    public List<Station> getSortedStations() {
+        Map<Station, Station> downStationByUpStation = new HashMap<>();
+        sections.forEach(section -> downStationByUpStation.put(section.getUpStation(), section.getDownStation()));
+
+        List<Station> stations = new ArrayList<>();
+        Station upStation = getTopUpStation();
+        stations.add(upStation);
+
+        while (downStationByUpStation.containsKey(upStation)) {
+            Station downStation = downStationByUpStation.get(upStation);
+            stations.add(downStation);
+            upStation = downStation;
+        }
+
+        return stations;
+    }
+
+    private Station getTopUpStation() {
+        List<Station> upStations = getUpStations();
+        List<Station> downStations = getDownStations();
+        upStations.removeAll(downStations);
+
+        return upStations.stream()
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("구간 정보가 잘못되었습니다."));
+    }
+
+    private List<Station> getUpStations() {
+        return sections.stream()
+                .map(Section::getUpStation)
+                .collect(Collectors.toList());
+    }
+
+    private List<Station> getDownStations() {
+        return sections.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toList());
     }
 
     public Section removeSection(Station station) {

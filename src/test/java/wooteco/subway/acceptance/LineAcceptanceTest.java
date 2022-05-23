@@ -1,6 +1,8 @@
 package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static wooteco.subway.acceptance.BodyCreator.makeBodyForPost;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -13,6 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import wooteco.subway.dto.controller.response.LineResponse;
+import wooteco.subway.dto.controller.response.StationResponse;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
@@ -110,6 +113,52 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(createResponse1.jsonPath().getLong("id")).isEqualTo(response.jsonPath().getLong("id"));
         assertThat(createResponse1.jsonPath().getString("name")).isEqualTo(response.jsonPath().getString("name"));
         assertThat(createResponse1.jsonPath().getString("color")).isEqualTo(response.jsonPath().getString("color"));
+    }
+
+    @DisplayName("지하철 노선의 역은 상행선부터 정렬되어서 응답한다.")
+    @Test
+    void getLineCheckSort() {
+        /// given
+        createStation("신림역");
+        createStation("강남역");
+        createStation("선릉역");
+        createStation("잠실역");
+        createStation("왕십리역");
+
+        ExtractableResponse<Response> createResponse = RequestFrame.post(
+                BodyCreator.makeLineBodyForPost("2호선", "green", "5", "4", "10", "900"),
+                "/lines"
+        );
+        long id = createResponse.jsonPath().getLong("id");
+        RequestFrame.post(
+                makeBodyForPost("4", "3", "10"),
+                "/lines/" + id + "/sections"
+        );
+        RequestFrame.post(
+                makeBodyForPost("3", "2", "10"),
+                "/lines/" + id + "/sections"
+        );
+        RequestFrame.post(
+                makeBodyForPost("2", "1", "10"),
+                "/lines/" + id + "/sections"
+        );
+
+        // when
+        String uri = createResponse.header("Location");
+        ExtractableResponse<Response> response = RequestFrame.get(uri);
+
+        // then
+        List<StationResponse> stations = response.body()
+                .jsonPath()
+                .getList("stations", StationResponse.class);
+        List<String> stationNames = stations.stream()
+                .map(StationResponse::getName)
+                .collect(Collectors.toList());
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(stationNames).containsExactly("왕십리역", "잠실역", "선릉역", "강남역", "신림역")
+        );
     }
 
     @DisplayName("존재하지 않는 지하철 노선을 조회한다.(404에러)")

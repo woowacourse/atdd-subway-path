@@ -1,6 +1,8 @@
 package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.acceptance.BodyCreator.createStation;
+import static wooteco.subway.acceptance.BodyCreator.makeBodyForPost;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -176,20 +178,5 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections?stationId=3");
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
-    }
-
-    private void createStation(String stationName) {
-        RequestFrame.post(
-                BodyCreator.makeStationBodyForPost(stationName),
-                "/stations"
-        );
-    }
-
-    private Map<String, String> makeBodyForPost(String upStationId, String downStationId, String distance) {
-        Map<String, String> body = new HashMap<>();
-        body.put("upStationId", upStationId);
-        body.put("downStationId", downStationId);
-        body.put("distance", distance);
-        return body;
     }
 }
