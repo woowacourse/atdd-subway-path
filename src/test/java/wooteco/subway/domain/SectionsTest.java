@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.exception.DomainException;
+import wooteco.subway.exception.ExceptionMessage;
 
 class SectionsTest {
 
@@ -69,5 +70,17 @@ class SectionsTest {
         assertThat(sections.getValue()).hasSize(1);
         assertThat(sections.getValue().get(0).getDistance())
                 .isEqualTo(중계_하계.getDistance() + 상계_중계.getDistance());
+    }
+
+    @Test
+    @DisplayName("구간이 하나일 때 특정역에 따라 삭제할 구간 찾으려 하면 예외")
+    void findNearByStationId_invalid() {
+        // when
+        Sections sections = new Sections(List.of(상계_노원));
+
+        // then
+        assertThatThrownBy(() -> sections.deleteNearBy(상계))
+                .isInstanceOf(DomainException.class)
+                .hasMessage(ExceptionMessage.SECTIONS_NOT_DELETABLE.getContent());
     }
 }

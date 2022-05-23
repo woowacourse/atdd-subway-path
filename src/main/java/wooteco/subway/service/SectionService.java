@@ -54,4 +54,9 @@ public class SectionService {
         sectionRepository.deleteByLineId(lineId);
         sectionRepository.saveAll(sections);
     }
+
+    public List<Station> getSortedStationInLineId(Long lineId) {
+        List<Section> sectionsInLine = findByLineId(lineId);
+        return new Sections(sectionsInLine).getSortedStation();
+    }
 }

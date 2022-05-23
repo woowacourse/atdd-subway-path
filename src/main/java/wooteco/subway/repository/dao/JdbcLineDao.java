@@ -41,8 +41,8 @@ public class JdbcLineDao implements LineDao {
             String name = resultSet.getString("name");
             String color = resultSet.getString("color");
             long id = resultSet.getLong("id");
-            long extraFee = resultSet.getLong("extra_fare");
-            return new LineEntity(id, name, color, extraFee);
+            long extraFare = resultSet.getLong("extra_fare");
+            return new LineEntity(id, name, color, extraFare);
         };
     }
 

@@ -18,7 +18,6 @@ import wooteco.subway.exception.NotFoundException;
 public class Sections {
 
     private static final int MINIMUM_SECTIONS_FOR_DELETE = 2;
-    private static final int NO_UPPER_SECTION_EXISTS = 0;
     private static final int MERGEABLE_SECTION_COUNT = 2;
 
     private final List<Section> sections;

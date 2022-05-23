@@ -10,46 +10,24 @@ public class Line {
     private final Long id;
     private final String name;
     private final String color;
-    private final Sections sections;
     private final Long extraFare;
 
-    public Line(Long id, String name, String color, Sections sections, Long extraFare) {
+    public Line(Long id, String name, String color, Long extraFare) {
         if (name.isBlank()) {
             throw new DomainException(ExceptionMessage.BLANK_LINE_NAME.getContent());
         }
         this.id = id;
         this.name = name;
         this.color = color;
-        this.sections = sections;
         this.extraFare = extraFare;
     }
 
-    public Line(Long id, String name, String color, List<Section> sections) {
-        this(id, name, color, new Sections(sections), 0L);
+    public Line(Long id, String name, String color) {
+        this(id, name, color, 0L);
     }
 
-    public Line(Long id, String name, String color, List<Section> sections, Long extraFare) {
-        this(id, name, color, new Sections(sections), extraFare);
-    }
-
-    public Line(String name, String color, List<Section> sections, Long extraFare) {
-        this(null, name, color, new Sections(sections), extraFare);
-    }
-
-    public Line(String name, String color, List<Section> sections) {
-        this(null, name, color, sections);
-    }
-
-    public void add(Section section) {
-        sections.add(section);
-    }
-
-    public List<Station> getSortedStations() {
-        return sections.getSortedStation();
-    }
-
-    public void deleteSectionNearBy(Station station) {
-        sections.deleteNearBy(station);
+    public static Line withoutIdOf(String name, String color, Long extraFare) {
+        return new Line(null, name, color, extraFare);
     }
 
     public Long getId() {
@@ -62,10 +40,6 @@ public class Line {
 
     public String getColor() {
         return color;
-    }
-
-    public List<Section> getSections() {
-        return sections.getValue();
     }
 
     public Long getExtraFare() {

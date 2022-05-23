@@ -229,14 +229,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then 조회된 노선의 이름이 수정하려한 내용과 같다.
         // and 조회된 노선의 색깔이 수정하려한 내용과 같다.
-        // and 조회된 노선의 상행 종점과 하행 종점이 수정하려한 내용과 같다.
         LineResponse 수정_역_조회 = get("/lines/"+ id).body().as(LineResponse.class);
         assertAll(() -> {
             assertThat(수정_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
             assertThat(수정_역_조회.getName()).isEqualTo(수정_요청_바디.getName());
             assertThat(수정_역_조회.getColor()).isEqualTo(수정_요청_바디.getColor());
-            assertThat(수정_역_조회.getStations().get(0).getId()).isEqualTo(수정_요청_바디.getUpStationId());
-            assertThat(수정_역_조회.getStations().get(1).getId()).isEqualTo(수정_요청_바디.getDownStationId());
         });
     }
 
