@@ -76,4 +76,9 @@ public class LineDao {
         String sql = "select EXISTS (select name from line where name = ?) as success";
         return jdbcTemplate.queryForObject(sql, Integer.class, line.getName());
     }
+
+    public int getExtraFare(final Long id) {
+        String sql = "select extra_fare from line where id = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, id);
+    }
 }

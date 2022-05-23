@@ -26,7 +26,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private Long 마라도_ID;
     private Long 호선2_ID;
     private Long 호선3_ID;
-    private int 나이 = 10;
+    private int 나이 = 20;
 
     @BeforeEach
     void setUpData() {
@@ -35,8 +35,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         선릉역_ID = createStation("선릉역");
         잠실역_ID = createStation("잠실역");
         마라도_ID = createStation("마라도역");
-        호선2_ID = createLine("2호선", "bg-red-600", 강남역_ID, 역삼역_ID, 10);
-        호선3_ID = createLine("3호선", "bg-green-600", 강남역_ID, 잠실역_ID, 9);
+        호선2_ID = createLine("2호선", "bg-red-600", 강남역_ID, 역삼역_ID, 10, 0);
+        호선3_ID = createLine("3호선", "bg-green-600", 강남역_ID, 잠실역_ID, 9, 0);
         createSection(호선2_ID, 역삼역_ID, 선릉역_ID, 5);
         createSection(호선3_ID, 잠실역_ID, 선릉역_ID, 8);
     }
@@ -118,6 +118,26 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     }
 
+    @Test
+    @DisplayName("추가 요금이 900원인 노선 안의 구간의 거리가 12km 일때 총 요금은 2250원이다.")
+    void calculateFareWithExtraFare() {
+        Long lineId = createLine("테스트선", "bg-red-600", 강남역_ID, 선릉역_ID, 12, 900);
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .get("/paths?source=" + 강남역_ID + "&target=" + 선릉역_ID + "&age=" + 나이)
+                .then().log().all()
+                .extract();
+
+        int fare = response.body().jsonPath().getInt("fare");
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(fare).isEqualTo(2250)
+        );
+    }
+
     private ExtractableResponse<Response> createSection(final Long lineId, final Long upStationId,
                                                         final Long downStationId, final Integer distance) {
         Map<String, Object> params = new HashMap<>();
@@ -135,13 +155,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private Long createLine(final String name, final String color, final Long upStationId,
-                            final Long downStationId, final Integer distance) {
+                            final Long downStationId, final Integer distance, final int extraFare) {
         Map<String, Object> params = new HashMap<>();
         params.put("name", name);
         params.put("color", color);
         params.put("upStationId", upStationId);
         params.put("downStationId", downStationId);
         params.put("distance", distance);
+        params.put("extraFare", extraFare);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .body(params)
