@@ -1,18 +1,17 @@
 package wooteco.subway.acceptance;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class PathAcceptanceTest extends AcceptanceTest {
 
@@ -36,6 +35,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         params4.put("upStationId", 1L);
         params4.put("downStationId", 3L);
         params4.put("distance", 10);
+        params4.put("extraFare", 900);
 
         createLineResponseOf(params4);
 
@@ -60,7 +60,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.body().asString()).contains("20");
-        assertThat(response.body().asString()).contains("1450");
+        assertThat(response.body().asString()).contains("2350");
     }
 
     private void createStationResponseOf(Map<String, String> params) {
