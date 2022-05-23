@@ -13,7 +13,7 @@ class FareTest {
     @ParameterizedTest
     @ValueSource(ints = {1, 5, 6, 10})
     void getFare(final int distance) {
-        final Fare fare = Fare.from(distance);
+        final Fare fare = Fare.from(distance, 0, 20);
         assertThat(fare.getPrice()).isEqualTo(1250);
     }
 
@@ -28,7 +28,7 @@ class FareTest {
             "50, 2050"
     })
     void calculateOverFare_below50km(final int distance, final int price) {
-        final Fare fare = Fare.from(distance);
+        final Fare fare = Fare.from(distance, 0, 20);
         assertThat(fare.getPrice()).isEqualTo(price);
     }
 
@@ -40,7 +40,15 @@ class FareTest {
             "100, 2750"
     })
     void calculateOverFare_over50km(final int distance, final int price) {
-        final Fare fare = Fare.from(distance);
+        final Fare fare = Fare.from(distance, 0, 20);
         assertThat(fare.getPrice()).isEqualTo(price);
+    }
+
+    @DisplayName("노선별 추가요금에 따라 요금이 추가된다.")
+    @ParameterizedTest
+    @ValueSource(ints = {100, 150, 400, 900})
+    void calculateExtraFare(final int extraFare) {
+        final Fare fare = Fare.from(10, extraFare, 20);
+        assertThat(fare.getPrice()).isEqualTo(1250 + extraFare);
     }
 }

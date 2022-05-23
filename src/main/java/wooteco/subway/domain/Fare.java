@@ -15,16 +15,17 @@ public class Fare {
         this.price = price;
     }
 
-    public static Fare from(final double distance) {
-        return new Fare(calculateFare(distance));
+    public static Fare from(final double distance, final int extraFare, final int age) {
+        return new Fare(calculateFare(distance, extraFare, age));
     }
 
-    private static int calculateFare(final double distance) {
+    private static int calculateFare(final double distance, final int extraFare, final int age) {
+        final int price = MINIMUM_FARE_PRICE + extraFare;
         if (distance <= MINIMUM_DISTANCE_BOUNDARY) {
-            return MINIMUM_FARE_PRICE;
+            return price;
         }
 
-        return MINIMUM_FARE_PRICE + calculateFarePrice(distance);
+        return price + calculateFarePrice(distance);
     }
 
     private static int calculateFarePrice(final double distance) {

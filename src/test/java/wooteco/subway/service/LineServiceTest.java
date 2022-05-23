@@ -7,12 +7,16 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
@@ -21,8 +25,6 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.exception.DataNotFoundException;
 import wooteco.subway.exception.DuplicateNameException;
-import java.util.List;
-import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 class LineServiceTest {
@@ -49,7 +51,7 @@ class LineServiceTest {
         final Station station2 = new Station(2L, "강남역");
         final Section section = new Section(station1, station2, 3, 1L);
 
-        given(lineDao.save(line)).willReturn(new Line(1L, lineName, lineColor));
+        given(lineDao.save(line)).willReturn(new Line(1L, lineName, lineColor, 0));
         given(sectionDao.save(section)).willReturn(section);
         given(stationDao.findById(section.getUpStation().getId())).willReturn(Optional.of(station1));
         given(stationDao.findById(section.getDownStation().getId())).willReturn(Optional.of(station2));
@@ -103,7 +105,7 @@ class LineServiceTest {
     @DisplayName("노선 ID로 노선을 업데이트 한다.")
     @Test
     void updateLine() {
-        final Line newLine = new Line(1L, "분당선", "bg-yellow-600");
+        final Line newLine = new Line(1L, "분당선", "bg-yellow-600", 0);
 
         given(lineDao.findById(1L)).willReturn(Optional.of(newLine));
 

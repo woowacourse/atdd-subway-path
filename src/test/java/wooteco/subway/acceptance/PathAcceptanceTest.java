@@ -27,7 +27,8 @@ class PathAcceptanceTest extends AcceptanceTest {
     private Long stationId1;
     private Long stationId2;
     private Long stationId3;
-    private Long lineId;
+    private Long lineId1;
+    private Long lineId2;
 
     @BeforeEach
     void setup() {
@@ -42,7 +43,8 @@ class PathAcceptanceTest extends AcceptanceTest {
         stationId2 = Long.parseLong(stationResponse2.header("Location").split("/")[2]);
         stationId3 = Long.parseLong(stationResponse3.header("Location").split("/")[2]);
 
-        lineId = createLine(new LineRequest("2호선", "bg-green-600", stationId1, stationId2, 10));
+        lineId1 = createLine(new LineRequest("2호선", "bg-green-600", 500, stationId1, stationId2, 10));
+        lineId2 = createLine(new LineRequest("1호선", "bg-red-600", 900, stationId2, stationId3, 3));
         createSection(new SectionRequest(stationId2, stationId3, 5));
     }
 
@@ -65,8 +67,8 @@ class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(stations).usingRecursiveComparison()
                         .ignoringFields("id")
                         .isEqualTo(List.of(stationRequest1, stationRequest2, stationRequest3)),
-                () -> assertThat(distance).isEqualTo(15.0),
-                () -> assertThat(fare).isEqualTo(1350)
+                () -> assertThat(distance).isEqualTo(13.0),
+                () -> assertThat(fare).isEqualTo(2250)
         );
     }
 
@@ -79,6 +81,8 @@ class PathAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
     }
+
+
 
     private Long createLine(final LineRequest lineRequest) {
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -96,7 +100,7 @@ class PathAcceptanceTest extends AcceptanceTest {
                 .body(sectionRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .post("/lines/" + lineId + "/sections")
+                .post("/lines/" + lineId1 + "/sections")
                 .then().log().all()
                 .extract();
     }

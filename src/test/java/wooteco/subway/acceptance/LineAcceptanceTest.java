@@ -3,21 +3,23 @@ package wooteco.subway.acceptance;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.StationResponse;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
@@ -34,7 +36,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         stationRequest2 = new StationRequest("군자역");
         upStationId = createStation(stationRequest1);
         downStationId = createStation(stationRequest2);
-        lineRequest = new LineRequest("5호선", "bg-purple-600", upStationId, downStationId, 10);
+        lineRequest = new LineRequest("5호선", "bg-purple-600", 0, upStationId, downStationId, 10);
     }
 
     @DisplayName("노선을 생성한다.")
@@ -71,7 +73,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
 
-        final LineRequest lineRequest2 = new LineRequest("분당선", "bg-green-600", upStationId, downStationId, 2);
+        final LineRequest lineRequest2 = new LineRequest("분당선", "bg-green-600", 0, upStationId, downStationId, 2);
 
         final ExtractableResponse<Response> createResponse2 = RestAssured.given().log().all()
                 .body(lineRequest2)
@@ -164,7 +166,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // when
         final String name = "다른분당선";
         final String color = "bg-red-600";
-        final LineRequest updateRequest = new LineRequest(name, color, upStationId, downStationId, 5);
+        final LineRequest updateRequest = new LineRequest(name, color, 0, upStationId, downStationId, 5);
 
         RestAssured.given().log().all()
                 .body(updateRequest)

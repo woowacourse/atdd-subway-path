@@ -5,24 +5,24 @@ import java.util.List;
 public class Path {
 
     private final List<Station> stations;
+    private final List<Long> lineIds;
     private final int distance;
-    private final Fare fare;
 
-    public Path(final List<Station> stations, final int distance, final Fare fare) {
+    public Path(final List<Station> stations, final List<Long> lineIds, final int distance) {
         this.stations = stations;
+        this.lineIds = lineIds;
         this.distance = distance;
-        this.fare = fare;
     }
 
     public List<Station> getStations() {
         return stations;
     }
 
-    public int getDistance() {
-        return distance;
+    public List<Long> getLineIds() {
+        return lineIds;
     }
 
-    public Fare getFare() {
-        return fare;
+    public int getDistance() {
+        return distance;
     }
 }
