@@ -31,12 +31,13 @@ public class DistanceFarePolicy implements FarePolicy {
         if (distance.isShorterOrEqualThan(LOW_DISTANCE)) {
             return 0;
         }
-        final int lowExtraDistance = Math.min(distance.getValue() - LOW_DISTANCE_VALUE, HIGH_DISTANCE_VALUE - LOW_DISTANCE_VALUE);
+        final int lowExtraDistance = Math.min(distance.getValue() - LOW_DISTANCE_VALUE,
+            HIGH_DISTANCE_VALUE - LOW_DISTANCE_VALUE);
         return calculateForExtraDistance(lowExtraDistance, LOW_DISTANCE_DENOMINATOR);
     }
 
     private int calculateForExtraDistance(int extraDistance, double denominator) {
-        return (int) (Math.ceil(extraDistance / denominator) * EXTRA_FARE_AMOUNT);
+        return (int)(Math.ceil(extraDistance / denominator) * EXTRA_FARE_AMOUNT);
     }
 
     private int surchargeHighExtra() {

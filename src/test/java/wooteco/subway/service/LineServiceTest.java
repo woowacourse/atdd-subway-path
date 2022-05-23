@@ -91,7 +91,8 @@ class LineServiceTest {
         final StationResponse stationA = stationService.save(new StationRequest("역1"));
         final StationResponse stationB = stationService.save(new StationRequest("역2"));
 
-        final LineResponse save = lineService.save(new LineRequest("분당", "색", stationA.getId(), stationB.getId(), 10, 0));
+        final LineResponse save = lineService.save(
+            new LineRequest("분당", "색", stationA.getId(), stationB.getId(), 10, 0));
         lineId = save.getId();
     }
 }

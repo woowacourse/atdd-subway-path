@@ -36,7 +36,8 @@ public class PathFinder {
         return graph;
     }
 
-    private static void addStationEdge(WeightedMultigraph<Station, ExtraFareEdge> graph, List<Section> sections, Fare lineExtraFare) {
+    private static void addStationEdge(WeightedMultigraph<Station, ExtraFareEdge> graph, List<Section> sections,
+        Fare lineExtraFare) {
         for (Section section : sections) {
             graph.addVertex(section.getUpStation());
             graph.addVertex(section.getDownStation());

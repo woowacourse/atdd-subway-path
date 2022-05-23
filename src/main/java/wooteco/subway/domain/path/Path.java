@@ -1,9 +1,6 @@
 package wooteco.subway.domain.path;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
-import org.jgrapht.GraphPath;
 
 import wooteco.subway.domain.property.Distance;
 import wooteco.subway.domain.property.fare.Fare;
