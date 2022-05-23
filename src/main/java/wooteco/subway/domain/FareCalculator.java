@@ -1,5 +1,7 @@
 package wooteco.subway.domain;
 
+import wooteco.subway.exception.CalculatePathsException;
+
 public class FareCalculator {
 
     private static final int FIRST_EXTRA_FARE_DISTANCE = 10;
@@ -13,7 +15,14 @@ public class FareCalculator {
     private final double distance;
 
     public FareCalculator(final double distance) {
+        validateDistanceOverThanZero(distance);
         this.distance = distance;
+    }
+
+    private void validateDistanceOverThanZero(final double distance) {
+        if (distance <= 0) {
+            throw new CalculatePathsException("최단 경로의 거리가 0이하 이기 때문에 요금을 계산 할 수 없습니다.");
+        }
     }
 
     public int calculateFare() {
