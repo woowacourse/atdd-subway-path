@@ -8,6 +8,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.exception.NotFoundPathException;
+import wooteco.subway.exception.NotFoundStationException;
 
 public class DistanceShortestPathStrategy implements ShortestPathStrategy {
 
@@ -16,9 +17,7 @@ public class DistanceShortestPathStrategy implements ShortestPathStrategy {
         WeightedMultigraph<Long, DefaultWeightedEdge> graph = getSubwayGraph(sections);
         DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
-        return findShortestPath(sourceId, targetId, dijkstraShortestPath)
-                .orElseThrow(() -> new NotFoundPathException("현재 구간으로 해당 지하철역을 갈 수 없습니다."))
-                .getVertexList();
+        return findShortestPath(sourceId, targetId, dijkstraShortestPath).getVertexList();
     }
 
     private WeightedMultigraph<Long, DefaultWeightedEdge> getSubwayGraph(Sections sections) {
@@ -34,12 +33,13 @@ public class DistanceShortestPathStrategy implements ShortestPathStrategy {
         return graph;
     }
 
-    private Optional<GraphPath<Long, DefaultWeightedEdge>> findShortestPath(
+    private GraphPath<Long, DefaultWeightedEdge> findShortestPath(
             long sourceId, long targetId, DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath) {
         try {
-            return Optional.of(dijkstraShortestPath.getPath(sourceId, targetId));
-        } catch (NullPointerException | IllegalArgumentException exception) {
-            return Optional.empty();
+            return Optional.ofNullable(dijkstraShortestPath.getPath(sourceId, targetId))
+                    .orElseThrow(() -> new NotFoundPathException("현재 구간으로 해당 지하철역을 갈 수 없습니다."));
+        } catch (IllegalArgumentException exception) {
+            throw new NotFoundStationException();
         }
     }
 

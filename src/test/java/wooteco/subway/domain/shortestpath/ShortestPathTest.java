@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.exception.NotFoundPathException;
+import wooteco.subway.exception.NotFoundStationException;
 
 class ShortestPathTest {
 
@@ -35,8 +36,8 @@ class ShortestPathTest {
         );
 
         assertThatThrownBy(() ->  new ShortestPath(new DistanceShortestPathStrategy(), new Sections(sections), 1L, 6L))
-                .isInstanceOf(NotFoundPathException.class)
-                .hasMessageContaining("현재 구간으로 해당 지하철역을 갈 수 없습니다.");
+                .isInstanceOf(NotFoundStationException.class)
+                .hasMessageContaining("해당 지하철역이 등록이 안되어 있습니다.");
     }
 
     @Test
