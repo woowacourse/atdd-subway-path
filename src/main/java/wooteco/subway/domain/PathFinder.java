@@ -10,11 +10,9 @@ import java.util.Set;
 
 public class PathFinder {
 
-    private final List<Section> values;
     private DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath;
 
     public PathFinder(List<Section> sections) {
-        this.values = sections;
         this.dijkstraShortestPath = initDijkstraShortestPath(sections);
     }
 
