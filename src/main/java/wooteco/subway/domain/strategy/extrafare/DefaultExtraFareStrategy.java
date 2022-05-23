@@ -14,7 +14,7 @@ public class DefaultExtraFareStrategy implements ExtraFareStrategy {
     }
 
     @Override
-    public int calculateByDistance(final Distance distance) {
+    public int calculate(final Distance distance) {
         return 0;
     }
 }

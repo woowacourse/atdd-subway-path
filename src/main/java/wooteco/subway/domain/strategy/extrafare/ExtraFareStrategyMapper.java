@@ -6,9 +6,9 @@ import wooteco.subway.domain.Distance;
 
 public enum ExtraFareStrategyMapper {
 
-    DEFAULT_DISTANCE(it -> it <= 10, DefaultExtraFareStrategy.getInstance()),
-    TEN_DISTANCE(it -> 10 < it && it <= 50, TenExtraFareStrategy.getInstance()),
-    FIFTY_DISTANCE(it -> 50 < it, FiftyExtraFareStrategy.getInstance()),
+    DEFAULT_STRATEGY(it -> it <= 10, DefaultExtraFareStrategy.getInstance()),
+    OVER_TEN_STRATEGY(it -> 10 < it && it <= 50, TenExtraFareStrategy.getInstance()),
+    OVER_FIFTY_STRATEGY(it -> 50 < it, FiftyExtraFareStrategy.getInstance()),
     ;
 
     private final Predicate<Integer> predicate;
@@ -22,8 +22,8 @@ public enum ExtraFareStrategyMapper {
     public static ExtraFareStrategy findStrategyBy(final Distance distance) {
         return Arrays.stream(values())
                 .filter(it -> it.predicate.test(distance.getValue()))
-                .map(it -> it.strategy)
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow()
+                .strategy;
     }
 }

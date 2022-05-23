@@ -22,7 +22,7 @@ public class Fare {
 
     public Fare addExtraFareByDistance(final Distance distance) {
         final ExtraFareStrategy strategy = ExtraFareStrategyMapper.findStrategyBy(distance);
-        final int extraFare = strategy.calculateByDistance(distance);
+        final int extraFare = strategy.calculate(distance);
         return new Fare(value + extraFare);
     }
 

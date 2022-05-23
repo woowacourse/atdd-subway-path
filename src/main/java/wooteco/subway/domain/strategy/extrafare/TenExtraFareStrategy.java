@@ -18,7 +18,7 @@ public class TenExtraFareStrategy implements ExtraFareStrategy {
     }
 
     @Override
-    public int calculateByDistance(final Distance distance) {
+    public int calculate(final Distance distance) {
         return calculateOverFare(distance.getValue() - DISTANCE_OF_BASIC_FARE,
                 STANDARD_DISTANCE_OF_OVER_FARE);
     }

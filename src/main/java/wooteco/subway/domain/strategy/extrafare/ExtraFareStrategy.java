@@ -4,5 +4,5 @@ import wooteco.subway.domain.Distance;
 
 public interface ExtraFareStrategy {
 
-    int calculateByDistance(final Distance distance);
+    int calculate(final Distance distance);
 }

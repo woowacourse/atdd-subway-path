@@ -20,7 +20,7 @@ public class FiftyExtraFareStrategy implements ExtraFareStrategy {
     }
 
     @Override
-    public int calculateByDistance(final Distance distance) {
+    public int calculate(final Distance distance) {
         return calculateOverFare(DISTANCE_OF_OVER_FARE - DISTANCE_OF_BASIC_FARE,
                 STANDARD_DISTANCE_OF_OVER_FARE) +
                 calculateOverFare(distance.getValue() - DISTANCE_OF_OVER_FARE, MAX_STANDARD_DISTANCE_OF_OVER_FARE);
