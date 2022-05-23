@@ -6,13 +6,11 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.exception.ExceptionMessage;
+import wooteco.subway.dto.LineUpdateRequest;
 import wooteco.subway.exception.DomainException;
+import wooteco.subway.exception.ExceptionMessage;
 import wooteco.subway.repository.LineRepository;
-import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.service.dto.LineRequest;
 import wooteco.subway.service.dto.LineResponse;
 import wooteco.subway.service.dto.SectionSaveRequest;
@@ -31,7 +29,7 @@ public class LineService {
 
     public LineResponse save(final LineRequest request) {
         try {
-            Line line = Line.withoutIdOf(request.getName(), request.getColor(),request.getExtraFare());
+            Line line = Line.withoutIdOf(request.getName(), request.getColor(), request.getExtraFare());
             Line saved = lineRepository.save(line);
             sectionService.save(new SectionSaveRequest(saved.getId(), request.getUpStationId(),
                     request.getDownStationId(), request.getDistance()));
@@ -59,7 +57,7 @@ public class LineService {
         return LineResponse.of(line, sortedStations);
     }
 
-    public void updateById(final Long id, final LineRequest request) {
+    public void updateById(final Long id, final LineUpdateRequest request) {
         Line updated = new Line(id, request.getName(), request.getColor(), request.getExtraFare());
         lineRepository.update(updated);
     }
