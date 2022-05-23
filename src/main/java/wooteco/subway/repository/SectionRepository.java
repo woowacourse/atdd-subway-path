@@ -76,6 +76,12 @@ public class SectionRepository {
         sectionDao.deleteById(id);
     }
 
+    public void deleteSectionByLineId(Long lineId) {
+        for (SectionEntity sectionEntity : sectionDao.findByLineId(lineId)) {
+            sectionDao.deleteById(sectionEntity.getId());
+        }
+    }
+
     private Station toStation(StationEntity entity) {
         return new Station(entity.getId(), entity.getName());
     }

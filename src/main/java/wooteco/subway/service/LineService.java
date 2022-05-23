@@ -96,10 +96,6 @@ public class LineService {
         lineRepository.save(line);
     }
 
-    public void removeLineById(Long id) {
-        lineRepository.deleteById(id);
-    }
-
     public void createSection(Long lineId, SectionRequest request) {
         Line line = findLine(lineId);
         Station upStation = findStation(request.getUpStationId());
@@ -127,6 +123,11 @@ public class LineService {
             Section combineSection = sections.combine(line, removedSections);
             sectionRepository.save(combineSection);
         }
+    }
+
+    public void removeLineById(Long lineId) {
+        sectionRepository.deleteSectionByLineId(lineId);
+        lineRepository.deleteById(lineId);
     }
 
     public void removeStationById(Long id) {

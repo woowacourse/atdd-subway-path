@@ -82,7 +82,7 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-subwayGraph/blo
     - [x] [예외] 노선 이름은 한글이어야 한다.
     - [x] [예외] 이름과 색깔이 있어야 한다.
 - [x] 지하철 노선 삭제
-    - [ ] [예외] 해당 노선과 연결된 구간이 있을 경우 삭제할 수 없다
+    - [x] 해당 노선과 연결된 구간도 삭제한다
 
 ### 지하철 구간
 
