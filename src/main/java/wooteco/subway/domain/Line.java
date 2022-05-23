@@ -14,7 +14,7 @@ public class Line {
     }
 
     public Line(Long id, String name, String color, int extraFare) {
-        validateArgument(name, color, extraFare);
+        validate(name, color, extraFare);
 
         this.id = id;
         this.name = name;
@@ -22,7 +22,7 @@ public class Line {
         this.extraFare = extraFare;
     }
 
-    private void validateArgument(String name, String color, int extraFare) {
+    private void validate(String name, String color, int extraFare) {
         if (name.isBlank() || color.isBlank()) {
             throw new IllegalArgumentException("노선의 이름 혹은 색이 공백일 수 없습니다.");
         }
