@@ -18,7 +18,9 @@ public class PathController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public PathResponse findPath(@RequestParam Long source, @RequestParam Long target) {
+    public PathResponse findPath(@RequestParam Long source,
+                                 @RequestParam Long target,
+                                 @RequestParam(defaultValue = "0") Long age) {
         return pathService.findPath(source, target);
     }
 }
