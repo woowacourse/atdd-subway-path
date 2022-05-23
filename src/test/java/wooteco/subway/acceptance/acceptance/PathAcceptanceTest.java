@@ -44,7 +44,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = getMethodRequest(
-                "/paths?source=" + departureStationId + "&target=" + arrivalStationId);
+                "/paths?source=" + departureStationId + "&target=" + arrivalStationId + "&age=" + 20);
 
         // then
         assertAll(
@@ -67,7 +67,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         String arrivalStationId = createdResponse3.header("Location").split("/")[2];
         //when
         ExtractableResponse<Response> response = getMethodRequest(
-                "/paths?source=" + departureStationId + "&target=" + arrivalStationId);
+                "/paths?source=" + departureStationId + "&target=" + arrivalStationId + "&age=" + 20);
         //then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -75,6 +75,27 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.body().jsonPath().getInt("fare")).isEqualTo(expectedFare),
                 () -> assertThat(
                         response.body().jsonPath().getList("stations", StationResponse.class).size()).isEqualTo(3)
+        );
+    }
+
+    @DisplayName("나이에 따른 할인 요금이 적용된다.")
+    @Test
+    void get_path_with_discounted_fare() {
+        //given
+        final int expectedFare = 450;
+        final int childAge = 6;
+        postMethodRequest(신분당선, LINE_URL);
+        String departureStationId = createdResponse1.header("Location").split("/")[2];
+        String arrivalStationId = createdResponse2.header("Location").split("/")[2];
+
+        //when
+        ExtractableResponse<Response> response = getMethodRequest(
+                "/paths?source=" + departureStationId + "&target=" + arrivalStationId + "&age=" + childAge);
+        //then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.body().jsonPath().getInt("distance")).isEqualTo(10),
+                () -> assertThat(response.body().jsonPath().getInt("fare")).isEqualTo(expectedFare)
         );
     }
 }
