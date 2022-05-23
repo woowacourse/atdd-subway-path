@@ -13,9 +13,12 @@ public class LineEntity {
     }
 
     public LineEntity(Long id, String name, String color, int fare) {
+        this(name, color, fare);
         this.id = id;
-        this.name = name;
-        this.color = color;
+    }
+
+    public LineEntity(String name, String color, int fare) {
+        this(name, color);
         this.fare = fare;
     }
 

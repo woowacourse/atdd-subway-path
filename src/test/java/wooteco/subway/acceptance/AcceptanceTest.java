@@ -40,4 +40,10 @@ public class AcceptanceTest {
                 .then().log().all()
                 .extract();
     }
+
+    static <T> T toResponseDto(ExtractableResponse<Response> response, Class<T> responseClass) {
+        return response.body()
+                .jsonPath()
+                .getObject(".", responseClass);
+    };
 }

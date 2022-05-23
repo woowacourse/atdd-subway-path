@@ -104,4 +104,80 @@ public class PathServiceTest {
             assertThat(response.getDistance()).isEqualTo(38);
         });
     }
+
+    @DisplayName("어린이 요금제 적용")
+    @Test
+    void fareForChild() {
+        Station 강남역 = stationDao.save(new Station("강남역"));
+        Station 선릉역 = stationDao.save(new Station("선릉역"));
+        Station 잠실역 = stationDao.save(new Station("잠실역"));
+        Station 홍대역 = stationDao.save(new Station("홍대입구역"));
+        Station 신촌역 = stationDao.save(new Station("신촌역"));
+        Station 당산역 = stationDao.save(new Station("당산역"));
+        Station 문래역 = stationDao.save(new Station("문래역"));
+        Station 신림역 = stationDao.save(new Station("신림역"));
+
+        LineEntity 일호선 = lineDao.save(new LineEntity("1호선", "yellow"));
+        LineEntity 이호선 = lineDao.save(new LineEntity("2호선", "pink"));
+        LineEntity 삼호선 = lineDao.save(new LineEntity("3호선", "blue"));
+        LineEntity 사호선 = lineDao.save(new LineEntity("4호선", "purple"));
+
+        sectionDao.save(new SectionEntity(일호선.getId(), 강남역.getId(), 선릉역.getId(), 10));
+        sectionDao.save(new SectionEntity(이호선.getId(), 선릉역.getId(), 홍대역.getId(), 10));
+        sectionDao.save(new SectionEntity(삼호선.getId(), 잠실역.getId(), 홍대역.getId(), 2));
+        sectionDao.save(new SectionEntity(삼호선.getId(), 홍대역.getId(), 신촌역.getId(), 10));
+        sectionDao.save(new SectionEntity(삼호선.getId(), 신촌역.getId(), 당산역.getId(), 5));
+        sectionDao.save(new SectionEntity(삼호선.getId(), 당산역.getId(), 신림역.getId(), 5));
+        sectionDao.save(new SectionEntity(사호선.getId(), 신촌역.getId(), 문래역.getId(), 5));
+        sectionDao.save(new SectionEntity(사호선.getId(), 문래역.getId(), 신림역.getId(), 3));
+
+        PathResponse response = pathService.findPath(강남역.getId(), 신림역.getId(), 6);
+
+        //then
+        assertAll(() -> {
+            assertThat(response.getFare()).isEqualTo(750);
+            assertThat(response.getStations().size()).isEqualTo(6);
+            assertThat(response.getStations().stream().map(StationResponse::getName).collect(Collectors.toList()))
+                    .contains("강남역", "선릉역", "홍대입구역", "신촌역", "문래역", "신림역");
+            assertThat(response.getDistance()).isEqualTo(38);
+        });
+    }
+
+    @DisplayName("청소년 요금제 적용")
+    @Test
+    void fareForTeen() {
+        Station 강남역 = stationDao.save(new Station("강남역"));
+        Station 선릉역 = stationDao.save(new Station("선릉역"));
+        Station 잠실역 = stationDao.save(new Station("잠실역"));
+        Station 홍대역 = stationDao.save(new Station("홍대입구역"));
+        Station 신촌역 = stationDao.save(new Station("신촌역"));
+        Station 당산역 = stationDao.save(new Station("당산역"));
+        Station 문래역 = stationDao.save(new Station("문래역"));
+        Station 신림역 = stationDao.save(new Station("신림역"));
+
+        LineEntity 일호선 = lineDao.save(new LineEntity("1호선", "yellow"));
+        LineEntity 이호선 = lineDao.save(new LineEntity("2호선", "pink"));
+        LineEntity 삼호선 = lineDao.save(new LineEntity("3호선", "blue"));
+        LineEntity 사호선 = lineDao.save(new LineEntity("4호선", "purple"));
+
+        sectionDao.save(new SectionEntity(일호선.getId(), 강남역.getId(), 선릉역.getId(), 10));
+        sectionDao.save(new SectionEntity(이호선.getId(), 선릉역.getId(), 홍대역.getId(), 10));
+        sectionDao.save(new SectionEntity(삼호선.getId(), 잠실역.getId(), 홍대역.getId(), 2));
+        sectionDao.save(new SectionEntity(삼호선.getId(), 홍대역.getId(), 신촌역.getId(), 10));
+        sectionDao.save(new SectionEntity(삼호선.getId(), 신촌역.getId(), 당산역.getId(), 5));
+        sectionDao.save(new SectionEntity(삼호선.getId(), 당산역.getId(), 신림역.getId(), 5));
+        sectionDao.save(new SectionEntity(사호선.getId(), 신촌역.getId(), 문래역.getId(), 5));
+        sectionDao.save(new SectionEntity(사호선.getId(), 문래역.getId(), 신림역.getId(), 3));
+
+        PathResponse response = pathService.findPath(강남역.getId(), 신림역.getId(), 13);
+
+        //then
+        assertAll(() -> {
+            assertThat(response.getFare()).isEqualTo(1200);
+            assertThat(response.getStations().size()).isEqualTo(6);
+            assertThat(response.getStations().stream().map(StationResponse::getName).collect(Collectors.toList()))
+                    .contains("강남역", "선릉역", "홍대입구역", "신촌역", "문래역", "신림역");
+            assertThat(response.getDistance()).isEqualTo(38);
+        });
+    }
 }
