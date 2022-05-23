@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.util.ReflectionUtils;
-import wooteco.subway.domain.Line;
+import wooteco.subway.domain.line.Line;
 
 public class InmemoryLineDao implements LineDao {
 

@@ -5,10 +5,10 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.line.LineDao;
 import wooteco.subway.dao.section.SectionDao;
 import wooteco.subway.dao.station.StationDao;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Sections;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.section.SectionSaveRequest;
 
 @Service
@@ -39,7 +39,7 @@ public class SectionService {
         Line line = lineDao.findById(lineId);
         Station upStation = stationDao.findById(sectionSaveRequest.getUpStationId());
         Station downStation = stationDao.findById(sectionSaveRequest.getDownStationId());
-        return new Section(line.getId(), upStation, downStation, sectionSaveRequest.getDistance());
+        return new Section(line, upStation, downStation, sectionSaveRequest.getDistance());
     }
 
     @Transactional

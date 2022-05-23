@@ -7,9 +7,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.dao.line.InmemoryLineDao;
 import wooteco.subway.dao.station.InmemoryStationDao;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.station.Station;
 
 class InmemorySectionDaoTest {
 
@@ -28,9 +28,10 @@ class InmemorySectionDaoTest {
     @DisplayName("Section 을 저장할 수 있다.")
     void save() {
         // given
+        Line line = new Line(1L, "2호선", "green", 100);
         Station upStation = new Station(1L, "오리");
         Station downStation = new Station(2L, "배카라");
-        Section section = new Section(null, 1L, upStation, downStation, 1);
+        Section section = new Section(null, line, upStation, downStation, 1);
 
         // when
         long savedSectionId = sectionDao.save(section);
@@ -42,26 +43,27 @@ class InmemorySectionDaoTest {
     @Test
     @DisplayName("Line Id에 해당하는 Section을 조회할 수 있다.")
     void findAllByLineId() {
-        long lineId = 1L;
+        Line line = new Line(1L, "2호선", "green", 100);
         Station station1 = new Station(1L, "오리");
         Station station2 = new Station(2L, "배카라");
         Station station3 = new Station(3L, "오카라");
-        sectionDao.save(new Section(lineId, station1, station2, 2));
-        sectionDao.save(new Section(lineId, station2, station3, 2));
+        sectionDao.save(new Section(line, station1, station2, 2));
+        sectionDao.save(new Section(line, station2, station3, 2));
 
-        assertThat(sectionDao.findAllByLineId(lineId)).hasSize(2);
+        assertThat(sectionDao.findAllByLineId(line.getId())).hasSize(2);
     }
 
     @Test
     @DisplayName("모든 Section을 조회할 수 있다.")
     void findAll() {
-        long id = lineDao.save(new Line("신분당선", "bg-red-600"));
+        long id = lineDao.save(new Line("신분당선", "bg-red-600", 100));
+        Line line = lineDao.findById(id);
         Station station1 = stationDao.findById(stationDao.save(new Station("오리")));
         Station station2 = stationDao.findById(stationDao.save(new Station("배카라")));
         Station station3 = stationDao.findById(stationDao.save(new Station("오카라")));
 
-        sectionDao.save(new Section(id, station1, station2, 2));
-        sectionDao.save(new Section(id, station2, station3, 2));
+        sectionDao.save(new Section(line, station1, station2, 2));
+        sectionDao.save(new Section(line, station2, station3, 2));
 
         assertThat(sectionDao.findAll()).hasSize(2);
     }
@@ -69,11 +71,12 @@ class InmemorySectionDaoTest {
     @Test
     @DisplayName("Section을 삭제할 수 있다.")
     void delete() {
-        long lineId = lineDao.save(new Line("신분당선", "bg-red-600"));
+        long lineId = lineDao.save(new Line("신분당선", "bg-red-600", 100));
+        Line line = lineDao.findById(lineId);
         long stationId1 = stationDao.save(new Station("오리"));
         long stationId2 = stationDao.save(new Station("배카라"));
         long sectionId = sectionDao
-                .save(new Section(lineId, stationDao.findById(stationId1), stationDao.findById(stationId2), 10));
+                .save(new Section(line, stationDao.findById(stationId1), stationDao.findById(stationId2), 10));
 
         assertThat(sectionDao.delete(sectionId)).isEqualTo(1);
     }

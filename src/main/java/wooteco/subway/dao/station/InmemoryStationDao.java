@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.util.ReflectionUtils;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.station.Station;
 
 public class InmemoryStationDao implements StationDao {
 

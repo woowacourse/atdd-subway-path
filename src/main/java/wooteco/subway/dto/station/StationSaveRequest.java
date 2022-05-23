@@ -1,7 +1,7 @@
 package wooteco.subway.dto.station;
 
 import javax.validation.constraints.NotBlank;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.station.Station;
 
 public class StationSaveRequest {
 

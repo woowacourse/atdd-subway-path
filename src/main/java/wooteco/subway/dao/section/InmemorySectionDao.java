@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.util.ReflectionUtils;
-import wooteco.subway.domain.Section;
+import wooteco.subway.domain.section.Section;
 
 public class InmemorySectionDao implements SectionDao {
 
@@ -47,7 +47,7 @@ public class InmemorySectionDao implements SectionDao {
     public List<Section> findAllByLineId(final long lineId) {
         return sections.values()
                 .stream()
-                .filter(section -> section.getLineId() == lineId)
+                .filter(section -> section.getLine().getId() == lineId)
                 .collect(Collectors.toList());
     }
 

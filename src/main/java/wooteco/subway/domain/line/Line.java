@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.line;
 
 import java.util.Objects;
 
@@ -7,15 +7,24 @@ public class Line {
     private final Long id;
     private final String name;
     private final String color;
+    private final int extraFare;
 
-    public Line(final Long id, final String name, final String color) {
+    public Line(final Long id, final String name, final String color, final int extraFare) {
+        validateNegativeExtraFare(extraFare);
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
     }
 
-    public Line(final String name, final String color) {
-        this(null, name, color);
+    private void validateNegativeExtraFare(final int extraFare) {
+        if (extraFare < 0) {
+            throw new IllegalArgumentException("추가요금은 음수가 들어올 수 없습니다.");
+        }
+    }
+
+    public Line(final String name, final String color, final int extraFare) {
+        this(null, name, color, extraFare);
     }
 
     public boolean isSameName(final String name) {
@@ -32,6 +41,10 @@ public class Line {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     @Override

@@ -1,6 +1,11 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.Lines;
+import wooteco.subway.domain.station.Station;
 
 public class Path {
 
@@ -13,14 +18,25 @@ public class Path {
     private static final int FIRST_ADDITIONAL_FARE_DISTANCE = 50;
 
     private final List<Station> stations;
+    private final Lines usedLines;
     private final int distance;
 
-    public Path(final List<Station> stations, final int distance) {
-        this.stations = stations;
+    public Path(final List<Station> stations, final Lines usedLines, final int distance) {
+        this.stations = new ArrayList<>(stations);
+        this.usedLines = usedLines;
         this.distance = distance;
     }
 
-    public int calculateFare() {
+    public Path(final List<Station> stations, final Set<Line> usedLines, final int distance) {
+        this(stations, new Lines(usedLines), distance);
+    }
+
+    public int calculateFare(final int age) {
+        AgeDisCountPolicy disCountPolicy = AgeDisCountPolicy.from(age);
+        return disCountPolicy.discountedMoney(calcculateDefaultFare() + usedLines.mostExpensiveLineFare());
+    }
+
+    private int calcculateDefaultFare() {
         if (distance <= DEFAULT_FARE_DISTANCE) {
             return DEFAULT_FARE;
         }
