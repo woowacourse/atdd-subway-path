@@ -23,8 +23,7 @@ class DijkstraShortestPathStationTest {
         Station station3 = new Station(3L, "잠실역");
         Section section1 = new Section(station1, station2, 10);
         Section section2 = new Section(station2, station3, 10);
-        Section section3 = new Section(station1, station3, 10);
-        Sections sections = new Sections(List.of(section1, section2, section3));
+        Sections sections = new Sections(List.of(section1, section2));
 
         // when
         Path path = DijkstraShortestPathStation.getPath(
@@ -46,8 +45,7 @@ class DijkstraShortestPathStationTest {
         Station station3 = new Station(3L, "잠실역");
         Section section1 = new Section(station1, station2, 10);
         Section section2 = new Section(station2, station3, 10);
-        Section section3 = new Section(station1, station3, 10);
-        Sections sections = new Sections(List.of(section1, section2, section3));
+        Sections sections = new Sections(List.of(section1, section2));
 
         // when
         Path path = DijkstraShortestPathStation.getPath(
@@ -58,8 +56,8 @@ class DijkstraShortestPathStationTest {
 
         // then
         assertThat(path.getStations())
-                .hasSize(2)
-                .containsExactly(station1, station3);
+                .hasSize(3)
+                .containsExactly(station1, station2, station3);
     }
 
     @DisplayName("최단 거리가 같다면 역이 더 적은 경로로 최단 경로를 구한다.")
@@ -76,11 +74,12 @@ class DijkstraShortestPathStationTest {
         Section section3 = new Section(station1, station3, 3);
         Section section4 = new Section(station3, station4, 3);
         Section section5 = new Section(station4, station5, 4);
-        Sections sections = new Sections(List.of(section1, section2, section3, section4, section5));
+        Sections sections1 = new Sections(List.of(section1, section2));
+        Sections sections2 = new Sections(List.of(section3, section4, section5));
 
         // when
         Path path = DijkstraShortestPathStation.getPath(
-                sections,
+                sections1,
                 station1,
                 station5
         );
