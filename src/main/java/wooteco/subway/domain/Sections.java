@@ -113,10 +113,11 @@ public class Sections {
     }
 
     public List<Station> getStations() {
-        Set<Station> stations = sections.stream()
+        List<Station> stations = sections.stream()
                 .flatMap(section -> Stream.of(section.getUp(), section.getDown()))
-                .collect(Collectors.toSet());
-        return new ArrayList<>(stations);
+                .distinct()
+                .collect(Collectors.toList());
+        return stations;
     }
 
     private boolean canExtendBy(Section target) {

@@ -21,6 +21,7 @@ import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineDto;
 import wooteco.subway.dto.LineEditRequest;
 import wooteco.subway.dto.LineRequest;
+import wooteco.subway.dto.LineResponse;
 
 @SpringBootTest
 @Sql("/testSchema.sql")
@@ -65,18 +66,14 @@ class LineServiceTest {
     void 모든_노선_조회() {
         Station up = stationDao.save(new Station("합정역"));
         Station down = stationDao.save(new Station("홍대입구역"));
-        Section section = new Section(up, down, 1);
-        Line line1 = new Line("1호선", "bg-darkblue-600", new Sections(section));
-        Line line2 = new Line("2호선", "bg-green-600", new Sections(section));
         lineService.save(new LineRequest("1호선", "bg-darkblue-600", up.getId(), down.getId(), 1));
         lineService.save(new LineRequest("2호선", "bg-green-600", up.getId(), down.getId(), 1));
 
-        List<Line> result = lineService.findAll();
+        List<LineResponse> result = lineService.findAll();
 
         assertAll(
                 () -> assertThat(result.size()).isEqualTo(2),
-                () -> assertThat(result.get(0)).isEqualTo(line1),
-                () -> assertThat(result.get(1)).isEqualTo(line2)
+                () -> assertThat(result.get(0).getStations().size()).isEqualTo(2)
         );
     }
 
@@ -88,9 +85,11 @@ class LineServiceTest {
         Line line = new Line("3호선", "bg-orange-600", new Sections(new Section(up, down, 3)));
         Line savedLine = lineService.save(new LineRequest("3호선", "bg-orange-600", up.getId(), down.getId(), 3));
 
-        Line result = lineService.findById(savedLine.getId());
+        LineResponse result = lineService.findById(savedLine.getId());
 
-        assertThat(result).isEqualTo(line);
+        assertThat(result).usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(LineResponse.from(line));
     }
 
     @DisplayName("존재하지 않는 노선을 조회할 시 예외가 발생한다")
@@ -111,7 +110,10 @@ class LineServiceTest {
 
         lineService.update(savedLine.getId(), new LineEditRequest("4호선", "bg-skyblue-600"));
 
-        assertThat(lineService.findById(savedLine.getId())).isEqualTo(newLine);
+        assertThat(lineService.findById(savedLine.getId()))
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(LineResponse.from(newLine));
     }
 
     @DisplayName("중복된 노선 이름으로 업데이트 시 예외가 발생한다")

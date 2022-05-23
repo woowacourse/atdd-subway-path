@@ -32,13 +32,10 @@ public class LineController {
         this.lineService = lineService;
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public ResponseEntity<List<LineResponse>> showLines() {
-        List<Line> lines = lineService.findAll();
-        List<LineResponse> lineResponses = lines.stream()
-                .map(it -> new LineResponse(it.getId(), it.getName(), it.getColor()))
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(lineResponses);
+        List<LineResponse> lines = lineService.findAll();
+        return ResponseEntity.ok(lines);
     }
 
     @PostMapping
@@ -50,8 +47,7 @@ public class LineController {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<LineResponse> getLine(@PathVariable Long id) {
-        Line line = lineService.findById(id);
-        LineResponse lineResponse = LineResponse.from(line);
+        LineResponse lineResponse = lineService.findById(id);
         return ResponseEntity.ok(lineResponse);
     }
 
