@@ -36,12 +36,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
             () -> assertThat(pathResponse.getStations()).hasSize(3),
             () -> assertThat(pathResponse.getDistance()).isEqualTo(7),
-            () -> assertThat(pathResponse.getFare()).isEqualTo(1250)
+            () -> assertThat(pathResponse.getFare()).isEqualTo(1440)
         );
     }
 
+    @DisplayName("환승을 포하함 요금을 계산한다.")
     @Test
-    void test() {
+    void getShortestPathWithChangeLine() {
         createStationForTest("교대역");    // id: 1
         createStationForTest("강남역");    // id: 2
         createStationForTest("역삼역");    // id: 3
@@ -67,7 +68,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
             () -> assertThat(pathResponse.getStations()).hasSize(4),
             () -> assertThat(pathResponse.getDistance()).isEqualTo(3),
-            () -> assertThat(pathResponse.getFare()).isEqualTo(1250)
+            () -> assertThat(pathResponse.getFare()).isEqualTo(1440)
         );
     }
 
