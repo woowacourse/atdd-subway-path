@@ -27,7 +27,7 @@ public class LineRequest {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
-        this.extraFare = Optional.ofNullable(extraFare).orElse(0);
+        this.extraFare = extraFare;
     }
 
     public String getName() {
