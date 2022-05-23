@@ -22,7 +22,7 @@ public class DistanceProportionalPricingStrategyTest {
         PricingStrategy strategy = DistanceProportionalPricingStrategy.of();
 
         // when
-        int result = strategy.calculateFee(new FareCacluateSpecification(30, sections, List.of(line)));
+        int result = strategy.calculateFee(new FareCacluateSpecification(sections, List.of(line)));
 
         // then
         assertThat(result).isEqualTo(expected);

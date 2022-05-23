@@ -42,7 +42,7 @@ public class PathService {
     }
 
     private int getFare(PricingStrategy pricingStrategy, PathRequest pathRequest, Path path) {
-        FareCacluateSpecification fareCacluateSpecification = new FareCacluateSpecification(pathRequest.getAge(), path.getSectionsInPath(), lineDao.findAll());
+        FareCacluateSpecification fareCacluateSpecification = new FareCacluateSpecification(path.getSectionsInPath(), lineDao.findAll());
         return pricingStrategy.calculateFee(fareCacluateSpecification);
     }
 
