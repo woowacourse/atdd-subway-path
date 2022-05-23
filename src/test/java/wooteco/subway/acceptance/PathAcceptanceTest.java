@@ -121,7 +121,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                     new StationResponse(9L, "i")
                 ),
             () -> assertThat(pathResponse.getDistance()).isEqualTo(58),
-            () -> assertThat(pathResponse.getFare()).isEqualTo(2450)
+            () -> assertThat(pathResponse.getFare()).isEqualTo(1680)
         );
     }
 

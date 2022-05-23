@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import wooteco.subway.exception.EmptyResultException;
+import wooteco.subway.exception.LowFareException;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
@@ -55,7 +56,7 @@ public class ControllerExceptionHandler {
         return ResponseEntity.badRequest().body(body);
     }
 
-    @ExceptionHandler
+    @ExceptionHandler({Exception.class, LowFareException.class})
     public ResponseEntity<Map<String, String>> handleException(Exception exception) {
         logger.error(exception.getMessage());
         Map<String, String> body = new HashMap<>();

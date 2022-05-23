@@ -12,21 +12,18 @@ import wooteco.subway.domain.vo.Path;
 import wooteco.subway.exception.EmptyResultException;
 
 public class Subway {
-    private static final int BASE_FARE = 1250;
 
     private final ShortestPathAlgorithm<Station, ShortestPathEdge> pathFinder;
-    private final Fare fare;
 
-    private Subway(ShortestPathAlgorithm<Station, ShortestPathEdge> pathFinder, Fare fare) {
+    public Subway(ShortestPathAlgorithm<Station, ShortestPathEdge> pathFinder) {
         this.pathFinder = pathFinder;
-        this.fare = fare;
     }
 
     public static Subway of(List<Line> lines) {
         WeightedMultigraph<Station, ShortestPathEdge> graph = new WeightedMultigraph<>(ShortestPathEdge.class);
         initGraph(lines, graph);
 
-        return new Subway(new DijkstraShortestPath<>(graph), new Fare(BASE_FARE));
+        return new Subway(new DijkstraShortestPath<>(graph));
     }
 
     private static void initGraph(List<Line> lines, WeightedMultigraph<Station, ShortestPathEdge> graph) {
@@ -75,9 +72,5 @@ public class Subway {
         if (path == null) {
             throw new EmptyResultException("출발역과 도착역 사이에 연결된 경로가 없습니다.");
         }
-    }
-
-    public int calculateFare(int distance, Lines lines) {
-        return fare.calculateFare(distance, lines);
     }
 }

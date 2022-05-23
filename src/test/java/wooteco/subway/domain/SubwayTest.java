@@ -112,28 +112,4 @@ public class SubwayTest {
             .hasMessage("출발역과 도착역이 동일합니다.")
             .isInstanceOf(IllegalArgumentException.class);
     }
-
-    @Test
-    @DisplayName("0 -> 1 경로의 요금은 1350(1250 + 100)원이어야 한다.")
-    void calculateFare1() {
-        Path path = subway.findShortestPath(stations.get(0), stations.get(1));
-        int fare = subway.calculateFare(path.getDistance(), new Lines(List.of(createLine1())));
-        assertThat(fare).isEqualTo(1350);
-    }
-
-    @Test
-    @DisplayName("0 -> 6 경로의 요금은 1950(1450 + 500)원이어야 한다.")
-    void calculateFare2() {
-        Path path = subway.findShortestPath(stations.get(0), stations.get(6));
-        int fare = subway.calculateFare(path.getDistance(), new Lines(List.of(createLine1(), createLine2())));
-        assertThat(fare).isEqualTo(1950);
-    }
-
-    @Test
-    @DisplayName("0 -> 8 경로의 요금은 2650(2150 + 500)원이어야 한다.")
-    void calculateFare3() {
-        Path path = subway.findShortestPath(stations.get(0), stations.get(8));
-        int fare = subway.calculateFare(path.getDistance(), new Lines(List.of(createLine1(), createLine2(), createLine3(), createLine4())));
-        assertThat(fare).isEqualTo(2650);
-    }
 }

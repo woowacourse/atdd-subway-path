@@ -8,7 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.Subway;
+import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.vo.Path;
+import wooteco.subway.ui.dto.PathRequest;
 import wooteco.subway.ui.dto.PathResponse;
 
 @Service
@@ -22,13 +24,14 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathResponse findShortestPath(Long sourceStationId, Long targetStationId) {
+    public PathResponse findShortestPath(PathRequest pathRequest) {
         List<Line> lines = lineService.findAllLines();
         Subway subway = Subway.of(lines);
-        Station source = stationService.findById(sourceStationId);
-        Station target = stationService.findById(targetStationId);
+        Station source = stationService.findById(pathRequest.getSource());
+        Station target = stationService.findById(pathRequest.getTarget());
 
         Path path = subway.findShortestPath(source, target);
-        return PathResponse.of(path, subway.calculateFare(path.getDistance(), path.getLines()));
+        Fare fare = Fare.from(path.getDistance(), path.getLines(), pathRequest.getAge());
+        return PathResponse.of(path, fare.getAmount());
     }
 }
