@@ -7,10 +7,14 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.dto.LineRequest;
+import wooteco.subway.dto.LineResponse;
 import wooteco.subway.exception.DataNotFoundException;
 import wooteco.subway.exception.DuplicateNameException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LineService {
@@ -26,9 +30,12 @@ public class LineService {
     }
 
     @Transactional
-    public Line createLine(final Line line, final Section section) {
+    public LineResponse createLine(final LineRequest lineRequest) {
+        final Line line = lineRequest.toEntity();
+        final Section section = lineRequest.toSectionEntity();
         validateDuplicateNameExist(line);
         validateStationsNames(section);
+
         final Line savedLine = lineDao.save(line);
         final Section sectionToSave = new Section(
                 section.getUpStation(),
@@ -37,23 +44,37 @@ public class LineService {
                 savedLine
         );
         sectionDao.save(sectionToSave);
-        return savedLine;
+
+        return LineResponse.from(savedLine, getStationsByLine(savedLine.getId()));
     }
 
     @Transactional(readOnly = true)
-    public List<Line> getAllLines() {
-        return lineDao.findAll();
+    public List<LineResponse> getAllLines() {
+        final List<Line> lines = lineDao.findAll();
+
+        return lines.stream()
+                .map(line -> LineResponse.from(line, getStationsByLine(line.getId())))
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public Line getLineById(final Long id) {
-        return lineDao.findById(id)
-                .orElseThrow(() -> new DataNotFoundException("존재하지 않는 노선 ID입니다."));
+    public LineResponse getLineById(final Long id) {
+        final Line line = findLineById(id);
+
+        return LineResponse.from(line, getStationsByLine(line.getId()));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Station> getStationsByLine(final long lineId) {
+        final List<Section> lineSections = sectionDao.findAllByLineId(lineId);
+        final Sections sections = new Sections(lineSections);
+        return sections.extractStations();
     }
 
     @Transactional
-    public void update(final Long id, final Line line) {
-        final Line result = getLineById(id);
+    public void update(final Long id, final LineRequest lineRequest) {
+        final Line line = lineRequest.toEntity();
+        final Line result = findLineById(id);
         validateUpdatedName(line, result);
         result.update(line);
 
@@ -82,9 +103,17 @@ public class LineService {
     }
 
     private void validateStationsNames(final Section section) {
-        final Station upStation = stationDao.findById(section.getUpStation().getId())
+        findStationById(section.getUpStation().getId());
+        findStationById(section.getDownStation().getId());
+    }
+
+    private Station findStationById(final Long stationId) {
+        return stationDao.findById(stationId)
                 .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철 역입니다."));
-        final Station downStation = stationDao.findById(section.getDownStation().getId())
-                .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철 역입니다."));
+    }
+
+    private Line findLineById(final Long id) {
+        return lineDao.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("존재하지 않는 노선 ID입니다."));
     }
 }

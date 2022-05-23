@@ -9,6 +9,7 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.exception.DataNotFoundException;
 import java.util.List;
 
@@ -26,13 +27,14 @@ public class SectionService {
     }
 
     @Transactional
-    public Section addSection(final long lineId, final Section requestSection) {
-        final Station upStation = findStationById(requestSection.getUpStation());
-        final Station downStation = findStationById(requestSection.getDownStation());
+    public Section addSection(final long lineId, final SectionRequest sectionRequest) {
+        final Section rawSection = SectionRequest.toEntity(sectionRequest);
+        final Station upStation = findStationById(rawSection.getUpStation());
+        final Station downStation = findStationById(rawSection.getDownStation());
         final Line line = lineDao.findById(lineId)
                 .orElseThrow(() -> new DataNotFoundException("존재하지 않는 노선 ID입니다."));
 
-        Section section = new Section(upStation, downStation, requestSection.getDistance(), line);
+        Section section = new Section(upStation, downStation, rawSection.getDistance(), line);
         final Sections sections = new Sections(sectionDao.findAllByLineId(lineId));
         sections.add(section);
 

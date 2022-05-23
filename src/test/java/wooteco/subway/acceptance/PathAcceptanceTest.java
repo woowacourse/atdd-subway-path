@@ -95,7 +95,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         return Stream.of(
                 Arguments.of(null, 2L, 10, "출발역은 공백일 수 없습니다."),
                 Arguments.of(1L, null, 10, "도착역은 공백일 수 없습니다."),
-                Arguments.of(1L, 2L, 0, "나이는 공백이거나 음수일 수 없습니다.")
+                Arguments.of(1L, 2L, -1, "나이는 공백이거나 음수일 수 없습니다.")
         );
     }
 

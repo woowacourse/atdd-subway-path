@@ -2,7 +2,6 @@ package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -19,8 +18,11 @@ import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.dto.LineRequest;
+import wooteco.subway.dto.LineResponse;
 import wooteco.subway.exception.DataNotFoundException;
 import wooteco.subway.exception.DuplicateNameException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,34 +46,31 @@ class LineServiceTest {
     void createLine() {
         final String lineName = "신분당선";
         final String lineColor = "bg-red-600";
-        final Line line = new Line(1L, lineName, lineColor, 0);
         final Station station1 = new Station(1L, "선릉역");
         final Station station2 = new Station(2L, "강남역");
-        final Section section = new Section(station1, station2, 3, line);
+        final LineRequest lineRequest = new LineRequest(lineName, lineColor, 1L, 2L, 3, 0);
+        final Line line = new Line(1L, lineName, lineColor, 0);
+        final Section section = new Section(1L, station1, station2, 3, line);
 
-        given(lineDao.save(line)).willReturn(line);
-        given(sectionDao.save(section)).willReturn(section);
+        given(lineDao.save(lineRequest.toEntity())).willReturn(line);
+        given(sectionDao.save(new Section(new Station(1L, ""), new Station(2L, ""), 3, line))).willReturn(section);
         given(stationDao.findById(section.getUpStation().getId())).willReturn(Optional.of(station1));
         given(stationDao.findById(section.getDownStation().getId())).willReturn(Optional.of(station2));
+        given(sectionDao.findAllByLineId(1L)).willReturn(List.of(section));
 
-        final Line actual = lineService.createLine(line, section);
+        final LineResponse actual = lineService.createLine(lineRequest);
 
-        assertAll(
-                () -> assertThat(actual.getId()).isOne(),
-                () -> assertThat(actual.getName()).isEqualTo(lineName),
-                () -> assertThat(actual.getColor()).isEqualTo(lineColor)
-        );
+        assertThat(actual).usingRecursiveComparison()
+                .isEqualTo(LineResponse.from(line, List.of(station1, station2)));
     }
 
     @DisplayName("중복된 이름의 노선을 등록할 경우 예외를 발생한다.")
     @Test
     void createLine_throwsExceptionWithDuplicateName() {
-        final String lineName = "신분당선";
-        final String lineColor = "bg-red-600";
-        final Line line = new Line(lineName, lineColor);
+        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 1L, 2L, 3, 0);
         given(lineDao.existByName("신분당선")).willReturn(true);
 
-        assertThatThrownBy(() -> lineService.createLine(line, new Section(new Station(1L, null), new Station(2L, null), 3, line)))
+        assertThatThrownBy(() -> lineService.createLine(lineRequest))
                 .isInstanceOf(DuplicateNameException.class)
                 .hasMessage("이미 존재하는 노선입니다.");
     }
@@ -79,45 +78,51 @@ class LineServiceTest {
     @DisplayName("등록된 모든 노선을 반환한다.")
     @Test
     void getAllLines() {
-        final Line line1 = new Line("신분당선", "bg-red-600");
-        final Line line2 = new Line("분당선", "bg-yellow-600");
-        final List<Line> expected = List.of(line1, line2);
-        given(lineDao.findAll()).willReturn(expected);
+        final Line expectedLine1 = new Line(1L, "신분당선", "bg-red-600", 0);
+        final Line expectedLine2 = new Line(2L, "분당선", "bg-yellow-600", 0);
+        final List<LineResponse> expected = List.of(
+                LineResponse.from(expectedLine1, Collections.emptyList()),
+                LineResponse.from(expectedLine2, Collections.emptyList())
+        );
 
-        final List<Line> actual = lineService.getAllLines();
+        given(lineDao.findAll()).willReturn(List.of(expectedLine1, expectedLine2));
 
-        assertThat(actual).containsAll(expected);
+        assertThat(lineService.getAllLines()).usingRecursiveComparison()
+                .isEqualTo(expected);
     }
 
     @DisplayName("노선 ID로 개별 노선을 찾아 반환한다.")
     @Test
     void getLineById() {
-        final Line expected = new Line("신분당선", "bg-red-600");
+        final Line expected = new Line(1L, "신분당선", "bg-red-600", 0);
         given(lineDao.findById(1L)).willReturn(Optional.of(expected));
 
-        final Line actual = lineService.getLineById(1L);
+        final LineResponse actual = lineService.getLineById(1L);
 
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual).usingRecursiveComparison().
+                isEqualTo(LineResponse.from(expected, Collections.emptyList()));
     }
 
     @DisplayName("노선 ID로 노선을 업데이트 한다.")
     @Test
     void updateLine() {
+        final LineRequest lineRequest = new LineRequest("분당선", "bg-yellow-600", 1L, 2L, 5, 0);
         final Line newLine = new Line(1L, "분당선", "bg-yellow-600", 0);
 
         given(lineDao.findById(1L)).willReturn(Optional.of(newLine));
 
-        lineService.update(1L, newLine);
+        lineService.update(1L, lineRequest);
         verify(lineDao, times(1)).update(1L, newLine);
     }
 
     @DisplayName("수정하려는 노선 ID가 존재하지 않을 경우 예외를 발생한다.")
     @Test
     void update_throwsExceptionIfLineIdIsNotExisting() {
+        final LineRequest lineRequest = new LineRequest("분당선", "bg-yellow-600", 1L, 2L, 5, 0);
         given(lineDao.findById(1L)).willReturn(Optional.empty());
 
         assertThatThrownBy(() ->
-                lineService.update(1L, new Line("분당선", "bg-yellow-600")))
+                lineService.update(1L, lineRequest))
                 .isInstanceOf(DataNotFoundException.class)
                 .hasMessage("존재하지 않는 노선 ID입니다.");
     }
@@ -133,12 +138,9 @@ class LineServiceTest {
     @DisplayName("노선 등록 시, 지하철 역이 존재하지 않는다면 예외를 발생한다.")
     @Test
     void create_throwsExceptionIfStationsDoesNotExist() {
-        final Station station1 = new Station("역삼역");
-        final Station station2 = new Station("교대역");
-        final Section section = new Section(station1, station2, 10);
-        final Line line = new Line("2호선", "bg-green-600");
+        final LineRequest lineRequest = new LineRequest("2호선", "bg-green-600", 1L, 2L, 10, 0);
 
-        assertThatThrownBy(() -> lineService.createLine(line, section))
+        assertThatThrownBy(() -> lineService.createLine(lineRequest))
                 .isInstanceOf(DataNotFoundException.class)
                 .hasMessage("존재하지 않는 지하철 역입니다.");
     }

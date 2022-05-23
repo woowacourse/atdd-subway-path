@@ -15,6 +15,7 @@ import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.dto.SectionRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,7 +56,11 @@ class SectionServiceTest {
     void addNotBranchedSection() {
         final Station newStation = stationDao.save(new Station("마장역"));
         final Section section = new Section(downStation, newStation, 10, savedLine);
-        final Section savedSection = sectionService.addSection(savedLine.getId(), section);
+        final SectionRequest sectionRequest = new SectionRequest(
+                section.getUpStation().getId(),
+                section.getDownStation().getId(),
+                10);
+        final Section savedSection = sectionService.addSection(savedLine.getId(), sectionRequest);
 
         assertThat(savedSection).usingRecursiveComparison()
                 .ignoringFields("id")
@@ -67,7 +72,12 @@ class SectionServiceTest {
     void addBranchedSection() {
         final Station newStation = stationDao.save(new Station("마장역"));
         final Section newSection = new Section(newStation, downStation, 9, savedLine);
-        final Section savedSection = sectionService.addSection(savedLine.getId(), newSection);
+        final SectionRequest sectionRequest = new SectionRequest(
+                newSection.getUpStation().getId(),
+                newSection.getDownStation().getId(),
+                newSection.getDistance()
+        );
+        final Section savedSection = sectionService.addSection(savedLine.getId(), sectionRequest);
 
         final Optional<Section> foundSection = sectionDao.findAllByLineId(savedLine.getId())
                 .stream()
@@ -94,7 +104,7 @@ class SectionServiceTest {
         sectionService.delete(savedLine.getId(), downStation.getId());
 
         final List<Section> list = sectionDao.findAllByLineId(savedLine.getId());
-        // 아차산 - 마장
+
         Optional<Section> foundSection = list.stream()
                 .filter(section -> section.getDownStation().equals(newStation))
                 .findAny();

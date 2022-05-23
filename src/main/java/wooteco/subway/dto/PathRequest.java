@@ -2,7 +2,6 @@ package wooteco.subway.dto;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 
 public class PathRequest {
 
