@@ -14,8 +14,8 @@ public class Path {
         this.extraFare = extraFare;
     }
 
-    public int calculateFare() {
-        return new Fare(distance).calculate(extraFare);
+    public int calculateFare(int age) {
+        return new Fare(distance).calculate(extraFare, age);
     }
 
     public List<Station> getStations() {

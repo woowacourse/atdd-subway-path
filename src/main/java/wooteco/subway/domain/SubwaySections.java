@@ -49,11 +49,13 @@ public class SubwaySections {
     }
 
     private int getExtraFare(List<Station> stations) {
-        List<Integer> extraFares = getPassingLines(stations)
+        if (stations.size() == 1) {
+            return 0;
+        }
+        return Collections.max(getPassingLines(stations)
                 .stream()
                 .map(Line::getExtraFare)
-                .collect(Collectors.toList());
-        return Collections.max(extraFares);
+                .collect(Collectors.toList()));
     }
 
     private Set<Line> getPassingLines(List<Station> stations) {

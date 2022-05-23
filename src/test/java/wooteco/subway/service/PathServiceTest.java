@@ -75,7 +75,7 @@ class PathServiceTest {
         assertAll(
                 () -> assertThat(pathResponse.getStations().size()).isEqualTo(3),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(10),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(2150)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(2050)
         );
     }
 

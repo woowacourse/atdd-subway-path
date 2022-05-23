@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class FareTest {
 
@@ -18,13 +19,13 @@ public class FareTest {
                 .hasMessage("거리는 음수가 될 수 없습니다.");
     }
 
-    @DisplayName("거리에 따른 운임을 계산한다.")
+    @DisplayName("거리에 따른 어른 운임을 계산한다.")
     @ParameterizedTest
     @CsvSource(value = {"9,1250", "10,1250", "12,1350", "50,2050", "58,2150"})
     void calculate(int input, int expected) {
         Fare fare = new Fare(input);
 
-        assertThat(fare.calculate(0)).isEqualTo(expected);
+        assertThat(fare.calculate(0, 20)).isEqualTo(expected);
     }
 
     @DisplayName("추가요금이 있는 운임을 계산한다.")
@@ -33,6 +34,33 @@ public class FareTest {
     void calculateWithExtraFare(int input, int expected) {
         Fare fare = new Fare(input);
 
-        assertThat(fare.calculate(900)).isEqualTo(expected);
+        assertThat(fare.calculate(900, 20)).isEqualTo(expected);
+    }
+
+    @DisplayName("청소년 운임을 계산한다.")
+    @ParameterizedTest
+    @CsvSource(value = {"9,720", "10,720", "12,800", "50,1360", "58,1440"})
+    void calculateTeenagerFare(int input, int expected) {
+        Fare fare = new Fare(input);
+
+        assertThat(fare.calculate(0, 13)).isEqualTo(expected);
+    }
+
+    @DisplayName("어린이 운임을 계산한다.")
+    @ParameterizedTest
+    @CsvSource(value = {"9,450", "10,450", "12,500", "50,850", "58,900"})
+    void calculateChildrenFare(int input, int expected) {
+        Fare fare = new Fare(input);
+
+        assertThat(fare.calculate(0, 6)).isEqualTo(expected);
+    }
+
+    @DisplayName("무료 운임을 반환한다.")
+    @ParameterizedTest
+    @ValueSource(ints = {5, 65})
+    void calculateFreeFare(int age) {
+        Fare fare = new Fare(10);
+
+        assertThat(fare.calculate(0, age)).isEqualTo(0);
     }
 }

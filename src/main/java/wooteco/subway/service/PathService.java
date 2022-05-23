@@ -33,7 +33,8 @@ public class PathService {
         SubwaySections subwaySections = new SubwaySections(sectionDao.findAll());
 
         Path path = subwaySections.getShortestPath(source, target);
-        return new PathResponse(convertToStationResponse(path.getStations()), path.getDistance(), path.calculateFare());
+        return new PathResponse(
+                convertToStationResponse(path.getStations()), path.getDistance(), path.calculateFare(age));
     }
 
     private Station getStation(Long id) {

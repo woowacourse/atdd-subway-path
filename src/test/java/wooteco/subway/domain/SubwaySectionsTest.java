@@ -30,7 +30,7 @@ class SubwaySectionsTest {
         assertAll(
                 () -> assertThat(path.getDistance()).isEqualTo(10),
                 () -> assertThat(path.getStations()).containsExactly(중동역, 부천역, 역곡역),
-                () -> assertThat(path.calculateFare()).isEqualTo(1750)
+                () -> assertThat(path.calculateFare(20)).isEqualTo(1750)
         );
     }
 
@@ -45,7 +45,7 @@ class SubwaySectionsTest {
         assertAll(
                 () -> assertThat(path.getDistance()).isEqualTo(5),
                 () -> assertThat(path.getStations()).containsExactly(중동역, 역곡역),
-                () -> assertThat(path.calculateFare()).isEqualTo(1750)
+                () -> assertThat(path.calculateFare(20)).isEqualTo(1750)
         );
     }
 
