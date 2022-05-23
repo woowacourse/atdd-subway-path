@@ -7,14 +7,14 @@ import org.springframework.stereotype.Service;
 
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.fare.AgeDiscountStrategy;
 import wooteco.subway.domain.fare.DistanceFareStrategy;
 import wooteco.subway.domain.fare.Fare;
-import wooteco.subway.dto.info.PathServiceRequest;
-import wooteco.subway.dto.info.PathServiceResponse;
-import wooteco.subway.dto.info.StationDto;
+import wooteco.subway.domain.path.Path;
+import wooteco.subway.dto.service.StationDto;
+import wooteco.subway.dto.service.request.PathServiceRequest;
+import wooteco.subway.dto.service.response.PathServiceResponse;
 
 @Service
 public class PathService {

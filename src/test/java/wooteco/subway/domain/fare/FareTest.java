@@ -10,11 +10,11 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Lines;
-import wooteco.subway.domain.Path;
-import wooteco.subway.domain.PathFindingStrategy;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.path.PathFindingStrategy;
 
 public class FareTest {
 

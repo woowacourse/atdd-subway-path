@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.DijkstraPathFindingStrategy;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Lines;
-import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.path.DijkstraPathFindingStrategy;
+import wooteco.subway.domain.path.Path;
 import wooteco.subway.dto.LineEntity;
 import wooteco.subway.dto.SectionEntity;
 

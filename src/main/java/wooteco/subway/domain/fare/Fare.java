@@ -1,6 +1,6 @@
 package wooteco.subway.domain.fare;
 
-import wooteco.subway.domain.Path;
+import wooteco.subway.domain.path.Path;
 
 public class Fare {
     private final FareStrategy fareStrategy;

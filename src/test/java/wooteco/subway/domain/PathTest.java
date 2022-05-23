@@ -8,6 +8,9 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import wooteco.subway.domain.path.DijkstraPathFindingStrategy;
+import wooteco.subway.domain.path.Path;
+
 public class PathTest {
 
     @DisplayName("최단 거리를 구한다.")

@@ -1,12 +1,12 @@
-package wooteco.subway.controller.converter;
+package wooteco.subway.dto.controller.converter;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import wooteco.subway.dto.info.PathServiceRequest;
-import wooteco.subway.dto.info.PathServiceResponse;
-import wooteco.subway.dto.response.PathResponse;
-import wooteco.subway.dto.response.StationResponse;
+import wooteco.subway.dto.controller.response.PathResponse;
+import wooteco.subway.dto.controller.response.StationResponse;
+import wooteco.subway.dto.service.request.PathServiceRequest;
+import wooteco.subway.dto.service.response.PathServiceResponse;
 
 public class PathConverter {
     public static PathServiceRequest toInfo(Long source, Long target, int age) {

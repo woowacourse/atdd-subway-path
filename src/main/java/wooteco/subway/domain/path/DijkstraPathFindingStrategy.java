@@ -1,10 +1,13 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+
+import wooteco.subway.domain.Lines;
+import wooteco.subway.domain.Station;
 
 public class DijkstraPathFindingStrategy implements PathFindingStrategy {
     @Override

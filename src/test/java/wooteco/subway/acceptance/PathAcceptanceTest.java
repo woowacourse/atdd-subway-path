@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import wooteco.subway.dto.response.PathResponse;
+import wooteco.subway.dto.controller.response.PathResponse;
 
 public class PathAcceptanceTest extends AcceptanceTest {
 

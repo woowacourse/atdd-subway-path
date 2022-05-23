@@ -14,10 +14,10 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineEntity;
-import wooteco.subway.dto.info.LineServiceRequest;
-import wooteco.subway.dto.info.LineServiceResponse;
-import wooteco.subway.dto.info.LineUpdateRequest;
-import wooteco.subway.dto.info.StationDto;
+import wooteco.subway.dto.service.StationDto;
+import wooteco.subway.dto.service.request.LineServiceRequest;
+import wooteco.subway.dto.service.request.LineUpdateRequest;
+import wooteco.subway.dto.service.response.LineServiceResponse;
 
 @Service
 public class LineService {

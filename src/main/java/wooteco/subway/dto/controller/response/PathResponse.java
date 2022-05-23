@@ -1,19 +1,19 @@
-package wooteco.subway.dto.info;
+package wooteco.subway.dto.controller.response;
 
 import java.util.List;
 
-public class PathServiceResponse {
-    private final List<StationDto> stations;
+public class PathResponse {
+    private final List<StationResponse> stations;
     private final int distance;
     private final int fare;
 
-    public PathServiceResponse(List<StationDto> stations, int distance, int fare) {
+    public PathResponse(List<StationResponse> stations, int distance, int fare) {
         this.stations = stations;
         this.distance = distance;
         this.fare = fare;
     }
 
-    public List<StationDto> getStations() {
+    public List<StationResponse> getStations() {
         return stations;
     }
 

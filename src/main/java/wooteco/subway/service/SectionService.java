@@ -11,8 +11,8 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineEntity;
-import wooteco.subway.dto.info.SectionCreateRequest;
-import wooteco.subway.dto.info.SectionDeleteRequest;
+import wooteco.subway.dto.service.request.SectionCreateRequest;
+import wooteco.subway.dto.service.request.SectionDeleteRequest;
 
 @Service
 public class SectionService {

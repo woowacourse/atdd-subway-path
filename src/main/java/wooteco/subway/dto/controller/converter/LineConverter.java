@@ -1,14 +1,14 @@
-package wooteco.subway.controller.converter;
+package wooteco.subway.dto.controller.converter;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import wooteco.subway.dto.info.LineServiceRequest;
-import wooteco.subway.dto.info.LineServiceResponse;
-import wooteco.subway.dto.info.LineUpdateRequest;
-import wooteco.subway.dto.request.LineRequest;
-import wooteco.subway.dto.response.LineResponse;
-import wooteco.subway.dto.response.StationResponse;
+import wooteco.subway.dto.controller.request.LineRequest;
+import wooteco.subway.dto.controller.response.LineResponse;
+import wooteco.subway.dto.controller.response.StationResponse;
+import wooteco.subway.dto.service.request.LineServiceRequest;
+import wooteco.subway.dto.service.request.LineUpdateRequest;
+import wooteco.subway.dto.service.response.LineServiceResponse;
 
 public class LineConverter {
     public static LineUpdateRequest toInfo(Long id, LineRequest lineRequest) {

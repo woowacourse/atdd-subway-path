@@ -1,7 +1,10 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import java.util.List;
 import java.util.Map;
+
+import wooteco.subway.domain.Lines;
+import wooteco.subway.domain.Station;
 
 public class Path {
     private final Lines lines;
