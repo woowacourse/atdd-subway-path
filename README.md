@@ -31,3 +31,11 @@
       - 어린이는 6세 이상 ~ 13세 미만이다.
       - ( 요금 - 350 ) * 0.5
     - 6세 미만의 유아는 무료이다.
+
+
+### 피드백 반영
+- [ ] 누락된 테스트 코드 작성
+- [ ] id 인자에 primitive type 사용해보기
+- [ ] 연령과 할인율에 enum 사용해보기
+- [ ] findPassedLineIds() 와 lineDao.getMaxFareByLineIds(passedLineIds)의 비즈니스 로직을 도메인 객체 안으로 숨겨보기
+- [ ] 테스트 최적화 해보기 ( 테스트 속도개선 )
