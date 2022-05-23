@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS Section
     line_id         bigint not null,
     up_station_id   bigint not null,
     down_station_id bigint not null,
-    distance        int,
+    distance        bigint,
     primary key (id),
     constraint section_line_id_fk foreign key (line_id) references LINE (id)
         on update cascade on delete cascade

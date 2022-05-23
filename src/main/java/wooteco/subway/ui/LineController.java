@@ -63,7 +63,7 @@ public class LineController {
     private LineServiceRequest getLineServiceRequest(LineRequest lineRequest) {
         return new LineServiceRequest(null, lineRequest.getName(),
                 lineRequest.getColor(), lineRequest.getUpStationId(),
-                lineRequest.getDownStationId(), lineRequest.getDistance());
+                lineRequest.getDownStationId(), lineRequest.getDistance(), lineRequest.getExtraFare());
     }
 
     private List<LineResponse> toLineResponses(List<Line> lines) {

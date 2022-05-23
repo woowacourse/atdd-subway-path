@@ -36,11 +36,11 @@ class SectionsTest {
 
     @BeforeEach
     void setup() {
-        YEOKSAM_TO_SUNNEUNG = new Section(1L, 2L, 선릉역, 역삼역, 10);
-        GANGNAM_TO_YEOKSAM = new Section(2L, 2L, 역삼역, 강남역, 10);
-        SUNNEUNG_TO_SAMSUNG = new Section(3L, 2L, 삼성역, 선릉역, 10);
-        SUNGDAM_BUILDING_TO_SAMSUNG = new Section(4L, 2L, 삼성역, 성담빌딩, 5);
-        YEOKSAM_TO_SAMSUNG = new Section(5L, 2L, 삼성역, 역삼역, 10);
+        YEOKSAM_TO_SUNNEUNG = new Section(1L, 2L, 선릉역, 역삼역, 10L);
+        GANGNAM_TO_YEOKSAM = new Section(2L, 2L, 역삼역, 강남역, 10L);
+        SUNNEUNG_TO_SAMSUNG = new Section(3L, 2L, 삼성역, 선릉역, 10L);
+        SUNGDAM_BUILDING_TO_SAMSUNG = new Section(4L, 2L, 삼성역, 성담빌딩, 5L);
+        YEOKSAM_TO_SAMSUNG = new Section(5L, 2L, 삼성역, 역삼역, 10L);
     }
 
     @Test
@@ -51,7 +51,7 @@ class SectionsTest {
         final Long lineId = 2L;
         final Station upStation = STATION_FIXTURE1;
         final Station downStation = STATION_FIXTURE2;
-        final int distance = 10;
+        final Long distance = 10L;
 
         // when & then
         assertThatCode(() -> new Section(id, lineId, upStation, downStation, distance))

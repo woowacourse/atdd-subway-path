@@ -48,7 +48,7 @@ class JGraphTPathFinderTest {
         assertAll(
                 () -> assertThat(distance).isEqualTo(
                         Stream.of(GANGNAM_TO_YEOKSAM, YEOKSAM_TO_SUNNEUNG, SUNNEUNG_TO_SUNGDAM)
-                                .mapToInt(Section::getDistance)
+                                .mapToLong(Section::getDistance)
                                 .sum()),
                 () -> assertThat(stations).isEqualTo(expectedStations)
         );
@@ -58,8 +58,8 @@ class JGraphTPathFinderTest {
     @Test
     void findShortedPathReverse() {
         // given
-        final int expectedDistanceSum = Stream.of(GANGNAM_TO_YEOKSAM, YEOKSAM_TO_SUNNEUNG, SUNNEUNG_TO_SUNGDAM)
-                .mapToInt(Section::getDistance)
+        final long expectedDistanceSum = Stream.of(GANGNAM_TO_YEOKSAM, YEOKSAM_TO_SUNNEUNG, SUNNEUNG_TO_SUNGDAM)
+                .mapToLong(Section::getDistance)
                 .sum();
         final List<Station> expectedStations = List.of(성담빌딩, 선릉역, 역삼역, 강남역);
 

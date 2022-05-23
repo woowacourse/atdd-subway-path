@@ -82,7 +82,7 @@ class SectionRepositoryTest {
     void saveSection() {
         // given
         final Long lineId = 2L;
-        final Section section = new Section(lineId, 강남역, 역삼역, 10);
+        final Section section = new Section(lineId, 강남역, 역삼역, 10L);
 
         // when
         sectionRepository.save(lineId, section);

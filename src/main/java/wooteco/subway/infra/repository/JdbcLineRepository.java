@@ -25,7 +25,7 @@ public class JdbcLineRepository implements LineRepository {
 
     @Override
     public Line save(Line line) {
-        final LineEntity savedLine = lineDao.save(new LineEntity(line.getName(), line.getColor()));
+        final LineEntity savedLine = lineDao.save(new LineEntity(line.getName(), line.getColor(), line.getExtraFare()));
         final Sections sectionInput = line.getSections();
         final List<Section> sections = sectionInput.getSections();
         if (sections.size() != 1) {

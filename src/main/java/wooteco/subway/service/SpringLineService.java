@@ -39,7 +39,7 @@ public class SpringLineService implements LineService {
         final Section section = new Section(upStation, downStation, lineServiceRequest.getDistance());
 
         final Line saveRequest = new Line(lineServiceRequest.getName(), lineServiceRequest.getColor(),
-                new Sections(List.of(section)));
+                lineServiceRequest.getExtraFare(), new Sections(List.of(section)));
 
         return lineRepository.save(saveRequest);
     }

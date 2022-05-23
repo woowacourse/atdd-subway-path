@@ -38,9 +38,9 @@ import wooteco.subway.service.dto.request.LineServiceRequest;
 @JdbcTest
 class SpringLineServiceTest {
 
-    private static final LineServiceRequest LINE_FIXTURE = new LineServiceRequest("2호선", "bg-color-600", 1L, 2L, 10);
-    private static final LineServiceRequest LINE_FIXTURE2 = new LineServiceRequest("3호선", "bg-color-700", 1L, 2L, 10);
-    private static final LineServiceRequest LINE_FIXTURE3 = new LineServiceRequest("4호선", "bg-color-800", 1L, 2L, 10);
+    private static final LineServiceRequest LINE_FIXTURE = new LineServiceRequest("2호선", "bg-color-600", 1L, 2L, 10L);
+    private static final LineServiceRequest LINE_FIXTURE2 = new LineServiceRequest("3호선", "bg-color-700", 1L, 2L, 10L);
+    private static final LineServiceRequest LINE_FIXTURE3 = new LineServiceRequest("4호선", "bg-color-800", 1L, 2L, 10L);
 
     private final LineService lineService;
 
@@ -91,7 +91,7 @@ class SpringLineServiceTest {
             final LineServiceRequest nameDuplicate = new LineServiceRequest(
                     LINE_FIXTURE.getName(),
                     "new" + LINE_FIXTURE.getColor()
-                    , 1L, 2L, 10
+                    , 1L, 2L, 10L
             );
 
             // when & then
@@ -109,7 +109,7 @@ class SpringLineServiceTest {
             final LineServiceRequest colorDuplicate = new LineServiceRequest(
                     "new" + LINE_FIXTURE.getName(),
                     LINE_FIXTURE.getColor()
-                    , 1L, 2L, 10
+                    , 1L, 2L, 10L
             );
 
             // when & then
@@ -159,7 +159,7 @@ class SpringLineServiceTest {
             final Long id = line.getId();
 
             // when
-            final LineServiceRequest lineRequest = new LineServiceRequest("22호선", "bg-color-777", 1L, 2L, 10);
+            final LineServiceRequest lineRequest = new LineServiceRequest("22호선", "bg-color-777", 1L, 2L, 10L);
             lineService.update(id, lineRequest);
             final Line updated = lineService.findById(id);
 
@@ -175,7 +175,7 @@ class SpringLineServiceTest {
         @DisplayName("업데이트 하고자 하는 노선 아이디에 해당하는 데이터가 존재하지 않을 경우 수정 불가능하다")
         void updateWithNotExistIdShouldFail() {
             // given
-            final LineServiceRequest updateReuqest = new LineServiceRequest("22호선", "bg-color-777", 1L, 2L, 10);
+            final LineServiceRequest updateReuqest = new LineServiceRequest("22호선", "bg-color-777", 1L, 2L, 10L);
             final Long notExistId = -1L;
 
             //  when & then
@@ -193,7 +193,7 @@ class SpringLineServiceTest {
 
             // when
             final LineServiceRequest updateRequest = new LineServiceRequest(LINE_FIXTURE2.getName(),
-                    "new" + LINE_FIXTURE.getColor(), 1L, 2L, 10);
+                    "new" + LINE_FIXTURE.getColor(), 1L, 2L, 10L);
 
             // then
             assertThatThrownBy(() -> lineService.update(line.getId(), updateRequest))
@@ -209,7 +209,7 @@ class SpringLineServiceTest {
             final Long id = line.getId();
 
             // when
-            final LineServiceRequest lineRequest = new LineServiceRequest("22호선", "bg-color-777", 1L, 2L, 10);
+            final LineServiceRequest lineRequest = new LineServiceRequest("22호선", "bg-color-777", 1L, 2L, 10L);
             lineService.update(id, lineRequest);
             final Line updated = lineService.findById(id);
 

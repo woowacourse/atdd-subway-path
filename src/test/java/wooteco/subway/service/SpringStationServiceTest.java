@@ -86,7 +86,7 @@ class SpringStationServiceTest {
         stationService.save(STATION_FIXTURE3);
 
         // then
-        assertThat(stationService.findAll()).extracting("name").isEqualTo(List.of(강남역, 선릉역, 역삼역));
+        assertThat(stationService.findAll()).containsExactly(강남역, 선릉역, 역삼역);
     }
 
     @Test

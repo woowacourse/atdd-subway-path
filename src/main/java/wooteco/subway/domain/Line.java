@@ -37,6 +37,10 @@ public class Line {
         this(null, name, color, null, sections);
     }
 
+    public Line(String name, String color, Long extraFare, Sections sections) {
+        this(null, name, color, extraFare, sections);
+    }
+
     public static Line of(Line line, Sections sections) {
         return new Line(line.getId(), line.getName(), line.getColor(), line.getExtraFare(), sections);
     }
