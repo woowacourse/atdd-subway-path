@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.service.LineService;
-import wooteco.subway.service.SectionService;
-import wooteco.subway.service.StationService;
 
 @RequestMapping("/lines")
 @RestController
@@ -23,8 +21,7 @@ public class LineController {
 
     private final LineService lineService;
 
-    public LineController(LineService lineService, SectionService sectionService,
-                          StationService stationService) {
+    public LineController(LineService lineService) {
         this.lineService = lineService;
     }
 

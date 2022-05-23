@@ -45,9 +45,7 @@ public class LineService {
     }
 
     private boolean hasDuplicateLine(final LineRequest lineRequest) {
-        return lineDao.findAll()
-                .stream()
-                .anyMatch(line -> line.getName().equals(lineRequest.getName()));
+        return lineDao.getCount(lineRequest.getName()) > 0;
     }
 
     private void saveSection(final Long lineId, final LineRequest lineRequest) {

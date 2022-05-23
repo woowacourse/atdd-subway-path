@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.util.ReflectionUtils;
 import wooteco.subway.domain.Station;
-import wooteco.subway.exception.datanotfound.DataNotFoundException;
 import wooteco.subway.exception.datanotfound.StationNotFoundException;
 
 public class FakeStationDao implements StationDao {
@@ -60,5 +59,12 @@ public class FakeStationDao implements StationDao {
             return 1;
         }
         return 0;
+    }
+
+    @Override
+    public int getCount(String stationName) {
+        return (int) stations.stream()
+                .filter(station -> station.getName().equals(stationName))
+                .count();
     }
 }

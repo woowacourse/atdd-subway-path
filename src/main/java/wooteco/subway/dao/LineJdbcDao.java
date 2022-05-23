@@ -68,4 +68,10 @@ public class LineJdbcDao implements LineDao {
         final String sql = "UPDATE line SET deleted = (?) WHERE id = (?)";
         return jdbcTemplate.update(sql, true, id);
     }
+
+    @Override
+    public int getCount(String lineName) {
+        final String sql = "SELECT COUNT(*) FROM line WHERE name = (?) AND deleted = (?)";
+        return jdbcTemplate.queryForObject(sql, Integer.class, lineName, false);
+    }
 }

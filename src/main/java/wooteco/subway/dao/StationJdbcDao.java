@@ -59,4 +59,10 @@ public class StationJdbcDao implements StationDao {
         final String sql = "UPDATE station SET deleted = (?) WHERE id = (?)";
         return jdbcTemplate.update(sql, true, id);
     }
+
+    @Override
+    public int getCount(String stationName) {
+        final String sql = "SELECT COUNT(*) FROM station WHERE name = (?) AND deleted = (?)";
+        return jdbcTemplate.queryForObject(sql, Integer.class, stationName, false);
+    }
 }

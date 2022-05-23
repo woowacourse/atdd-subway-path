@@ -12,4 +12,6 @@ public interface StationDao {
     Station findById(long id);
 
     int deleteStation(long id);
+
+    int getCount(String stationName);
 }

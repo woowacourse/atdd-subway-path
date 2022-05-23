@@ -15,4 +15,6 @@ public interface LineDao {
     int update(Line line);
 
     int delete(Long id);
+
+    int getCount(String lineName);
 }

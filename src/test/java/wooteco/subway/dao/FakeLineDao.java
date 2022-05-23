@@ -71,4 +71,11 @@ public class FakeLineDao implements LineDao {
         }
         return 0;
     }
+
+    @Override
+    public int getCount(String lineName) {
+        return (int) lines.stream()
+                .filter(line -> line.getName().equals(lineName))
+                .count();
+    }
 }
