@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.repository.dao.LineDao;
@@ -18,46 +19,22 @@ import wooteco.subway.repository.entity.StationEntity;
 
 @SpringBootTest
 @Transactional
+@Sql("classpath:testInit.sql")
 public class PathServiceTest {
 
-    StationEntity one;
-    StationEntity two;
-    StationEntity three;
-    LineEntity line1;
-    LineEntity line2;
-    SectionEntity section1;
-    SectionEntity section2;
-    SectionEntity section3;
     @Autowired
     private PathService pathService;
-    @Autowired
-    private StationDao stationDao;
-    @Autowired
-    private SectionDao sectionDao;
-    @Autowired
-    private LineDao lineDao;
 
-    @BeforeEach
-    void setUp() {
-        one = stationDao.save(new StationEntity(null, "one"));
-        two = stationDao.save(new StationEntity(null, "two"));
-        three = stationDao.save(new StationEntity(null, "three"));
-        line1 = lineDao.save(new LineEntity(null, "oneLine", "red", 100L));
-        line2 = lineDao.save(new LineEntity(null, "twoLine", "blue", 100L));
-        section1 = sectionDao.save(new SectionEntity(null, line1.getId(), one.getId(), two.getId(), 46));
-        section2 = sectionDao.save(new SectionEntity(null, line2.getId(), two.getId(), three.getId(), 2));
-        section3 = sectionDao.save(new SectionEntity(null, line1.getId(), one.getId(), three.getId(), 1000));
-    }
 
     @Test
     @DisplayName("경로 조회한다")
     void getPath() {
         // given
-        PathResponse pathResponse = pathService.getPath(three.getId(), one.getId(), 20);
+        PathResponse pathResponse = pathService.getPath(3L, 1L, 20);
 
         // then
         assertThat(pathResponse.getStations()).hasSize(3);
-        assertThat(pathResponse.getDistance()).isEqualTo(48);
-        assertThat(pathResponse.getFare()).isEqualTo(2150L);
+        assertThat(pathResponse.getDistance()).isEqualTo(10);
+        assertThat(pathResponse.getFare()).isEqualTo(1450L);
     }
 }
