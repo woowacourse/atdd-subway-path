@@ -68,6 +68,12 @@ public class Line {
         this.color = color;
     }
 
+    public boolean isSectionExisted(Section section) {
+        return sections.getSections()
+                .stream()
+                .anyMatch(lineSection -> lineSection.equals(section));
+    }
+
     public List<Section> getSections() {
         return sections.getSections();
     }

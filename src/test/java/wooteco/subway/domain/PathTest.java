@@ -24,8 +24,11 @@ class PathTest {
         Section 잠실_홍대 = new Section(잠실, 홍대, 5);
 
         Sections sections = new Sections(List.of(강남_선릉, 강남_잠실, 강남_홍대, 선릉_홍대, 잠실_홍대));
+        Line 일호선 = new Line("일호선", "green", 0, sections);
 
-        Path path = new Path(sections.findShortestPath(강남, 홍대));
+        List<Line> lines = List.of(일호선);
+
+        Path path = new Path(sections.findShortestPath(강남, 홍대, lines));
 
         int fare = Fare.chargeFare(path);
 
@@ -47,8 +50,11 @@ class PathTest {
         Section 잠실_홍대 = new Section(잠실, 홍대, 50);
 
         Sections sections = new Sections(List.of(강남_선릉, 강남_잠실, 강남_홍대, 선릉_홍대, 잠실_홍대));
+        Line 일호선 = new Line("일호선", "green", 0, sections);
 
-        Path path = new Path(sections.findShortestPath(강남, 홍대));
+        List<Line> lines = List.of(일호선);
+
+        Path path = new Path(sections.findShortestPath(강남, 홍대, lines));
 
         int fare = Fare.chargeFare(path);
 
@@ -71,7 +77,11 @@ class PathTest {
 
         Sections sections = new Sections(List.of(강남_선릉, 강남_잠실, 강남_홍대, 선릉_홍대, 잠실_홍대));
 
-        Path path = new Path(sections.findShortestPath(강남, 홍대));
+        Line 일호선 = new Line("일호선", "green", 0, sections);
+
+        List<Line> lines = List.of(일호선);
+
+        Path path = new Path(sections.findShortestPath(강남, 홍대, lines));
 
         int fare = Fare.chargeFare(path);
 
@@ -94,7 +104,11 @@ class PathTest {
 
         Sections sections = new Sections(List.of(강남_선릉, 강남_잠실, 강남_홍대, 선릉_홍대, 잠실_홍대));
 
-        Path path = new Path(sections.findShortestPath(강남, 홍대));
+        Line 일호선 = new Line("일호선", "green", 0, sections);
+
+        List<Line> lines = List.of(일호선);
+
+        Path path = new Path(sections.findShortestPath(강남, 홍대, lines));
 
         int distance = path.calculateShortestDistance();
 
@@ -116,8 +130,11 @@ class PathTest {
         Section 잠실_홍대 = new Section(잠실, 홍대, 5);
 
         Sections sections = new Sections(List.of(강남_선릉, 강남_잠실, 강남_홍대, 선릉_홍대, 잠실_홍대));
+        Line 일호선 = new Line("일호선", "green", 0, sections);
 
-        Path path = new Path(sections.findShortestPath(강남, 홍대));
+        List<Line> lines = List.of(일호선);
+
+        Path path = new Path(sections.findShortestPath(강남, 홍대, lines));
 
         List<Station> stationsOnPath = path.findStationsOnPath();
 

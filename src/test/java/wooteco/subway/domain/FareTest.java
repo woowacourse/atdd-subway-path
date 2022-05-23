@@ -25,7 +25,7 @@ public class FareTest {
         List<Line> lines = List.of(일호선);
         List<Station> stations = List.of(잠실, 홍대, 신촌);
 
-        Path path = new Path(sections.findShortestPath(잠실, 신촌));
+        Path path = new Path(sections.findShortestPath(잠실, 신촌, lines));
 
         int fare = Fare.chargeFare(path, lines, stations);
 

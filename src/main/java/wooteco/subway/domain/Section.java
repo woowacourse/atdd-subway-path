@@ -72,6 +72,13 @@ public class Section {
         }
     }
 
+    public Line findLine(List<Line> lines) {
+        return lines.stream()
+                .filter(line -> line.isSectionExisted(this))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 노선이 존재하지 않습니다."));
+    }
+
     public Long getId() {
         return id;
     }

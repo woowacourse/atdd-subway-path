@@ -159,22 +159,23 @@ public class Sections {
         }
     }
 
-    public GraphPath<Station, DefaultWeightedEdge> findShortestPath(Station source, Station target) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph
-                = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    public GraphPath<Station, SectionEdge> findShortestPath(Station source, Station target, List<Line> lines) {
+        WeightedMultigraph<Station, SectionEdge> graph
+                = new WeightedMultigraph<>(SectionEdge.class);
         addAllStationsAsVertex(graph);
-        addAllSectionsAsEdge(graph);
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        addAllSectionsAsEdge(graph, lines);
+        DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         return dijkstraShortestPath.getPath(source, target);
     }
 
-    private void addAllSectionsAsEdge(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private void addAllSectionsAsEdge(WeightedMultigraph<Station, SectionEdge> graph, List<Line> lines) {
         for (Section section : sections) {
-            graph.setEdgeWeight(graph.addEdge(section.getUp(), section.getDown()), section.getDistance());
+            graph.addEdge(section.getUp(), section.getDown(),
+                    new SectionEdge(section.getDistance(), section.findLine(lines)));
         }
     }
 
-    private void addAllStationsAsVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private void addAllStationsAsVertex(WeightedMultigraph<Station, SectionEdge> graph) {
         List<Station> stations = getStations();
         for (Station station : stations) {
             graph.addVertex(station);
