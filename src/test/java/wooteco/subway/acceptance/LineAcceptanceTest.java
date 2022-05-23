@@ -14,8 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import wooteco.subway.service.dto.response.LineResponse;
 
-@SuppressWarnings({"InnerClassMayBeStatic", "NonAsciiCharacters"})
 @DisplayName("노선 관련 기능")
+@SuppressWarnings({"InnerClassMayBeStatic", "NonAsciiCharacters"})
 public class LineAcceptanceTest extends AcceptanceTest {
 
     @Nested
@@ -36,19 +36,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
             }
 
             @Test
-            @DisplayName("201 응답을 한다.")
-            void it_returns_200() {
-                ExtractableResponse<Response> response = 노선_저장_응답(노선_저장_파라미터);
-
-                assertThat(response.statusCode()).isEqualTo(201);
-                assertThat(response.contentType()).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
-            }
-
-            @Test
-            @DisplayName("노선을 저장한다.")
+            @DisplayName("노선을 저장하고 저장된 노선을 응답한다.")
             void it_returns_save() {
                 ExtractableResponse<Response> response = 노선_저장_응답(노선_저장_파라미터);
 
+                assertThat(response.statusCode()).isEqualTo(201);
                 assertThat(response.body().jsonPath().getString("name")).isEqualTo("신분당선");
                 assertThat(response.body().jsonPath().getString("color")).isEqualTo("bg-red-600");
                 assertThat(response.body().jsonPath().getString("extraFare")).isEqualTo("1000");
@@ -69,18 +61,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
             }
 
             @Test
-            @DisplayName("400응답을 한다.")
-            void it_returns_400() {
-                ExtractableResponse<Response> response = 노선_저장_응답(빈_파라미터);
-
-                assertThat(response.statusCode()).isEqualTo(400);
-            }
-
-            @Test
             @DisplayName("에러 메시지를 응답한다.")
             void it_returns_message() {
                 ExtractableResponse<Response> response = 노선_저장_응답(빈_파라미터);
 
+                assertThat(response.statusCode()).isEqualTo(400);
                 assertThat(response.body().jsonPath().getString("message"))
                         .isEqualTo("이름과 색깔은 공백일 수 없습니다.");
             }
@@ -105,19 +90,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
             }
 
             @Test
-            @DisplayName("200 응답을 한다.")
-            void it_returns_200() {
-                ExtractableResponse<Response> response = 노선_조회(lineId);
-
-                assertThat(response.statusCode()).isEqualTo(200);
-                assertThat(response.contentType()).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
-            }
-
-            @Test
             @DisplayName("노선의 정보를 응답한다.")
             void it_returns_line() {
                 ExtractableResponse<Response> response = 노선_조회(lineId);
 
+                assertThat(response.statusCode()).isEqualTo(200);
                 assertThat(response.body().jsonPath().getString("name")).isEqualTo("2호선");
                 assertThat(response.body().jsonPath().getString("color")).isEqualTo("green");
                 assertThat(response.body().jsonPath().getString("extraFare")).isEqualTo("1000");
@@ -129,18 +106,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
         class Context_Id_Not_Found {
 
             @Test
-            @DisplayName("404 응답을 한다.")
-            void it_returns_404() {
-                ExtractableResponse<Response> response = 노선_조회(1);
-
-                assertThat(response.statusCode()).isEqualTo(404);
-            }
-
-            @Test
             @DisplayName("에러메시지를 응답한다.")
             void it_returns_message() {
                 ExtractableResponse<Response> response = 노선_조회(1);
 
+                assertThat(response.statusCode()).isEqualTo(404);
                 assertThat(response.body().jsonPath().getString("message"))
                         .isEqualTo("조회하려는 노선이 존재하지 않습니다. id : 1");
             }
@@ -162,19 +132,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
             }
 
             @Test
-            @DisplayName("200 응답을 한다.")
-            void it_returns_200() {
-                ExtractableResponse<Response> response = 노선_목록_조회();
-
-                assertThat(response.statusCode()).isEqualTo(200);
-                assertThat(response.contentType()).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
-            }
-
-            @Test
             @DisplayName("노선 목록을 응답한다.")
             void it_returns_lines() {
                 ExtractableResponse<Response> response = 노선_목록_조회();
 
+                assertThat(response.statusCode()).isEqualTo(200);
                 List<LineResponse> responses = response.body().jsonPath()
                         .getList(".", LineResponse.class);
                 assertThat(responses).extracting("name").isEqualTo(List.of("1호선", "2호선"));
@@ -215,18 +177,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
         class Context_Update_Lines_Not_Found {
 
             @Test
-            @DisplayName("404 응답을 한다.")
-            void it_returns_404() {
-                ExtractableResponse<Response> response = 노선_수정(lineId + 1L, 노선_수정_파라미터);
-
-                assertThat(response.statusCode()).isEqualTo(404);
-            }
-
-            @Test
             @DisplayName("에러메시지를 응답한다.")
             void it_returns_message() {
                 ExtractableResponse<Response> response = 노선_수정(lineId + 1L, 노선_수정_파라미터);
 
+                assertThat(response.statusCode()).isEqualTo(404);
                 assertThat(response.body().jsonPath().getString("message"))
                         .contains("조회하려는 노선이 존재하지 않습니다.");
             }
@@ -244,18 +199,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
             }
 
             @Test
-            @DisplayName("400 응답을 한다.")
-            void it_returns_400() {
-                ExtractableResponse<Response> response = 노선_수정(lineId, 노선_수정_파라미터);
-
-                assertThat(response.statusCode()).isEqualTo(400);
-            }
-
-            @Test
             @DisplayName("에러메시지를 응답한다.")
             void it_returns_message() {
                 ExtractableResponse<Response> response = 노선_수정(lineId, 노선_수정_파라미터);
 
+                assertThat(response.statusCode()).isEqualTo(400);
                 assertThat(response.body().jsonPath().getString("message"))
                         .isEqualTo("이름과 색깔은 공백일 수 없습니다.");
             }
@@ -268,18 +216,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
             private final Map<Object, Object> 노선_중복_파라미터 = 노선_수정_파라미터("2호선", "green");
 
             @Test
-            @DisplayName("400 응답을 한다.")
-            void it_returns_400() {
-                ExtractableResponse<Response> response = 노선_수정(lineId, 노선_중복_파라미터);
-
-                assertThat(response.statusCode()).isEqualTo(400);
-            }
-
-            @Test
             @DisplayName("에러 메시지를 응답한다.")
             void it_returns_message() {
                 ExtractableResponse<Response> response = 노선_수정(lineId, 노선_중복_파라미터);
 
+                assertThat(response.statusCode()).isEqualTo(400);
                 assertThat(response.body().jsonPath().getString("message"))
                         .isEqualTo("노선이 이름과 색상은 중복될 수 없습니다.");
             }

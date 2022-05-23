@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import wooteco.subway.service.dto.response.StationResponse;
 
 @DisplayName("지하철역 관련 기능")
+@SuppressWarnings({"InnerClassMayBeStatic", "NonAsciiCharacters"})
 public class StationAcceptanceTest extends AcceptanceTest {
 
     @Nested
