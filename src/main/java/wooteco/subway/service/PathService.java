@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.path.Fare;
 import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.path.PathDijkstraAlgorithm;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Stations;
 import wooteco.subway.dto.path.PathRequest;
@@ -25,12 +26,13 @@ public class PathService {
     public PathResponse findPath(PathRequest pathRequest) {
         List<Section> sections = sectionService.findAll();
         Stations stations = stationService.findAll();
-        Path path = Path.of(pathRequest.getSource(), pathRequest.getTarget(), sections, stations);
+        PathDijkstraAlgorithm algorithm = PathDijkstraAlgorithm.of(sections, stations);
+        Path path = algorithm.findPath(pathRequest.getSource(), pathRequest.getTarget());
         return getPathResponse(stations, path.getPath(), path.getDistance());
     }
 
-    private PathResponse getPathResponse(Stations stations, List<Long> shortestPath, int distance) {
-        List<StationResponse> stationsResponses = getStationsResponses(stations, shortestPath);
+    private PathResponse getPathResponse(Stations stations, List<Long> path, int distance) {
+        List<StationResponse> stationsResponses = getStationsResponses(stations, path);
         Fare fare = new Fare(distance);
         return new PathResponse(stationsResponses, distance, fare.calculate());
     }
