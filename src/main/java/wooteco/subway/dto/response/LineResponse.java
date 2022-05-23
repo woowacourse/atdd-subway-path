@@ -11,22 +11,25 @@ public class LineResponse {
     private String name;
     private String color;
     private List<StationResponse> stations;
+    private int extraFare;
 
     private LineResponse() {
     }
 
-    public LineResponse(final Long id, final String name, final String color, final List<StationResponse> stations) {
+    public LineResponse(final Long id, final String name, final String color, final List<StationResponse> stations,
+                        final int extraFare) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.stations = stations;
+        this.extraFare = extraFare;
     }
 
     public static LineResponse of(final Line line, final List<Station> stations) {
         final List<StationResponse> stationResponses = stations.stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stationResponses);
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), stationResponses, line.getExtraFare());
     }
 
     public Long getId() {
@@ -43,5 +46,9 @@ public class LineResponse {
 
     public List<StationResponse> getStations() {
         return stations;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 }

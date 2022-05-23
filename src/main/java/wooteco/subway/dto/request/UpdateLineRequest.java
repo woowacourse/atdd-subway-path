@@ -1,6 +1,7 @@
 package wooteco.subway.dto.request;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PositiveOrZero;
 import wooteco.subway.domain.Line;
 
 public class UpdateLineRequest {
@@ -9,6 +10,8 @@ public class UpdateLineRequest {
     private String name;
     @NotBlank
     private String color;
+    @PositiveOrZero
+    private int extraFare;
 
     private UpdateLineRequest() {
     }
@@ -19,7 +22,7 @@ public class UpdateLineRequest {
     }
 
     public Line toLine(final Long id) {
-        return new Line(id, name, color);
+        return new Line(id, name, color, extraFare);
     }
 
     public String getName() {

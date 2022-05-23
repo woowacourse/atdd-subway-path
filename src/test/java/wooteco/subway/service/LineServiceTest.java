@@ -61,8 +61,8 @@ class LineServiceTest {
     @DisplayName("지하철 노선을 생성한다. 이때 관련 구간을 같이 생성한다.")
     void create() {
         // given
-        final Line savedLine = new Line(1L, LINE_1, RED, new Sections(SECTION_1_2));
-        final CreateLineRequest request = new CreateLineRequest(LINE_1, RED, 1L, 2L, 10);
+        final Line savedLine = new Line(1L, LINE_1, RED, new Sections(SECTION_1_2), 500);
+        final CreateLineRequest request = new CreateLineRequest(LINE_1, RED, 1L, 2L, 10, 500);
         final Sections sections = new Sections(List.of(SECTION_1_2));
 
         // mocking
@@ -90,7 +90,7 @@ class LineServiceTest {
     @DisplayName("기존에 존재하는 노선 이름으로 생성하면, 예외를 발생한다.")
     void createWithDuplicateName() {
         // given
-        final CreateLineRequest request = new CreateLineRequest(LINE_1, RED, 1L, 2L, 10);
+        final CreateLineRequest request = new CreateLineRequest(LINE_1, RED, 1L, 2L, 10, 500);
 
         // mocking
         given(lineRepository.save(any(Line.class))).willThrow(DuplicateKeyException.class);
@@ -104,8 +104,8 @@ class LineServiceTest {
     @DisplayName("지하철 노선 목록을 조회한다. 관련 역들도 함께 조회한다.")
     void showAll() {
         // given
-        final List<Line> lines = List.of(new Line(1L, LINE_1, RED, new Sections(SECTION_1_2)),
-                new Line(2L, LINE_2, BLUE, new Sections(SECTION_1_2)));
+        final List<Line> lines = List.of(new Line(1L, LINE_1, RED, new Sections(SECTION_1_2), 500),
+                new Line(2L, LINE_2, BLUE, new Sections(SECTION_1_2), 500));
 
         // mocking
         given(lineRepository.findAll()).willReturn(lines);
@@ -121,7 +121,7 @@ class LineServiceTest {
     @DisplayName("노선을 조회한다. 관련 역들도 함께 조회한다.")
     void show() {
         // mocking
-        given(lineRepository.getById(1L)).willReturn(new Line(1L, LINE_1, RED, new Sections(SECTION_1_2)));
+        given(lineRepository.getById(1L)).willReturn(new Line(1L, LINE_1, RED, new Sections(SECTION_1_2), 500));
         // when
         final LineResponse response = lineService.show(1L);
         final StationResponse stationResponse1 = response.getStations().get(0);

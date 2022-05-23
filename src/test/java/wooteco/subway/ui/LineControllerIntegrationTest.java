@@ -8,12 +8,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static wooteco.subway.Fixtures.BLUE;
-import static wooteco.subway.Fixtures.STATION_3;
-import static wooteco.subway.Fixtures.STATION_1;
 import static wooteco.subway.Fixtures.LINE_1;
 import static wooteco.subway.Fixtures.LINE_2;
 import static wooteco.subway.Fixtures.RED;
+import static wooteco.subway.Fixtures.STATION_1;
 import static wooteco.subway.Fixtures.STATION_2;
+import static wooteco.subway.Fixtures.STATION_3;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Objects;
@@ -49,7 +49,7 @@ public class LineControllerIntegrationTest {
         final Long upStationId = createStation(STATION_1);
         final Long downStationId = createStation(STATION_2);
 
-        final CreateLineRequest request = new CreateLineRequest(LINE_1, RED, upStationId, downStationId, 10);
+        final CreateLineRequest request = new CreateLineRequest(LINE_1, RED, upStationId, downStationId, 10, 500);
         final String requestContent = objectMapper.writeValueAsString(request);
 
         // when
@@ -77,8 +77,8 @@ public class LineControllerIntegrationTest {
         final Long upStationId = createStation(STATION_1);
         final Long downStationId = createStation(STATION_2);
 
-        createLine(LINE_1, RED, upStationId, downStationId, 10);
-        createLine(LINE_2, BLUE, upStationId, downStationId, 10);
+        createLine(LINE_1, RED, upStationId, downStationId, 10, 500);
+        createLine(LINE_2, BLUE, upStationId, downStationId, 10, 500);
 
         // when
         final ResultActions response = mockMvc.perform(get("/lines"))
@@ -104,7 +104,7 @@ public class LineControllerIntegrationTest {
         final Long upStationId = createStation(STATION_1);
         final Long downStationId = createStation(STATION_2);
 
-        final Long lineId = createLine(LINE_1, RED, upStationId, downStationId, 10);
+        final Long lineId = createLine(LINE_1, RED, upStationId, downStationId, 10, 500);
 
         // when
         final ResultActions response = mockMvc.perform(get("/lines/" + lineId))
@@ -140,7 +140,7 @@ public class LineControllerIntegrationTest {
         final Long stationId1 = createStation(STATION_1);
         final Long stationId2 = createStation(STATION_2);
         final Long stationId3 = createStation(STATION_3);
-        final Long lineId = createLine(LINE_1, RED, stationId1, stationId2, 10);
+        final Long lineId = createLine(LINE_1, RED, stationId1, stationId2, 10, 500);
 
         final CreateSectionRequest request = new CreateSectionRequest(stationId2, stationId3, 5);
         final String requestContent = objectMapper.writeValueAsString(request);
@@ -163,7 +163,7 @@ public class LineControllerIntegrationTest {
         final Long stationId1 = createStation(STATION_1);
         final Long stationId2 = createStation(STATION_2);
         final Long stationId3 = createStation(STATION_3);
-        final Long lineId = createLine(LINE_1, RED, stationId1, stationId3, 10);
+        final Long lineId = createLine(LINE_1, RED, stationId1, stationId3, 10, 500);
 
         final CreateSectionRequest request = new CreateSectionRequest(stationId1, stationId2, 20);
         final String requestContent = objectMapper.writeValueAsString(request);
@@ -185,7 +185,7 @@ public class LineControllerIntegrationTest {
         final Long stationId1 = createStation(STATION_1);
         final Long stationId2 = createStation(STATION_2);
         final Long stationId3 = createStation(STATION_3);
-        final Long lineId = createLine(LINE_1, RED, stationId1, stationId2, 10);
+        final Long lineId = createLine(LINE_1, RED, stationId1, stationId2, 10, 500);
         createSection(lineId, stationId2, stationId3, 10);
 
         // when
@@ -211,8 +211,9 @@ public class LineControllerIntegrationTest {
     }
 
     private Long createLine(final String name, final String color, final Long upStationId, final Long downStationId,
-                            final int distance) throws Exception {
-        final CreateLineRequest request = new CreateLineRequest(name, color, upStationId, downStationId, distance);
+                            final int distance, final int extraFare) throws Exception {
+        final CreateLineRequest request = new CreateLineRequest(name, color, upStationId, downStationId, distance,
+                extraFare);
         final String requestContent = objectMapper.writeValueAsString(request);
 
         return Long.parseLong(Objects.requireNonNull(mockMvc.perform(post("/lines")
