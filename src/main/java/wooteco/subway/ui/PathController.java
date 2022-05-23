@@ -2,12 +2,12 @@ package wooteco.subway.ui;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.subway.domain.pricing.implement.DistanceProportionalPricingStrategy;
 import wooteco.subway.domain.path.implement.MinimumDistanceFindStrategy;
+import wooteco.subway.domain.pricing.implement.DistanceProportionalPricingStrategy;
 import wooteco.subway.service.PathService;
 import wooteco.subway.service.dto.PathResponse;
+import wooteco.subway.ui.dto.PathRequest;
 
 @RestController
 @RequestMapping("/paths")
@@ -20,8 +20,9 @@ public class PathController {
     }
 
     @GetMapping
-    public PathResponse searchPaths(@RequestParam Long source, @RequestParam Long target, @RequestParam int age) {
-        return pathService.searchPaths(MinimumDistanceFindStrategy.of(), DistanceProportionalPricingStrategy.of(), source, target);
+    public PathResponse searchPaths(PathRequest pathRequest) {
+        return pathService.searchPaths(MinimumDistanceFindStrategy.of(), DistanceProportionalPricingStrategy.of(),
+                pathRequest);
     }
 
 }

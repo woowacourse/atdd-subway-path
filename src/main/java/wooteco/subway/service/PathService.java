@@ -12,6 +12,7 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.service.dto.PathResponse;
 import wooteco.subway.service.dto.StationResponse;
+import wooteco.subway.ui.dto.PathRequest;
 
 @Service
 public class PathService {
@@ -24,11 +25,11 @@ public class PathService {
         this.sectionDao = sectionDao;
     }
 
-    public PathResponse searchPaths(PathFindStrategy pathFindStrategy, PricingStrategy pricingStrategy, Long sourceId, Long targetId) {
+    public PathResponse searchPaths(PathFindStrategy pathFindStrategy, PricingStrategy pricingStrategy, PathRequest pathRequest) {
         List<Section> sections = sectionDao.findAll();
         List<Station> stations = stationDao.findAll();
-        Station from = findById(stations, sourceId);
-        Station to = findById(stations, targetId);
+        Station from = findById(stations, pathRequest.getSource());
+        Station to = findById(stations, pathRequest.getTarget());
         Path path = pathFindStrategy.findPath(stations, sections, from, to);
 
         return new PathResponse(
