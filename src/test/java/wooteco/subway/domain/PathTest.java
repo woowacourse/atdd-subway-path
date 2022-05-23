@@ -30,7 +30,7 @@ class PathTest {
 
         Path path = new Path(sections.findShortestPath(강남, 홍대, lines));
 
-        int fare = Fare.chargeFare(path);
+        int fare = Fare.chargeFare(path, 22);
 
         assertThat(fare).isEqualTo(1250);
     }
@@ -56,7 +56,7 @@ class PathTest {
 
         Path path = new Path(sections.findShortestPath(강남, 홍대, lines));
 
-        int fare = Fare.chargeFare(path);
+        int fare = Fare.chargeFare(path, 22);
 
         assertThat(fare).isEqualTo(2050);
     }
@@ -83,7 +83,7 @@ class PathTest {
 
         Path path = new Path(sections.findShortestPath(강남, 홍대, lines));
 
-        int fare = Fare.chargeFare(path);
+        int fare = Fare.chargeFare(path, 22);
 
         assertThat(fare).isEqualTo(3650);
     }

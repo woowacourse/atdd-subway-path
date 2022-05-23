@@ -8,7 +8,6 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 
 public class Path {
 
-    public static final int BASIC_FARE = 1250;
     private final GraphPath<Station, SectionEdge> graphPath;
 
     public Path(GraphPath<Station, SectionEdge> graphPath) {

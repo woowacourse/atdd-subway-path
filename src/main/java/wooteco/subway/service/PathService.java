@@ -33,8 +33,8 @@ public class PathService {
         Station target = stationRepository.findById(targetId);
         List<Line> lines = lineRepository.findAll();
         Path path = new Path(sections.findShortestPath(source, target, lines));
-        List<Station> stations = path.findStationsOnPath();
+        int fare = Fare.chargeFare(path, age);
 
-        return new PathResponse(stations, path.calculateShortestDistance(), Fare.chargeFare(path));
+        return new PathResponse(path.findStationsOnPath(), path.calculateShortestDistance(), fare);
     }
 }

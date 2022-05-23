@@ -7,7 +7,7 @@ public class Fare {
 
     private static final int DEFAULT_EXTRA_FARE = 0;
 
-    public static int chargeFare(Path path) {
+    public static int chargeFare(Path path, int age) {
         double distance = path.calculateShortestDistance();
         int fare = 0;
         Optional<FarePolicy> fareStandard = Optional.of(FarePolicy.DEFAULT);
@@ -17,7 +17,11 @@ public class Fare {
             fare += presentStandard.calculate(distance);
             fareStandard = presentStandard.update();
         }
-        return fare + findExtraLineFare(path);
+        return calculateFareByAge(age, fare + findExtraLineFare(path));
+    }
+
+    private static int calculateFareByAge(int age, int fare) {
+        return AgePolicy.calculateFareByAge(age, fare);
     }
 
     private static int findExtraLineFare(Path path) {

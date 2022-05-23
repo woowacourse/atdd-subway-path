@@ -55,7 +55,7 @@ public class PathServiceTest {
         sectionDao.save(new SectionEntity(삼호선.getId(), 잠실역.getId(), 홍대역.getId(), 5));
 
         //when
-        PathResponse response = pathService.findPath(강남역.getId(), 홍대역.getId(), 10);
+        PathResponse response = pathService.findPath(강남역.getId(), 홍대역.getId(), 22);
 
         //then
         assertAll(() -> {
@@ -93,7 +93,7 @@ public class PathServiceTest {
         sectionDao.save(new SectionEntity(사호선.getId(), 신촌역.getId(), 문래역.getId(), 5));
         sectionDao.save(new SectionEntity(사호선.getId(), 문래역.getId(), 신림역.getId(), 3));
 
-        PathResponse response = pathService.findPath(강남역.getId(), 신림역.getId(), 10);
+        PathResponse response = pathService.findPath(강남역.getId(), 신림역.getId(), 22);
 
         //then
         assertAll(() -> {

@@ -26,7 +26,7 @@ public class FareTest {
 
         Path path = new Path(sections.findShortestPath(잠실, 신촌, lines));
 
-        int fare = Fare.chargeFare(path);
+        int fare = Fare.chargeFare(path, 22);
 
         assertThat(fare).isEqualTo(2250);
     }
@@ -51,8 +51,98 @@ public class FareTest {
 
         Path path = new Path(전체구간.findShortestPath(잠실, 신촌, lines));
 
-        int fare = Fare.chargeFare(path);
+        int fare = Fare.chargeFare(path, 22);
 
         assertThat(fare).isEqualTo(2750);
     }
+
+    @DisplayName("5세 이하인 경우 요금 무료")
+    @Test
+    void freeForInfant() {
+        Station 잠실 = new Station("잠실역");
+        Station 홍대 = new Station("홍대입구역");
+        Station 신촌 = new Station("신촌역");
+
+        Section 잠실_홍대 = new Section(잠실, 홍대, 3);
+        Section 홍대_신촌 = new Section(홍대, 신촌, 5);
+
+        Sections sections = new Sections(List.of(잠실_홍대, 홍대_신촌));
+
+        Line 일호선 = new Line("1호선", "green", 1000, sections);
+        List<Line> lines = List.of(일호선);
+
+        Path path = new Path(sections.findShortestPath(잠실, 신촌, lines));
+
+        int fare = Fare.chargeFare(path, 5);
+
+        assertThat(fare).isEqualTo(0);
+    }
+
+    @DisplayName("어린이(6세~12세)인 경우 요금 350 공제 후 50프로 할인")
+    @Test
+    void discountForChild() {
+        Station 잠실 = new Station("잠실역");
+        Station 홍대 = new Station("홍대입구역");
+        Station 신촌 = new Station("신촌역");
+
+        Section 잠실_홍대 = new Section(잠실, 홍대, 3);
+        Section 홍대_신촌 = new Section(홍대, 신촌, 5);
+
+        Sections sections = new Sections(List.of(잠실_홍대, 홍대_신촌));
+
+        Line 일호선 = new Line("1호선", "green", 1000, sections);
+        List<Line> lines = List.of(일호선);
+
+        Path path = new Path(sections.findShortestPath(잠실, 신촌, lines));
+
+        int fare = Fare.chargeFare(path, 6);
+
+        assertThat(fare).isEqualTo(950);
+    }
+
+    @DisplayName("청소년(13세~18세)인 경우 요금 350 공제 후 20프로 할인")
+    @Test
+    void discountForTeen() {
+        Station 잠실 = new Station("잠실역");
+        Station 홍대 = new Station("홍대입구역");
+        Station 신촌 = new Station("신촌역");
+
+        Section 잠실_홍대 = new Section(잠실, 홍대, 3);
+        Section 홍대_신촌 = new Section(홍대, 신촌, 5);
+
+        Sections sections = new Sections(List.of(잠실_홍대, 홍대_신촌));
+
+        Line 일호선 = new Line("1호선", "green", 1000, sections);
+        List<Line> lines = List.of(일호선);
+
+        Path path = new Path(sections.findShortestPath(잠실, 신촌, lines));
+
+        int fare = Fare.chargeFare(path, 13);
+
+        assertThat(fare).isEqualTo(1520);
+    }
+
+    @DisplayName("어르신(65세 이상)인 경우 요금 무료")
+    @Test
+    void discountForOld() {
+        Station 잠실 = new Station("잠실역");
+        Station 홍대 = new Station("홍대입구역");
+        Station 신촌 = new Station("신촌역");
+
+        Section 잠실_홍대 = new Section(잠실, 홍대, 3);
+        Section 홍대_신촌 = new Section(홍대, 신촌, 5);
+
+        Sections sections = new Sections(List.of(잠실_홍대, 홍대_신촌));
+
+        Line 일호선 = new Line("1호선", "green", 1000, sections);
+        List<Line> lines = List.of(일호선);
+
+        Path path = new Path(sections.findShortestPath(잠실, 신촌, lines));
+
+        int fare = Fare.chargeFare(path, 65);
+
+        assertThat(fare).isEqualTo(0);
+    }
+
+
 }
