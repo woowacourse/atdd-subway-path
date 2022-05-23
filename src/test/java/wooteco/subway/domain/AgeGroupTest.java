@@ -1,35 +1,33 @@
 package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class AgeGroupTest {
 
     @DisplayName("각 연령대를 확인한다.")
-    @Test
-    public void checkChildren() {
-        // given
-        AgeGroup ageGroup1 = AgeGroup.from(6);
-        AgeGroup ageGroup2 = AgeGroup.from(12);
-        AgeGroup ageGroup3 = AgeGroup.from(13);
-        AgeGroup ageGroup4 = AgeGroup.from(18);
-        AgeGroup ageGroup5 = AgeGroup.from(19);
-        AgeGroup ageGroup6 = AgeGroup.from(20);
-        AgeGroup ageGroup7 = AgeGroup.from(100);
+    @ParameterizedTest(name ="age = {0}")
+    @MethodSource("checkAgeGroupArgument")
+    public void checkAgeGroup(int age, AgeGroup ageGroup) {
+        assertEquals(AgeGroup.from(age), ageGroup);
+    }
 
-        // when & then
-        assertAll(
-                () -> assertEquals(ageGroup1, AgeGroup.CHILDREN),
-                () -> assertEquals(ageGroup2, AgeGroup.CHILDREN),
-                () -> assertEquals(ageGroup3, AgeGroup.TEENAGER),
-                () -> assertEquals(ageGroup4, AgeGroup.TEENAGER),
-                () -> assertEquals(ageGroup5, AgeGroup.ADULT),
-                () -> assertEquals(ageGroup6, AgeGroup.ADULT),
-                () -> assertEquals(ageGroup7, AgeGroup.ADULT)
+    public static Stream<Arguments> checkAgeGroupArgument() {
+        return Stream.of(
+                Arguments.of(6, AgeGroup.CHILDREN),
+                Arguments.of(12, AgeGroup.CHILDREN),
+                Arguments.of(13, AgeGroup.TEENAGER),
+                Arguments.of(18, AgeGroup.TEENAGER),
+                Arguments.of(19, AgeGroup.ADULT),
+                Arguments.of(20, AgeGroup.ADULT),
+                Arguments.of(100, AgeGroup.ADULT)
         );
     }
 
@@ -43,22 +41,23 @@ public class AgeGroupTest {
     }
 
     @DisplayName("각 연령대 별 요금을 확인한다.")
-    @Test
-    public void checkFare() {
+    @ParameterizedTest(name = "기본요금 = 2350, ageGroup = {0}, 최종 요금 = {1}")
+    @MethodSource("checkFareArgument")
+    public void checkFare(AgeGroup ageGroup, int resultFare) {
         //given
         int fare = 2350;
-        final AgeGroup baby = AgeGroup.BABY;
-        final AgeGroup children = AgeGroup.CHILDREN;
-        final AgeGroup teenager = AgeGroup.TEENAGER;
-        final AgeGroup adult = AgeGroup.ADULT;
 
         // then
-        assertAll(
-                () -> assertEquals(baby.getDiscountedValue(fare), 0),
-                () -> assertEquals(children.getDiscountedValue(fare), 1350),
-                () -> assertEquals(teenager.getDiscountedValue(fare), 1950),
-                () -> assertEquals(adult.getDiscountedValue(fare), 2350)
-        );
+        assertEquals(ageGroup.getDiscountedValue(fare), resultFare);
     }
 
+
+    public static Stream<Arguments> checkFareArgument() {
+        return Stream.of(
+                Arguments.of(AgeGroup.BABY, 0),
+                Arguments.of(AgeGroup.CHILDREN, 1350),
+                Arguments.of(AgeGroup.TEENAGER, 1950),
+                Arguments.of(AgeGroup.ADULT, 2350)
+        );
+    }
 }
