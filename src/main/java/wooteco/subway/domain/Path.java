@@ -1,45 +1,47 @@
 package wooteco.subway.domain;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class Path {
 
-    private static final int BASIC_FARE = 1250;
-    private static final int FIRST_SECTION_BASIC_FARE = 800;
-    private static final int FIRST_SECTION_UNIT = 5;
-    private static final int SECOND_SECTION_UNIT = 8;
-
     private final List<Long> stationIds;
+    private final Set<Long> lineIds;
     private final int distance;
 
-    public Path(List<Long> stationIds, int distance) {
+    public Path(final List<Long> stationIds, final Set<Long> lineIds, final int distance) {
+        validateStationIds(stationIds);
+        validateLineIds(lineIds);
+        validateDistance(distance);
         this.stationIds = stationIds;
+        this.lineIds = lineIds;
         this.distance = distance;
     }
 
-    public int calculateFare() {
-        if (distance < 10) {
-            return BASIC_FARE;
+    private void validateStationIds(final List<Long> stationIds) {
+        if (stationIds.size() <= 0) {
+            throw new IllegalArgumentException("[ERROR] 경로의 역이 존재하지 않습니다.");
         }
-        if (distance <= 50) {
-            return calcAdditionalFare(distance - 10, FIRST_SECTION_UNIT);
-        }
-        return FIRST_SECTION_BASIC_FARE + calcAdditionalFare(distance - 50, SECOND_SECTION_UNIT);
     }
 
-    private int calcAdditionalFare(int distance, int unit) {
-        int fare = 0;
-        fare += (distance / unit) * 100;
-        if (distance % unit > 0 || (distance / unit == 0)) {
-            fare += 100;
+    private void validateLineIds(final Set<Long> lineIds) {
+        if (lineIds.size() <= 0) {
+            throw new IllegalArgumentException("[ERROR] 경로가 지나가는 노선이 존재하지 않습니다.");
         }
-        return BASIC_FARE + fare;
     }
 
+    private void validateDistance(final int distance) {
+        if (distance <= 0) {
+            throw new IllegalArgumentException("[ERROR] 경로의 길이가 0 이하 일 수 없습니다.");
+        }
+    }
 
     public List<Long> getStationIds() {
-        return Collections.unmodifiableList(stationIds);
+        return stationIds;
+    }
+
+    public Set<Long> getLineIds() {
+        return lineIds;
     }
 
     public int getDistance() {
