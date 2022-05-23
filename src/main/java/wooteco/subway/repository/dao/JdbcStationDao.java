@@ -1,4 +1,4 @@
-package wooteco.subway.dao;
+package wooteco.subway.repository.dao;
 
 import java.sql.PreparedStatement;
 import java.util.List;
@@ -11,13 +11,14 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Station;
+import wooteco.subway.repository.entity.StationEntity;
 
 @Repository
 public class JdbcStationDao implements StationDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private static final RowMapper<Station> STATION_ROW_MAPPER = (resultSet, rowNum) -> new Station(
+    private static final RowMapper<StationEntity> STATION_ROW_MAPPER = (resultSet, rowNum) -> new StationEntity(
         resultSet.getLong("id"),
         resultSet.getString("name")
     );
@@ -41,7 +42,7 @@ public class JdbcStationDao implements StationDao {
     }
 
     @Override
-    public List<Station> findAll() {
+    public List<StationEntity> findAll() {
         final String sql = "SELECT * FROM station";
         return jdbcTemplate.query(sql, STATION_ROW_MAPPER);
     }
@@ -61,13 +62,13 @@ public class JdbcStationDao implements StationDao {
     }
 
     @Override
-    public Station findById(Long id) {
+    public StationEntity findById(Long id) {
         final String sql = "SELECT * FROM station where id = ?";
         return jdbcTemplate.queryForObject(sql, STATION_ROW_MAPPER, id);
     }
 
     @Override
-    public List<Station> findById(List<Long> ids) {
+    public List<StationEntity> findById(List<Long> ids) {
         SqlParameterSource parameters = new MapSqlParameterSource("ids", ids);
         final String sql = "SELECT * FROM station where id in (:ids)";
         NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(

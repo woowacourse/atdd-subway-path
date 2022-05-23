@@ -2,41 +2,42 @@ package wooteco.subway.service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.dao.LineDao;
-import wooteco.subway.dao.SectionDao;
-import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.service.dto.LineServiceRequest;
+import wooteco.subway.repository.LineRepository;
+import wooteco.subway.repository.SectionRepository;
+import wooteco.subway.repository.StationRepository;
 import wooteco.subway.service.dto.LineResponse;
+import wooteco.subway.service.dto.LineServiceRequest;
 import wooteco.subway.service.dto.StationResponse;
 
 @Service
 @Transactional(readOnly = true)
 public class LineService {
 
-    private final LineDao lineDao;
-    private final SectionDao sectionDao;
-    private final StationDao stationDao;
+    private final LineRepository lineRepository;
+    private final StationRepository stationRepository;
+    private final SectionRepository sectionRepository;
 
-    public LineService(LineDao lineDao, SectionDao sectionDao, StationDao stationDao) {
-        this.lineDao = lineDao;
-        this.sectionDao = sectionDao;
-        this.stationDao = stationDao;
+    public LineService(LineRepository lineRepository, StationRepository stationRepository,
+        SectionRepository sectionRepository) {
+        this.lineRepository = lineRepository;
+        this.stationRepository = stationRepository;
+        this.sectionRepository = sectionRepository;
     }
 
     @Transactional
     public LineResponse save(LineServiceRequest lineServiceRequest) {
         validateDuplicationName(lineServiceRequest.getName());
-        Line line = new Line(lineServiceRequest.getName(), lineServiceRequest.getColor());
-        Long savedId = lineDao.save(line);
-        sectionDao.save(new Section(savedId, lineServiceRequest.getUpStationId(),
+        Line line = new Line(lineServiceRequest.getName(), lineServiceRequest.getColor(), lineServiceRequest.getExtraFare());
+        Long savedId = lineRepository.save(line);
+        Line insertLine = new Line(savedId, line.getName(), line.getColor(), line.getExtraFare());
+        sectionRepository.save(new Section(insertLine, lineServiceRequest.getUpStationId(),
             lineServiceRequest.getDownStationId(), lineServiceRequest.getDistance()));
 
         return new LineResponse(savedId, line.getName(), line.getColor(), List.of(
@@ -46,32 +47,32 @@ public class LineService {
     }
 
     private void validateDuplicationName(String name) {
-        if (lineDao.existsByName(name)) {
+        if (lineRepository.existsByName(name)) {
             throw new IllegalArgumentException("중복된 이름이 존재합니다.");
         }
     }
 
     public List<LineResponse> findAll() {
         Map<Long, Station> stations = findAllStations();
-        return lineDao.findAll().stream()
+        return lineRepository.findAll().stream()
             .map(i -> new LineResponse(i.getId(), i.getName(), i.getColor(),
                 getSortedStationsByLineId(i.getId(), stations)))
             .collect(Collectors.toList());
     }
 
     private StationResponse findStationByLineId(Long lineId) {
-        Station station = stationDao.findById(lineId);
+        Station station = stationRepository.findById(lineId);
         return new StationResponse(station.getId(), station.getName());
     }
 
     private Map<Long, Station> findAllStations() {
-        return stationDao.findAll().stream()
-            .collect(Collectors.toMap(Station::getId, i -> new Station(i.getName())));
+        return stationRepository.findAll().stream()
+            .collect(Collectors.toMap(Station::getId, i -> new Station(i.getId(), i.getName())));
     }
 
     private List<StationResponse> getSortedStationsByLineId(Long lineId,
         Map<Long, Station> stations) {
-        Sections sections = new Sections(sectionDao.findByLineId(lineId));
+        Sections sections = new Sections(sectionRepository.findByLineId(lineId));
         List<Long> stationIds = sections.sortedStationId();
 
         return stationIds.stream()
@@ -84,18 +85,16 @@ public class LineService {
     }
 
     public boolean deleteById(Long id) {
-        return lineDao.deleteById(id);
+        return lineRepository.deleteById(id);
     }
 
     public boolean updateById(Long id, LineServiceRequest lineServiceRequest) {
-        Line line = new Line(id, lineServiceRequest.getName(), lineServiceRequest.getColor());
-        return lineDao.updateById(line);
+        Line line = new Line(id, lineServiceRequest.getName(), lineServiceRequest.getColor(), lineServiceRequest.getExtraFare());
+        return lineRepository.updateById(line);
     }
 
     public LineResponse findById(Long id) {
-        Optional<Line> maybeLine = lineDao.findById(id);
-        Line line = maybeLine.orElseThrow(
-            () -> new IllegalArgumentException("Id에 해당하는 노선이 존재하지 않습니다."));
+        Line line = lineRepository.findById(id);
         List<Station> stations = findSortedStationByLineId(line.getId());
         return new LineResponse(line.getId(), line.getName(), line.getColor(),
             toStationResponse(stations));
@@ -108,10 +107,10 @@ public class LineService {
     }
 
     private List<Station> findSortedStationByLineId(Long lineId) {
-        Sections sections = new Sections(sectionDao.findByLineId(lineId));
+        Sections sections = new Sections(sectionRepository.findByLineId(lineId));
         List<Long> stationIds = sections.sortedStationId();
         return stationIds.stream()
-            .map(stationDao::findById)
+            .map(stationRepository::findById)
             .collect(Collectors.toList());
     }
 }

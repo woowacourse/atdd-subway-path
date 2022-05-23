@@ -16,21 +16,26 @@ public class LineRequest {
     private Long downStationId;
     @NotNull(message = "distance를 입력해주세요.")
     private int distance;
+    @NotNull(message = "distance를 입력해주세요.")
+    private int extraFare;
+
 
     public LineRequest() {
     }
 
     public LineRequest(String name, String color, Long upStationId, Long downStationId,
-        int distance) {
+        int distance,
+        int extraFare) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+        this.extraFare = extraFare;
     }
 
     public LineRequest(String name, String color) {
-        this(name, color, null, null, 0);
+        this(name, color, null, null, 0, 0);
     }
 
     public String getName() {
@@ -54,6 +59,6 @@ public class LineRequest {
     }
 
     public LineServiceRequest toServiceRequest() {
-        return new LineServiceRequest(name, color, upStationId, downStationId, distance);
+        return new LineServiceRequest(name, color, upStationId, downStationId, distance, extraFare);
     }
 }

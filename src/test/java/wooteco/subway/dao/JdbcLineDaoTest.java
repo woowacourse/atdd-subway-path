@@ -12,6 +12,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.domain.Line;
+import wooteco.subway.repository.dao.JdbcLineDao;
+import wooteco.subway.repository.entity.LineEntity;
 
 @JdbcTest
 class JdbcLineDaoTest {
@@ -25,9 +27,9 @@ class JdbcLineDaoTest {
     void setUp() {
         jdbcLineDao = new JdbcLineDao(jdbcTemplate);
 
-        List<Line> lineEntities = jdbcLineDao.findAll();
+        List<LineEntity> lineEntities = jdbcLineDao.findAll();
         List<Long> lineIds = lineEntities.stream()
-            .map(Line::getId)
+            .map(LineEntity::getId)
             .collect(Collectors.toList());
 
         for (Long lineId : lineIds) {
@@ -38,11 +40,11 @@ class JdbcLineDaoTest {
     @Test
     void save() {
         // given
-        Line line = new Line("1호선", "bg-red-600");
+        Line line = new Line("1호선", "bg-red-600", 0);
 
         // when
         Long savedId = jdbcLineDao.save(line);
-        Line line1 = jdbcLineDao.findById(savedId).get();
+        LineEntity line1 = jdbcLineDao.findById(savedId).get();
 
         // then
         assertThat(line.getName()).isEqualTo(line1.getName());
@@ -51,8 +53,8 @@ class JdbcLineDaoTest {
     @Test
     void validateDuplication() {
         // given
-        Line line1 = new Line("1호선", "bg-red-600");
-        Line line2 = new Line("1호선", "bg-red-600");
+        Line line1 = new Line("1호선", "bg-red-600", 0);
+        Line line2 = new Line("1호선", "bg-red-600", 0);
 
         // when
         jdbcLineDao.save(line1);
@@ -65,8 +67,8 @@ class JdbcLineDaoTest {
     @Test
     void findAll() {
         // given
-        Line line1 = new Line("1호선", "bg-red-600");
-        Line line2 = new Line("2호선", "bg-green-600");
+        Line line1 = new Line("1호선", "bg-red-600", 0);
+        Line line2 = new Line("2호선", "bg-green-600", 0);
 
         // when
         jdbcLineDao.save(line1);
@@ -75,7 +77,7 @@ class JdbcLineDaoTest {
         // then
         List<String> names = jdbcLineDao.findAll()
             .stream()
-            .map(Line::getName)
+            .map(LineEntity::getName)
             .collect(Collectors.toList());
 
         assertThat(names)
@@ -86,7 +88,7 @@ class JdbcLineDaoTest {
     @Test
     void delete() {
         // given
-        Line line = new Line("1호선", "bg-red-600");
+        Line line = new Line("1호선", "bg-red-600", 0);
         Long savedId = jdbcLineDao.save(line);
 
         // when
@@ -95,7 +97,7 @@ class JdbcLineDaoTest {
         // then
         List<Long> lineIds = jdbcLineDao.findAll()
             .stream()
-            .map(Line::getId)
+            .map(LineEntity::getId)
             .collect(Collectors.toList());
 
         assertThat(lineIds)
@@ -106,13 +108,13 @@ class JdbcLineDaoTest {
     @Test
     void update() {
         // given
-        Line originLine = new Line("1호선", "bg-red-600");
+        Line originLine = new Line("1호선", "bg-red-600", 0);
         Long savedId = jdbcLineDao.save(originLine);
 
         // when
-        Line newline = new Line(savedId, "2호선", "bg-green-600");
+        Line newline = new Line(savedId, "2호선", "bg-green-600", 0);
         jdbcLineDao.updateById(newline);
-        Line line = jdbcLineDao.findById(savedId).get();
+        LineEntity line = jdbcLineDao.findById(savedId).get();
 
         // then
         assertThat(line.getName()).isEqualTo(newline.getName());

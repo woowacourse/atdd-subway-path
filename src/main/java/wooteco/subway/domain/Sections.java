@@ -1,13 +1,10 @@
 package wooteco.subway.domain;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class Sections {
 
@@ -20,32 +17,83 @@ public class Sections {
     }
 
     public boolean isMiddleSection(Section section) {
-        long upStationId = findUpTerminalStationId();
-        long downStationId = findDownTerminalStationId();
+        Long upStationId = findUpTerminalStationId();
+        Long downStationId = findDownTerminalStationId();
         return isMiddlePoint(section, upStationId, downStationId);
     }
 
-    private boolean isMiddlePoint(Section section, long upStationId, long downStationId) {
+    private boolean isMiddlePoint(Section section, Long upStationId, Long downStationId) {
         return !(section.matchDownStationId(upStationId) || section.mathUpStationId(downStationId));
     }
 
-    public boolean hasStationId(long id) {
-        Set<Long> stationIds = new HashSet<>();
-        for (Section section : sections) {
-            stationIds.add(section.getUpStationId());
-            stationIds.add(section.getDownStationId());
-        }
-        return stationIds.contains(id);
+    public boolean hasStationId(Long id) {
+        return sections.stream()
+            .anyMatch(section -> section.matchDownStationId(id) || section.mathUpStationId(id));
     }
 
-    public Section findSectionByUpStationId(long id) {
+    public List<Section> insert(Section section) {
+        if (isEndPointSection(section)) {
+            sections.add(section);
+            return sections;
+        }
+        return insertMiddleSection(section);
+    }
+
+    private boolean isEndPointSection(Section section) {
+        Long upTerminalStationId = findUpTerminalStationId();
+        Long downTerminalStationId = findDownTerminalStationId();
+        return (section.matchDownStationId(upTerminalStationId) || section.mathUpStationId(
+            downTerminalStationId));
+    }
+
+    private List<Section> insertMiddleSection(Section section) {
+        // 1-2-3 , 1-2-4-3
+        if (hasStationId(section.getUpStationId())) {
+            return updateDownStationSection(section);
+        }
+        return updateUpStationSection(section);
+    }
+
+    private List<Section> updateDownStationSection(Section section) {
+        // 1 - 3 -> 1-2-3
+        Section sectionByDownStation = findSectionByUpStationId(section.getUpStationId());
+        validateUpdateDistance(sectionByDownStation, section);
+        int distance = sectionByDownStation.getDistance() - section.getDistance();
+        Section updateSection = new Section(sectionByDownStation.getLine(),
+            section.getDownStationId(), sectionByDownStation.getDownStationId(), distance);
+        sections.remove(sectionByDownStation);
+        sections.add(section);
+        sections.add(updateSection);
+        return sections;
+    }
+
+    private List<Section> updateUpStationSection(Section section) {
+        // 1-2-3 > 1-2-4-3 -> 2-3제거 , 2-4추가 4-3추가
+        Section sectionByUpStation = findSectionByDownStationId(section.getDownStationId());
+        int distance = sectionByUpStation.getDistance() - section.getDistance();
+        Section updateSection = new Section(sectionByUpStation.getLine(),
+            sectionByUpStation.getUpStationId(),
+            section.getUpStationId(), distance);
+        sections.remove(sectionByUpStation);
+        sections.add(section);
+        sections.add(updateSection);
+        return sections;
+    }
+
+    private void validateUpdateDistance(Section section, Section insertSection) {
+        if (section.getDistance() <= insertSection.getDistance()) {
+            throw new IllegalArgumentException("등록할 구간의 길이가 기존 역 사이의 길이보다 길거나 같으면 안됩니다.");
+        }
+    }
+
+    public Section findSectionByUpStationId(Long id) {
         return sections.stream()
             .filter(i -> i.mathUpStationId(id))
             .findAny()
             .orElseThrow(() -> new IllegalArgumentException("구간 중 해당 upStationId이 존재하지 않습니다."));
     }
 
-    public Section findSectionByDownStationId(long id) {
+    public Section findSectionByDownStationId(Long id) {
         return sections.stream()
             .filter(i -> i.matchDownStationId(id))
             .findAny()
@@ -60,7 +108,7 @@ public class Sections {
         return sectionIds;
     }
 
-    private long findDownTerminalStationId() {
+    private Long findDownTerminalStationId() {
         Map<Long, Long> sectionIds = getSectionIds();
         return sectionIds.values().stream()
             .filter(i -> !sectionIds.containsKey(i))
@@ -68,7 +116,7 @@ public class Sections {
             .orElseThrow(() -> new IllegalArgumentException("하행점을 찾을 수 없습니다."));
     }
 
-    private long findUpTerminalStationId() {
+    private Long findUpTerminalStationId() {
         Map<Long, Long> sectionIds = getSectionIds();
         return sectionIds.keySet().stream()
             .filter(i -> !sectionIds.containsValue(i))
@@ -77,7 +125,7 @@ public class Sections {
     }
 
     public List<Long> sortedStationId() {
-        long upStationId = findUpTerminalStationId();
+        Long upStationId = findUpTerminalStationId();
         List<Long> stationIds = new ArrayList<>(List.of(upStationId));
         Map<Long, Long> stationIdsInSections = getSectionIds();
 
@@ -87,6 +135,37 @@ public class Sections {
         }
 
         return stationIds;
+    }
+
+    public List<Section> removeSection(Section section) {
+        validateRemove();
+
+        if (isEndPointSection(section)) {
+            Section deleteSection = findSectionByUpStationId(section.getUpStationId());
+            sections.remove(deleteSection);
+            return sections;
+        }
+
+        return removeMiddleSection(section);
+    }
+
+    private List<Section> removeMiddleSection(Section section) {
+        Section downSection = findSectionByUpStationId(section.getUpStationId());
+        Section upSection = findSectionByDownStationId(section.getUpStationId());
+        sections.remove(downSection);
+        sections.remove(upSection);
+
+        int distance = upSection.getDistance() + downSection.getDistance();
+        Section updateSection = new Section(upSection.getLine(), upSection.getUpStationId(),
+            downSection.getDownStationId(), distance);
+        sections.add(updateSection);
+        return sections;
+    }
+
+    private void validateRemove() {
+        if (!canRemoveSection()) {
+            throw new IllegalArgumentException("구간을 제거할 수 없는 상태입니다.");
+        }
     }
 
     private boolean isSingleSection() {

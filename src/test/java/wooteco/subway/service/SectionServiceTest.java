@@ -13,13 +13,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import wooteco.subway.dao.LineDao;
-import wooteco.subway.dao.JdbcLineDao;
-import wooteco.subway.dao.SectionDao;
-import wooteco.subway.dao.JdbcSectionDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
+import wooteco.subway.repository.JdbcLineRepository;
+import wooteco.subway.repository.JdbcSectionRepository;
+import wooteco.subway.repository.LineRepository;
+import wooteco.subway.repository.SectionRepository;
+import wooteco.subway.repository.dao.JdbcLineDao;
+import wooteco.subway.repository.dao.JdbcSectionDao;
+import wooteco.subway.repository.dao.LineDao;
+import wooteco.subway.repository.dao.SectionDao;
 import wooteco.subway.service.dto.SectionServiceDeleteRequest;
 import wooteco.subway.service.dto.SectionServiceRequest;
 
@@ -29,32 +33,37 @@ public class SectionServiceTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    private SectionRepository sectionRepository;
+    private LineRepository lineRepository;
+
     private SectionService sectionService;
-    private SectionDao sectionDao;
-    private LineDao lineDao;
 
     @BeforeEach
     void setUp() {
-        sectionDao = new JdbcSectionDao(jdbcTemplate);
-        sectionService = new SectionService(sectionDao);
-        lineDao = new JdbcLineDao(jdbcTemplate);
+        SectionDao sectionDao = new JdbcSectionDao(jdbcTemplate);
+        LineDao lineDao = new JdbcLineDao(jdbcTemplate);
+        sectionRepository = new JdbcSectionRepository(sectionDao, lineDao);
+        lineRepository = new JdbcLineRepository(lineDao);
 
-        deleteAllLine(lineDao);
-        deleteAllSection(sectionDao);
+        sectionService = new SectionService(sectionRepository, lineRepository);
+
+        deleteAllLine(lineRepository);
+        deleteAllSection(sectionRepository);
     }
 
     @Test
     @DisplayName("상행점 구간을 저장한다. 정렬된 구간 : 2-3-4-5 -> 1-2-3-4-5")
     void saveFirstStation() {
         // given
-        Long lineId = lineDao.save(new Line("name", "color"));
-        sectionDao.save(new Section(lineId, 2L, 3L, 3));
-        sectionDao.save(new Section(lineId, 3L, 4L, 4));
-        sectionDao.save(new Section(lineId, 4L, 5L, 5));
+        Long lineId = lineRepository.save(new Line("name", "color", 0));
+        Line line = new Line(lineId, "name", "color", 0);
+        sectionRepository.save(new Section(line, 2L, 3L, 3));
+        sectionRepository.save(new Section(line, 3L, 4L, 4));
+        sectionRepository.save(new Section(line, 4L, 5L, 5));
 
         // when
         sectionService.save(new SectionServiceRequest(1L, 2L, 2), lineId);
-        List<Section> inputSections = sectionDao.findByLineId(lineId);
+        List<Section> inputSections = sectionRepository.findByLineId(lineId);
         Sections sections = new Sections(inputSections);
         List<Long> stationIds = sections.sortedStationId();
         Long firstPointStationId = stationIds.get(0);
@@ -75,14 +84,15 @@ public class SectionServiceTest {
     @DisplayName("하행점 구간을 저장한다. 정렬된 구간 : 1-2-3-4 -> 1-2-3-4-5")
     void saveLastStation() {
         // given
-        Long lineId = lineDao.save(new Line("name", "color"));
-        sectionDao.save(new Section(lineId, 1L, 2L, 3));
-        sectionDao.save(new Section(lineId, 2L, 3L, 4));
-        sectionDao.save(new Section(lineId, 3L, 4L, 5));
+        Long lineId = lineRepository.save(new Line("name", "color", 0));
+        Line line = new Line(lineId, "name", "color", 0);
+        sectionRepository.save(new Section(line, 1L, 2L, 3));
+        sectionRepository.save(new Section(line, 2L, 3L, 4));
+        sectionRepository.save(new Section(line, 3L, 4L, 5));
 
         // when
         sectionService.save(new SectionServiceRequest(4L, 5L, 2), lineId);
-        List<Section> inputSections = sectionDao.findByLineId(lineId);
+        List<Section> inputSections = sectionRepository.findByLineId(lineId);
         Sections sections = new Sections(inputSections);
 
         List<Long> stationIds = sections.sortedStationId();
@@ -104,12 +114,13 @@ public class SectionServiceTest {
     @DisplayName("중간 지점 구간을 저장한다. 정렬된 구간 : 1-3구간에서 1-2 구간을 추가하는 경우")
     void saveMiddleStation1() {
         // given
-        Long lineId = lineDao.save(new Line("name", "color"));
-        sectionDao.save(new Section(lineId, 1L, 3L, 3));
+        Long lineId = lineRepository.save(new Line("name", "color", 0));
+        Line line = new Line(lineId, "name", "color", 0);
+        sectionRepository.save(new Section(line, 1L, 3L, 3));
 
         // when
         sectionService.save(new SectionServiceRequest(1L, 2L, 2), lineId);
-        List<Section> inputSections = sectionDao.findByLineId(lineId);
+        List<Section> inputSections = sectionRepository.findByLineId(lineId);
         Sections sections = new Sections(inputSections);
         List<Long> stationIds = sections.sortedStationId();
 
@@ -134,12 +145,13 @@ public class SectionServiceTest {
     @DisplayName("중간 지점 구간을 저장한다. 정렬된 구간 : 1-3구간에서 2-3 구간을 추가하는 경우")
     void saveMiddleStation2() {
         // given
-        Long lineId = lineDao.save(new Line("name", "color"));
-        sectionDao.save(new Section(lineId, 1L, 3L, 4));
+        Long lineId = lineRepository.save(new Line("name", "color", 0));
+        Line line = new Line(lineId, "name", "color", 0);
+        sectionRepository.save(new Section(line, 1L, 3L, 4));
 
         // when
         sectionService.save(new SectionServiceRequest(2L, 3L, 3), lineId);
-        List<Section> inputSections = sectionDao.findByLineId(lineId);
+        List<Section> inputSections = sectionRepository.findByLineId(lineId);
 
         Sections sections = new Sections(inputSections);
         List<Long> stationIds = sections.sortedStationId();
@@ -165,10 +177,11 @@ public class SectionServiceTest {
     @DisplayName("생성할 중간 지점 구간의 길이가 기존 구간의 길이보다 길거나 같은 경우 예외가 발생한다.")
     void validateMiddleStationDistance() {
         // given
-        Long lineId = lineDao.save(new Line("name", "color"));
-        sectionDao.save(new Section(lineId, 2L, 3L, 3));
-        sectionDao.save(new Section(lineId, 3L, 4L, 4));
-        sectionDao.save(new Section(lineId, 4L, 5L, 5));
+        Long lineId = lineRepository.save(new Line("name", "color", 0));
+        Line line = new Line(lineId, "name", "color", 0);
+        sectionRepository.save(new Section(line, 2L, 3L, 3));
+        sectionRepository.save(new Section(line, 3L, 4L, 4));
+        sectionRepository.save(new Section(line, 4L, 5L, 5));
 
         assertThatThrownBy(() ->
             sectionService.save(new SectionServiceRequest(2L, 1L, 4), lineId))
@@ -180,14 +193,15 @@ public class SectionServiceTest {
     @DisplayName("중간 지점 구간 제거한다. 1-2-3-4 -> 1-2-4")
     void deleteMiddleSection() {
         // given
-        Long lineId = lineDao.save(new Line("name", "color"));
-        sectionDao.save(new Section(lineId, 1L, 2L, 3));
-        sectionDao.save(new Section(lineId, 2L, 3L, 4));
-        sectionDao.save(new Section(lineId, 3L, 4L, 5));
+        Long lineId = lineRepository.save(new Line("name", "color", 0));
+        Line line = new Line(lineId, "name", "color", 0);
+        sectionRepository.save(new Section(line, 1L, 2L, 3));
+        sectionRepository.save(new Section(line, 2L, 3L, 4));
+        sectionRepository.save(new Section(line, 3L, 4L, 5));
 
         // when
         sectionService.removeSection(new SectionServiceDeleteRequest(lineId, 3L));
-        List<Section> inputSections = sectionDao.findByLineId(lineId);
+        List<Section> inputSections = sectionRepository.findByLineId(lineId);
         Sections sections = new Sections(inputSections);
         List<Long> result = sections.sortedStationId();
 
@@ -208,8 +222,9 @@ public class SectionServiceTest {
     @DisplayName("구간이 하나 밖에 없을 경우, 예외가 발생한다.")
     void validateDeleteEndStationSection() {
         // given
-        Long lineId = lineDao.save(new Line("name", "color"));
-        sectionDao.save(new Section(lineId, 2L, 3L, 3));
+        Long lineId = lineRepository.save(new Line("name", "color", 0));
+        Line line = new Line(lineId, "name", "color", 0);
+        sectionRepository.save(new Section(line, 2L, 3L, 3));
 
         // then
         assertThatThrownBy(() ->

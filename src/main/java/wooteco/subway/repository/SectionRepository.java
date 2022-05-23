@@ -1,9 +1,9 @@
-package wooteco.subway.dao;
+package wooteco.subway.repository;
 
 import java.util.List;
 import wooteco.subway.domain.Section;
 
-public interface SectionDao {
+public interface SectionRepository {
 
     Long save(Section section);
 
@@ -14,4 +14,6 @@ public interface SectionDao {
     boolean deleteById(Long sectionId);
 
     List<Section> findAll();
+
+    void updateAll(List<Section> insertSections);
 }

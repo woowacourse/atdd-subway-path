@@ -10,11 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import wooteco.subway.dao.StationDao;
-import wooteco.subway.dao.JdbcStationDao;
 import wooteco.subway.domain.Station;
-import wooteco.subway.service.dto.StationServiceRequest;
+import wooteco.subway.repository.JdbcStationRepository;
+import wooteco.subway.repository.StationRepository;
+import wooteco.subway.repository.dao.JdbcStationDao;
+import wooteco.subway.repository.dao.StationDao;
 import wooteco.subway.service.dto.StationResponse;
+import wooteco.subway.service.dto.StationServiceRequest;
 
 @JdbcTest
 class StationServiceTest {
@@ -27,8 +29,9 @@ class StationServiceTest {
     @BeforeEach
     void setUp() {
         StationDao stationDao = new JdbcStationDao(jdbcTemplate);
-        deleteAllStation(stationDao);
-        stationService = new StationService(stationDao);
+        StationRepository stationRepository = new JdbcStationRepository(stationDao);
+        deleteAllStation(stationRepository);
+        stationService = new StationService(stationRepository);
     }
 
     @Test

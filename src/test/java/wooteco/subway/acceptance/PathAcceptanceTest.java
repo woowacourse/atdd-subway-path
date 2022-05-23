@@ -27,10 +27,10 @@ class PathAcceptanceTest extends AcceptanceTest {
         createStation("역삼역");
         createStation("선릉역");
 
-        createLine("3호선", "bg-orange-600", 1L, 2L, 3);
+        Long lineId = createLine("3호선", "bg-orange-600", 1L, 2L, 3);
 
-        createSection(2L, 3L, 4);
-        createSection(3L, 4L, 5);
+        createSection(lineId, 2L, 3L, 4);
+        createSection(lineId, 3L, 4L, 5);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()

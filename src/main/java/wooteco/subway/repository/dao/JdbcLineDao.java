@@ -1,4 +1,4 @@
-package wooteco.subway.dao;
+package wooteco.subway.repository.dao;
 
 import java.sql.PreparedStatement;
 import java.util.List;
@@ -10,14 +10,16 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Line;
+import wooteco.subway.repository.entity.LineEntity;
 
 @Repository
 public class JdbcLineDao implements LineDao {
 
-    private static final RowMapper<Line> LINE_ROW_MAPPER = (resultSet, rowNum) -> new Line(
+    private static final RowMapper<LineEntity> LINE_ROW_MAPPER = (resultSet, rowNum) -> new LineEntity(
         resultSet.getLong("id"),
         resultSet.getString("name"),
-        resultSet.getString("color")
+        resultSet.getString("color"),
+        resultSet.getInt("extraFare")
     );
 
     private final JdbcTemplate jdbcTemplate;
@@ -28,13 +30,14 @@ public class JdbcLineDao implements LineDao {
 
     @Override
     public Long save(Line line) {
-        final String sql = "INSERT INTO line (name, color) VALUES (?, ?)";
+        final String sql = "INSERT INTO line (name, color, extraFare) VALUES (?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, line.getName());
             ps.setString(2, line.getColor());
+            ps.setInt(3, line.getExtraFare());
             return ps;
         }, keyHolder);
 
@@ -42,10 +45,12 @@ public class JdbcLineDao implements LineDao {
     }
 
     @Override
-    public List<Line> findAll() {
+    public List<LineEntity> findAll() {
         final String sql = "SELECT * FROM line";
         return jdbcTemplate.query(sql, LINE_ROW_MAPPER);
     }
+
+
 
     @Override
     public boolean deleteById(Long id) {
@@ -55,7 +60,7 @@ public class JdbcLineDao implements LineDao {
     }
 
     @Override
-    public Optional<Line> findById(Long id) {
+    public Optional<LineEntity> findById(Long id) {
         final String sql = "SELECT * FROM line where id = ?";
 
         try {
@@ -67,8 +72,8 @@ public class JdbcLineDao implements LineDao {
 
     @Override
     public boolean updateById(Line line) {
-        final String sql = "UPDATE line SET name = ?, color = ? where id = ?";
-        int updateSize = jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId());
+        final String sql = "UPDATE line SET name = ?, color = ?, extraFare = ? where id = ?";
+        int updateSize = jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getExtraFare(), line.getId());
         return updateSize != 0;
     }
 

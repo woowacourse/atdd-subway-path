@@ -5,21 +5,21 @@ import java.util.Objects;
 public class Section {
 
     private final Long id;
-    private final Long lineId;
+    private final Line line;
     private final long upStationId;
     private final long downStationId;
     private final Integer distance;
 
-    public Section(Long id, Long lineId, long upStationId, long downStationId, Integer distance) {
+    public Section(Long id, Line line, long upStationId, long downStationId, Integer distance) {
         this.id = id;
-        this.lineId = lineId;
+        this.line = line;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
     }
 
-    public Section(long lineId, long upStationId, long downStationId, Integer distance) {
-        this(null, lineId, upStationId, downStationId, distance);
+    public Section(Line line, long upStationId, long downStationId, Integer distance) {
+        this(null, line, upStationId, downStationId, distance);
     }
 
     public Section(long upStationId, long downStationId) {
@@ -42,8 +42,12 @@ public class Section {
         return distance;
     }
 
-    public long getLineId() {
-        return lineId;
+    public Line getLine() {
+        return line;
+    }
+
+    public Long getLineId() {
+        return line.getId();
     }
 
     public boolean matchDownStationId(Long id) {
@@ -52,6 +56,10 @@ public class Section {
 
     public boolean mathUpStationId(long id) {
         return upStationId == id;
+    }
+
+    public int subtractDistance(int distance) {
+        return this.distance - distance;
     }
 
     @Override
