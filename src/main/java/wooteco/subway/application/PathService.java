@@ -26,13 +26,13 @@ public class PathService {
         this.stationDao = stationDao;
     }
 
-    public PathResponse findPath(Long from, Long to) {
+    public PathResponse findPath(Long from, Long to, Integer age) {
         validateExistStations(from, to);
         List<Section> sections = sectionDao.findAll();
         PathFinder pathFinder = new PathFinder(sections);
         List<Long> path = pathFinder.findPath(from, to);
         int distance = pathFinder.findDistance(from, to);
-        int fare = fareCalculator.calculateFare(distance);
+        int fare = fareCalculator.calculateFare(distance, age);
         List<Station> stations = stationDao.findByIdIn(path);
 
         return new PathResponse(stations, distance, fare);

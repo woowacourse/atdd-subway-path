@@ -75,7 +75,7 @@ class PathServiceTest {
     @DisplayName("경로를 조회한 결과가 순서에 맞게 출력되었는지 검증한다")
     @Test
     void findPath() {
-        PathResponse result = pathService.findPath(기흥역_ID, 한티역_ID);
+        PathResponse result = pathService.findPath(기흥역_ID, 한티역_ID, 0);
         assertAll(
                 () -> assertThat(result.getStations().get(0).getId()).isEqualTo(기흥역_ID),
                 () -> assertThat(result.getStations().get(1).getId()).isEqualTo(모란역_ID),
@@ -84,5 +84,26 @@ class PathServiceTest {
                 () -> assertThat(result.getDistance()).isEqualTo(24),
                 () -> assertThat(result.getFare()).isEqualTo(1550)
         );
+    }
+
+    @DisplayName("어린이 나이를 입력하여 조회한 요금을 확인한다")
+    @Test
+    void findPath_with_children_age() {
+        PathResponse result = pathService.findPath(기흥역_ID, 한티역_ID, 10);
+        assertThat(result.getFare()).isEqualTo(1550);
+    }
+
+    @DisplayName("청소년 나이를 입력하여 조회한 요금을 확인한다")
+    @Test
+    void findPath_with_youth_age() {
+        PathResponse result = pathService.findPath(기흥역_ID, 한티역_ID, 16);
+        assertThat(result.getFare()).isEqualTo(1550);
+    }
+
+    @DisplayName("성인 나이를 입력하여 조회한 요금을 확인한다")
+    @Test
+    void findPath_with_adult_age() {
+        PathResponse result = pathService.findPath(기흥역_ID, 한티역_ID, 25);
+        assertThat(result.getFare()).isEqualTo(1550);
     }
 }
