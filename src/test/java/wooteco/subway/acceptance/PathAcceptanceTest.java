@@ -81,16 +81,19 @@ class PathAcceptanceTest extends AcceptanceTest {
     void ShowPath_SameStations_BadRequestReturned() {
         // when
         final ExtractableResponse<Response> response = findPath(
-                getPathQueryParams(gangnam.getId(), gangnam.getId()));
+                getPathQueryParams(gangnam.getId(), gangnam.getId(), 10));
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    private Map<String, Long> getPathQueryParams(final Long sourceStationId, final Long targetStationId) {
-        final Map<String, Long> queryParams = new HashMap<>();
+    private Map<String, Object> getPathQueryParams(final Long sourceStationId,
+                                                   final Long targetStationId,
+                                                   final Integer age) {
+        final Map<String, Object> queryParams = new HashMap<>();
         queryParams.put("source", sourceStationId);
         queryParams.put("target", targetStationId);
+        queryParams.put("age", age);
         return queryParams;
     }
 
@@ -98,7 +101,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("이동할 수 없는 경로를 조회할 경우 404 을 응답한다.")
     void ShowPath_InvalidPath_BadRequestReturned() {
         // when
-        final ExtractableResponse<Response> response = findPath(getPathQueryParams(gangnam.getId(), oksu.getId()));
+        final ExtractableResponse<Response> response = findPath(getPathQueryParams(gangnam.getId(), oksu.getId(), 10));
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
@@ -115,11 +118,11 @@ class PathAcceptanceTest extends AcceptanceTest {
                 seoulForest
         );
         final Distance expectedDistance = new Distance(30);
-        final PathResponse expected = PathResponse.of(expectedStations, expectedDistance, new Fare(1650));
+        final PathResponse expected = PathResponse.of(expectedStations, expectedDistance, new Fare(1150));
 
         // when
         final ExtractableResponse<Response> response = findPath(
-                getPathQueryParams(gangnam.getId(), seoulForest.getId()));
+                getPathQueryParams(gangnam.getId(), seoulForest.getId(), 10));
 
         final PathResponse actual = response.as(PathResponse.class);
 
@@ -143,10 +146,11 @@ class PathAcceptanceTest extends AcceptanceTest {
                 dapsimni
         );
         final Distance expectedDistance = new Distance(59);
-        final PathResponse expected = PathResponse.of(expectedStations, expectedDistance, new Fare(2250));
+        final PathResponse expected = PathResponse.of(expectedStations, expectedDistance, new Fare(1450));
 
         // when
-        final ExtractableResponse<Response> response = findPath(getPathQueryParams(yeoksam.getId(), dapsimni.getId()));
+        final ExtractableResponse<Response> response = findPath(
+                getPathQueryParams(yeoksam.getId(), dapsimni.getId(), 10));
         final PathResponse actual = response.as(PathResponse.class);
 
         // then
@@ -160,7 +164,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("경로 조회시 파라미터 데이터가 정확하지 않은 경우 400 을 응답한다.")
     void ShowPath_InvalidParameter_BadRequestReturned() {
         // when
-        final ExtractableResponse<Response> response = findPath(getPathQueryParams(gangnam.getId(), null));
+        final ExtractableResponse<Response> response = findPath(getPathQueryParams(gangnam.getId(), null, 10));
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
