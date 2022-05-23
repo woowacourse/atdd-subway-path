@@ -12,6 +12,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Station;
+import wooteco.subway.dto.StationRequest;
+import wooteco.subway.dto.StationResponse;
 
 @SpringBootTest
 @Sql("/testSchema.sql")
@@ -23,18 +25,18 @@ class StationServiceTest {
     @DisplayName("역을 저장한다")
     @Test
     void 역_저장() {
-        Station station = new Station("홍대입구역");
+        StationRequest stationRequest = new StationRequest("홍대입구역");
 
-        Station savedStation = stationService.save(station);
+        StationResponse savedStation = stationService.save(stationRequest);
 
-        assertThat(savedStation.getName()).isEqualTo(station.getName());
+        assertThat(savedStation.getName()).isEqualTo(stationRequest.getName());
     }
 
     @DisplayName("존재하는 이름의 역 저장 시 예외가 발생한다")
     @Test
     void 존재하는_이름의_역_저장_예외발생() {
-        Station station = new Station("선릉역");
-        Station duplicatedNameStation = new Station("선릉역");
+        StationRequest station = new StationRequest("선릉역");
+        StationRequest duplicatedNameStation = new StationRequest("선릉역");
 
         stationService.save(station);
 
@@ -46,9 +48,9 @@ class StationServiceTest {
     @DisplayName("역을 조회한다")
     @Test
     void 역_조회() {
-        Station savedStation = stationService.save(new Station("서울역"));
+        StationResponse savedStation = stationService.save(new StationRequest("서울역"));
 
-        Station foundStation = stationService.findById(savedStation.getId());
+        StationResponse foundStation = stationService.findById(savedStation.getId());
 
         assertThat(foundStation.getName()).isEqualTo(savedStation.getName());
     }
@@ -64,9 +66,9 @@ class StationServiceTest {
     @DisplayName("모든 역을 조회한다")
     @Test
     void 모든_역_조회() {
-        stationService.save(new Station("용산역"));
-        stationService.save(new Station("잠실역"));
-        stationService.save(new Station("강남역"));
+        stationService.save(new StationRequest("용산역"));
+        stationService.save(new StationRequest("잠실역"));
+        stationService.save(new StationRequest("강남역"));
 
         assertThat(stationService.findAll().size()).isEqualTo(3);
     }
@@ -74,7 +76,7 @@ class StationServiceTest {
     @DisplayName("역을 삭제한다")
     @Test
     void 역_삭제() {
-        Station station = stationService.save(new Station("양재역"));
+        StationResponse station = stationService.save(new StationRequest("양재역"));
 
         stationService.deleteById(station.getId());
 

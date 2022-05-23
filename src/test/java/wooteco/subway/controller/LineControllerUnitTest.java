@@ -27,6 +27,7 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
+import wooteco.subway.dto.LineResponse;
 import wooteco.subway.service.LineService;
 import wooteco.subway.ui.LineController;
 
@@ -88,8 +89,8 @@ class LineControllerUnitTest {
         Section section2 = new Section(
                 new Station(2L, "합정역"),
                 new Station(3L, "상수역"), 10);
-        Line mockLine = new Line(1L, "6호선", "bg-brown-600",
-                new Sections(new LinkedList<>(List.of(section1, section2))));
+        LineResponse mockLine = LineResponse.from(new Line(1L, "6호선", "bg-brown-600",
+                new Sections(new LinkedList<>(List.of(section1, section2)))));
 
         given(lineService.findById(1L)).willReturn(mockLine);
 

@@ -1,6 +1,8 @@
 package wooteco.subway.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineEditRequest;
 import wooteco.subway.dto.LineRequest;
+import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
@@ -31,6 +34,7 @@ public class LineService {
         this.sectionRepository = sectionRepository;
     }
 
+    // return 값을 Line -> LineResponse로 수정 필요
     @Transactional
     public Line save(LineRequest lineRequest) {
         Section section = new Section(stationRepository.findById(lineRequest.getUpStationId()),
@@ -44,13 +48,17 @@ public class LineService {
         }
     }
 
-    public List<Line> findAll() {
-        return lineRepository.findAll();
+    public List<LineResponse> findAll() {
+        List<Line> lines = lineRepository.findAll();
+
+        return lines.stream()
+                .map(LineResponse::from)
+                .collect(Collectors.toList());
     }
 
-    public Line findById(Long id) {
+    public LineResponse findById(Long id) {
         try {
-            return lineRepository.findById(id);
+            return LineResponse.from(lineRepository.findById(id));
         } catch (EmptyResultDataAccessException e) {
             throw new EmptyResultDataAccessException("존재하지 않는 노선입니다", 1);
         }
