@@ -2,12 +2,12 @@ package wooteco.subway.domain;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.stream.Collectors;
 
 public class Path {
@@ -17,9 +17,13 @@ public class Path {
 
     private final WeightedMultigraph<Long, SectionEdge> graph = new WeightedMultigraph<>(SectionEdge.class);
     private final Stations stations;
+    private final Sections sections;
+    private final Lines lines;
 
-    public Path(Stations stations, Sections sections) {
+    public Path(Stations stations, Sections sections, Lines lines) {
         this.stations = stations;
+        this.sections = sections;
+        this.lines = lines;
         addVertexToGraph(stations);
         addEdgeToGraph(sections);
     }
@@ -27,7 +31,8 @@ public class Path {
     private void addEdgeToGraph(Sections sections) {
         for (Section section : sections.getSections()) {
             graph.setEdgeWeight(
-                    graph.addEdge(section.getUpStationId(), section.getDownStationId()).addLineInformation(section.getLineId()),
+                    graph.addEdge(section.getUpStationId(), section.getDownStationId())
+                            .addInformation(section.getLineId(), section.getDistance()),
                     section.getDistance()
             );
         }
@@ -76,9 +81,45 @@ public class Path {
                 .getEdgeList();
 
         for (SectionEdge edge : edges) {
-            lines.add(edge.getLineId());
+            lines.add(getMinWeightEdgeLineId(edge));
         }
 
         return lines;
+    }
+
+    private Long getMinWeightEdgeLineId(SectionEdge edge) {
+        long source = graph.getEdgeSource(edge);
+        long target = graph.getEdgeTarget(edge);
+        if (isAnotherEdge(source, target, edge.getDistance())) {
+            return getSectionWithMinExtraFare(source, target, edge.getDistance()).getLineId();
+        }
+        return edge.getLineId();
+    }
+
+    private Section getSectionWithMinExtraFare(long source, long target, int distance) {
+        int minExtraFare = getMinExtraFare(source, target, distance);
+        return sections.getSections().stream()
+                .filter(section -> section.isContainStationId(source) && section.isContainStationId(target))
+                .filter(section -> lines.getLineByLineId(section.getLineId()).isSameExtraFare(minExtraFare))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 구간입니다."));
+    }
+
+    private int getMinExtraFare(long source, long target, int distance) {
+        return sections.getSections().stream()
+                .filter(section -> section.isContainStationId(source) && section.isContainStationId(target))
+                .filter(section -> section.isSameDistance(distance))
+                .map(section -> lines.getLineByLineId(section.getLineId()))
+                .map(Line::getExtraFare)
+                .mapToInt(fare -> fare)
+                .min()
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 구간입니다."));
+    }
+
+    private boolean isAnotherEdge(long source, long target, int distance) {
+        return sections.getSections().stream()
+                .filter(section -> section.isContainStationId(source) && section.isContainStationId(target) &&
+                        section.isSameDistance(distance))
+                .count() > 1;
     }
 }

@@ -72,4 +72,8 @@ public class Section {
     public boolean isLongerDistance(Section currentSection) {
         return distance >= currentSection.distance;
     }
+
+    public boolean isSameDistance(int distance) {
+        return this.distance <= distance;
+    }
 }

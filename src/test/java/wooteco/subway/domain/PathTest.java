@@ -16,7 +16,12 @@ public class PathTest {
     void calculateShortestPath() {
         Sections sections = new Sections(List.of(new Section(1L, 1L, 2L, 5)));
         Stations stations = new Stations(List.of(new Station(1L, "미금역"), new Station(2L, "정자역")));
-        Path path = new Path(stations, sections);
+        Lines lines = new Lines(
+                List.of(
+                        new Line(1L, "2호선", "bg-red-600", 800)
+                )
+        );
+        Path path = new Path(stations, sections, lines);
         List<Station> paths = path.calculateShortestPath(1L, 2L);
         List<Long> stationIds = convertStationToId(paths);
         assertThat(stationIds).containsExactly(1L, 2L);
@@ -41,7 +46,12 @@ public class PathTest {
                         new Station(4L, "서현역")
                 )
         );
-        Path path = new Path(stations, sections);
+        Lines lines = new Lines(
+                List.of(
+                        new Line(1L, "2호선", "bg-red-600", 800)
+                )
+        );
+        Path path = new Path(stations, sections, lines);
         List<Station> paths = path.calculateShortestPath(1L, 3L);
         List<Long> stationIds = convertStationToId(paths);
 
@@ -58,7 +68,12 @@ public class PathTest {
                         new Station(2L, "정자역")
                 )
         );
-        Path path = new Path(stations, sections);
+        Lines lines = new Lines(
+                List.of(
+                        new Line(1L, "2호선", "bg-red-600", 800)
+                )
+        );
+        Path path = new Path(stations, sections, lines);
         int distance = path.calculateShortestDistance(1L, 2L);
 
         assertThat(distance).isEqualTo(5);
@@ -83,7 +98,12 @@ public class PathTest {
                         new Station(4L, "서현역")
                 )
         );
-        Path path = new Path(stations, sections);
+        Lines lines = new Lines(
+                List.of(
+                        new Line(1L, "2호선", "bg-red-600", 800)
+                )
+        );
+        Path path = new Path(stations, sections, lines);
         int distance = path.calculateShortestDistance(1L, 3L);
 
         assertThat(distance).isEqualTo(8);
@@ -100,7 +120,12 @@ public class PathTest {
                         new Station(4L, "서현역")
                 )
         );
-        Path path = new Path(stations, sections);
+        Lines lines = new Lines(
+                List.of(
+                        new Line(1L, "2호선", "bg-red-600", 800)
+                )
+        );
+        Path path = new Path(stations, sections, lines);
 
         assertThatThrownBy(() -> path.calculateShortestPath(1L, 2L))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -119,7 +144,12 @@ public class PathTest {
                 )
         );
         Sections sections = new Sections(List.of(new Section(1L, 1L, 2L, 5), new Section(1L, 3L, 4L, 5)));
-        Path path = new Path(stations, sections);
+        Lines lines = new Lines(
+                List.of(
+                        new Line(1L, "2호선", "bg-red-600", 800)
+                )
+        );
+        Path path = new Path(stations, sections, lines);
 
         assertThatThrownBy(() -> path.calculateShortestPath(1L, 4L))
                 .isInstanceOf(IllegalArgumentException.class)

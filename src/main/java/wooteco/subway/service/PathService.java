@@ -29,7 +29,8 @@ public class PathService {
     public PathResponse findPath(long source, long target, int age) {
         Sections sections = new Sections(sectionDao.findAll());
         Stations stations = new Stations(stationDao.findAll());
-        Path path = new Path(stations, sections);
+        Lines lines = new Lines(lineDao.findAll());
+        Path path = new Path(stations, sections, lines);
 
         List<Station> shortestPath = path.calculateShortestPath(source, target);
         int shortestDistance = path.calculateShortestDistance(source, target);

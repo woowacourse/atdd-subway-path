@@ -13,7 +13,6 @@ public class FareCalculator {
     private static final int SURCHARGE_UNIT_COUNT = 8;
     private static final int DEFAULT_VALUE = 0;
 
-
     public static int calculate(int distance, List<Integer> extraFares, int age) {
         int fare = calculateByDistance(distance) + calculateExtraFare(extraFares);
         return calculateByAge(fare, age);
