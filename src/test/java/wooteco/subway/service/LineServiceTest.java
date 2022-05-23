@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.section.Section;
 import wooteco.subway.domain.Station;
 
 @SpringBootTest

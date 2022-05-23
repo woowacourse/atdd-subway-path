@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.line.section;
 
 import static java.util.stream.Collectors.*;
 
@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+import wooteco.subway.domain.Station;
 
 public class Sections {
 

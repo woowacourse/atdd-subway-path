@@ -3,8 +3,7 @@ package wooteco.subway.repository;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.line.section.Section;
 
 public class SectionsDirtyChecker {
 

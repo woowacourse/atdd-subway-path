@@ -1,6 +1,6 @@
 package wooteco.subway.repository.table;
 
-import wooteco.subway.domain.Line;
+import wooteco.subway.domain.line.Line;
 
 public class LineTable {
 

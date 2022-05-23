@@ -9,8 +9,8 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.section.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.service.LineService;
 import wooteco.subway.service.StationService;

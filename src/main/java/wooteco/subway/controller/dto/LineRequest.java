@@ -5,9 +5,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
-import org.hibernate.validator.constraints.Range;
-
-import wooteco.subway.domain.Line;
+import wooteco.subway.domain.line.Line;
 
 public class LineRequest {
 

@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.LinesFixture;
-import wooteco.subway.domain.PathInfo;
+import wooteco.subway.domain.path.PathInfo;
 import wooteco.subway.domain.Station;
 
 @SpringBootTest

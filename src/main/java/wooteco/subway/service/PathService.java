@@ -5,8 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.domain.fare.AgeDisCountPolicy;
 import wooteco.subway.repository.LineRepository;
-import wooteco.subway.domain.SubwayShortestPath;
-import wooteco.subway.domain.PathInfo;
+import wooteco.subway.domain.path.SubwayShortestPath;
+import wooteco.subway.domain.path.PathInfo;
 import wooteco.subway.domain.Station;
 
 @Service

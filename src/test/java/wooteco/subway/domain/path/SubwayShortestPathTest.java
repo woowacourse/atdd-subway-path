@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -9,6 +9,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import wooteco.subway.LinesFixture;
+import wooteco.subway.domain.Station;
+import wooteco.subway.domain.path.PathInfo;
+import wooteco.subway.domain.path.SubwayShortestPath;
 
 class SubwayShortestPathTest {
 

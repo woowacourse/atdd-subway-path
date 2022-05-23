@@ -8,10 +8,9 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.line.section.Section;
+import wooteco.subway.domain.line.section.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.repository.SectionsDirtyChecker;
 
 class SectionsDirtyCheckerTest {
 

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import wooteco.subway.repository.dao.SectionDao;
 import wooteco.subway.repository.table.SectionTable;
-import wooteco.subway.domain.Section;
+import wooteco.subway.domain.line.section.Section;
 
 @Repository
 public class JdbcSectionRepository implements SectionRepository {

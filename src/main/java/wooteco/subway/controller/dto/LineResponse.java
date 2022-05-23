@@ -3,7 +3,7 @@ package wooteco.subway.controller.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import wooteco.subway.domain.Line;
+import wooteco.subway.domain.line.Line;
 
 public class LineResponse {
     private Long id;

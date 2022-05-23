@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import wooteco.subway.controller.dto.PathRequest;
 import wooteco.subway.controller.dto.PathResponse;
-import wooteco.subway.domain.PathInfo;
+import wooteco.subway.domain.path.PathInfo;
 import wooteco.subway.domain.Station;
 import wooteco.subway.service.PathService;
 import wooteco.subway.service.StationService;
