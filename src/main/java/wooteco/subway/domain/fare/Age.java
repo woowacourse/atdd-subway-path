@@ -18,8 +18,16 @@ public class Age {
         }
     }
 
-    public boolean isLessThan(Age other) {
-        return value < other.value;
+    public boolean isGreaterThanOrEqualTo(int age) {
+        return value >= age;
+    }
+
+    public boolean isLessThanOrEqualTo(int age) {
+        return value <= age;
+    }
+
+    public boolean isBetween(int smallAge, int bigAge) {
+        return smallAge <= value && value <= bigAge;
     }
 
     @Override

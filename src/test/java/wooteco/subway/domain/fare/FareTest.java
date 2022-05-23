@@ -34,7 +34,7 @@ class FareTest {
     }
 
     @DisplayName("나이에 따라 해당하는 할인율을 운임에 적용한다.")
-    @ParameterizedTest(name = "[{index}] 나이: {1}살, 기존 운임: {2}원, 할인된 운임: {3}원")
+    @ParameterizedTest(name = "[{index}] 나이: {0}살, 기존 운임: {1}원, 할인된 운임: {2}원")
     @CsvSource(value = {"5,1250,0", "6,1250,450", "12,1250,450", "13,1250,720", "18,1250,720", "19,1250,1250"})
     void discountWithAge(int ageValue, int originalFareValue, int discountedFareValue) {
         // given

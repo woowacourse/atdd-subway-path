@@ -1,7 +1,6 @@
 package wooteco.subway.domain.fare;
 
 import java.util.Objects;
-import wooteco.subway.domain.fare.discountstrategy.DiscountStrategyFactory;
 import wooteco.subway.domain.section.Distance;
 import wooteco.subway.exception.NegativeFareException;
 
@@ -66,8 +65,7 @@ public class Fare {
     }
 
     public Fare discountWithAge(Age age) {
-        DiscountStrategyFactory discountStrategyFactory = new DiscountStrategyFactory();
-        return discountStrategyFactory.getDiscountStrategy(age).discount(this);
+        return DiscountPolicy.from(age).discount(this);
     }
 
     public int getValue() {
