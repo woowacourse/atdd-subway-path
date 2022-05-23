@@ -19,7 +19,7 @@ import wooteco.subway.service.dto.LineRequest;
 import wooteco.subway.service.dto.LineResponse;
 
 @SpringBootTest
-@Sql("classpath:lineInit.sql")
+@Sql("classpath:testInit.sql")
 @Transactional
 class LineControllerTest {
 
@@ -45,7 +45,7 @@ class LineControllerTest {
     @DisplayName("등록된 노선 조회")
     void showLines() {
         List<LineResponse> lineResponses = lineController.showLines();
-        assertThat(lineResponses).hasSize(1);
+        assertThat(lineResponses).hasSize(3);
     }
 
     @Test
@@ -53,7 +53,7 @@ class LineControllerTest {
     void showLine() {
         LineResponse response = lineController.showLine(1L);
         assertThat(response).isNotNull();
-        assertThat(response.getName()).isEqualTo("7호선");
+        assertThat(response.getName()).isEqualTo("5호선");
     }
 
     @Test
@@ -66,7 +66,7 @@ class LineControllerTest {
     @Test
     @DisplayName("존재하지 않은 노선 수정할 경우 예외")
     void updateLine_invalidLine() {
-        assertThatThrownBy(() -> lineController.updateLine(2L, new LineUpdateRequest("8호선", "red", 100L)))
+        assertThatThrownBy(() -> lineController.updateLine(100L, new LineUpdateRequest("8호선", "red", 100L)))
                 .isInstanceOf(NotFoundException.class);
     }
 
@@ -80,7 +80,7 @@ class LineControllerTest {
     @Test
     @DisplayName("존재하지 않는 노선 삭제하려하면 예외")
     void deleteLine_invalidLine() {
-        assertThatThrownBy(() -> lineController.deleteLine(2L))
+        assertThatThrownBy(() -> lineController.deleteLine(100L))
                 .isInstanceOf(NotFoundException.class);
     }
 }
