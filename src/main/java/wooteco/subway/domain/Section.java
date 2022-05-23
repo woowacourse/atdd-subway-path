@@ -4,23 +4,24 @@ import java.util.Objects;
 
 public class Section {
 
-    private static final int MIN_DISTANCE = 0;
-
     private final Long id;
     private final Station upStation;
     private final Station downStation;
     private final int distance;
+    private final int extraFare;
 
     public Section(final Station upStation, final Station downStation, final int distance) {
-        this(null, upStation, downStation, distance);
+        this(null, upStation, downStation, distance, 0);
     }
 
-    public Section(final Long id, final Station upStation, final Station downStation, final int distance) {
+    public Section(final Long id, final Station upStation, final Station downStation, final int distance,
+                   final int extraFare) {
         validateSameStationId(upStation, downStation);
         this.id = id;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+        this.extraFare = extraFare;
     }
 
     private void validateSameStationId(final Station upStation, final Station downStation) {
@@ -71,6 +72,10 @@ public class Section {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     @Override

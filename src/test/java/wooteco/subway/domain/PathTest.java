@@ -18,7 +18,7 @@ class PathTest {
     @DisplayName("10km 이하일 때 기본 요금을 반환한다.")
     void calculateFare(final int distance) {
         final List<Station> routeStations = List.of(new Station(STATION_1), new Station(STATION_2));
-        final Path path = new Path(routeStations, distance);
+        final Path path = new Path(routeStations, distance, 0);
         assertThat(path.calculateFare()).isEqualTo(1250);
     }
 
@@ -27,7 +27,7 @@ class PathTest {
     @DisplayName("10km 초과 50km 이하일 때 초과 요금이 발생한다.")
     void calculateFare_Over10Under50(final int distance, final int fare) {
         final List<Station> routeStations = List.of(new Station(STATION_1), new Station(STATION_2));
-        final Path path = new Path(routeStations, distance);
+        final Path path = new Path(routeStations, distance, 0);
         assertThat(path.calculateFare()).isEqualTo(fare);
     }
 
@@ -36,7 +36,7 @@ class PathTest {
     @DisplayName("50km 초과일 때 초과 요금이 발생한다.")
     void calculateFare_Over50(final int distance, final int fare) {
         final List<Station> routeStations = List.of(new Station(STATION_1), new Station(STATION_2));
-        final Path path = new Path(routeStations, distance);
+        final Path path = new Path(routeStations, distance, 0);
         assertThat(path.calculateFare()).isEqualTo(fare);
     }
 

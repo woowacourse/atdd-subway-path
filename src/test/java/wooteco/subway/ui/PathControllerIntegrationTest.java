@@ -44,7 +44,7 @@ public class PathControllerIntegrationTest {
         final Long stationId1 = createStation(STATION_1);
         final Long stationId2 = createStation(STATION_2);
         final Long stationId3 = createStation(STATION_3);
-        final Long lineId = createLine(LINE_1, RED, stationId1, stationId2, 10, 500);
+        final Long lineId = createLine(LINE_1, RED, stationId1, stationId2, 10, 0);
         createSection(lineId, stationId2, stationId3, 10);
 
         // when

@@ -61,8 +61,8 @@ public class PathServiceTest {
         right = stationRepository.getById(rightId);
         down = stationRepository.getById(downId);
 
-        final Long line2Id = lineRepository.save(new Line(LINE_1, RED, 500));
-        final Long line4Id = lineRepository.save(new Line(LINE_2, BLUE, 500));
+        final Long line2Id = lineRepository.save(new Line(LINE_1, RED, 0));
+        final Long line4Id = lineRepository.save(new Line(LINE_2, BLUE, 0));
 
         sectionRepository.save(line2Id, new Section(up, center, 5));
         sectionRepository.save(line2Id, new Section(center, down, 6));
@@ -80,7 +80,6 @@ public class PathServiceTest {
                         new StationResponse(center), new StationResponse(down)),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(11),
                 () -> assertThat(pathResponse.getFare()).isEqualTo(1350)
-
         );
     }
 

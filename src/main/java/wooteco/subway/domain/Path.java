@@ -8,15 +8,17 @@ public class Path {
 
     private final List<Station> routeStations;
     private final int distance;
+    private final int extraFare;
 
-    public Path(final List<Station> routeStations, final int distance) {
+    public Path(final List<Station> routeStations, final int distance, final int extraFare) {
         this.routeStations = routeStations;
         this.distance = distance;
+        this.extraFare = extraFare;
     }
 
     public int calculateFare() {
         int tempDistance = distance;
-        int fare = BASIC_FARE;
+        int fare = BASIC_FARE + extraFare;
         if (tempDistance > 50) {
             fare += calculateOverFare(tempDistance - 50, 8);
             tempDistance = 50;

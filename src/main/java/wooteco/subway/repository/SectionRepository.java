@@ -3,8 +3,10 @@ package wooteco.subway.repository;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.entity.SectionEntity;
+import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
@@ -13,11 +15,14 @@ import wooteco.subway.domain.Station;
 public class SectionRepository {
 
     private final SectionDao sectionDao;
+    private final LineDao lineDao;
 
     private final StationRepository stationRepository;
 
-    public SectionRepository(final SectionDao sectionDao, final StationRepository stationRepository) {
+    public SectionRepository(final SectionDao sectionDao, final LineDao lineDao,
+                             final StationRepository stationRepository) {
         this.sectionDao = sectionDao;
+        this.lineDao = lineDao;
         this.stationRepository = stationRepository;
     }
 
@@ -38,7 +43,8 @@ public class SectionRepository {
                 .map(e -> {
                     final Station upStation = stationRepository.getById(e.getUpStationId());
                     final Station downStation = stationRepository.getById(e.getDownStationId());
-                    return new Section(e.getId(), upStation, downStation, e.getDistance());
+                    int extraFare = lineDao.find(e.getLineId()).getExtraFare();
+                    return new Section(e.getId(), upStation, downStation, e.getDistance(), extraFare);
                 }).collect(Collectors.toList());
     }
 
@@ -48,7 +54,8 @@ public class SectionRepository {
                 .map(e -> {
                     final Station upStation = stationRepository.getById(e.getUpStationId());
                     final Station downStation = stationRepository.getById(e.getDownStationId());
-                    return new Section(e.getId(), upStation, downStation, e.getDistance());
+                    int extraFare = lineDao.find(e.getLineId()).getExtraFare();
+                    return new Section(e.getId(), upStation, downStation, e.getDistance(), extraFare);
                 }).collect(Collectors.toList()));
     }
 
