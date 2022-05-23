@@ -82,7 +82,7 @@ public class Sections {
     }
 
     public List<Section> getValue() {
-        return value;
+        return List.copyOf(value);
     }
 
     @Override
