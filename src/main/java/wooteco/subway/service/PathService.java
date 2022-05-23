@@ -23,13 +23,16 @@ public class PathService {
     }
 
     public PathResponse findPath(Long sourceStationId, Long targetStationId, int age) {
-        Path path = new Path(lineRepository.findAll(), getStation(stationService.findOne(sourceStationId)),
-            getStation(stationService.findOne(targetStationId)));
+        Station source = getStation(sourceStationId);
+        Station target = getStation(targetStationId);
+        Path path = new Path(lineRepository.findAll(), source, target);
         int distance = path.getDistance();
-        return new PathResponse(path.getStations(), distance, Fare.of(distance, path.getExtraFare(), age).calculate());
+        int fare = Fare.of(distance, path.getExtraFare(), age).calculate();
+        return PathResponse.of(path, fare);
     }
 
-    private Station getStation(StationResponse stationResponse) {
+    private Station getStation(Long stationId) {
+        StationResponse stationResponse = stationService.findOne(stationId);
         return new Station(stationResponse.getId(), stationResponse.getName());
     }
 }

@@ -23,9 +23,13 @@ public class LineDto {
 
     public static LineDto from(Line line) {
         return new LineDto(line.getId(), line.getName(), line.getColor(), line.getExtraFare(),
-            line.findOrderedStations()
-                .stream().map(StationResponse::from)
-                .collect(Collectors.toList()));
+            toResponses(line));
+    }
+
+    private static List<StationResponse> toResponses(Line line) {
+        return line.findOrderedStations()
+            .stream().map(StationResponse::from)
+            .collect(Collectors.toList());
     }
 
     public Long getId() {

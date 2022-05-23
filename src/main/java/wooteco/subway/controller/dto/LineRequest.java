@@ -3,8 +3,6 @@ package wooteco.subway.controller.dto;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import wooteco.subway.domain.Line;
-
 public class LineRequest {
 
     @NotNull(message = "노선 이름이 비었습니다.")
@@ -35,10 +33,6 @@ public class LineRequest {
         this.downStationId = downStationId;
         this.distance = distance;
         this.extraFare = extraFare;
-    }
-
-    public Line toEntity(Long id) {
-        return new Line(id, name, color, extraFare);
     }
 
     public SectionRequest toSectionRequest() {

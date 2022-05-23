@@ -35,9 +35,21 @@ public class LineService {
     @Transactional
     public LineDto create(LineRequest lineRequest) {
         validateNameNotDuplicated(lineRequest.getName());
-        Long lineId = lineRepository.save(new Line(lineRequest.getName(), lineRequest.getColor(),
-            lineRequest.getExtraFare(), List.of(getSection(lineRequest.toSectionRequest()))));
+        Line newLine = new Line(lineRequest.getName(), lineRequest.getColor(),
+            lineRequest.getExtraFare(), List.of(getSection(lineRequest.toSectionRequest())));
+        Long lineId = lineRepository.save(newLine);
         return LineDto.from(lineRepository.findById(lineId));
+    }
+
+    private Section getSection(SectionRequest sectionRequest) {
+        Station upStation = getStation(sectionRequest.getUpStationId());
+        Station downStation = getStation(sectionRequest.getDownStationId());
+        return new Section(upStation, downStation, sectionRequest.getDistance());
+    }
+
+    private Station getStation(Long stationId) {
+        StationResponse stationResponse = stationService.findOne(stationId);
+        return new Station(stationResponse.getId(), stationResponse.getName());
     }
 
     private void validateNameNotDuplicated(String name) {
@@ -94,15 +106,5 @@ public class LineService {
             .executeEach(section -> sectionRepository.remove(section.getId()));
         checker.findSaved(line.getSections())
             .executeEach(section -> sectionRepository.save(lineId, section));
-    }
-
-    private Section getSection(SectionRequest sectionRequest) {
-        Station upStation = getStation(stationService.findOne(sectionRequest.getUpStationId()));
-        Station downStation = getStation(stationService.findOne(sectionRequest.getDownStationId()));
-        return new Section(upStation, downStation, sectionRequest.getDistance());
-    }
-
-    private Station getStation(StationResponse stationResponse) {
-        return new Station(stationResponse.getId(), stationResponse.getName());
     }
 }
