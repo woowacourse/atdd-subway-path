@@ -2,6 +2,8 @@ package wooteco.subway.domain;
 
 import static wooteco.subway.domain.AgeRange.*;
 
+import wooteco.subway.exception.ClientException;
+
 public class Fare {
 
     private static final int BASIC_FARE = 1250;
@@ -24,19 +26,19 @@ public class Fare {
 
     private void validateDistance(int distance) {
         if (distance <= 0) {
-            throw new IllegalArgumentException("[ERROR] 경로 이동 거리는 양수만 가능 합니다.");
+            throw new ClientException("[ERROR] 경로 이동 거리는 양수만 가능 합니다.");
         }
     }
 
     private void validateExtraFare(int extraFare) {
         if (extraFare < 0) {
-            throw new IllegalArgumentException("[ERROR] 노선 추가요금은 음수 일 수 없습니다.");
+            throw new ClientException("[ERROR] 노선 추가요금은 음수 일 수 없습니다.");
         }
     }
 
     private void validateAge(Long age) {
         if (age < 0) {
-            throw new IllegalArgumentException("[ERROR] 나이는 음수 일 수 없습니다.");
+            throw new ClientException("[ERROR] 나이는 음수 일 수 없습니다.");
         }
     }
 

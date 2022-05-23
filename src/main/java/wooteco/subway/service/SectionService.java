@@ -106,9 +106,8 @@ public class SectionService {
     public PathResponse findShortestPath(Long source, Long target, Long age) {
         Sections sections = new Sections(sectionDao.findAll());
         Path path = sections.findShortestPath(source, target);
-        int distance = path.getDistance();
-        Fare fare = new Fare(distance, findExtraFareOfPath(path), age);
-        return new PathResponse(findStationsOfPath(path), distance, fare.calculateFare());
+        Fare fare = new Fare(path.getDistance(), findExtraFareOfPath(path), age);
+        return new PathResponse(findStationsOfPath(path), path.getDistance(), fare.calculateFare());
     }
 
     private List<Station> findStationsOfPath(final Path path) {

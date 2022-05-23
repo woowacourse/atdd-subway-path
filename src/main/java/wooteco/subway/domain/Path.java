@@ -2,6 +2,7 @@ package wooteco.subway.domain;
 
 import java.util.List;
 import java.util.Set;
+import wooteco.subway.exception.ClientException;
 
 public class Path {
 
@@ -20,19 +21,19 @@ public class Path {
 
     private void validateStationIds(List<Long> stationIds) {
         if (stationIds.size() <= 0) {
-            throw new IllegalArgumentException("[ERROR] 경로의 역이 존재하지 않습니다.");
+            throw new ClientException("[ERROR] 경로의 역이 존재하지 않습니다.");
         }
     }
 
     private void validateLineIds(Set<Long> lineIds) {
         if (lineIds.size() <= 0) {
-            throw new IllegalArgumentException("[ERROR] 경로가 지나가는 노선이 존재하지 않습니다.");
+            throw new ClientException("[ERROR] 경로가 지나가는 노선이 존재하지 않습니다.");
         }
     }
 
     private void validateDistance(int distance) {
         if (distance <= 0) {
-            throw new IllegalArgumentException("[ERROR] 경로의 길이가 0 이하 일 수 없습니다.");
+            throw new ClientException("[ERROR] 경로의 길이가 0 이하 일 수 없습니다.");
         }
     }
 
