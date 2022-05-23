@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.dto.request.FindPathRequest;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.dto.response.StationResponse;
 import wooteco.subway.repository.LineRepository;
@@ -72,7 +73,7 @@ public class PathServiceTest {
     @Test
     @DisplayName("경로를 조회한다. 최단거리와 요금을 계산한다.")
     void findPath() {
-        final PathResponse pathResponse = pathService.findPath(up.getId(), down.getId());
+        final PathResponse pathResponse = pathService.findPath(new FindPathRequest(up.getId(), down.getId(), 20));
 
         assertAll(
                 () -> assertThat(pathResponse.getStations()).containsExactly(new StationResponse(up),
@@ -86,7 +87,7 @@ public class PathServiceTest {
     @Test
     @DisplayName("환승하는 경로를 조회한다. 최단거리와 요금을 계산한다.")
     void findPath_crossLine() {
-        final PathResponse pathResponse = pathService.findPath(up.getId(), left.getId());
+        final PathResponse pathResponse = pathService.findPath(new FindPathRequest(up.getId(), left.getId(), 20));
 
         assertAll(
                 () -> assertThat(pathResponse.getStations()).containsExactly(new StationResponse(up),
