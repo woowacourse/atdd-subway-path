@@ -35,11 +35,11 @@ public class SubwayGraph {
         }
     }
 
-    public Path findShortestPath(final Station source, final Station target) {
+    public Path findShortestPath(final Station source, final Station target, final int age) {
         GraphPath<Station, DefaultWeightedEdge> shortestPath = graphResult(source, target);
         List<Station> stations = shortestPath.getVertexList();
         double distance = shortestPath.getWeight();
-        int fare = new FareCalculator(distance).calculateFare();
+        int fare = new FareCalculator(distance).calculateFare(age);
         return new Path(stations, distance, fare);
     }
 

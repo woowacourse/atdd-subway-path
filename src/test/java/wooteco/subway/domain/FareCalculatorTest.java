@@ -14,7 +14,7 @@ class FareCalculatorTest {
     void calculateFare_basic() {
         double distance = 10;
         FareCalculator fareCalculator = new FareCalculator(distance);
-        int fare = fareCalculator.calculateFare();
+        int fare = fareCalculator.calculateFare(20);
 
         assertThat(fare).isEqualTo(1250);
     }
@@ -24,7 +24,7 @@ class FareCalculatorTest {
     @CsvSource({"11,1350", "15,1350", "16,1450", "50,2050"})
     void calculateFare_middle(int distance, int fare) {
         FareCalculator fareCalculator = new FareCalculator(distance);
-        int actualFare = fareCalculator.calculateFare();
+        int actualFare = fareCalculator.calculateFare(20);
 
         assertThat(fare).isEqualTo(actualFare);
     }
@@ -34,7 +34,7 @@ class FareCalculatorTest {
     @CsvSource({"51,2150", "58,2150", "59,2250"})
     void calculateFare_high(int distance, int fare) {
         FareCalculator fareCalculator = new FareCalculator(distance);
-        int actualFare = fareCalculator.calculateFare();
+        int actualFare = fareCalculator.calculateFare(20);
 
         assertThat(actualFare).isEqualTo(fare);
     }

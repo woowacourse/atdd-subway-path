@@ -26,7 +26,7 @@ class SubwayGraphTest {
 
         Station source = new Station(1L, "잠실역");
         Station target = new Station(4L, "건대역");
-        Path path = subwayGraph.findShortestPath(source, target);
+        Path path = subwayGraph.findShortestPath(source, target, 20);
 
         assertAll(() -> assertThat(path.getStations()).containsExactly(
                         new Station(1L, "잠실역"),
@@ -53,7 +53,7 @@ class SubwayGraphTest {
         Station source = new Station(1L, "잠실역");
         Station target = new Station(4L, "건대역");
 
-        assertThatThrownBy(() -> subwayGraph.findShortestPath(source, target))
+        assertThatThrownBy(() -> subwayGraph.findShortestPath(source, target, 20))
                 .isInstanceOf(NotLinkPathException.class)
                 .hasMessage("출발역과 도착역이 연결되어 있지 않습니다.");
     }
