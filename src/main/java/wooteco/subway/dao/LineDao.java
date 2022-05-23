@@ -12,6 +12,8 @@ public interface LineDao {
 
     Optional<Line> findById(Long id);
 
+    List<Line> findByIds(List<Long> ids);
+
     List<Line> findAll();
 
     boolean hasLine(String name);

@@ -39,6 +39,16 @@ public class LineDaoImpl implements LineDao {
     }
 
     @Override
+    public List<Line> findByIds(List<Long> ids) {
+        final List<Line> lines = new ArrayList<>();
+        for (Long id : ids) {
+            lines.add(findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("해당하는 노선이 존재하지 않습니다.")));
+        }
+        return lines;
+    }
+
+    @Override
     public List<Line> findAll() {
         return lines;
     }
