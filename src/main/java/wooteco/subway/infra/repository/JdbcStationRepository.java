@@ -1,5 +1,6 @@
 package wooteco.subway.infra.repository;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,6 +30,7 @@ public class JdbcStationRepository implements StationRepository {
 
         return stations.stream()
                 .map(this::toStation)
+                .sorted(Comparator.comparing(Station::getName))
                 .collect(Collectors.toList());
     }
 

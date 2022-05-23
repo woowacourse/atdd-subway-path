@@ -4,6 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static wooteco.subway.SubwayFixtures.강남역;
+import static wooteco.subway.SubwayFixtures.선릉역;
+import static wooteco.subway.SubwayFixtures.역삼역;
 
 import java.util.List;
 import javax.sql.DataSource;
@@ -83,7 +86,7 @@ class SpringStationServiceTest {
         stationService.save(STATION_FIXTURE3);
 
         // then
-        assertThat(stationService.findAll()).extracting("name").isEqualTo(expected);
+        assertThat(stationService.findAll()).extracting("name").isEqualTo(List.of(강남역, 선릉역, 역삼역));
     }
 
     @Test
