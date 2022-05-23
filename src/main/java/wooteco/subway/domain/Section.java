@@ -49,9 +49,9 @@ public class Section {
         return upStationId.equals(section.getUpStationId()) || downStationId.equals(section.getDownStationId());
     }
 
-    public boolean isSameSection(Long stationId1, Long stationId2) {
-        return (this.upStationId.equals(stationId1) || this.upStationId.equals(stationId2))
-                && (this.downStationId.equals(stationId1) || this.downStationId.equals(stationId2));
+    public boolean isSameSection(Long stationId, Long otherStationId) {
+        return (this.upStationId.equals(stationId) || this.upStationId.equals(otherStationId))
+                && (this.downStationId.equals(stationId) || this.downStationId.equals(otherStationId));
     }
 
     public boolean isSameUpStation(Long stationId) {
