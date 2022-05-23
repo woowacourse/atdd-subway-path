@@ -8,21 +8,24 @@ public class Fare {
     private static final int SECOND_DISTANCE = 50;
 
     private final int distance;
+    private final int extraCharge;
 
-    public Fare(int distance) {
+    public Fare(int distance, int extraCharge) {
         this.distance = distance;
+        this.extraCharge = extraCharge;
     }
 
     public int calculate() {
         if (distance <= FIRST_DISTANCE) {
-            return BASIC_FARE;
+            return BASIC_FARE + extraCharge;
         }
         if (distance <= SECOND_DISTANCE) {
-            return BASIC_FARE + calculateFareOverFirstDistance(distance);
+            return BASIC_FARE + calculateFareOverFirstDistance(distance) + extraCharge;
         }
         return BASIC_FARE
                 + calculateFareOverFirstDistance(SECOND_DISTANCE)
-                + calculateFareOverSecondDistance();
+                + calculateFareOverSecondDistance()
+                + extraCharge;
     }
 
     private int calculateFareOverFirstDistance(int distance) {

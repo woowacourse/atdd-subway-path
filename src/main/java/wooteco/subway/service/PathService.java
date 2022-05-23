@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
+import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.station.Stations;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.station.StationResponse;
@@ -15,11 +16,13 @@ import wooteco.subway.exception.SubwayException;
 public class PathService {
 
     private final StationService stationService;
+    private final LineService lineService;
     private final SectionService sectionService;
 
-    public PathService(StationService stationService, SectionService sectionService) {
+    public PathService(StationService stationService, SectionService sectionService, LineService lineService) {
         this.stationService = stationService;
         this.sectionService = sectionService;
+        this.lineService = lineService;
     }
 
     public PathResponse findPath(Long source, Long target) {
@@ -28,8 +31,9 @@ public class PathService {
 
         Path path = Path.of(sectionService.findAll(), stations.getStationIds());
         List<Long> shortestPath = path.findPath(source, target);
+        List<Long> lineIds = path.getLineIds(source, target);
         int distance = path.findDistance(source, target);
-        return getPathResponse(stations, shortestPath, distance);
+        return getPathResponse(stations, shortestPath, lineIds, distance);
     }
 
     private void validateStation(Stations stations, Long source, Long target) {
@@ -50,9 +54,12 @@ public class PathService {
         }
     }
 
-    private PathResponse getPathResponse(Stations stations, List<Long> shortestPath, int distance) {
+    private PathResponse getPathResponse(Stations stations, List<Long> shortestPath, List<Long> lineIds, int distance) {
         List<StationResponse> stationsResponses = getStationsResponses(stations, shortestPath);
-        Fare fare = new Fare(distance);
+        List<Line> lines = lineService.findByIds(lineIds);
+        int extraCharge = lines.stream().distinct().map(Line::getExtraFare).reduce(0, Integer::sum);
+
+        Fare fare = new Fare(distance, extraCharge);
         return new PathResponse(stationsResponses, distance, fare.calculate());
     }
 

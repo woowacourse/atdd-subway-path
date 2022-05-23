@@ -1,6 +1,7 @@
 package wooteco.subway.dao.line;
 
 import java.sql.PreparedStatement;
+import java.util.Collections;
 import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -57,6 +58,13 @@ public class JdbcLineDao implements LineDao {
     public Line findById(Long id) {
         final String sql = "select id, name, color, extraFare from LINE where id = ?";
         return jdbcTemplate.queryForObject(sql, lineRowMapper, id);
+    }
+
+    @Override
+    public List<Line> findByIds(List<Long> ids) {
+        final String inCondition = String.join(",", Collections.nCopies(ids.size(), "?"));
+        final String sql = String.format("select id, name, color, extraFare from LINE WHERE id IN (%s)", inCondition);
+        return jdbcTemplate.query(sql, ids.toArray(), lineRowMapper);
     }
 
     @Override

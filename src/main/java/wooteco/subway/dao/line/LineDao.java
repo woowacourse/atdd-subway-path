@@ -13,6 +13,8 @@ public interface LineDao {
 
     Line findById(Long id);
 
+    List<Line> findByIds(List<Long> ids);
+
     void update(Line line);
 
     void delete(Long id);
