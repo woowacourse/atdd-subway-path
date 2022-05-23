@@ -4,7 +4,6 @@ import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.controller.dto.PathRequest;
@@ -21,7 +20,7 @@ public class PathController {
     }
 
     @GetMapping("/paths")
-    public ResponseEntity<PathResponse> findPath(@ModelAttribute @Valid PathRequest pathRequest) {
+    public ResponseEntity<PathResponse> findPath(@Valid PathRequest pathRequest) {
         return ResponseEntity.ok().body(PathResponse.from(
             pathService.findPath(pathRequest.getSource(), pathRequest.getTarget(), pathRequest.getAge())));
     }
