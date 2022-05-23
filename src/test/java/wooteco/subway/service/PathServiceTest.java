@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.LinesFixture;
-import wooteco.subway.domain.Path;
+import wooteco.subway.domain.PathInfo;
 import wooteco.subway.domain.Station;
 
 @SpringBootTest
@@ -39,10 +39,10 @@ class PathServiceTest {
 		Station target = stations.get("논현역");
 
 		// when
-		Path path = pathService.findPath(source, target, 20);
+		PathInfo pathInfo = pathService.findPath(source, target, 20);
 
 		// then
-		assertThat(path.getStations())
+		assertThat(pathInfo.getStations())
 			.map(Station::getName)
 			.containsExactly("내방역", "고속터미널역", "반포역", "논현역");
 	}
@@ -106,11 +106,11 @@ class PathServiceTest {
 		Station target = stations.get("논현역");
 
 		// when
-		Path path = pathService.findPath(source, target, 20);
+		PathInfo pathInfo = pathService.findPath(source, target, 20);
 
 		// then
-		System.out.println(path.getStations());
-		assertThat(path.getFare()).isEqualTo(2650);
+		System.out.println(pathInfo.getStations());
+		assertThat(pathInfo.getFare()).isEqualTo(2650);
 	}
 
 	@DisplayName("청소년 할인을 적용한다.")
@@ -121,11 +121,11 @@ class PathServiceTest {
 		Station target = stations.get("논현역");
 
 		// when
-		Path path = pathService.findPath(source, target, 18);
+		PathInfo pathInfo = pathService.findPath(source, target, 18);
 
 		// then
-		System.out.println(path.getStations());
-		assertThat(path.getFare()).isEqualTo(2190);
+		System.out.println(pathInfo.getStations());
+		assertThat(pathInfo.getFare()).isEqualTo(2190);
 	}
 
 	@DisplayName("어린이 할인을 적용한다.")
@@ -136,10 +136,10 @@ class PathServiceTest {
 		Station target = stations.get("논현역");
 
 		// when
-		Path path = pathService.findPath(source, target, 12);
+		PathInfo pathInfo = pathService.findPath(source, target, 12);
 
 		// then
-		System.out.println(path.getStations());
-		assertThat(path.getFare()).isEqualTo(1500);
+		System.out.println(pathInfo.getStations());
+		assertThat(pathInfo.getFare()).isEqualTo(1500);
 	}
 }

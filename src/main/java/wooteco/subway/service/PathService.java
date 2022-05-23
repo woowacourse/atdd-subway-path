@@ -3,9 +3,10 @@ package wooteco.subway.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import wooteco.subway.domain.fare.AgeDisCountPolicy;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.domain.SubwayShortestPath;
-import wooteco.subway.domain.Path;
+import wooteco.subway.domain.PathInfo;
 import wooteco.subway.domain.Station;
 
 @Service
@@ -18,9 +19,9 @@ public class PathService {
 		this.lineRepository = lineRepository;
 	}
 
-	public Path findPath(Station source, Station target, int age) {
+	public PathInfo findPath(Station source, Station target, int age) {
 		return new SubwayShortestPath(lineRepository.findAll())
 			.find(source, target)
-			.disCountByAge(age);
+			.discountFare(AgeDisCountPolicy.from(age));
 	}
 }

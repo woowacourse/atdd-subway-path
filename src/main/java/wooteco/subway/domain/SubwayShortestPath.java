@@ -23,10 +23,10 @@ public class SubwayShortestPath {
 		}
 	}
 
-	public Path find(Station source, Station target) {
+	public PathInfo find(Station source, Station target) {
 		GraphPath<Station, SectionEdge> path = new DijkstraShortestPath<>(initGraph(values.keySet()))
 			.getPath(source, target);
-		return new Path(path.getVertexList(), (int) path.getWeight(), getMaxExtraFare(path));
+		return new PathInfo(path.getVertexList(), (int) path.getWeight(), getMaxExtraFare(path));
 	}
 
 	private Graph<Station, SectionEdge> initGraph(Set<Section> sections) {

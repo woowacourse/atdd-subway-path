@@ -3,7 +3,7 @@ package wooteco.subway.controller.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import wooteco.subway.domain.Path;
+import wooteco.subway.domain.PathInfo;
 import wooteco.subway.domain.Station;
 
 public class PathResponse {
@@ -23,8 +23,8 @@ public class PathResponse {
 		this.fare = fare;
 	}
 
-	public static PathResponse from(Path path) {
-		return new PathResponse(path.getStations(), path.getDistance(), path.getFare());
+	public static PathResponse from(PathInfo pathInfo) {
+		return new PathResponse(pathInfo.getStations(), pathInfo.getDistance(), pathInfo.getFare());
 	}
 
 	public List<StationResponse> getStations() {

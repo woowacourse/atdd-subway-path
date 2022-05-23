@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.fare;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -6,8 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-
-import wooteco.subway.domain.fare.Fare;
 
 class FareTest {
 
@@ -42,7 +40,7 @@ class FareTest {
 		Fare fare = Fare.of(9, 0);
 
 		// when
-		Fare discountedFare = fare.discountByAge(15);
+		Fare discountedFare = fare.discount(AgeDisCountPolicy.from(15));
 
 		// then
 		assertThat(discountedFare.getValue()).isEqualTo(1070);
@@ -55,7 +53,7 @@ class FareTest {
 		Fare fare = Fare.of(9, 0);
 
 		// when
-		Fare discountedFare = fare.discountByAge(12);
+		Fare discountedFare = fare.discount(AgeDisCountPolicy.from(12));
 
 		// then
 		assertThat(discountedFare.getValue()).isEqualTo(800);

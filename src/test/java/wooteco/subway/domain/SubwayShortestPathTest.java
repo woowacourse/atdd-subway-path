@@ -95,10 +95,10 @@ class SubwayShortestPathTest {
 		Station target = new Station("사평역");
 
 		// when
-		Path path = subwayShortestPath.find(source, target);
+		PathInfo pathInfo = subwayShortestPath.find(source, target);
 
 		// then
-		assertThat(path.getFare()).isEqualTo(2250);
+		assertThat(pathInfo.getFare()).isEqualTo(2250);
 	}
 
 	@DisplayName("3호선(300원) 환승 차액을 고려한 금액을 계산한다.")
@@ -109,9 +109,9 @@ class SubwayShortestPathTest {
 		Station target = new Station("서초역");
 
 		// when
-		Path path = subwayShortestPath.find(source, target);
+		PathInfo pathInfo = subwayShortestPath.find(source, target);
 
 		// then
-		assertThat(path.getFare()).isEqualTo(2050);
+		assertThat(pathInfo.getFare()).isEqualTo(2050);
 	}
 }

@@ -11,7 +11,7 @@ class DiscountPolicyTest {
 	@Test
 	void discountTeen() {
 		// given
-		DiscountPolicy policy = DiscountPolicy.from(13);
+		DiscountPolicy policy = AgeDisCountPolicy.from(13);
 
 		// when
 		int result = policy.apply(1250);
@@ -24,7 +24,7 @@ class DiscountPolicyTest {
 	@Test
 	void discountChile() {
 		// given
-		DiscountPolicy policy = DiscountPolicy.from(12);
+		DiscountPolicy policy = AgeDisCountPolicy.from(12);
 
 		// when
 		int result = policy.apply(1250);
@@ -37,7 +37,7 @@ class DiscountPolicyTest {
 	@Test
 	void discountNone() {
 		// given
-		DiscountPolicy policy = DiscountPolicy.from(19);
+		DiscountPolicy policy = AgeDisCountPolicy.from(19);
 
 		// when
 		int result = policy.apply(1250);

@@ -7,6 +7,7 @@ public class Fare {
 	private final int value;
 
 	private Fare(int value) {
+		validateOverZero(value);
 		this.value = value;
 	}
 
@@ -40,13 +41,9 @@ public class Fare {
 		return 0;
 	}
 
-	public Fare discountByAge(int age) {
-		return new Fare(
-			DiscountPolicy.from(age)
-				.apply(value)
-		);
+	public Fare discount(DiscountPolicy discountPolicy) {
+		return new Fare(discountPolicy.apply(value));
 	}
-
 	public int getValue() {
 		return value;
 	}

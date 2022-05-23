@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import wooteco.subway.controller.dto.PathRequest;
 import wooteco.subway.controller.dto.PathResponse;
-import wooteco.subway.domain.Path;
+import wooteco.subway.domain.PathInfo;
 import wooteco.subway.domain.Station;
 import wooteco.subway.service.PathService;
 import wooteco.subway.service.StationService;
@@ -29,7 +29,7 @@ public class PathController {
 	public ResponseEntity<PathResponse> findPath(@ModelAttribute @Valid PathRequest pathRequest) {
 		Station source = stationService.findOne(pathRequest.getSource());
 		Station target = stationService.findOne(pathRequest.getTarget());
-		Path path = pathService.findPath(source, target, pathRequest.getAge());
-		return ResponseEntity.ok().body(PathResponse.from(path));
+		PathInfo pathInfo = pathService.findPath(source, target, pathRequest.getAge());
+		return ResponseEntity.ok().body(PathResponse.from(pathInfo));
 	}
 }
