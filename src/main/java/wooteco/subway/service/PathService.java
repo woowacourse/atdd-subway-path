@@ -57,7 +57,8 @@ public class PathService {
     private PathResponse getPathResponse(Stations stations, List<Long> shortestPath, List<Long> lineIds, int distance) {
         List<StationResponse> stationsResponses = getStationsResponses(stations, shortestPath);
         List<Line> lines = lineService.findByIds(lineIds);
-        int extraCharge = lines.stream().distinct().map(Line::getExtraFare).reduce(0, Integer::sum);
+        int extraCharge = lines.stream().distinct().mapToInt(Line::getExtraFare).max()
+                .orElse(0);
 
         Fare fare = new Fare(distance, extraCharge);
         return new PathResponse(stationsResponses, distance, fare.calculate());
