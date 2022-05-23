@@ -26,11 +26,19 @@ class DiscountPolicyTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"1350, 5, 1350", "1500, 19, 1500", "2000, 30, 2000", "2000, 3, 2000"})
+    @CsvSource(value = {"1500, 19, 1500", "2000, 30, 2000", "2000, 35, 2000"})
     @DisplayName("어린이 또는 청소년이 아니면 요금 할인 정책이 적용되지 않는다.")
-    void discountChildTest(int fare, int age, int expectedFare) {
+    void noDiscountTest(int fare, int age, int expectedFare) {
         int discountValue = DiscountPolicy.getDiscountValue(fare, age);
 
         assertThat(discountValue).isEqualTo(expectedFare);
+    }
+
+    @Test
+    @DisplayName("어린 아이는 운임이 적용되지 않는다.")
+    void discountBabyTest() {
+        int discountValue = DiscountPolicy.getDiscountValue(1350, 3);
+
+        assertThat(discountValue).isEqualTo(0);
     }
 }
