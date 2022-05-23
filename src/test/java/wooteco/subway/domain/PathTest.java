@@ -27,7 +27,7 @@ class PathTest {
 
         Path path = new Path(sections.findShortestPath(강남, 홍대));
 
-        int fare = path.chargeFare();
+        int fare = Fare.chargeFare(path);
 
         assertThat(fare).isEqualTo(1250);
     }
@@ -50,7 +50,7 @@ class PathTest {
 
         Path path = new Path(sections.findShortestPath(강남, 홍대));
 
-        int fare = path.chargeFare();
+        int fare = Fare.chargeFare(path);
 
         assertThat(fare).isEqualTo(2050);
     }
@@ -73,7 +73,7 @@ class PathTest {
 
         Path path = new Path(sections.findShortestPath(강남, 홍대));
 
-        int fare = path.chargeFare();
+        int fare = Fare.chargeFare(path);
 
         assertThat(fare).isEqualTo(3650);
     }
@@ -122,5 +122,15 @@ class PathTest {
         List<Station> stationsOnPath = path.findStationsOnPath();
 
         assertThat(stationsOnPath).contains(강남, 선릉, 홍대);
+    }
+
+    @DisplayName("한 노선만 이동하는 경우, 해당 노선의 추가 요금을 적용한 경우의 요금을 계산한다.")
+    @Test
+    void calculateAdditionalFare() {
+        Station 잠실 = new Station("잠실역");
+        Station 홍대 = new Station("홍대입구역");
+        Station 신촌 = new Station("신촌역");
+
+
     }
 }
