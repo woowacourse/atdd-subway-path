@@ -113,4 +113,11 @@ public class SectionDao {
             throw new IllegalStateException("삭제할 구간이 존재하지 않습니다.");
         }
     }
+
+    public void deleteAll() {
+        String sql = "TRUNCATE TABLE section";
+        jdbcTemplate.update(sql, new MapSqlParameterSource());
+        String resetIdSql = "ALTER TABLE section ALTER COLUMN id RESTART WITH 1";
+        jdbcTemplate.update(resetIdSql, new MapSqlParameterSource());
+    }
 }

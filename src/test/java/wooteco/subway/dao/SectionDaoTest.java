@@ -2,6 +2,7 @@ package wooteco.subway.dao;
 
 import static org.assertj.core.api.Assertions.*;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,6 +38,13 @@ public class SectionDaoTest {
         Section section = new Section(upTermination, downTermination, 10);
         line = new Line("신분당선", "bg-red-600", 900, section);
         line = lineDao.save(line);
+    }
+
+    @AfterEach
+    void reset() {
+        sectionDao.deleteAll();
+        stationDao.deleteAll();
+        lineDao.deleteAll();
     }
 
     @DisplayName("기존 노선에 구간을 추가할 수 있다")

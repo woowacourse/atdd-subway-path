@@ -1,6 +1,5 @@
 package wooteco.subway.dao;
 
-import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -15,7 +14,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ReflectionUtils;
 
 import wooteco.subway.domain.Station;
 
@@ -35,14 +33,7 @@ public class StationDao {
     public Station save(Station station) {
         SqlParameterSource param = new BeanPropertySqlParameterSource(station);
         Long id = jdbcInsert.executeAndReturnKey(param).longValue();
-        return createNewObject(station, id);
-    }
-
-    private Station createNewObject(Station station, Long id) {
-        Field field = ReflectionUtils.findField(Station.class, "id");
-        field.setAccessible(true);
-        ReflectionUtils.setField(field, station, id);
-        return station;
+        return new Station(id, station.getName());
     }
 
     private Station mapToStation(ResultSet resultSet) throws SQLException {
@@ -79,5 +70,12 @@ public class StationDao {
         if (deletedCount == 0) {
             throw new IllegalStateException("삭제하고자 하는 역이 존재하지 않습니다.");
         }
+    }
+
+    public void deleteAll() {
+        String sql = "TRUNCATE TABLE station";
+        jdbcTemplate.update(sql, new MapSqlParameterSource());
+        String resetIdSql = "ALTER TABLE station ALTER COLUMN id RESTART WITH 1";
+        jdbcTemplate.update(resetIdSql, new MapSqlParameterSource());
     }
 }
