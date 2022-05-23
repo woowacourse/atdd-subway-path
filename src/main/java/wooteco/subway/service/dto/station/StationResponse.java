@@ -4,19 +4,19 @@ import wooteco.subway.domain.Station;
 
 import java.util.Objects;
 
-public class StationResponseDto {
+public class StationResponse {
     private Long id;
     private String name;
 
-    public StationResponseDto() {
+    public StationResponse() {
     }
 
-    public StationResponseDto(Station station) {
+    public StationResponse(Station station) {
         this.id = station.getId();
         this.name = station.getName();
     }
 
-    public StationResponseDto(Long id, String name) {
+    public StationResponse(Long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -33,7 +33,7 @@ public class StationResponseDto {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        StationResponseDto that = (StationResponseDto) o;
+        StationResponse that = (StationResponse) o;
         return Objects.equals(id, that.id) && Objects.equals(name, that.name);
     }
 

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import wooteco.subway.controller.dto.line.LineResponse;
+import wooteco.subway.service.dto.line.LineResponse;
 
 import java.util.List;
 

@@ -4,11 +4,11 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.springframework.http.MediaType;
-import wooteco.subway.controller.dto.path.PathRequest;
 import wooteco.subway.controller.dto.line.LineRequest;
-import wooteco.subway.controller.dto.line.LineResponse;
+import wooteco.subway.controller.dto.path.PathRequest;
 import wooteco.subway.controller.dto.section.SectionRequest;
 import wooteco.subway.controller.dto.station.StationRequest;
+import wooteco.subway.service.dto.line.LineResponse;
 
 import java.util.Arrays;
 import java.util.List;

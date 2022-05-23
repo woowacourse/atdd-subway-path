@@ -1,5 +1,7 @@
 package wooteco.subway.controller.dto.section;
 
+import wooteco.subway.service.dto.section.SectionRequestDto;
+
 import javax.validation.constraints.Positive;
 
 public class SectionRequest {
@@ -30,5 +32,9 @@ public class SectionRequest {
 
     public int getDistance() {
         return distance;
+    }
+
+    public SectionRequestDto toServiceRequest(Long lineId) {
+        return new SectionRequestDto(lineId, upStationId, downStationId, distance);
     }
 }

@@ -1,14 +1,15 @@
 package wooteco.subway.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.service.dto.path.PathRequestDto;
-import wooteco.subway.service.dto.path.PathResponseDto;
-import wooteco.subway.service.dto.station.StationResponseDto;
+import wooteco.subway.service.dto.path.PathResponse;
+import wooteco.subway.service.dto.station.StationResponse;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PathService {
@@ -21,17 +22,17 @@ public class PathService {
         this.sectionService = sectionService;
     }
 
-    public PathResponseDto getPath(PathRequestDto pathRequestDto) {
+    public PathResponse getPath(PathRequestDto pathRequestDto) {
         List<Long> stationIds = stationService.findStations().stream()
-                .map(StationResponseDto::getId)
+                .map(StationResponse::getId)
                 .collect(Collectors.toList());
         Sections sections = sectionService.findAll();
         Path path = new Path(pathRequestDto.getSource(), pathRequestDto.getTarget(), stationIds, sections);
         Fare fare = new Fare();
-        List<StationResponseDto> stations = path.getShortestPath().stream()
+        List<StationResponse> stations = path.getShortestPath().stream()
                 .map(stationService::findById)
-                .map(StationResponseDto::new)
+                .map(StationResponse::new)
                 .collect(Collectors.toList());
-        return new PathResponseDto(stations, path.getTotalDistance(), fare.calculateFare(path.getTotalDistance()));
+        return new PathResponse(stations, path.getTotalDistance(), fare.calculateFare(path.getTotalDistance()));
     }
 }

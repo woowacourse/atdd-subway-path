@@ -1,37 +1,22 @@
 package wooteco.subway.acceptance;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.acceptance.AcceptanceFixture.낙성대;
-import static wooteco.subway.acceptance.AcceptanceFixture.방배;
-import static wooteco.subway.acceptance.AcceptanceFixture.봉천;
-import static wooteco.subway.acceptance.AcceptanceFixture.봉천_낙성대;
-import static wooteco.subway.acceptance.AcceptanceFixture.사당;
-import static wooteco.subway.acceptance.AcceptanceFixture.사당_방배;
-import static wooteco.subway.acceptance.AcceptanceFixture.사당_서초;
-import static wooteco.subway.acceptance.AcceptanceFixture.삼호선;
-import static wooteco.subway.acceptance.AcceptanceFixture.서울대입구;
-import static wooteco.subway.acceptance.AcceptanceFixture.서초;
-import static wooteco.subway.acceptance.AcceptanceFixture.에덴;
-import static wooteco.subway.acceptance.AcceptanceFixture.이호선;
-import static wooteco.subway.acceptance.AcceptanceFixture.일호선;
-import static wooteco.subway.acceptance.AcceptanceFixture.제로;
-import static wooteco.subway.acceptance.ResponseCreator.createGetPathResponse;
-import static wooteco.subway.acceptance.ResponseCreator.createPostLineResponse;
-import static wooteco.subway.acceptance.ResponseCreator.createPostSectionResponse;
-import static wooteco.subway.acceptance.ResponseCreator.createPostStationResponse;
-
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import wooteco.subway.controller.dto.path.PathRequest;
-import wooteco.subway.controller.dto.path.PathResponse;
-import wooteco.subway.controller.dto.station.StationResponse;
+import wooteco.subway.service.dto.path.PathResponse;
+import wooteco.subway.service.dto.station.StationResponse;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static wooteco.subway.acceptance.AcceptanceFixture.*;
+import static wooteco.subway.acceptance.ResponseCreator.*;
 
 @DisplayName("경로 관련 기능")
 public class PathAcceptanceTest extends AcceptanceTest {

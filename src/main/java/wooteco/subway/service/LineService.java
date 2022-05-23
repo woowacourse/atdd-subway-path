@@ -8,9 +8,9 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.service.dto.line.LineRequestDto;
-import wooteco.subway.service.dto.line.LineResponseDto;
+import wooteco.subway.service.dto.line.LineResponse;
 import wooteco.subway.service.dto.section.SectionRequestDto;
-import wooteco.subway.service.dto.station.StationResponseDto;
+import wooteco.subway.service.dto.station.StationResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public LineResponseDto findById(Long id) {
+    public LineResponse findById(Long id) {
         validateNonFoundId(id);
 
         return makeLineResponseDto(lineDao.findById(id));
@@ -44,7 +44,7 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public List<LineResponseDto> findAll() {
+    public List<LineResponse> findAll() {
         List<Line> lines = lineDao.findAll();
 
         return lines.stream()
@@ -52,7 +52,7 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    public LineResponseDto create(LineRequestDto lineRequestDto) {
+    public LineResponse create(LineRequestDto lineRequestDto) {
         validateDuplicate(lineRequestDto);
         Line line = lineDao.create(new Line(lineRequestDto.getName(), lineRequestDto.getColor()));
         sectionService.create(new SectionRequestDto(line.getId(), lineRequestDto.getUpStationId(), lineRequestDto.getDownStationId(), lineRequestDto.getDistance()));
@@ -60,25 +60,25 @@ public class LineService {
         return makeLineResponseDto(line);
     }
 
-    private LineResponseDto makeLineResponseDto(Line line) {
+    private LineResponse makeLineResponseDto(Line line) {
         Sections sections = sectionService.findAllByLineId(line.getId());
-        List<StationResponseDto> stations = new ArrayList<>();
+        List<StationResponse> stations = new ArrayList<>();
         Long upStationId = sections.findFinalUpStationId();
         addStations(upStationId, sections, stations);
 
-        return new LineResponseDto(line, stations);
+        return new LineResponse(line, stations);
     }
 
-    private void addStations(Long upStationId, Sections sections, List<StationResponseDto> stations) {
+    private void addStations(Long upStationId, Sections sections, List<StationResponse> stations) {
         if (sections.hasUpStationId(upStationId)){
             Section section = sections.getSectionByUpStationId(upStationId);
             Station station = stationService.findById(upStationId);
-            stations.add(new StationResponseDto(station));
+            stations.add(new StationResponse(station));
             addStations(section.getDownStationId(), sections, stations);
             return;
         }
         Station station = stationService.findById(upStationId);
-        stations.add(new StationResponseDto(station));
+        stations.add(new StationResponse(station));
     }
 
     private void validateDuplicate(LineRequestDto lineRequestDto) {

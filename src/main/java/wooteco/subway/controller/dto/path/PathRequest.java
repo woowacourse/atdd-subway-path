@@ -1,5 +1,7 @@
 package wooteco.subway.controller.dto.path;
 
+import wooteco.subway.service.dto.path.PathRequestDto;
+
 import javax.validation.constraints.Positive;
 
 public class PathRequest {
@@ -30,5 +32,9 @@ public class PathRequest {
 
     public int getAge() {
         return age;
+    }
+
+    public PathRequestDto toServiceRequest() {
+        return new PathRequestDto(source, target, age);
     }
 }

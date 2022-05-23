@@ -1,6 +1,7 @@
 package wooteco.subway.controller.dto.line;
 
 import org.hibernate.validator.constraints.Length;
+import wooteco.subway.service.dto.line.LineRequestDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
@@ -49,5 +50,9 @@ public class LineRequest {
 
     public int getDistance() {
         return distance;
+    }
+
+    public LineRequestDto toServiceRequest() {
+        return new LineRequestDto(name, color, upStationId, downStationId, distance);
     }
 }

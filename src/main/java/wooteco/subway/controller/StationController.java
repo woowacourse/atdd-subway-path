@@ -2,16 +2,14 @@ package wooteco.subway.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import wooteco.subway.controller.dto.ControllerDtoAssembler;
 import wooteco.subway.controller.dto.station.StationRequest;
-import wooteco.subway.controller.dto.station.StationResponse;
 import wooteco.subway.service.StationService;
+import wooteco.subway.service.dto.station.StationResponse;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/stations")
@@ -25,15 +23,13 @@ public class StationController {
 
     @PostMapping
     public ResponseEntity<StationResponse> createStation(@RequestBody @Valid StationRequest stationRequest) {
-        StationResponse stationResponse = ControllerDtoAssembler.stationResponseByDto(stationService.createStation(stationRequest.getName()));
+        StationResponse stationResponse = stationService.createStation(stationRequest.getName());
         return ResponseEntity.created(URI.create("/stations/" + stationResponse.getId())).body(stationResponse);
     }
 
     @GetMapping
     public ResponseEntity<List<StationResponse>> findStations() {
-        List<StationResponse> stationResponses = stationService.findStations().stream()
-                .map(ControllerDtoAssembler::stationResponseByDto)
-                .collect(Collectors.toList());
+        List<StationResponse> stationResponses = stationService.findStations();
         return ResponseEntity.ok(stationResponses);
     }
 

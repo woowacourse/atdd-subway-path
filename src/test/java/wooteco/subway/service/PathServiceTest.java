@@ -15,7 +15,7 @@ import wooteco.subway.dao.jdbc.JdbcLineDao;
 import wooteco.subway.dao.jdbc.JdbcSectionDao;
 import wooteco.subway.dao.jdbc.JdbcStationDao;
 import wooteco.subway.service.dto.path.PathRequestDto;
-import wooteco.subway.service.dto.path.PathResponseDto;
+import wooteco.subway.service.dto.path.PathResponse;
 import wooteco.subway.service.dto.line.LineRequestDto;
 import wooteco.subway.service.dto.section.SectionRequestDto;
 
@@ -58,12 +58,12 @@ class PathServiceTest {
         Long target = 5L;
         int age = 15;
         //when
-        PathResponseDto pathResponseDto = pathService.getPath(new PathRequestDto(source, target, age));
+        PathResponse pathResponse = pathService.getPath(new PathRequestDto(source, target, age));
         //then
         assertAll(
-                () -> assertThat(pathResponseDto.getStations().size()).isEqualTo(4),
-                () -> assertThat(pathResponseDto.getDistance()).isEqualTo(30),
-                () -> assertThat(pathResponseDto.getFare()).isEqualTo(1650)
+                () -> assertThat(pathResponse.getStations().size()).isEqualTo(4),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(30),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1650)
         );
     }
 
@@ -76,12 +76,12 @@ class PathServiceTest {
         Long target = 5L;
         int age = 15;
         //when
-        PathResponseDto pathResponseDto = pathService.getPath(new PathRequestDto(source, target, age));
+        PathResponse pathResponse = pathService.getPath(new PathRequestDto(source, target, age));
         //then
         assertAll(
-                () -> assertThat(pathResponseDto.getStations().size()).isEqualTo(4),
-                () -> assertThat(pathResponseDto.getDistance()).isEqualTo(25),
-                () -> assertThat(pathResponseDto.getFare()).isEqualTo(1550)
+                () -> assertThat(pathResponse.getStations().size()).isEqualTo(4),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(25),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1550)
         );
     }
 
