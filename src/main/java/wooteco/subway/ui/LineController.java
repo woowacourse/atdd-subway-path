@@ -59,7 +59,9 @@ public class LineController {
     @ResponseStatus(HttpStatus.OK)
     public LineResponse showLine(@PathVariable Long id) {
         Line line = lineService.findById(id);
-        return new LineResponse(line.getId(), line.getName(), line.getColor());
+        LinkedList<Long> sortedStationIds = sectionService.findSortedStationIds(line.getId());
+        List<Station> stations = stationService.findByIdIn(sortedStationIds);
+        return new LineResponse(line, stations);
     }
 
     @PutMapping("/{id}")
