@@ -6,9 +6,8 @@ public class Fare {
 
     private static final int BASIC_FARE = 1250;
     private static final int FIRST_SECTION_BASIC_FARE = 800;
-    private static final int FIRST_SECTION_UNIT = 5;
-    private static final int SECOND_SECTION_UNIT = 8;
-    public static final double DOUBLE = 0.5;
+    private static final int FIRST_SECTION_CHARGE_UNIT = 5;
+    private static final int SECOND_SECTION_CHARGE_UNIT = 8;
 
     private final int distance;
     private final int extraFare;
@@ -39,9 +38,9 @@ public class Fare {
             return BASIC_FARE;
         }
         if (distance <= 50) {
-            return calcExtraChargeByDistance(distance - 10, FIRST_SECTION_UNIT);
+            return calcExtraChargeByDistance(distance - 10, FIRST_SECTION_CHARGE_UNIT);
         }
-        return FIRST_SECTION_BASIC_FARE + calcExtraChargeByDistance(distance - 50, SECOND_SECTION_UNIT);
+        return FIRST_SECTION_BASIC_FARE + calcExtraChargeByDistance(distance - 50, SECOND_SECTION_CHARGE_UNIT);
     }
 
     private int calcExtraChargeByDistance(int distance, int unit) {
