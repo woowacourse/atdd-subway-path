@@ -47,7 +47,7 @@ public class PathControllerIntegrationTest {
         final Long stationId1 = createStation(HYEHWA);
         final Long stationId2 = createStation(SUNGSHIN);
         final Long stationId3 = createStation(GANGNAM);
-        final Long lineId = createLine(LINE_2, SKY_BLUE, stationId1, stationId2, 10, 900);
+        final Long lineId = createLine(LINE_2, SKY_BLUE, stationId1, stationId2, 10, 0);
         createSection(lineId, stationId2, stationId3, 10);
 
         // when
@@ -64,7 +64,7 @@ public class PathControllerIntegrationTest {
                 .andExpect(jsonPath("stations[2].id").value(stationId3))
                 .andExpect(jsonPath("stations[2].name").value(GANGNAM))
                 .andExpect(jsonPath("distance").value(20))
-                .andExpect(jsonPath("fare").value(1450));
+                .andExpect(jsonPath("fare").value(1_450));
     }
 
     @Test

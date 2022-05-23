@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static wooteco.subway.Fixtures.CENTER;
 import static wooteco.subway.Fixtures.DOWN;
 import static wooteco.subway.Fixtures.GREEN;
+import static wooteco.subway.Fixtures.HYEHWA;
 import static wooteco.subway.Fixtures.LEFT;
 import static wooteco.subway.Fixtures.LINE_2;
 import static wooteco.subway.Fixtures.LINE_4;
@@ -101,8 +102,7 @@ public class PathServiceTest {
                         new StationResponse(center), new StationResponse(left)),
 
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(25),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(1_550)
-
+                () -> assertThat(pathResponse.getFare()).isEqualTo(2_450)
         );
     }
 
@@ -128,5 +128,29 @@ public class PathServiceTest {
         final PathResponse pathResponse = pathService.find(up.getId(), down.getId(), 5);
 
         assertThat(pathResponse.getFare()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("추가 요금이 있는 노선 이용 시, 추가 요금을 부과한다.")
+    void calculateFare_extraFare() {
+        final PathResponse pathResponse = pathService.find(left.getId(), right.getId(), 26);
+
+        assertThat(pathResponse.getFare()).isEqualTo(3_250);
+    }
+
+    @Test
+    @DisplayName("추가 요금이 있는 노선을 여러개 이용 시, 최대 추가 요금만을 부과한다.")
+    void calculateFare_maxExtraFare() {
+        // given
+        final Long stationId = stationRepository.save(new Station(HYEHWA));
+        final Station station = stationRepository.findById(stationId);
+        final Long lineId = lineRepository.save(new Line("엘리역", "bg-yellow-600", 1_000));
+        sectionRepository.save(lineId, new Section(station, center, 10));
+
+        // when
+        final PathResponse pathResponse = pathService.find(station.getId(), left.getId(), 25);
+
+        // then
+        assertThat(pathResponse.getFare()).isEqualTo(2_650);
     }
 }

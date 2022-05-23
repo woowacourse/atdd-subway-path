@@ -6,6 +6,7 @@ import static wooteco.subway.Fixtures.SUNGSHIN;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -17,7 +18,7 @@ class PathTest {
     @DisplayName("10km 이하일 때 기본 요금을 반환한다.")
     void calculateFare(final int distance) {
         final List<Station> routeStations = List.of(new Station(HYEHWA), new Station(SUNGSHIN));
-        final Path path = new Path(routeStations, distance);
+        final Path path = new Path(routeStations, distance, 0);
 
         assertThat(path.calculateFare(20)).isEqualTo(1250);
     }
@@ -27,7 +28,7 @@ class PathTest {
     @DisplayName("10km 초과 50km 이하일 때 초과 요금이 발생한다.")
     void calculateFare_Over10Under50(final int distance, final int fare) {
         final List<Station> routeStations = List.of(new Station(HYEHWA), new Station(SUNGSHIN));
-        final Path path = new Path(routeStations, distance);
+        final Path path = new Path(routeStations, distance, 0);
 
         assertThat(path.calculateFare(20)).isEqualTo(fare);
     }
@@ -37,7 +38,7 @@ class PathTest {
     @DisplayName("50km 초과일 때 초과 요금이 발생한다.")
     void calculateFare_Over50(final int distance, final int fare) {
         final List<Station> routeStations = List.of(new Station(HYEHWA), new Station(SUNGSHIN));
-        final Path path = new Path(routeStations, distance);
+        final Path path = new Path(routeStations, distance, 0);
 
         assertThat(path.calculateFare(20)).isEqualTo(fare);
     }
@@ -47,7 +48,7 @@ class PathTest {
     @DisplayName("청소년(13세 이상, 19세 미만) : 운임에서 350원을 공제한 금액의 20% 할인")
     void calculateFare_teenager(final int age) {
         final List<Station> routeStations = List.of(new Station(HYEHWA), new Station(SUNGSHIN));
-        final Path path = new Path(routeStations, 25);
+        final Path path = new Path(routeStations, 25, 0);
 
         assertThat(path.calculateFare(age)).isEqualTo(1310);
     }
@@ -57,7 +58,7 @@ class PathTest {
     @DisplayName("어린이(6세 이상, 13세 미만) : 운임에서 350원을 공제한 금액의 50% 할인")
     void calculateFare_child(final int age) {
         final List<Station> routeStations = List.of(new Station(HYEHWA), new Station(SUNGSHIN));
-        final Path path = new Path(routeStations, 25);
+        final Path path = new Path(routeStations, 25, 0);
 
         assertThat(path.calculateFare(age)).isEqualTo(950);
     }
@@ -67,8 +68,17 @@ class PathTest {
     @DisplayName("아기(6세 미만) : 운임을 부과하지 않음")
     void calculateFare_baby(final int age) {
         final List<Station> routeStations = List.of(new Station(HYEHWA), new Station(SUNGSHIN));
-        final Path path = new Path(routeStations, 25);
+        final Path path = new Path(routeStations, 25, 0);
 
         assertThat(path.calculateFare(age)).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("노선별 추가 요금을 부과한다.")
+    void calculateFare_extraFare() {
+        final List<Station> routeStations = List.of(new Station(HYEHWA), new Station(SUNGSHIN));
+        final Path path = new Path(routeStations, 25, 900);
+
+        assertThat(path.calculateFare(26)).isEqualTo(2450);
     }
 }

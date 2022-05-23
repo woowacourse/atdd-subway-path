@@ -8,15 +8,17 @@ public class Path {
 
     private final List<Station> routeStations;
     private final int distance;
+    private final int extraFare;
 
-    public Path(final List<Station> routeStations, final int distance) {
+    public Path(final List<Station> routeStations, final int distance, final int extraFare) {
         this.routeStations = routeStations;
         this.distance = distance;
+        this.extraFare = extraFare;
     }
 
     public int calculateFare(final int age) {
         final int fare = calculateBasicFare();
-        return calculateAgeDiscount(fare, age);
+        return calculateAgeDiscount(fare, age) + extraFare;
     }
 
     private int calculateBasicFare() {
@@ -32,7 +34,7 @@ public class Path {
         return fare;
     }
 
-    private int calculateOverFare(int distance, int kilo) {
+    private int calculateOverFare(final int distance, final int kilo) {
         return (int) ((Math.ceil((distance - 1) / kilo) + 1) * 100);
     }
 

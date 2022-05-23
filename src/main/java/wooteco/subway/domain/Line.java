@@ -14,6 +14,10 @@ public class Line {
         this(null, name, color, extraFare, new Sections());
     }
 
+    public Line(final String name, final String color, final int extraFare, final Sections sections) {
+        this(null, name, color, extraFare, sections);
+    }
+
     public Line(final Long id, final String name, final String color, final int extraFare) {
         this(id, name, color, extraFare, new Sections());
     }
@@ -45,6 +49,10 @@ public class Line {
         if (extraFare < 0) {
             throw new IllegalArgumentException("추가 요금은 0 이상의 정수여야합니다.");
         }
+    }
+
+    public boolean contains(final Section section) {
+        return sections.contains(section);
     }
 
     public List<Station> getSortedStations() {

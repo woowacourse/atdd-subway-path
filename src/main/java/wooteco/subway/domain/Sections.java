@@ -157,6 +157,10 @@ public class Sections {
                 .collect(Collectors.toList());
     }
 
+    public boolean contains(final Section section) {
+        return values.contains(section);
+    }
+
     public List<Section> getValues() {
         return List.copyOf(values);
     }
