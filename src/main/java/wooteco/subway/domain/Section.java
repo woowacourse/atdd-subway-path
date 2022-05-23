@@ -17,6 +17,9 @@ public class Section {
         if (upStation.equals(downStation)) {
             throw new DomainException(ExceptionMessage.SAME_STATIONS_SECTION.getContent());
         }
+        if (distance <= 0) {
+            throw new DomainException(ExceptionMessage.UNDER_MIN_DISTANCE.getContent());
+        }
         this.id = id;
         this.line = line;
         this.upStation = upStation;
