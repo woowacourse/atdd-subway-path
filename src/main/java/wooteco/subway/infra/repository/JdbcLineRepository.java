@@ -50,7 +50,7 @@ public class JdbcLineRepository implements LineRepository {
     private List<Line> findAllLines() {
         return lineDao.findAll()
                 .stream()
-                .map(entity -> new Line(entity.getId(), entity.getName(), entity.getColor()))
+                .map(entity -> new Line(entity.getId(), entity.getName(), entity.getColor(), entity.getExtraFare()))
                 .collect(Collectors.toList());
     }
 

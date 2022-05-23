@@ -25,12 +25,16 @@ public class Line {
         this(id, name, color, null, sections);
     }
 
+    public Line(Long id, String name, String color, Long extraFare) {
+        this(id, name, color, extraFare, null);
+    }
+
     public Line(Long id, String name, String color) {
-        this(id, name, color, null);
+        this(id, name, color, null, null);
     }
 
     public Line(String name, String color, Sections sections) {
-        this(null, name, color, sections);
+        this(null, name, color, null, sections);
     }
 
     public static Line of(Line line, Sections sections) {
