@@ -15,7 +15,7 @@ public class PathFinderFactory implements FactoryBean<PathFinder> {
 
     @Override
     public PathFinder getObject() throws Exception {
-        return JGraphPathFinder.of(repository.findAll());
+        return CustomPathFinder.of(repository.findAll());
     }
 
     @Override

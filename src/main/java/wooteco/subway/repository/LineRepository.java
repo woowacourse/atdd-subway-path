@@ -60,4 +60,10 @@ public class LineRepository {
         sectionRepository.deleteByLineId(id);
         lineDao.deleteById(id);
     }
+
+    public int findMaxExtraFare(List<Long> lineIds) {
+        return lineIds.stream().map(lineDao::findById)
+                .mapToInt(lineEntity -> lineEntity.get().getExtraFare())
+                .max().orElseThrow();
+    }
 }

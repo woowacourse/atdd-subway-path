@@ -1,30 +1,29 @@
 package wooteco.subway.service;
 
 import java.util.List;
-import org.springframework.beans.factory.FactoryBean;
-import org.springframework.stereotype.Component;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import wooteco.subway.domain.Fare;
-import wooteco.subway.domain.JGraphPathFinder;
 import wooteco.subway.domain.PathFinder;
 import wooteco.subway.domain.PathFinderFactory;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.fare.Fare;
+import wooteco.subway.domain.fare.FareFactory;
 import wooteco.subway.dto.PathResponse;
-import wooteco.subway.repository.SectionRepository;
+import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.StationRepository;
 
 @Service
 public class PathService {
 
-    private final SectionRepository sectionRepository;
     private final StationRepository stationRepository;
+    private final LineRepository lineRepository;
     private final PathFinderFactory pathFinderFactory;
 
-    public PathService(SectionRepository sectionRepository, StationRepository stationRepository,
-                       PathFinderFactory pathFinderFactory) {
-        this.sectionRepository = sectionRepository;
+    public PathService(StationRepository stationRepository,
+                       LineRepository lineRepository, PathFinderFactory pathFinderFactory) {
         this.stationRepository = stationRepository;
+        this.lineRepository = lineRepository;
         this.pathFinderFactory = pathFinderFactory;
     }
 
@@ -33,7 +32,18 @@ public class PathService {
         Station fromStation = stationRepository.findById(from);
         Station toStation = stationRepository.findById(to);
         List<Station> stations = pathFinder.calculatePath(fromStation, toStation);
+        List<Section> sections = pathFinder.calculateSections(fromStation, toStation);
+        int extraFare = calculateMaxExtraFare(sections);
         int distance = pathFinder.calculateDistance(fromStation, toStation);
-        return PathResponse.of(stations, distance, Fare.from(distance));
+        Fare fare = new FareFactory().getFare(distance);
+        return PathResponse.of(stations, distance, fare.calculateFare(distance, extraFare));
+    }
+
+    private int calculateMaxExtraFare(List<Section> sections) {
+        List<Long> lineIds = sections.stream()
+                .map(Section::getLineId)
+                .distinct()
+                .collect(Collectors.toList());
+        return lineRepository.findMaxExtraFare(lineIds);
     }
 }

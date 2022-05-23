@@ -10,7 +10,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import wooteco.subway.dto.PathResponse;
+import wooteco.subway.repository.dao.SectionDao;
 import wooteco.subway.repository.dao.StationDao;
+import wooteco.subway.repository.entity.SectionEntity;
 import wooteco.subway.repository.entity.StationEntity;
 import wooteco.subway.service.LineService;
 import wooteco.subway.service.SectionService;
@@ -23,43 +25,89 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationDao stationDao;
 
     @Autowired
+    private SectionDao sectionDao;
+
+    @Autowired
     private LineService lineService;
 
     @Autowired
     private SectionService sectionService;
 
-    private StationEntity gangnam;
-    private StationEntity nowon;
-    private StationEntity jamsil;
+    private StationEntity 신설동역;
+    private StationEntity 용두역;
+    private StationEntity 신답역;
+    private StationEntity 성수역;
+    private StationEntity 건대입구역;
 
-    private LineResponse line1;
-    private LineResponse line2;
+    private LineResponse 일호선;
+    private LineResponse 이호선;
+    private LineResponse 삼호선;
 
     @Override
     @BeforeEach
     void setUp() {
         super.setUp();
-        gangnam = stationDao.save(new StationEntity(null, "강남"));
-        nowon = stationDao.save(new StationEntity(null, "노원"));
-        jamsil = stationDao.save(new StationEntity(null, "잠실"));
-        line1 = lineService.save(new LineRequest("1호선", "red", gangnam.getId(), nowon.getId(), 46, 0));
-        line2 = lineService.save(new LineRequest("2호선", "green", nowon.getId(), jamsil.getId(), 2, 0));
-        line2 = lineService.save(new LineRequest("3호선", "grey", gangnam.getId(), jamsil.getId(), 100, 0));
+        신설동역 = stationDao.save(new StationEntity(null, "신설동역"));
+        용두역 = stationDao.save(new StationEntity(null, "용두역"));
+        신답역 = stationDao.save(new StationEntity(null, "신답역"));
+        성수역 = stationDao.save(new StationEntity(null, "성수역"));
+        건대입구역 = stationDao.save(new StationEntity(null, "건대입구역"));
+
+        이호선 = lineService.save(new LineRequest("2호선", "green", 신설동역.getId(), 성수역.getId(), 42, 0));
+        sectionDao.save(new SectionEntity(null, 이호선.getId(), 신설동역.getId(), 용두역.getId(), 10));
+        sectionDao.save(new SectionEntity(null, 이호선.getId(), 용두역.getId(), 신답역.getId(), 20));
+        sectionDao.save(new SectionEntity(null, 이호선.getId(), 신답역.getId(), 성수역.getId(), 12));
+
+        일호선 = lineService.save(new LineRequest("1호선", "red", 용두역.getId(), 성수역.getId(), 17, 800));
+
+        삼호선 = lineService.save(new LineRequest("3호선", "orange", 성수역.getId(), 건대입구역.getId(), 10, 900));
     }
 
     @Test
-    @DisplayName("경로 조회하기")
+    @DisplayName("선택한 출발지와 목적지에 해당하는 경로를 조회한다.")
     void getPath() {
         // given
-        String url = "/paths?source=1&target=3&age=15";
+        String url = "/paths?source="+신설동역.getId()+"&target="+신답역.getId()+"&age=15";
         ExtractableResponse<Response> response = get(url);
         // when
         PathResponse pathResponse = response.body().as(PathResponse.class);
         // then
         assertAll(() -> {
             assertThat(pathResponse.getStations().size()).isEqualTo(3);
-            assertThat(pathResponse.getDistance()).isEqualTo(48);
-            assertThat(pathResponse.getFare()).isEqualTo(2050L);
+            assertThat(pathResponse.getDistance()).isEqualTo(30);
+            assertThat(pathResponse.getFare()).isEqualTo(1650);
+        });
+    }
+
+    @Test
+    @DisplayName("추가 요금이 있는 노선을 이용 할 경우 측정된 요금에 추가한다.")
+    void getPath_WhenIncludeExtraFareLine() {
+        // given
+        String url = "/paths?source="+신설동역.getId()+"&target="+성수역.getId()+"&age=15";
+        ExtractableResponse<Response> response = get(url);
+        // when
+        PathResponse pathResponse = response.body().as(PathResponse.class);
+        // then
+        assertAll(() -> {
+            assertThat(pathResponse.getStations().size()).isEqualTo(3);
+            assertThat(pathResponse.getDistance()).isEqualTo(27);
+            assertThat(pathResponse.getFare()).isEqualTo(2450);
+        });
+    }
+
+    @Test
+    @DisplayName("추가 요금이 있는 노선을 여러 개 이용 할 경우 가장 높은 추가 금액만 적용하여 측정된 요금에 추가한다.")
+    void getPath_WhenIncludeSomeExtraFareLine_() {
+        // given
+        String url = "/paths?source="+신설동역.getId()+"&target="+건대입구역.getId()+"&age=15";
+        ExtractableResponse<Response> response = get(url);
+        // when
+        PathResponse pathResponse = response.body().as(PathResponse.class);
+        // then
+        assertAll(() -> {
+            assertThat(pathResponse.getStations().size()).isEqualTo(4);
+            assertThat(pathResponse.getDistance()).isEqualTo(37);
+            assertThat(pathResponse.getFare()).isEqualTo(2750);
         });
     }
 }

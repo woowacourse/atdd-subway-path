@@ -5,45 +5,60 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.fare.Fare;
+import wooteco.subway.domain.fare.FareFactory;
 import wooteco.subway.exception.domain.FeeException;
 
 public class FareTest {
 
+    private final FareFactory fareFactory = new FareFactory();
+
     @Test
     @DisplayName("이동 거리가 10km 이내라면 기본 요금 1,250원이 부과된다.")
     void defaultFare() {
-        Fare fare = Fare.from(8);
-        Long calFee = fare.getValue();
+        Fare fare = fareFactory.getFare(8);
+        int calculateFare = fare.calculateFare(8, 0);
 
         // then
-        assertThat(calFee).isEqualTo(1250L);
+        assertThat(calculateFare).isEqualTo(1250);
     }
 
     @Test
     @DisplayName("이동 거리가 10km ~ 50km 사이라면 기본 요금에 5km 마다 100원 추가된 요금이 부과된다.")
     void additionalFare() {
         // given
-        Fare fare = Fare.from(12);
+        Fare fare = fareFactory.getFare(12);
+        int calculateFare = fare.calculateFare(12, 0);
+        // then
+        assertThat(calculateFare).isEqualTo(1350);
+    }
+
+    @Test
+    @DisplayName("이동 거리가 10km ~ 50km 사이라면 기본 요금에 5km 마다 100원 추가된 요금이 부과된다.")
+    void additionalFare2() {
+        // given
+        Fare fare = fareFactory.getFare(50);
+        int calculateFare = fare.calculateFare(50, 0);
 
         // then
-        assertThat(fare.getValue()).isEqualTo(1350L);
+        assertThat(calculateFare).isEqualTo(2050);
     }
 
     @Test
     @DisplayName("50km을 초과한 거리라면 50km까지 계산된 요금에 8km 마다 100원 추가된 요금이 부과된다.")
     void extraAdditionalFare() {
         // given
-        Fare fare = Fare.from(58);
-
+        Fare fare = fareFactory.getFare(58);
+        int calculateFare = fare.calculateFare(58, 0);
         // then
-        assertThat(fare.getValue()).isEqualTo(2150L);
+        assertThat(calculateFare).isEqualTo(2150);
     }
 
     @Test
     @DisplayName("거리가 0 이하인 경우 예외가 발생한다.")
     void fee_underMinimum_exception() {
         // given
-        assertThatThrownBy(() -> Fare.from(0))
+        assertThatThrownBy(() -> fareFactory.getFare(0))
                 .isInstanceOf(FeeException.class);
     }
 }

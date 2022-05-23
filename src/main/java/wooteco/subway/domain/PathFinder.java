@@ -7,4 +7,6 @@ public interface PathFinder {
     int calculateDistance(Station from, Station to);
 
     List<Station> calculatePath(Station from, Station to);
+
+    List<Section> calculateSections(Station from, Station to);
 }
