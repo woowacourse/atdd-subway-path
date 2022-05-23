@@ -13,6 +13,9 @@ public enum AgeDiscountPolicy implements DiscountPolicy {
     private static final int DEDUCTIBLE = 350;
     private static final double CHILDREN_DISCOUNT_RATE = 0.5;
     private static final double TEENAGER_DISCOUNT_RATE = 0.2;
+    private static final int CHILDREN_START_AGE = 6;
+    private static final int TEENAGER_START_AGE = 13;
+    private static final int ADULT_START_AGE = 19;
 
     private final Predicate<Integer> agePredicate;
     private final IntUnaryOperator discountOperator;
@@ -30,7 +33,7 @@ public enum AgeDiscountPolicy implements DiscountPolicy {
     }
 
     private static boolean isChildrenAge(final int age) {
-        return age >= 6 && age < 13;
+        return age >= CHILDREN_START_AGE && age < TEENAGER_START_AGE;
     }
 
     private static int applyDiscountChildren(final int money) {
@@ -39,7 +42,7 @@ public enum AgeDiscountPolicy implements DiscountPolicy {
     }
 
     private static boolean isTeenagerAge(final int age) {
-        return age >= 13 && age < 19;
+        return age >= TEENAGER_START_AGE && age < ADULT_START_AGE;
     }
 
     private static int applyDiscountTeenager(final int money) {
