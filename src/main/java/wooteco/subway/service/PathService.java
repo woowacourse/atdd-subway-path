@@ -8,6 +8,8 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.fare.AgeDiscountPolicy;
+import wooteco.subway.domain.fare.DiscountPolicy;
 import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.fare.FarePolicy;
 import wooteco.subway.domain.fare.FarePolicyImpl;
@@ -38,10 +40,16 @@ public class PathService {
                 pathRequest.getSource(), pathRequest.getTarget());
 
         Fare fare = calculateFare(shortestPath);
+        fare = discountFare(fare, pathRequest.getAge());
 
         List<Long> stationIds = shortestPath.getStationIds(pathRequest.getSource(), pathRequest.getTarget());
         List<StationResponse> stations = stationService.findByStationIds(stationIds);
         return new PathResponse(stations, shortestPath.getTotalDistance(), fare.getValue());
+    }
+
+    private Fare discountFare(Fare fare, int age) {
+        DiscountPolicy discountPolicy = new AgeDiscountPolicy();
+        return discountPolicy.discountFare(fare, age);
     }
 
     private void validateExistStations(PathRequest pathRequest) {
