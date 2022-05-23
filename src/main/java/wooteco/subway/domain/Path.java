@@ -48,7 +48,7 @@ public class Path {
         }
     }
 
-    public PathResult getPath(long source, long target) {
+    public PathResult getPath(long source, long target, int age) {
         var shortestPath = dijkstraShortestPath.getPath(source, target);
 
         var stations = shortestPath.getVertexList().stream()
@@ -59,7 +59,9 @@ public class Path {
 
         var extraFare = getExtraFare(shortestPath);
 
-        return new PathResult(stations, distance, extraFare);
+        var fare = new Fare(distance, extraFare, age);
+
+        return new PathResult(stations, distance, fare);
     }
 
     private int getExtraFare(GraphPath<Long, DefaultWeightedEdge> shortestPath) {

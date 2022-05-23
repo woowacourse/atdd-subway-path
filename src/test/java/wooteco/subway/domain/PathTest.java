@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 
 public class PathTest {
 
+    private static final int CHILDREN_AGE = 12;
+
     @Test
     @DisplayName("최단 경로 정보 반환")
     void getGraph() {
@@ -35,12 +37,12 @@ public class PathTest {
 
         var path = new Path(new Stations(stations), new Sections(sections), new Lines(lines));
 
-        var pathResult = path.getPath(1L, 3L);
+        var pathResult = path.getPath(1L, 3L, CHILDREN_AGE);
 
         assertAll(
                 () -> assertThat(pathResult.getStations().size()).isEqualTo(5),
                 () -> assertThat(pathResult.getDistance()).isEqualTo(13),
-                () -> assertThat(pathResult.getFare()).isEqualTo(2350)
+                () -> assertThat(pathResult.getFare()).isEqualTo(1000)
         );
     }
 }

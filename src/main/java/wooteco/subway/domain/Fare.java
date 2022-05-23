@@ -12,15 +12,16 @@ public class Fare {
 
     private final int fare;
 
-    public Fare(double distance) {
-        fare = calculateFare((int) distance);
+    public Fare(double distance, int extraFare, int age) {
+        var fare = calculateFareByDistance((int) distance) + extraFare;
+        this.fare = (int) createAgeDiscountStrategy(age).calculateFare(fare);
     }
 
-    public Fare(double distance, int fare) {
-        this.fare = calculateFare((int) distance) + fare;
+    private AgeDiscountStrategy createAgeDiscountStrategy(int age) {
+        return AgeDiscountStrategyFactory.from(age);
     }
 
-    private int calculateFare(int distance) {
+    private int calculateFareByDistance(int distance) {
         if (distance > DEFAULT_FARE_DISTANCE) {
             return DEFAULT_FARE + calculateOverFare(distance);
         }
