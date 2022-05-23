@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.element.Station;
 import wooteco.subway.domain.fare.Fare;
+import wooteco.subway.domain.fare.FarePolicy;
+import wooteco.subway.domain.fare.PolicyFactory;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.SubwayGraph;
 import wooteco.subway.repository.SectionRepository;
@@ -34,11 +36,15 @@ public class PathService {
     }
 
     private PathResponse toPathResponse(Path path, int age) {
+        List<FarePolicy> policies = List.of(
+                PolicyFactory.createLineFee(path.getLines()),
+                PolicyFactory.createAgeDiscount(age)
+        );
+        int baseFare = PolicyFactory.createDistance(path.getDistance()).getFare(path.getDistance());
         return new PathResponse(
                 toStationResponse(path.getStations()),
                 path.getDistance(),
-                Fare.create(path, age).getFare(path.getDistance())
-        );
+                new Fare(policies).getFare(baseFare));
     }
 
     private List<StationResponse> toStationResponse(List<Station> route) {

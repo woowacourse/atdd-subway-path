@@ -20,6 +20,7 @@ import static wooteco.subway.domain.fixtures.TestFixtures.창동_당고개;
 import static wooteco.subway.domain.fixtures.TestFixtures.합정;
 import static wooteco.subway.domain.fixtures.TestFixtures.합정_성수;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import wooteco.subway.domain.element.Section;
 import wooteco.subway.domain.element.Station;
 import wooteco.subway.domain.fare.Fare;
+import wooteco.subway.domain.fare.PolicyFactory;
 
 public class SubwayGraphTest {
 
@@ -94,7 +96,7 @@ public class SubwayGraphTest {
     @DisplayName("요금을 반환한다.")
     void getFare(Station source, Station target, int fare) {
         SubwayGraph subwayGraph = new SubwayGraph(SECTIONS);
-
-        assertThat(new Fare().getFare(subwayGraph.getShortestDistance(source, target))).isEqualTo(fare);
+        int distance = subwayGraph.getShortestDistance(source, target);
+        assertThat(new Fare(new ArrayList<>()).getFare(PolicyFactory.createDistance(distance).getFare(distance))).isEqualTo(fare);
     }
 }
