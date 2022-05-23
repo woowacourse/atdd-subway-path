@@ -17,26 +17,12 @@ class PathFinderTest {
     private Station station5;
     private Line line1;
     private Line line2;
-    private Section section1To2;
-    private Section section2To3;
-    private Section section3To5;
-    private Section section2To4;
-    private Section section4To5;
 
     @BeforeEach
     void setUp() {
         initStations();
         line1 = new Line(1L, "line1", "color1", 0);
         line2 = new Line(2L, "line2", "color2", 0);
-        initSections();
-    }
-
-    private void initSections() {
-        section1To2 = new Section(1L, line1.getId(), station1, station2, 10);
-        section2To3 = new Section(2L, line1.getId(), station2, station3, 10);
-        section3To5 = new Section(3L, line1.getId(), station3, station5, 10);
-        section2To4 = new Section(3L, line2.getId(), station2, station4, 10);
-        section4To5 = new Section(4L, line2.getId(), station4, station5, 5);
     }
 
     private void initStations() {
@@ -51,16 +37,23 @@ class PathFinderTest {
     @Test
     void calculateMinPath() {
         // given
+        Section section1To2 = new Section(1L, line1.getId(), station1, station2, 10);
+        Section section2To3 = new Section(2L, line1.getId(), station2, station3, 10);
+        Section section3To5 = new Section(3L, line1.getId(), station3, station5, 10);
         line1.addSection(section1To2);
         line1.addSection(section2To3);
         line1.addSection(section3To5);
 
-        line2.addSection(section4To5);
+        Section section2To4 = new Section(3L, line2.getId(), station2, station4, 10);
+        Section section4To5 = new Section(4L, line2.getId(), station4, station5, 5);
         line2.addSection(section2To4);
+        line2.addSection(section4To5);
 
+        //when
         SubwayGraph subwayGraphFinder = new SubwayGraph(List.of(section1To2, section2To3, section3To5, section2To4, section4To5));
         List<Station> path = subwayGraphFinder.getPath(station1, station5, 0, 50).getStations();
 
+        //then
         assertThat(path).containsExactly(station1, station2, station4, station5);
     }
 
@@ -68,8 +61,8 @@ class PathFinderTest {
     @Test
     void calculateFare1() {
         // given
-        section1To2 = new Section(1L, line1.getId(), station1, station2, 4);
-        section2To3 = new Section(2L, line1.getId(), station2, station3, 5);
+        Section section1To2 = new Section(1L, line1.getId(), station1, station2, 4);
+        Section section2To3 = new Section(2L, line1.getId(), station2, station3, 5);
         line1.addSection(section1To2);
         line1.addSection(section2To3);
 
@@ -83,6 +76,8 @@ class PathFinderTest {
     @DisplayName("거리가 10km ~ 50km 사이인 경우 추가로 5km마다 100원을 추가한다")
     @Test
     void calculateFare() {
+        Section section1To2 = new Section(1L, line1.getId(), station1, station2, 10);
+        Section section2To3 = new Section(2L, line1.getId(), station2, station3, 10);
         line1.addSection(section1To2);
         line1.addSection(section2To3);
 
@@ -98,8 +93,8 @@ class PathFinderTest {
     @Test
     void calculateFareOver50() {
 
-        section1To2 = new Section(1L, line1.getId(), station1, station2, 30);
-        section2To3 = new Section(2L, line1.getId(), station2, station3, 28);
+        Section section1To2 = new Section(1L, line1.getId(), station1, station2, 30);
+        Section section2To3 = new Section(2L, line1.getId(), station2, station3, 28);
 
         line1.addSection(section1To2);
         line1.addSection(section2To3);
