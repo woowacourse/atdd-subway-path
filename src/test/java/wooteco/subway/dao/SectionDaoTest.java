@@ -14,7 +14,7 @@ import wooteco.subway.dao.section.JdbcSectionDao;
 import wooteco.subway.domain.section.Section;
 
 @JdbcTest
-public class SectionDaoTest {
+class SectionDaoTest {
 
     public static final Section SECTION = new Section(1L, 1L, 2L, 1);
 

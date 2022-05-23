@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import wooteco.subway.exception.DataNotExistException;
 import wooteco.subway.exception.SubwayException;
 
-public class SectionsTest {
+class SectionsTest {
 
     private static final Sections SECTIONS =
             new Sections(List.of(

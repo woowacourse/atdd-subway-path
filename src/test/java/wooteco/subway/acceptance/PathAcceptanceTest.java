@@ -15,7 +15,7 @@ import wooteco.subway.dto.section.SectionRequest;
 import wooteco.subway.dto.station.StationRequest;
 
 @DisplayName("지하철 경로 관련 기능")
-public class PathAcceptanceTest extends AcceptanceTest {
+class PathAcceptanceTest extends AcceptanceTest {
 
     private static final StationRequest 강남역 = new StationRequest("강남역");
 
@@ -68,7 +68,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                         stationId5.intValue(),
                         stationId4.intValue()))
                 .body("distance", equalTo(9))
-                .body("fare", equalTo(1250));
+                .body("fare", equalTo(725));
     }
 
     @DisplayName("존재하지 않는 지하철 경로를 조회한다.")

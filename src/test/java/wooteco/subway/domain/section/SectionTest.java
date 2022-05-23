@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.exception.SubwayException;
 
-public class SectionTest {
+class SectionTest {
 
     @DisplayName("지하철 구간을 생성할 때 상핵역과 하행역이 같으면 예외가 발생한다.")
     @Test

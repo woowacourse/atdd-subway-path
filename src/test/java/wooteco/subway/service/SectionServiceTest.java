@@ -16,7 +16,7 @@ import wooteco.subway.dao.station.StationDao;
 import wooteco.subway.domain.section.Section;
 
 @JdbcTest
-public class SectionServiceTest {
+class SectionServiceTest {
 
     private SectionService sectionService;
 

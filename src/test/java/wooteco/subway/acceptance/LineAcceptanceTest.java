@@ -19,7 +19,7 @@ import wooteco.subway.dto.line.LineResponse;
 import wooteco.subway.dto.station.StationRequest;
 
 @DisplayName("지하철 노선 관련 기능")
-public class LineAcceptanceTest extends AcceptanceTest {
+class LineAcceptanceTest extends AcceptanceTest {
 
     private LineRequest 신분당선;
 

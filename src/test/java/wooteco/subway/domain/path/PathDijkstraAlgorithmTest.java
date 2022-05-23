@@ -11,7 +11,7 @@ import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.Stations;
 import wooteco.subway.exception.SubwayException;
 
-public class PathTest {
+class PathDijkstraAlgorithmTest {
 
     private final List<Section> sections = List.of(
             new Section(1L, 1L, 1L, 2L, 2),

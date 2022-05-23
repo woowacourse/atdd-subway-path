@@ -24,7 +24,7 @@ import wooteco.subway.exception.DataNotExistException;
 import wooteco.subway.exception.SubwayException;
 
 @JdbcTest
-public class PathServiceTest {
+class PathServiceTest {
 
     private Long stationId1;
     private Long stationId2;

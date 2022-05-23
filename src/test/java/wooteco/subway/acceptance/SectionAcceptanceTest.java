@@ -12,7 +12,7 @@ import wooteco.subway.dto.line.LineRequest;
 import wooteco.subway.dto.section.SectionRequest;
 
 @DisplayName("지하철 노선 관련 기능")
-public class SectionAcceptanceTest extends AcceptanceTest {
+class SectionAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> deleteSectionResponse(Long lineId, Long stationId) {
         return RestAssured.given().log().all()
