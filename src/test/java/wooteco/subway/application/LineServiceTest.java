@@ -1,4 +1,4 @@
-package wooteco.subway.service;
+package wooteco.subway.application;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
