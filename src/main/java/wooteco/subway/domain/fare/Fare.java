@@ -1,6 +1,7 @@
 package wooteco.subway.domain.fare;
 
 import java.util.List;
+import wooteco.subway.domain.fare.policy.FarePolicy;
 
 public class Fare {
     private final List<FarePolicy> policies;

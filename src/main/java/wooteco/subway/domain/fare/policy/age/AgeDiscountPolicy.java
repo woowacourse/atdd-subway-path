@@ -1,4 +1,6 @@
-package wooteco.subway.domain.fare;
+package wooteco.subway.domain.fare.policy.age;
+
+import wooteco.subway.domain.fare.policy.FarePolicy;
 
 public interface AgeDiscountPolicy extends FarePolicy {
 

@@ -2,6 +2,10 @@ package wooteco.subway.domain.fare;
 
 import java.util.List;
 import wooteco.subway.domain.element.Line;
+import wooteco.subway.domain.fare.policy.age.AgeDiscountPolicy;
+import wooteco.subway.domain.fare.policy.age.AgeDiscountPolicyGenerator;
+import wooteco.subway.domain.fare.policy.distance.DistancePolicy;
+import wooteco.subway.domain.fare.policy.distance.DistancePolicyGenerator;
 import wooteco.subway.domain.fare.policy.line.LineExtraFeePolicy;
 
 public class PolicyFactory {

@@ -1,7 +1,5 @@
 package wooteco.subway.domain.fare.policy.distance;
 
-import wooteco.subway.domain.fare.DistancePolicy;
-
 public class TenToFiftyKMPolicy implements DistancePolicy {
     static final int BASE_FEE = 1250;
     private static final int OVER_TEN_DISTANCE = 10;

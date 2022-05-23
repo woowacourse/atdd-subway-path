@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.fare.policy.age.AdultDiscountPolicy;
+import wooteco.subway.domain.fare.policy.age.AgeDiscountPolicyGenerator;
 import wooteco.subway.domain.fare.policy.age.BabyDiscountPolicy;
 import wooteco.subway.domain.fare.policy.age.ChildDiscountPolicy;
 import wooteco.subway.domain.fare.policy.age.TeenagerDiscountPolicy;

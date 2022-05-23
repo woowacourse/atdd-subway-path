@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.element.Station;
 import wooteco.subway.domain.fare.Fare;
-import wooteco.subway.domain.fare.FarePolicy;
 import wooteco.subway.domain.fare.PolicyFactory;
+import wooteco.subway.domain.fare.policy.FarePolicy;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.SubwayGraph;
 import wooteco.subway.repository.SectionRepository;
@@ -21,18 +21,16 @@ public class PathService {
     private final SectionRepository sectionRepository;
     private final StationRepository stationRepository;
 
-    public PathService(SectionRepository sectionRepository,
-                       StationRepository stationRepository) {
+    public PathService(SectionRepository sectionRepository, StationRepository stationRepository) {
         this.sectionRepository = sectionRepository;
         this.stationRepository = stationRepository;
     }
 
     public PathResponse showPaths(PathsRequest pathsRequest) {
-        return toPathResponse(Path.create(
-                new SubwayGraph(sectionRepository.findAll()),
-                stationRepository.findById(pathsRequest.getSource()),
-                stationRepository.findById(pathsRequest.getTarget())
-        ), pathsRequest.getAge());
+        SubwayGraph graph = new SubwayGraph(sectionRepository.findAll());
+        Station source = stationRepository.findById(pathsRequest.getSource());
+        Station target = stationRepository.findById(pathsRequest.getTarget());
+        return toPathResponse(Path.create(graph, source, target), pathsRequest.getAge());
     }
 
     private PathResponse toPathResponse(Path path, int age) {

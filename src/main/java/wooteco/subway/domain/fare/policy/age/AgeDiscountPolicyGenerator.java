@@ -1,12 +1,8 @@
-package wooteco.subway.domain.fare;
+package wooteco.subway.domain.fare.policy.age;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
-import wooteco.subway.domain.fare.policy.age.AdultDiscountPolicy;
-import wooteco.subway.domain.fare.policy.age.BabyDiscountPolicy;
-import wooteco.subway.domain.fare.policy.age.ChildDiscountPolicy;
-import wooteco.subway.domain.fare.policy.age.TeenagerDiscountPolicy;
 
 public enum AgeDiscountPolicyGenerator {
     BABY((age) -> 0 <= age && age <= 5,

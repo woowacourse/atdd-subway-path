@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.util.NoSuchElementException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.fare.policy.distance.DistancePolicyGenerator;
 import wooteco.subway.domain.fare.policy.distance.OverFiftyKMPolicy;
 import wooteco.subway.domain.fare.policy.distance.TenToFiftyKMPolicy;
 import wooteco.subway.domain.fare.policy.distance.UnderTenKMPolicy;

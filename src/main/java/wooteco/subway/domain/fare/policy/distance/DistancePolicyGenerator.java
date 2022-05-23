@@ -1,11 +1,8 @@
-package wooteco.subway.domain.fare;
+package wooteco.subway.domain.fare.policy.distance;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
-import wooteco.subway.domain.fare.policy.distance.OverFiftyKMPolicy;
-import wooteco.subway.domain.fare.policy.distance.TenToFiftyKMPolicy;
-import wooteco.subway.domain.fare.policy.distance.UnderTenKMPolicy;
 
 public enum DistancePolicyGenerator {
     UNDER_TEN((distance) -> 0 <= distance && distance < 10,
