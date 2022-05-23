@@ -6,8 +6,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static wooteco.subway.Fixtures.GANGNAM;
+import static wooteco.subway.Fixtures.GREEN;
 import static wooteco.subway.Fixtures.HYEHWA;
+import static wooteco.subway.Fixtures.JAMSIL;
 import static wooteco.subway.Fixtures.LINE_2;
+import static wooteco.subway.Fixtures.LINE_4;
 import static wooteco.subway.Fixtures.SKY_BLUE;
 import static wooteco.subway.Fixtures.SUNGSHIN;
 
@@ -62,6 +65,26 @@ public class PathControllerIntegrationTest {
                 .andExpect(jsonPath("stations[2].name").value(GANGNAM))
                 .andExpect(jsonPath("distance").value(20))
                 .andExpect(jsonPath("fare").value(1450));
+    }
+
+    @Test
+    @DisplayName("경로 조회에 실패한다.")
+    void find_exception() throws Exception {
+        // given
+        final Long stationId1 = createStation(HYEHWA);
+        final Long stationId2 = createStation(SUNGSHIN);
+        final Long stationId3 = createStation(GANGNAM);
+        final Long stationId4 = createStation(JAMSIL);
+        createLine(LINE_2, SKY_BLUE, stationId1, stationId2, 10, 0);
+        createLine(LINE_4, GREEN, stationId3, stationId4, 10, 900);
+
+        // when
+        final ResultActions response = mockMvc.perform(
+                        get("/paths?source=" + stationId1 + "&target=" + stationId4 + "&age=" + 26))
+                .andDo(print());
+
+        // then
+        response.andExpect(status().isBadRequest());
     }
 
     private Long createStation(final String name) throws Exception {

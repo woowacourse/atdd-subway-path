@@ -1,15 +1,16 @@
 package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.Fixtures.GREEN;
 import static wooteco.subway.Fixtures.CENTER;
 import static wooteco.subway.Fixtures.DOWN;
+import static wooteco.subway.Fixtures.GREEN;
 import static wooteco.subway.Fixtures.LEFT;
 import static wooteco.subway.Fixtures.LINE_2;
 import static wooteco.subway.Fixtures.LINE_4;
-import static wooteco.subway.Fixtures.SKY_BLUE;
 import static wooteco.subway.Fixtures.RIGHT;
+import static wooteco.subway.Fixtures.SKY_BLUE;
 import static wooteco.subway.Fixtures.UP;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -60,13 +61,13 @@ public class PathServiceTest {
         right = stationRepository.findById(rightId);
         down = stationRepository.findById(downId);
 
-        final Long line2Id = lineRepository.save(new Line(LINE_2, SKY_BLUE, 900));
-        final Long line4Id = lineRepository.save(new Line(LINE_4, GREEN, 900));
+        final Long line4Id = lineRepository.save(new Line(LINE_4, SKY_BLUE, 0));
+        final Long line2Id = lineRepository.save(new Line(LINE_2, GREEN, 900));
 
-        sectionRepository.save(line2Id, new Section(up, center, 5));
-        sectionRepository.save(line2Id, new Section(center, down, 6));
-        sectionRepository.save(line4Id, new Section(left, center, 20));
-        sectionRepository.save(line4Id, new Section(center, right, 50));
+        sectionRepository.save(line4Id, new Section(up, center, 5));
+        sectionRepository.save(line4Id, new Section(center, down, 6));
+        sectionRepository.save(line2Id, new Section(left, center, 20));
+        sectionRepository.save(line2Id, new Section(center, right, 50));
     }
 
     @Test
@@ -77,11 +78,17 @@ public class PathServiceTest {
         assertAll(
                 () -> assertThat(pathResponse.getStations()).containsExactly(new StationResponse(up),
                         new StationResponse(center), new StationResponse(down)),
-
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(11),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(1350)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1_350)
 
         );
+    }
+
+    @Test
+    @DisplayName("경로를 조회할 수 없는 경우, 예외를 발생시킨다.")
+    void findPath_noPath() {
+        assertThatThrownBy(() -> pathService.find(up.getId(), up.getId(), 20))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -94,8 +101,32 @@ public class PathServiceTest {
                         new StationResponse(center), new StationResponse(left)),
 
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(25),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(1550)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1_550)
 
         );
+    }
+
+    @Test
+    @DisplayName("최단 거리에 대한 요금 계산 시, 청소년 할인을 적용한다.")
+    void calculateFare_teenager() {
+        final PathResponse pathResponse = pathService.find(up.getId(), down.getId(), 15);
+
+        assertThat(pathResponse.getFare()).isEqualTo(1_150);
+    }
+
+    @Test
+    @DisplayName("최단 거리에 대한 요금 계산 시, 어린이 할인을 적용한다.")
+    void calculateFare_child() {
+        final PathResponse pathResponse = pathService.find(up.getId(), down.getId(), 10);
+
+        assertThat(pathResponse.getFare()).isEqualTo(850);
+    }
+
+    @Test
+    @DisplayName("최단 거리에 대한 요금 계산 시, 아기 할인을 적용한다.")
+    void calculateFare_baby() {
+        final PathResponse pathResponse = pathService.find(up.getId(), down.getId(), 5);
+
+        assertThat(pathResponse.getFare()).isEqualTo(0);
     }
 }
