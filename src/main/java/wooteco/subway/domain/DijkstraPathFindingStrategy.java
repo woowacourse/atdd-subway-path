@@ -26,7 +26,7 @@ public class DijkstraPathFindingStrategy implements PathFindingStrategy {
         DijkstraShortestPath<Station, WeightEdgeWithLineId> dijkstraShortestPath = getDijkstraShortestPath(lines);
         List<WeightEdgeWithLineId> edges = dijkstraShortestPath.getPath(source, target).getEdgeList();
         return edges.stream()
-            .map(edge -> edge.getLineId())
+            .map(WeightEdgeWithLineId::getLineId)
             .collect(Collectors.toList());
     }
 
