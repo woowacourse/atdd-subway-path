@@ -54,7 +54,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         // when
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .when()
-                .get("/paths?source=" + stationId1 + "&target=" + stationId3 + "&age=15")
+                .get("/paths?source=" + stationId1 + "&target=" + stationId3 + "&age=20")
                 .then().log().all()
                 .extract();
 

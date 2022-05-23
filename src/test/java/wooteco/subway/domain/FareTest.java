@@ -51,4 +51,18 @@ class FareTest {
         final Fare fare = Fare.from(10, extraFare, 20);
         assertThat(fare.getPrice()).isEqualTo(1250 + extraFare);
     }
+
+    @DisplayName("연령별 요금 할인 정책에 따라 요금이 할인된다.")
+    @ParameterizedTest
+    @CsvSource(value = {
+        "6, 450",
+        "12, 450",
+        "13, 720",
+        "18, 720",
+        "19, 1250"
+    })
+    void calculateExtraFare(final int age, final int price) {
+        final Fare fare = Fare.from(10, 0, age);
+        assertThat(fare.getPrice()).isEqualTo(price);
+    }
 }

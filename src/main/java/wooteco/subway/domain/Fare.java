@@ -20,12 +20,23 @@ public class Fare {
     }
 
     private static int calculateFare(final double distance, final int extraFare, final int age) {
-        final int price = MINIMUM_FARE_PRICE + extraFare;
+        final int discountPrice = discount(age);
+        final int price = discountPrice + extraFare;
         if (distance <= MINIMUM_DISTANCE_BOUNDARY) {
             return price;
         }
 
         return price + calculateFarePrice(distance);
+    }
+
+    private static int discount(final int age) {
+        if (age >= 6 && age < 13) {
+            return (MINIMUM_FARE_PRICE - 350) * 5 / 10;
+        }
+        if (age >= 13 && age < 19) {
+            return (MINIMUM_FARE_PRICE - 350) * 8 / 10;
+        }
+        return MINIMUM_FARE_PRICE;
     }
 
     private static int calculateFarePrice(final double distance) {
