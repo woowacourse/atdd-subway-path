@@ -1,5 +1,6 @@
 package wooteco.subway.domain;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -9,6 +10,7 @@ import java.util.Objects;
 
 @Getter
 @Setter
+@EqualsAndHashCode
 @ToString
 public class Section {
     private Long id;
@@ -31,18 +33,5 @@ public class Section {
         this.downStationId = downStationId;
         this.distance = distance;
         this.lineId = lineId;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Section section = (Section) o;
-        return Objects.equals(id, section.id) && Objects.equals(upStationId, section.upStationId) && Objects.equals(downStationId, section.downStationId) && Objects.equals(distance, section.distance) && Objects.equals(lineId, section.lineId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, upStationId, downStationId, distance, lineId);
     }
 }

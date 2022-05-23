@@ -1,6 +1,8 @@
 package wooteco.subway.domain;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import wooteco.subway.exception.constant.BlankArgumentException;
 
 import java.util.Objects;
@@ -8,6 +10,8 @@ import java.util.Objects;
 import static wooteco.subway.utils.StringUtils.isBlank;
 
 @Getter
+@EqualsAndHashCode
+@ToString
 public class Line {
 
     private final Long id;
@@ -33,27 +37,5 @@ public class Line {
 
     public boolean isSameName(String name) {
         return this.name.equals(name);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Line line = (Line) o;
-        return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(color, line.color);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, color);
-    }
-
-    @Override
-    public String toString() {
-        return "Line{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", color='" + color + '\'' +
-                '}';
     }
 }

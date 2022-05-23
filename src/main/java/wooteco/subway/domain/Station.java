@@ -1,7 +1,9 @@
 package wooteco.subway.domain;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import wooteco.subway.exception.constant.BlankArgumentException;
 
 import java.util.Objects;
@@ -10,6 +12,8 @@ import static wooteco.subway.utils.StringUtils.isBlank;
 
 @Getter
 @Setter
+@EqualsAndHashCode
+@ToString
 public class Station {
 
     private Long id;
@@ -32,26 +36,5 @@ public class Station {
         }
         this.id = id;
         this.name = name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Station station = (Station) o;
-        return Objects.equals(id, station.id) && Objects.equals(name, station.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
-    }
-
-    @Override
-    public String toString() {
-        return "Station{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
     }
 }
