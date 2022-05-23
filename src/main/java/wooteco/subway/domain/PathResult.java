@@ -7,10 +7,10 @@ public class PathResult {
     private final List<Station> stations;
     private final int distance;
 
-    public PathResult(List<Station> stations, double distance, int extraFare) {
+    public PathResult(List<Station> stations, double distance, Fare fare) {
         this.stations = stations;
         this.distance = (int) distance;
-        this.fare = new Fare(distance, extraFare).getFare();
+        this.fare = fare.getFare();
     }
 
     public List<Station> getStations() {

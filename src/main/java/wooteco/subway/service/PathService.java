@@ -24,12 +24,13 @@ public class PathService {
     }
 
     public PathResponse findPath(Long source, Long target, int age) {
-        var path = new Path(new Stations(stationDao.findAll()),
+        var path = new Path(
+                new Stations(stationDao.findAll()),
                 new Sections(sectionDao.findAll()),
                 new Lines(lineDao.findAll())
         );
 
-        var shortestPath = path.getPath(source, target);
+        var shortestPath = path.getPath(source, target, age);
 
         return new PathResponse(shortestPath);
     }
