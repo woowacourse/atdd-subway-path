@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
-import wooteco.subway.exception.constant.CustomException;
+import wooteco.subway.exception.constant.ClientException;
 import wooteco.subway.exception.constant.NotExistException;
 import wooteco.subway.exception.dto.ErrorResult;
 
@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseStatus(BAD_REQUEST)
-    @ExceptionHandler({CustomException.class, DuplicateKeyException.class})
+    @ExceptionHandler({ClientException.class, DuplicateKeyException.class})
     private ErrorResult handleBadRequestException(Exception exception) {
         logError(exception);
         return new ErrorResult(BAD_REQUEST, exception.getMessage());
