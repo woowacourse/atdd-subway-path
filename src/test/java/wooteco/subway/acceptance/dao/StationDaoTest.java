@@ -27,13 +27,13 @@ class StationDaoTest {
     @Test
     void save() {
         final Station newStation = stationDao.save(new Station("석촌고분역"));
-        assertThat(newStation.getId()).isEqualTo(4L);
+        assertThat(newStation.getName()).isEqualTo("석촌고분역");
     }
 
     @Test
     void findAll() {
         final List<Station> stations = stationDao.findAll();
-        assertThat(stations.size()).isEqualTo(3);
+        assertThat(stations.size()).isEqualTo(6);
     }
 
     @Test
@@ -47,12 +47,12 @@ class StationDaoTest {
         stationDao.deleteById(1L);
 
         final List<Station> stations = stationDao.findAll();
-        assertThat(stations.size()).isEqualTo(2);
+        assertThat(stations.size()).isEqualTo(5);
     }
 
     @Test
     @DisplayName("존재하지 않는 id값을 삭제할 때 예외 발생")
     void deleteNonExistentId() {
-        assertThatThrownBy(() -> stationDao.deleteById(4L)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> stationDao.deleteById(100L)).isInstanceOf(IllegalArgumentException.class);
     }
 }

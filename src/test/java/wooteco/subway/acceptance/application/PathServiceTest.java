@@ -54,7 +54,7 @@ class PathServiceTest {
         doReturn(강남역).when(stationService).findStationById(1L);
         doReturn(역삼역).when(stationService).findStationById(2L);
         // when
-        PathResponse pathResponse = pathService.getPath(1L, 2L);
+        PathResponse pathResponse = pathService.getPath(1L, 2L, 20);
         // then
         final List<String> stationNames = pathResponse.getStations().stream()
                 .map(StationResponse::getName)
@@ -80,7 +80,7 @@ class PathServiceTest {
         doReturn(강남역).when(stationService).findStationById(1L);
         doReturn(삼성역).when(stationService).findStationById(3L);
         //then
-        assertThatThrownBy(() -> pathService.getPath(1L, 3L))
+        assertThatThrownBy(() -> pathService.getPath(1L, 3L, 20))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -99,7 +99,7 @@ class PathServiceTest {
         doReturn(강남역).when(stationService).findStationById(1L);
         doReturn(삼성역).when(stationService).findStationById(3L);
         //when
-        PathResponse pathResponse = pathService.getPath(1L, 3L);
+        PathResponse pathResponse = pathService.getPath(1L, 3L, 20);
         //then
         final List<String> stationNames = pathResponse.getStations().stream()
                 .map(StationResponse::getName)

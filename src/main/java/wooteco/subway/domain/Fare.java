@@ -11,8 +11,9 @@ public class Fare {
         this.fare = fare;
     }
 
-    public static Fare from(int distance, int extraFare) {
-        return new Fare(DEFAULT_FARE + calculateOverFare(distance) + extraFare);
+    public static Fare from(int distance, int extraFare, int age) {
+        final int fareWithoutDiscount = DEFAULT_FARE + calculateOverFare(distance) + extraFare;
+        return new Fare(DiscountPolicy.calculateDiscountedFare(age, fareWithoutDiscount));
     }
 
     private static int calculateOverFare(int distance) {

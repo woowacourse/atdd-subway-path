@@ -46,7 +46,7 @@ class LineControllerTest {
     void createNewLine() throws Exception {
         final Station upStation = stationService.findStationById(1L);
         final Station downStation = stationService.findStationById(2L);
-        final String name = "경의선";
+        final String name = "경강선";
         final String color = "푸른이";
         final LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), 10, 0);
 

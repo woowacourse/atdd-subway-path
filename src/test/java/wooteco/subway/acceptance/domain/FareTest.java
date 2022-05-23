@@ -14,7 +14,7 @@ class FareTest {
     @CsvSource(value = {"10,1250", "11,1350", "16,1450", "50,2050", "51,2150", "59, 2250"})
     void calculate_fare_with_distance(int distance, int expectedFare) {
         // when
-        Fare createdFare = Fare.from(distance, 0);
+        Fare createdFare = Fare.from(distance, 0, 20);
         int actual = createdFare.getFare();
 
         // then
@@ -27,7 +27,20 @@ class FareTest {
         // when
         final int distance = 10;
         final int expectedFare = 2150;
-        Fare createdFare = Fare.from(distance, 900);
+        Fare createdFare = Fare.from(distance, 900, 20);
+        int actual = createdFare.getFare();
+
+        // then
+        assertThat(actual).isEqualTo(expectedFare);
+    }
+
+    @DisplayName("나이마다 다른 할인 정책이 적용된 요금이 정확한지 확인한다.")
+    @ParameterizedTest
+    @CsvSource(value = {"0,0", "6,450", "13,720", "19,1250", "65,0"})
+    void calculate_fare_by_age(int age, int expectedFare) {
+        // when
+        final int distance = 10;
+        Fare createdFare = Fare.from(distance, 0, age);
         int actual = createdFare.getFare();
 
         // then

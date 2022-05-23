@@ -22,14 +22,14 @@ public class PathService {
         this.sectionDao = sectionDao;
     }
 
-    public PathResponse getPath(Long sourceStationId, Long targetStationId) {
+    public PathResponse getPath(Long sourceStationId, Long targetStationId, int age) {
         Station departure = stationService.findStationById(sourceStationId);
         Station arrival = stationService.findStationById(targetStationId);
 
         List<Section> sections = sectionDao.findAll();
         final Path path = Path.from(sections, departure, arrival);
         final int extraFare = lineService.findMaxExtraFareByLineIds(path.getUsedLines());
-        final Fare fare = Fare.from(path.getDistance(), extraFare);
+        final Fare fare = Fare.from(path.getDistance(), extraFare, age);
         return PathResponse.of(path, fare);
     }
 }
