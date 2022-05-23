@@ -1,4 +1,4 @@
-package wooteco.subway.domain.strategy.discount;
+package wooteco.subway.domain.fare.strategy.discount;
 
 public class DefaultDiscountStrategy implements DiscountStrategy {
 

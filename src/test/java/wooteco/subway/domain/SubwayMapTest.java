@@ -7,6 +7,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.subwaymap.SubwayMap;
 import wooteco.subway.exception.IllegalInputException;
 import wooteco.subway.exception.path.NoSuchPathException;
 

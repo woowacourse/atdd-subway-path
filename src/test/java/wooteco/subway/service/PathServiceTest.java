@@ -11,7 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import wooteco.subway.domain.Distance;
-import wooteco.subway.domain.Fare;
+import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Name;
 import wooteco.subway.domain.Section;

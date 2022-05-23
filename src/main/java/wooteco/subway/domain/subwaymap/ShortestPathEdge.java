@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.subwaymap;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 

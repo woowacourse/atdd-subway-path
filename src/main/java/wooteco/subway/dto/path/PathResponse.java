@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import wooteco.subway.domain.Distance;
-import wooteco.subway.domain.Fare;
+import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.station.StationResponse;
 

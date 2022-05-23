@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.subwaymap;
 
 import java.util.Collection;
 import java.util.List;
@@ -6,6 +6,11 @@ import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.domain.Distance;
+import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.Station;
 import wooteco.subway.exception.IllegalInputException;
 import wooteco.subway.exception.path.NoSuchPathException;
 

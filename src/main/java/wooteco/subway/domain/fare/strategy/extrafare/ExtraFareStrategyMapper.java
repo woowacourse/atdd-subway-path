@@ -1,4 +1,4 @@
-package wooteco.subway.domain.strategy.extrafare;
+package wooteco.subway.domain.fare.strategy.extrafare;
 
 import java.util.Arrays;
 import java.util.function.Predicate;
