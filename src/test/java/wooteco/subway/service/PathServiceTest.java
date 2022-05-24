@@ -17,6 +17,9 @@ import static wooteco.subway.Fixtures.UP;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -107,6 +110,18 @@ public class PathServiceTest {
         assertAll(
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(56),
                 () -> assertThat(pathResponse.getFare()).isEqualTo(2150 + LINE_2_EXTRA_FARE)
+        );
+    }
+
+    @ParameterizedTest
+    @CsvSource({"5,2150","6,1150","13,1750","20,2150"})
+    @DisplayName("나이에 따른 추가 요금을 제대로 부과하는가")
+    void findPath_ageDiscount(final int age, final int fare) {
+        final PathResponse pathResponse = pathService.findPath(new FindPathRequest(right.getId(), down.getId(), age));
+
+        assertAll(
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(56),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(fare + LINE_2_EXTRA_FARE)
         );
     }
 }

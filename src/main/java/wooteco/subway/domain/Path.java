@@ -16,7 +16,7 @@ public class Path {
         this.extraFare = extraFare;
     }
 
-    public int calculateFare() {
+    public int calculateFare(int age) {
         int tempDistance = distance;
         int fare = BASIC_FARE + extraFare;
         if (tempDistance > 50) {
@@ -26,7 +26,18 @@ public class Path {
         if (tempDistance > 10) {
             fare += calculateOverFare(tempDistance - 10, 5);
         }
+        fare -= discountByAge(age, fare);
         return fare;
+    }
+
+    private int discountByAge(int age, int fare) {
+        if (13 <= age && age < 19) {
+            return (fare - 350) * 20 / 100;
+        }
+        if (6 <= age && age < 13) {
+            return (fare - 350) * 50 / 100;
+         }
+        return 0;
     }
 
     private int calculateOverFare(int distance, int kilo) {

@@ -29,7 +29,7 @@ public class PathService {
         final Station source = stationRepository.getById(findPathRequest.getSource());
         final Station target = stationRepository.getById(findPathRequest.getTarget());
         final Path path = pathFinder.find(source, target);
-        return PathResponse.of(path.getRouteStations(), path.getDistance(), path.calculateFare());
+        return PathResponse.of(path.getRouteStations(), path.getDistance(), path.calculateFare(findPathRequest.getAge()));
     }
 
     private PathFinder createPathFinder() {

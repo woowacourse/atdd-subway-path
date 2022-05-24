@@ -9,7 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class PathTest {
@@ -20,7 +19,7 @@ class PathTest {
     void calculateFare(final int distance) {
         final List<Station> routeStations = List.of(new Station(STATION_1), new Station(STATION_2));
         final Path path = new Path(routeStations, distance, 0);
-        assertThat(path.calculateFare()).isEqualTo(1250);
+        assertThat(path.calculateFare(20)).isEqualTo(1250);
     }
 
     @ParameterizedTest(name = "[{index}] 거리 = {0}, 요금 = {1}")
@@ -29,7 +28,7 @@ class PathTest {
     void calculateFare_Over10Under50(final int distance, final int fare) {
         final List<Station> routeStations = List.of(new Station(STATION_1), new Station(STATION_2));
         final Path path = new Path(routeStations, distance, 0);
-        assertThat(path.calculateFare()).isEqualTo(fare);
+        assertThat(path.calculateFare(20)).isEqualTo(fare);
     }
 
     @ParameterizedTest(name = "[{index}] 거리 = {0}, 요금 = {1}")
@@ -38,7 +37,7 @@ class PathTest {
     void calculateFare_Over50(final int distance, final int fare) {
         final List<Station> routeStations = List.of(new Station(STATION_1), new Station(STATION_2));
         final Path path = new Path(routeStations, distance, 0);
-        assertThat(path.calculateFare()).isEqualTo(fare);
+        assertThat(path.calculateFare(20)).isEqualTo(fare);
     }
 
     @ParameterizedTest
@@ -47,7 +46,24 @@ class PathTest {
     void calculateFare_extraFare(final int extraFare, final int fare) {
         final List<Station> routeStations = List.of(new Station(STATION_1), new Station(STATION_2));
         Path path = new Path(routeStations, 10, extraFare);
-        assertThat(path.calculateFare()).isEqualTo(fare);
+        assertThat(path.calculateFare(20)).isEqualTo(fare);
+    }
 
+    @ParameterizedTest
+    @CsvSource({"12, 1013", "13, 1410", "18, 1410", "19, 1675"})
+    @DisplayName("청소년 요금을 할인해준다")
+    void calculateFare_Teenager(final int age, final int fare) {
+        final List<Station> routeStations = List.of(new Station(STATION_1), new Station(STATION_2));
+        Path path = new Path(routeStations, 25, 125);
+        assertThat(path.calculateFare(age)).isEqualTo(fare);
+    }
+
+    @ParameterizedTest
+    @CsvSource({"5, 2450", "6, 1400", "12, 1400", "13, 2030"})
+    @DisplayName("어린이 요금을 할인해준다")
+    void calculateFare_Children(final int age, final int fare) {
+        final List<Station> routeStations = List.of(new Station(STATION_1), new Station(STATION_2));
+        Path path = new Path(routeStations, 45, 500);
+        assertThat(path.calculateFare(age)).isEqualTo(fare);
     }
 }
