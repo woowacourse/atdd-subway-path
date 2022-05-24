@@ -80,7 +80,7 @@ public class LineService {
         final Station downStation = stationService.find(request.getDownStationId());
         newSections.add(new Section(upStation, downStation, request.getDistance()));
 
-        deleteOldSections(lineId, originSections, newSections);
+        deleteOldSections(originSections, newSections);
         saveNewSections(lineId, originSections, newSections);
     }
 
@@ -90,9 +90,9 @@ public class LineService {
         stationService.validateNotExistStation(request.getDownStationId());
     }
 
-    private void deleteOldSections(final Long lineId, final Sections originSections, final Sections newSections) {
+    private void deleteOldSections(final Sections originSections, final Sections newSections) {
         final List<Section> differentSections = originSections.findDifferentSections(newSections);
-        sectionRepository.batchDeleteById(lineId, differentSections);
+        sectionRepository.batchDeleteById(differentSections);
     }
 
     private void saveNewSections(final Long lineId, final Sections originSections, final Sections newSections) {
@@ -106,7 +106,7 @@ public class LineService {
         final Sections newSections = new Sections(originSections.getValues());
         newSections.remove(stationId);
 
-        deleteOldSections(lineId, originSections, newSections);
+        deleteOldSections(originSections, newSections);
         saveNewSections(lineId, originSections, newSections);
     }
 

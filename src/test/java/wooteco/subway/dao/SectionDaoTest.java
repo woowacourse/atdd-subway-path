@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static wooteco.subway.Fixtures.GANGNAM;
 import static wooteco.subway.Fixtures.HYEHWA;
 import static wooteco.subway.Fixtures.LINE_2;
+import static wooteco.subway.Fixtures.LINE_4;
 import static wooteco.subway.Fixtures.SKY_BLUE;
 import static wooteco.subway.Fixtures.SUNGSHIN;
 
@@ -137,12 +138,12 @@ public class SectionDaoTest {
         final Long stationId1 = stationDao.save(new StationEntity(HYEHWA));
         final Long stationId2 = stationDao.save(new StationEntity(SUNGSHIN));
         final Long stationId3 = stationDao.save(new StationEntity(GANGNAM));
-        final Long lineId = lineDao.save(new LineEntity(LINE_2, SKY_BLUE, 900));
-        final List<SectionEntity> sections = List.of(new SectionEntity(lineId, stationId1, stationId2, 10),
-                new SectionEntity(lineId, stationId2, stationId3, 10));
+        final Long lineId = lineDao.save(new LineEntity(LINE_4, SKY_BLUE, 900));
+        final Long sectionId1 = sectionDao.save(new SectionEntity(lineId, stationId1, stationId2, 10));
+        final Long sectionId2 = sectionDao.save(new SectionEntity(lineId, stationId2, stationId3, 10));
 
         // when
-        sectionDao.batchDeleteById(sections);
+        sectionDao.batchDeleteById(List.of(sectionId1, sectionId2));
         final List<SectionEntity> savedSections = sectionDao.findAllByLineId(lineId);
 
         // then

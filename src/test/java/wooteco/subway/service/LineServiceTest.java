@@ -256,7 +256,7 @@ class LineServiceTest {
         lineService.createSection(lineId, new CreateSectionRequest(1L, 2L, 5));
 
         // then
-        verify(sectionRepository).batchDeleteById(1L, List.of(SECTION_1_3_10));
+        verify(sectionRepository).batchDeleteById(List.of(SECTION_1_3_10));
         verify(sectionRepository).batchSave(1L, List.of(SECTION_1_2_5, SECTION_2_3_5));
     }
 
@@ -273,7 +273,7 @@ class LineServiceTest {
         lineService.createSection(1L, new CreateSectionRequest(2L, 3L, 5));
 
         // then
-        verify(sectionRepository).batchDeleteById(1L, List.of(SECTION_1_3_10));
+        verify(sectionRepository).batchDeleteById(List.of(SECTION_1_3_10));
         verify(sectionRepository).batchSave(1L, List.of(SECTION_2_3_5, SECTION_1_2_5));
     }
 
@@ -326,7 +326,7 @@ class LineServiceTest {
 
         // then
         verify(sectionRepository).batchSave(1L, List.of());
-        verify(sectionRepository).batchDeleteById(1L, List.of(SECTION_1_2_10));
+        verify(sectionRepository).batchDeleteById(List.of(SECTION_1_2_10));
     }
 
     @Test

@@ -6,6 +6,7 @@ import javax.sql.DataSource;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
@@ -74,8 +75,9 @@ public class SectionDao {
         jdbcTemplate.update(sql, Map.of("id", id));
     }
 
-    public void batchDeleteById(final List<SectionEntity> sections) {
-        final String sql = "DELETE FROM SECTION WHERE id = :id";
-        jdbcTemplate.batchUpdate(sql, SqlParameterSourceUtils.createBatch(sections));
+    public void batchDeleteById(final List<Long> ids) {
+        final SqlParameterSource params = new MapSqlParameterSource("ids", ids);
+        final String sql = "DELETE FROM SECTION WHERE id IN (:ids)";
+        jdbcTemplate.update(sql, params);
     }
 }
