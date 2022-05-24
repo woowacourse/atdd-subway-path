@@ -19,6 +19,24 @@ class SectionsTest {
     private final Station seolleung = new Station("선릉역");
     private final Line line = new Line("2호선", "초록색", 0);
 
+    @DisplayName("null값으로 생성하려고 하면 예외를 반환한다.")
+    @Test
+    void notAllowNull() {
+        assertThatThrownBy(() -> new Sections(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("구간들은 null일 수 없습니다.");
+    }
+
+    @DisplayName("null을 포함하면 예외를 반환한다.")
+    @Test
+    void notAllowContainNull() {
+        List<Section> containsNull = new ArrayList<>();
+        containsNull.add(null);
+        assertThatThrownBy(() -> new Sections(containsNull))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("구간들은 null일 수 없습니다.");
+    }
+
     @DisplayName("구간 순서대로 역들을 정렬해서 반환한다.")
     @Test
     void getSortedStations() {

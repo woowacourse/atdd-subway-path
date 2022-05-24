@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import wooteco.subway.exception.duplicate.DuplicateSectionException;
@@ -17,6 +18,9 @@ public class Sections {
     private final List<Section> values;
 
     public Sections(List<Section> values) {
+        if (values == null || values.stream().anyMatch(Objects::isNull)) {
+            throw new IllegalArgumentException("구간들은 null일 수 없습니다.");
+        }
         this.values = new ArrayList<>(values);
     }
 
