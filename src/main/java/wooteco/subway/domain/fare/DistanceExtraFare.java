@@ -6,10 +6,10 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public enum DistanceExtraFare {
-    BASIC_DISTANCE((distance) -> distance <= 10, (distance) -> 0),
-    ADDITIONAL_DISTANCE((distance) -> distance < 50,
-            (distance) -> (int) ((Math.ceil(((distance - 10) - 1) / 5) + 1) * 100)),
-    OTHER(ignore -> true, (distance) -> 800 + (int) ((Math.ceil(((distance - 50) - 1) / 8) + 1) * 100)),
+    BASIC_DISTANCE(distance -> 0 < distance && distance <= 10, (distance) -> 0),
+    ADDITIONAL_DISTANCE(distance -> distance < 50,
+            distance -> (int) ((Math.ceil(((distance - 10) - 1) / 5) + 1) * 100)),
+    OTHER(distance -> distance >= 50, (distance) -> 800 + (int) ((Math.ceil(((distance - 50) - 1) / 8) + 1) * 100)),
     ;
 
     private final Predicate<Integer> predicate;
