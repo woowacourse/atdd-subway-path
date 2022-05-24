@@ -21,6 +21,7 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
+import wooteco.subway.dto.StationResponse;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.StationRepository;
 
@@ -39,11 +40,22 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Station 강남역 = stationRepository.save(new Station("강남역"));
         Station 역삼역 = stationRepository.save(new Station("역삼역"));
 
-        LineRequest params = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5);
+        LineRequest params = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5, 900);
         ExtractableResponse<Response> response = post(params, "/lines");
+        JsonPath lineResponsePath = response.jsonPath();
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).isNotBlank();
+        String name = lineResponsePath.getString("name");
+        String color = lineResponsePath.getString("color");
+        int extraFare = lineResponsePath.getInt("extraFare");
+        List<StationResponse> stations = lineResponsePath.getList("stations", StationResponse.class);
+        assertAll(() -> {
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+            assertThat(response.header("Location")).isNotBlank();
+            assertThat(name).isEqualTo("신분당선");
+            assertThat(color).isEqualTo("bg-red-600");
+            assertThat(extraFare).isEqualTo(900);
+            assertThat(stations).containsExactly(new StationResponse(강남역), new StationResponse(역삼역));
+        });
     }
 
     @DisplayName("기존에 존재하는 노선 이름으로 노선을 생성하면 400 bad-request가 발생한다.")

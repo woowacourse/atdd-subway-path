@@ -2,7 +2,7 @@ package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static wooteco.subway.TestFixtures.LINE_COLOR;
+import static wooteco.subway.TestFixtures.LINE_SIX_COLOR;
 import static wooteco.subway.TestFixtures.LINE_SIX;
 import static wooteco.subway.TestFixtures.STANDARD_DISTANCE;
 import static wooteco.subway.TestFixtures.동묘앞역;
@@ -80,7 +80,7 @@ class StationServiceTest {
     void deleteStationException() {
         Station saved_신당역 = stationRepository.save(신당역);
         Station saved_동묘앞역 = stationRepository.save(동묘앞역);
-        Long lineId = lineRepository.save(new Line(LINE_SIX, LINE_COLOR));
+        Long lineId = lineRepository.save(new Line(LINE_SIX, LINE_SIX_COLOR));
         sectionRepository.save(new Section(lineId, saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
         assertThatThrownBy(() -> stationService.deleteStation(saved_신당역.getId()))
                 .isInstanceOf(SubwayException.class)

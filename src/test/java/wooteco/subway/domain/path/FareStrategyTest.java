@@ -11,13 +11,15 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class FareStrategyTest {
 
-    private FareStrategy fareStrategy = new FareStrategy();
+    private static final int DEFAULT_EXTRA_FARE = 0;
+
+    private final FareStrategy fareStrategy = new FareStrategy();
 
     @DisplayName("거리 당 요금을 계산한다.")
     @ParameterizedTest
     @MethodSource("provideDistanceAndFare")
     void calculateDefaultFare(final int distance, final int expectedFare) {
-        assertThat(fareStrategy.calculateFare(distance)).isEqualTo(expectedFare);
+        assertThat(fareStrategy.calculateFare(distance, DEFAULT_EXTRA_FARE)).isEqualTo(expectedFare);
     }
 
     private static Stream<Arguments> provideDistanceAndFare() {

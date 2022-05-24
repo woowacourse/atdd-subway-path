@@ -17,12 +17,13 @@ import wooteco.subway.exception.SectionNotFoundException;
 
 class ShortestPathStrategyTest {
 
+    private final ShortestPathCalculator shortestPathCalculator = new ShortestPathCalculator();
+
     @DisplayName("최단 경로를 탐색한다.")
     @Test
     void calculateMinDistance() {
         Sections sections = createSections();
-        ShortestPathStrategy pathStrategy = new ShortestPathStrategy();
-        Path path = pathStrategy.findPath(신당역, 창신역, sections);
+        Path path = shortestPathCalculator.findPath(신당역, 창신역, sections);
         assertThat(path.getDistance()).isEqualTo(20);
     }
 
@@ -30,8 +31,7 @@ class ShortestPathStrategyTest {
     @Test
     void calculateMinDistanceException() {
         Sections sections = createSections();
-        ShortestPathStrategy pathStrategy = new ShortestPathStrategy();
-        assertThatThrownBy(() -> pathStrategy.findPath(보문역, 신당역, sections))
+        assertThatThrownBy(() -> shortestPathCalculator.findPath(보문역, 신당역, sections))
                 .isInstanceOf(SectionNotFoundException.class);
     }
 
@@ -41,8 +41,7 @@ class ShortestPathStrategyTest {
         Section section = new Section(1L, 1L, 신당역, 동묘앞역, STANDARD_DISTANCE);
         Section section1 = new Section(2L, 1L, 보문역, 창신역, STANDARD_DISTANCE);
         Sections sections = new Sections(List.of(section, section1));
-        ShortestPathStrategy pathStrategy = new ShortestPathStrategy();
-        assertThatThrownBy(() -> pathStrategy.findPath(신당역, 보문역, sections))
+        assertThatThrownBy(() -> shortestPathCalculator.findPath(신당역, 보문역, sections))
                 .isInstanceOf(SectionNotFoundException.class);
     }
 
@@ -50,8 +49,7 @@ class ShortestPathStrategyTest {
     @Test
     void findShortestStations() {
         Sections sections = createSections();
-        ShortestPathStrategy pathStrategy = new ShortestPathStrategy();
-        Path path = pathStrategy.findPath(신당역, 창신역, sections);
+        Path path = shortestPathCalculator.findPath(신당역, 창신역, sections);
         assertThat(path.getStations()).containsExactly(신당역, 동묘앞역, 창신역);
     }
 
@@ -62,8 +60,7 @@ class ShortestPathStrategyTest {
         Section section = new Section(1L, 1L, 신당역, 동묘앞역, STANDARD_DISTANCE);
         Section section1 = new Section(2L, 1L, 보문역, 창신역, STANDARD_DISTANCE);
         Sections sections = new Sections(List.of(section, section1));
-        ShortestPathStrategy pathStrategy = new ShortestPathStrategy();
-        assertThatThrownBy(() -> pathStrategy.findPath(신당역, 보문역, sections))
+        assertThatThrownBy(() -> shortestPathCalculator.findPath(신당역, 보문역, sections))
                 .isInstanceOf(SectionNotFoundException.class);
     }
 

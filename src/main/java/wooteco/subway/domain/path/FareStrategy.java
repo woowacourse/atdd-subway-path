@@ -11,14 +11,15 @@ public class FareStrategy {
     private static final int STANDARD_UNIT = 5;
     private static final int MAX_UNIT = 8;
 
-    public int calculateFare(final int distance) {
+    public int calculateFare(final int distance, final int extraFare) {
         if (distance <= DEFAULT_DISTANCE) {
-            return DEFAULT_FARE;
+            return DEFAULT_FARE + extraFare;
         }
         if (distance <= OVER_FARE_DISTANCE) {
-            return DEFAULT_FARE + calculateOverFare(distance - DEFAULT_DISTANCE, STANDARD_UNIT);
+            return DEFAULT_FARE + extraFare + calculateOverFare(distance - DEFAULT_DISTANCE, STANDARD_UNIT);
         }
         return DEFAULT_FARE
+                + extraFare
                 + calculateOverFare(OVER_FARE_DISTANCE - DEFAULT_DISTANCE, STANDARD_UNIT)
                 + calculateOverFare(distance - OVER_FARE_DISTANCE, MAX_UNIT);
     }

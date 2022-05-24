@@ -42,10 +42,11 @@ public class LineService {
 
         Section section = new Section(id, upStation, downStation, lineRequest.getDistance());
         sectionRepository.save(section);
-        Line line = new Line(id, name, lineRequest.getColor(), new Sections(List.of(section)));
+        Line line = new Line(id, name, lineRequest.getColor(), lineRequest.getExtraFare(), new Sections(List.of(section)));
         return new LineResponse(line.getId(),
                 line.getName(),
                 line.getColor(),
+                line.getExtraFare(),
                 List.of(new StationResponse(upStation),
                         new StationResponse(downStation)));
     }
@@ -63,6 +64,7 @@ public class LineService {
                 .map(line -> new LineResponse(line.getId(),
                         line.getName(),
                         line.getColor(),
+                        line.getExtraFare(),
                         toStationResponses(line.getSections().findStationsByLine())))
                 .collect(Collectors.toList());
     }
@@ -73,6 +75,7 @@ public class LineService {
         return new LineResponse(line.getId(),
                 line.getName(),
                 line.getColor(),
+                line.getExtraFare(),
                 toStationResponses(new Sections(sectionRepository.findByLineId(id))
                         .findStationsByLine()));
     }
