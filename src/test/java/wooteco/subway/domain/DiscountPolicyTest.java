@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,5 +41,13 @@ class DiscountPolicyTest {
         int discountValue = DiscountPolicy.getDiscountValue(1350, 3);
 
         assertThat(discountValue).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("잘못된 나이를 입력하면 에러가 발생한다.")
+    void discountExceptionTest() {
+        assertThatThrownBy(() -> DiscountPolicy.getDiscountValue(1350, -1))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("나이는 1 이상이어야 합니다.");
     }
 }

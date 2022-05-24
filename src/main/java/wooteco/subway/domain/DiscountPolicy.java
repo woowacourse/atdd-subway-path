@@ -12,7 +12,7 @@ import java.util.function.IntUnaryOperator;
 public enum DiscountPolicy {
 
     BABY(
-        age -> age < 6,
+        age -> age >= 1 && age < 6,
         value -> FREE_FARE),
     CHILDREN(
         age -> age >= 6 && age < 13,
@@ -21,7 +21,7 @@ public enum DiscountPolicy {
         age -> age >= 13 && age < 19,
         value -> (int) (value - ((value - DEDUCTION_AMOUNT) * CHILDREN_DISCOUNT_PERCENTAGE))),
     NO_DISCOUNT_AGE_GROUP(
-        age -> false,
+        age -> age >= 19,
         value -> value);
 
     private final IntPredicate agePolicy;
@@ -40,7 +40,7 @@ public enum DiscountPolicy {
         return Arrays.stream(DiscountPolicy.values())
             .filter(ageGroup -> ageGroup.getAgePolicy().test(age))
             .findFirst()
-            .orElse(NO_DISCOUNT_AGE_GROUP);
+            .orElseThrow(() -> new IllegalArgumentException("나이는 1 이상이어야 합니다."));
     }
 
     public IntPredicate getAgePolicy() {
