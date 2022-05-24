@@ -1,5 +1,7 @@
 package wooteco.subway.dao;
 
+import java.util.List;
+import javax.sql.DataSource;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -9,13 +11,11 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.line.Line;
-
-import javax.sql.DataSource;
-import java.util.List;
 import wooteco.subway.exception.line.LineNotFoundException;
 
 @Repository
 public class LineDao {
+
     private static final RowMapper<Line> ACTOR_ROW_MAPPER = (resultSet, rowNum) ->
             new Line(resultSet.getLong("id"),
                     resultSet.getString("name"),
@@ -54,7 +54,7 @@ public class LineDao {
             String sql = "select id, name, color, extra_fare from LINE where id = :id";
             SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
             return namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, ACTOR_ROW_MAPPER);
-        } catch(EmptyResultDataAccessException e) {
+        } catch (EmptyResultDataAccessException e) {
             throw new LineNotFoundException();
         }
     }

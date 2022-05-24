@@ -1,8 +1,12 @@
 package wooteco.subway.domain.section;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Queue;
 import wooteco.subway.domain.station.Station;
-
-import java.util.*;
 
 public class ConcreteSortStrategy implements SortStrategy {
 
@@ -27,7 +31,8 @@ public class ConcreteSortStrategy implements SortStrategy {
                 .orElseThrow(() -> new NoSuchElementException("해당하는 구간이 존재하지 않습니다."));
     }
 
-    private Queue<Section> findAndAdd(Queue<Section> sortedSections, List<Section> remainSections, Section currentSection) {
+    private Queue<Section> findAndAdd(Queue<Section> sortedSections, List<Section> remainSections,
+            Section currentSection) {
         remainSections.remove(currentSection);
         if (remainSections.isEmpty()) {
             return sortedSections;

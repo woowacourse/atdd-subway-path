@@ -15,6 +15,7 @@ import wooteco.subway.exception.station.StationNotFoundException;
 
 @Repository
 public class StationDao {
+
     private static final RowMapper<Station> ACTOR_ROW_MAPPER = (resultSet, rowNum) ->
             new Station(resultSet.getLong("id"), resultSet.getString("name"));
 
@@ -50,7 +51,7 @@ public class StationDao {
             String sql = "select id, name from STATION where id = :id";
             SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
             return namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, ACTOR_ROW_MAPPER);
-        } catch(EmptyResultDataAccessException e) {
+        } catch (EmptyResultDataAccessException e) {
             throw new StationNotFoundException();
         }
     }

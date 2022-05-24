@@ -56,7 +56,7 @@ public class SectionDaoTest {
 
         line = lineDao.insert(지하철_2호선);
 
-        sectionDao.insert(new Section( 지하철_2호선_아이디, 강남, 선릉, 10));
+        sectionDao.insert(new Section(지하철_2호선_아이디, 강남, 선릉, 10));
     }
 
     @DisplayName("새로운 구간을 추가한다.")

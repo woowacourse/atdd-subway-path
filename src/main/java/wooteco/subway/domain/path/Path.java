@@ -1,23 +1,24 @@
 package wooteco.subway.domain.path;
 
+import java.util.List;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 
-import java.util.List;
-
 public class Path {
+
     private final Graph<Long, DefaultWeightedEdge> graph;
     private final PathFindingStrategy pathFindingStrategy;
 
-    public Path(List<Station> stations, List<Section> sections, PathFindingStrategy pathFindingStrategy){
+    public Path(List<Station> stations, List<Section> sections, PathFindingStrategy pathFindingStrategy) {
         this.graph = generateGraph(stations, sections);
         this.pathFindingStrategy = pathFindingStrategy;
     }
 
-    private WeightedMultigraph<Long, DefaultWeightedEdge> generateGraph(List<Station> stations, List<Section> sections) {
+    private WeightedMultigraph<Long, DefaultWeightedEdge> generateGraph(List<Station> stations,
+            List<Section> sections) {
         WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
         for (Station station : stations) {
@@ -29,7 +30,7 @@ public class Path {
             Long downStationId = section.getDownStationId();
             graph.setEdgeWeight(graph.addEdge(upStationId, downStationId), section.getDistance());
         }
-        
+
         return graph;
     }
 

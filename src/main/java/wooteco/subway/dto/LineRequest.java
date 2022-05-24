@@ -1,10 +1,9 @@
 package wooteco.subway.dto;
 
-import org.jetbrains.annotations.NotNull;
-import wooteco.subway.domain.line.Line;
-
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
+import org.jetbrains.annotations.NotNull;
+import wooteco.subway.domain.line.Line;
 
 public class LineRequest {
 
@@ -12,7 +11,7 @@ public class LineRequest {
     private String name;
 
     @NotNull
-    @Size(max=20)
+    @Size(max = 20)
     private String color;
 
     @NotNull
@@ -39,7 +38,7 @@ public class LineRequest {
         this.extraFare = extraFare;
     }
 
-    public Line toLine(){
+    public Line toLine() {
         return new Line(name, color, extraFare);
     }
 

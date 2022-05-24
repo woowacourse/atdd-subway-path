@@ -16,7 +16,7 @@ import org.springframework.http.MediaType;
 public class PathAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
-    void createStations(){
+    void createStations() {
         Map<String, String> params1 = new HashMap<>();
         params1.put("name", "강남역");
         createStationResponseOf(params1);

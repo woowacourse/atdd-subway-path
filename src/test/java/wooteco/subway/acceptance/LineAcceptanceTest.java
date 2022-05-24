@@ -21,7 +21,7 @@ import wooteco.subway.dto.LineResponse;
 public class LineAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
-    void createStations(){
+    void createStations() {
         Map<String, String> params1 = new HashMap<>();
         params1.put("name", "강남역");
         createStationResponseOf(params1);
@@ -197,7 +197,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .put("/lines/1")
                 .then().log().all()
                 .extract();
-
 
         ExtractableResponse<Response> findAllResponse = RestAssured.given().log().all()
                 .when()
