@@ -1,8 +1,11 @@
 package wooteco.subway.dto.request;
 
+import javax.validation.constraints.Positive;
+
 public class FindPathRequest {
     private Long source;
     private Long target;
+    @Positive(message = "나이는 0보다 커야합니다.")
     private int age;
 
     private FindPathRequest() {

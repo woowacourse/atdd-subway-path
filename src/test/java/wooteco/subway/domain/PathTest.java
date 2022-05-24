@@ -6,10 +6,10 @@ import static wooteco.subway.Fixtures.STATION_2;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import wooteco.subway.domain.path.Path;
 
 class PathTest {
 
@@ -59,7 +59,7 @@ class PathTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"5, 2450", "6, 1400", "12, 1400", "13, 2030"})
+    @CsvSource({"5, 0", "6, 1400", "12, 1400", "13, 2030"})
     @DisplayName("어린이 요금을 할인해준다")
     void calculateFare_Children(final int age, final int fare) {
         final List<Station> routeStations = List.of(new Station(STATION_1), new Station(STATION_2));

@@ -1,6 +1,7 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import java.util.List;
+import wooteco.subway.domain.Station;
 
 public class Path {
 
@@ -26,18 +27,7 @@ public class Path {
         if (tempDistance > 10) {
             fare += calculateOverFare(tempDistance - 10, 5);
         }
-        fare -= discountByAge(age, fare);
-        return fare;
-    }
-
-    private int discountByAge(int age, int fare) {
-        if (13 <= age && age < 19) {
-            return (fare - 350) * 20 / 100;
-        }
-        if (6 <= age && age < 13) {
-            return (fare - 350) * 50 / 100;
-         }
-        return 0;
+        return AgeDiscountPolicy.from(age).discountAmount(fare);
     }
 
     private int calculateOverFare(int distance, int kilo) {
