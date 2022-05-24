@@ -13,9 +13,9 @@ public class Fare {
         Optional<FarePolicy> farePolicy = Optional.of(FarePolicy.DEFAULT);
 
         while (farePolicy.isPresent()) {
-            FarePolicy presentStandard = farePolicy.get();
-            fare += presentStandard.calculate(distance);
-            farePolicy = presentStandard.update();
+            FarePolicy presentPolicy = farePolicy.get();
+            fare += presentPolicy.calculate(distance);
+            farePolicy = presentPolicy.update();
         }
         return calculateFareByAge(age, fare + findExtraLineFare(path));
     }

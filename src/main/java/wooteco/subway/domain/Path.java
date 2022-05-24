@@ -22,6 +22,7 @@ public class Path {
         return graphPath.getEdgeList()
                 .stream()
                 .map(SectionEdge::getLine)
+                .distinct()
                 .collect(Collectors.toList());
     }
 
