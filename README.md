@@ -1,4 +1,3 @@
-
 # 지하철 노선도 미션
 
 스프링 과정 실습을 위한 지하철 노선도 애플리케이션
@@ -185,7 +184,8 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-subwayGraph/blo
     - [x] baseFare는 기본요금일까요?
 - [x] Generator -> 매직 넘버는 상수로 분리하면 어떨까요?
 - [x] UnderTenKMPolicy 에서도 같은 상수가 선언돼 있는데, 필요한 중복일까요?
-- [ ] removeStationById -> StationService 대신 이곳에 위치한 이유가 있을까요?
+- [x] removeStationById -> StationService 대신 이곳에 위치한 이유가 있을까요?
+    - [x] 해당 역들을 지울 때, 역이 노선 구간들 안에 포함되어있는지 확인하는 과정이 필요하기 때문에 총괄적인 repository들을 참조하는 lineService 안에 해당 부분을 넣었습니다!
 - [ ] extraFare INT 칼럼에 NOT NULL 추가
 - [ ] PathService.java
     - [ ] -> 만약 정책 중에 정해진 금액을 할인하는 대신 정해진 비율(e.g., 20%)로 할인하는 정책이 추가된다면 이곳이 변경될까요?
