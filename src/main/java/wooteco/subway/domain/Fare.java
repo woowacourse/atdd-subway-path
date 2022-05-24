@@ -21,25 +21,22 @@ public class Fare {
     }
 
     private int calculate(int distance, int highestExtraFare, int age) {
-        int adultFare = BASIC_FARE + calculateOverDistanceFare(distance) + highestExtraFare;
+        int adultFare = calculateAdultFare(distance, highestExtraFare);
         if (age < ADULT_AGE_LOWEST_THRESHOLD) {
             return calculateAgeDiscountFare(adultFare, age);
         }
         return adultFare;
     }
 
-    private int calculateAgeDiscountFare(int fare, int age) {
-        if (age > KID_AGE_HIGHEST_THRESHOLD) {
-            return (int) ((fare - DEFAULT_AGE_DISCOUNT_VALUE) * (1 - ADOLESCENT_DISCOUNT_RATE));
+    private int calculateAdultFare(int distance, int highestExtraFare) {
+        if (distance <= BASIC_THRESHOLD_DISTANCE) {
+            return BASIC_FARE + highestExtraFare;
         }
-        return (int) ((fare - DEFAULT_AGE_DISCOUNT_VALUE) * (1 - KID_DISCOUNT_RATE));
+        return BASIC_FARE + calculateOverDistanceFare(distance) + highestExtraFare;
     }
 
     private int calculateOverDistanceFare(int distance) {
         int fare = 0;
-        if (distance <= BASIC_THRESHOLD_DISTANCE) {
-            return 0;
-        }
         if (distance > LONG_RANGE_THRESHOLD_DISTANCE) {
             fare += (int) (Math.ceil((distance - LONG_RANGE_THRESHOLD_DISTANCE) / LONG_RANGE_DISTANCE_RATE)
                     * OVER_FARE);
@@ -47,6 +44,13 @@ public class Fare {
         fare += (int) (Math.min(Math.ceil((distance - BASIC_THRESHOLD_DISTANCE) / BASIC_DISTANCE_RATE),
                 LONG_RANGE_DISTANCE_RATE) * OVER_FARE);
         return fare;
+    }
+
+    private int calculateAgeDiscountFare(int fare, int age) {
+        if (age > KID_AGE_HIGHEST_THRESHOLD) {
+            return (int) ((fare - DEFAULT_AGE_DISCOUNT_VALUE) * (1 - ADOLESCENT_DISCOUNT_RATE));
+        }
+        return (int) ((fare - DEFAULT_AGE_DISCOUNT_VALUE) * (1 - KID_DISCOUNT_RATE));
     }
 
     public int value() {
