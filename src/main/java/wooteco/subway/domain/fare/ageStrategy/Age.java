@@ -7,7 +7,7 @@ public enum Age {
     PREFERENTIAL (age -> age < 6 || 65 <= age, new PreferentialDiscountPolicy()),
     CHILDREN (age -> 6 <= age && age < 13, new ChildrenDiscountPolicy()),
     TEENAGER (age -> 13 <= age && age <= 18, new TeenagerDiscountPolicy()),
-    NORMAL (age -> 19 < age, new NormalAgeDiscountPolicy())
+    NORMAL (age -> 18 < age, new NormalAgeDiscountPolicy())
     ;
 
     private final Predicate<Integer> ageCondition;
