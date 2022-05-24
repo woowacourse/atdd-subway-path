@@ -35,19 +35,40 @@ public class PathTest {
 
     @Test
     @DisplayName("주어진 구간으로 최단 경로를 구한다.")
-    void construct() {
+    void from() {
         Path path = Path.from(shortestPath, 선릉, 강남);
 
         assertThat(path.getStations()).hasSize(3);
     }
 
+    @DisplayName("출발역과 도착역이 같으면 예외가 발생한다.")
+    @Test
+    void from_same_source_target() {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> Path.from(shortestPath, 선릉, 선릉))
+                .withMessageContaining("출발역과 도착역이 같아");
+
+    }
+
     @Test
     @DisplayName("구간에 존재하지 않는 역일 경우 예외가 발생한다.")
-    void construct_no_such_path() {
+    void from_no_such_station() {
         Station 망원 = new Station(4L, "망원");
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> Path.from(shortestPath, 선릉, 망원))
                 .withMessageContaining("존재하지 않습니다");
+    }
+
+    @DisplayName("해당 역에 대한 구간이 존재하지 않을 경우 예외가 발생한다.")
+    @Test
+    void from_no_such_path() {
+        List<Station> stations = List.of(강남, 역삼, 선릉);
+        List<Section> sections = List.of(new Section(강남, 역삼, Distance.fromMeter(10)));
+        DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPathWithout_선릉 = ShortestPathFactory.getFrom(stations, sections);
+
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(() -> Path.from(shortestPathWithout_선릉, 강남, 선릉))
+                .withMessageContaining("경로가 존재하지");
     }
 
     @Test
