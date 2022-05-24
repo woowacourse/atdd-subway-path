@@ -56,7 +56,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    @DisplayName("기존에 존재하는 노선의 이름으로 노선을 생성한다.")
+    @DisplayName("기존에 존재하는 노선의 이름으로 노선을 생성하 badRequest를 응답한다.")
     @Test
     void createLineWithDuplicateName() {
         // given
