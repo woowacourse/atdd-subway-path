@@ -37,7 +37,7 @@ public class PathManager {
 
     public Path calculateOptimalPath(Station startStation, Station endStation) {
         validateRegisteredStations(startStation, endStation);
-        validateNonSelfLoop(startStation, endStation);
+        validateStartPointEqualsEndPoint(startStation, endStation);
         initializeDistanceResultsMap(startStation);
         queue.add(new PathElement(startStation, START_STATION_DISTANCE, START_STATION_FARE));
 
@@ -75,7 +75,7 @@ public class PathManager {
         }
     }
 
-    private void validateNonSelfLoop(Station startStation, Station endStation) {
+    private void validateStartPointEqualsEndPoint(Station startStation, Station endStation) {
         if (startStation.equals(endStation)){
             throw new IllegalArgumentException(SELF_LOOP_EXCEPTION);
         }
