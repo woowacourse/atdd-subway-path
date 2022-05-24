@@ -28,7 +28,7 @@ class PathTest {
 
     @Test
     void toStations_메서드는_시작점부터_목적지까지의_최단경로에_해당하는_지하철역들을_순서대로_제공() {
-        Path path = Path.of(STATION2, STATION3, NAVIGATOR);
+        Path path = getPathOf(STATION2, STATION3);
 
         List<Station> actual = path.toStations();
         List<Station> expected = List.of(STATION2, STATION4, STATION5, STATION3);
@@ -38,7 +38,7 @@ class PathTest {
 
     @Test
     void getDistance_메서드는_최단경로의_거리를_반환() {
-        Path path = Path.of(STATION2, STATION3, NAVIGATOR);
+        Path path = getPathOf(STATION2, STATION3);
 
         int actual = path.getDistance();
         int expected = 10;
@@ -48,7 +48,7 @@ class PathTest {
 
     @Test
     void getPassingLineIds_메서드는_최단거리의_구간들이_속해있는_모든_노선들의_id를_반환() {
-        Path path = Path.of(STATION2, STATION3, NAVIGATOR);
+        Path path = getPathOf(STATION2, STATION3);
 
         List<Long> actual = path.getPassingLineIds();
         List<Long> expected = List.of(2L, 3L);
@@ -64,7 +64,7 @@ class PathTest {
                 new Section(STATION2, STATION3, 100),
                 new Section(STATION3, STATION4, 20)));
 
-        assertThatThrownBy(() -> Path.of(STATION1, nonRegisteredStation, navigator))
+        assertThatThrownBy(() -> getPathOf(STATION1, nonRegisteredStation))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -73,7 +73,7 @@ class PathTest {
         Navigator<Station, Section> navigator = new NavigatorJgraphtAdapter(List.of(
                 new Section(STATION1, STATION2, 10)));
 
-        assertThatThrownBy(() -> Path.of(STATION1, STATION1, navigator))
+        assertThatThrownBy(() -> getPathOf(STATION1, STATION1))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -83,7 +83,11 @@ class PathTest {
                 new Section(STATION1, STATION2, 10),
                 new Section(STATION3, STATION4, 20)));
 
-        assertThatThrownBy(() -> Path.of(STATION1, STATION3, navigator))
+        assertThatThrownBy(() -> getPathOf(STATION1, STATION3))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    private Path getPathOf(Station start, Station target) {
+        return new Path(start, target, NAVIGATOR);
     }
 }

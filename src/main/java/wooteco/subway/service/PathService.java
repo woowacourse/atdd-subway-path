@@ -25,7 +25,8 @@ public class PathService {
     private final SectionRepository sectionRepository;
     private final StationRepository stationRepository;
 
-    public PathService(LineRepository lineRepository, SectionRepository sectionRepository, StationRepository stationRepository) {
+    public PathService(LineRepository lineRepository, SectionRepository sectionRepository,
+                       StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.sectionRepository = sectionRepository;
         this.stationRepository = stationRepository;
@@ -37,13 +38,10 @@ public class PathService {
         List<Section> sections = sectionRepository.findAllSections();
 
         Navigator<Station, Section> navigator = new NavigatorJgraphtAdapter(sections);
-        Path path = Path.of(startStation, endStation, navigator);
+        Path path = new Path(startStation, endStation, navigator);
         int distance = path.getDistance();
         List<Line> lines = lineRepository.findAllLinesByIds(path.getPassingLineIds());
-        Fare fare = new BasicFare();
-        fare = new DistanceOverFare(fare, distance);
-        fare =new LineOverFare(fare, lines);
-        fare = new AgeDiscountFare(fare, age);
+        Fare fare = new AgeDiscountFare(new LineOverFare(new DistanceOverFare(new BasicFare(), distance), lines), age);
         return PathResponse.of(path, fare.calculate());
     }
 }

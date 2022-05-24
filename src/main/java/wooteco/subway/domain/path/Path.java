@@ -13,14 +13,10 @@ public class Path {
     private final Station source;
     private final List<Section> route;
 
-    private Path(Station source, List<Section> route) {
-        this.source = source;
-        this.route = route;
-    }
-
-    public static Path of(Station source, Station target, Navigator<Station, Section> navigator) {
+    public Path(Station source, Station target, Navigator<Station, Section> navigator) {
         validateNonSelfLoop(source, target);
-        return new Path(source, navigator.calculateShortestPath(source, target));
+        this.source = source;
+        this.route = navigator.calculateShortestPath(source, target);
     }
 
     private static void validateNonSelfLoop(Station source, Station target) {
