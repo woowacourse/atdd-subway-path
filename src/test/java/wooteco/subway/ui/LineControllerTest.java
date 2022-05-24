@@ -3,7 +3,6 @@ package wooteco.subway.ui;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -13,9 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Name;
-import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.line.LineRequest;
 import wooteco.subway.dto.line.LineResponse;
@@ -45,16 +44,19 @@ class LineControllerTest extends ControllerTest {
         seolleung = stationDao.insert(new Station("선릉역")).orElseThrow();
         samsung = stationDao.insert(new Station("삼성역")).orElseThrow();
 
-        greenLine = new Line(LINE_NAME, LINE_COLOR, 300);
+        greenLine = lineDao.insert(new Line(LINE_NAME, LINE_COLOR, 300)).orElseThrow();
+        sectionDao.insert(new Section(greenLine, gangnam, yeoksam, new Distance(10)));
     }
 
     @Test
     @DisplayName("지하철 노선을 생성한다.")
     void CreateLine() {
         // given
+        final String name = "5호선";
+        final String color = "purple";
         final LineRequest request = new LineRequest(
-                LINE_NAME,
-                LINE_COLOR,
+                name,
+                color,
                 gangnam.getId(),
                 yeoksam.getId(),
                 10,
@@ -72,8 +74,8 @@ class LineControllerTest extends ControllerTest {
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(actual.getName()).isEqualTo(LINE_NAME);
-        assertThat(actual.getColor()).isEqualTo(LINE_COLOR);
+        assertThat(actual.getName()).isEqualTo(name);
+        assertThat(actual.getColor()).isEqualTo(color);
         assertThat(actual.getStations()).isEqualTo(expectedStations);
     }
 
@@ -101,12 +103,11 @@ class LineControllerTest extends ControllerTest {
     @DisplayName("모든 노선을 조회한다.")
     void ShowLines() {
         // given
-        final Line purpleLine = new Line(1L, new Name("5호선"), "purple", 0, new Sections(Collections.emptyList()));
-        lineDao.insert(purpleLine);
-        lineDao.insert(greenLine);
+        final Line purpleLine = lineDao.insert(new Line("5호선", "purple")).orElseThrow();
+        sectionDao.insert(new Section(purpleLine, seolleung, samsung, new Distance(10)));
 
-        final List<String> expectedNames = List.of("5호선", LINE_NAME);
-        final List<String> expectedColors = List.of("purple", LINE_COLOR);
+        final List<String> expectedNames = List.of(LINE_NAME, "5호선");
+        final List<String> expectedColors = List.of(LINE_COLOR, "purple");
 
         // when
         final ResponseEntity<List<LineResponse>> response = lineController.showLines();
@@ -132,25 +133,13 @@ class LineControllerTest extends ControllerTest {
     @DisplayName("노선을 조회한다.")
     void ShowLine() {
         // given
-        final LineRequest request = new LineRequest(
-                LINE_NAME,
-                LINE_COLOR,
-                gangnam.getId(),
-                yeoksam.getId(),
-                10,
-                0
-        );
-        final Long id = lineController.createLine(request)
-                .getBody()
-                .getId();
-
         final List<String> expectedStationNames = List.of(
                 gangnam.getName(),
                 yeoksam.getName()
         );
 
         // when
-        final ResponseEntity<LineResponse> response = lineController.showLine(id);
+        final ResponseEntity<LineResponse> response = lineController.showLine(greenLine.getId());
 
         final LineResponse actual = response.getBody();
         final List<String> actualStationNames = actual.getStations()
@@ -176,14 +165,10 @@ class LineControllerTest extends ControllerTest {
     @DisplayName("노선 정보를 수정한다.")
     void UpdateLine() {
         // given
-        final Long id = lineDao.insert(greenLine)
-                .orElseThrow()
-                .getId();
-
         final LineRequest request = new LineRequest("5호선", "color", null, null, 10, 1000);
 
         // when
-        final ResponseEntity<Void> response = lineController.updateLine(id, request);
+        final ResponseEntity<Void> response = lineController.updateLine(greenLine.getId(), request);
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -197,27 +182,18 @@ class LineControllerTest extends ControllerTest {
         final String color = "color";
         lineDao.insert(new Line(name, color));
 
-        final Long id = lineDao.insert(greenLine)
-                .orElseThrow()
-                .getId();
-
         final LineRequest request = new LineRequest(name, LINE_COLOR, null, null, 10, 0);
 
         // when, then
-        assertThatThrownBy(() -> lineController.updateLine(id, request))
+        assertThatThrownBy(() -> lineController.updateLine(greenLine.getId(), request))
                 .isInstanceOf(DuplicateLineException.class);
     }
 
     @Test
     @DisplayName("노선을 삭제한다.")
     void DeleteLine() {
-        // given
-        final Long id = lineDao.insert(greenLine)
-                .orElseThrow()
-                .getId();
-
         // when
-        final ResponseEntity<Void> response = lineController.deleteLine(id);
+        final ResponseEntity<Void> response = lineController.deleteLine(greenLine.getId());
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
