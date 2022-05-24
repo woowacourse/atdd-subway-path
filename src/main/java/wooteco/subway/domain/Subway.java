@@ -19,7 +19,7 @@ public class Subway {
         this.pathFinder = pathFinder;
     }
 
-    public static Subway of(List<Line> lines) {
+    public static Subway from(List<Line> lines) {
         WeightedMultigraph<Station, ShortestPathEdge> graph = new WeightedMultigraph<>(ShortestPathEdge.class);
         initGraph(lines, graph);
 

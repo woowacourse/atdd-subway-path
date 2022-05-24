@@ -3,7 +3,7 @@ package wooteco.subway.domain.fare.distanceStrategy;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
-public enum Distance {
+public enum DistanceDiscountFactory {
     BELOW_MINIMUM (discount -> discount < 10, new FreeDiscountPolicy()),
     BELOW_MAXIMUM (discount -> discount >= 10 && discount < 50, new NormalDistanceDiscountPolicy()),
     OVER_MAXIMUM (discount -> discount >= 50, new ExtraDiscountPolicy())
@@ -12,14 +12,14 @@ public enum Distance {
     private final Predicate<Integer> discountCondition;
     private final DistanceDiscountPolicy distanceDiscountPolicy;
 
-    Distance(Predicate<Integer> discountCondition,
+    DistanceDiscountFactory(Predicate<Integer> discountCondition,
         DistanceDiscountPolicy distanceDiscountPolicy) {
         this.discountCondition = discountCondition;
         this.distanceDiscountPolicy = distanceDiscountPolicy;
     }
 
-    public static DistanceDiscountPolicy of(int rawDistance) {
-        return Arrays.stream(Distance.values())
+    public static DistanceDiscountPolicy from(int rawDistance) {
+        return Arrays.stream(DistanceDiscountFactory.values())
             .filter(distance -> distance.discountCondition.test(rawDistance))
             .map(distance -> distance.distanceDiscountPolicy)
             .findFirst()

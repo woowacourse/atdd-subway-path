@@ -35,7 +35,7 @@ public class Line {
     }
 
     public static Line from(Line line, List<Section> sections) {
-        return new Line(line.getId(), line.getName(), line.getColor(), Sections.of(sections), line.getExtraFare());
+        return new Line(line.getId(), line.getName(), line.getColor(), Sections.from(sections), line.getExtraFare());
     }
 
     public void update(String name, String color) {

@@ -25,7 +25,7 @@ public class SubwayTest {
         Line line2 = createLine2();
         Line line3 = createLine3();
         Line line4 = createLine4();
-        subway = Subway.of(List.of(line1, line2, line3, line4));
+        subway = Subway.from(List.of(line1, line2, line3, line4));
     }
 
     private static Line createLine1() {

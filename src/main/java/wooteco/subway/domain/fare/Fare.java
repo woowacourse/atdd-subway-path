@@ -1,9 +1,9 @@
 package wooteco.subway.domain.fare;
 
 import wooteco.subway.domain.Lines;
-import wooteco.subway.domain.fare.ageStrategy.Age;
+import wooteco.subway.domain.fare.ageStrategy.AgeDiscountFactory;
 import wooteco.subway.domain.fare.ageStrategy.AgeDiscountPolicy;
-import wooteco.subway.domain.fare.distanceStrategy.Distance;
+import wooteco.subway.domain.fare.distanceStrategy.DistanceDiscountFactory;
 import wooteco.subway.domain.fare.distanceStrategy.DistanceDiscountPolicy;
 
 public class Fare {
@@ -14,10 +14,10 @@ public class Fare {
     }
 
     public static Fare from(int distance, Lines lines, int age) {
-        AgeDiscountPolicy ageDiscountPolicy = Age.of(age);
-        DistanceDiscountPolicy distanceDiscountPolicy = Distance.of(distance);
+        AgeDiscountPolicy ageDiscountPolicy = AgeDiscountFactory.from(age);
+        DistanceDiscountPolicy distanceDiscountPolicy = DistanceDiscountFactory.from(distance);
         FareCalculator fareCalculator = new FareCalculator(ageDiscountPolicy, distanceDiscountPolicy);
-        return new Fare((int)fareCalculator.calculate(distance, lines));
+        return new Fare((int) fareCalculator.calculate(distance, lines));
     }
 
     public int getAmount() {

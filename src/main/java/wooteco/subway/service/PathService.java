@@ -26,7 +26,7 @@ public class PathService {
 
     public PathResponse findShortestPath(PathRequest pathRequest) {
         List<Line> lines = lineService.findAllLines();
-        Subway subway = Subway.of(lines);
+        Subway subway = Subway.from(lines);
         Station source = stationService.findById(pathRequest.getSource());
         Station target = stationService.findById(pathRequest.getTarget());
 

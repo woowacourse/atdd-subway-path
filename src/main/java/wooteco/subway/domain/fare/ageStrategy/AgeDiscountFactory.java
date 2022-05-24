@@ -3,7 +3,7 @@ package wooteco.subway.domain.fare.ageStrategy;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
-public enum Age {
+public enum AgeDiscountFactory {
     PREFERENTIAL (age -> age < 6 || age >= 65, new PreferentialDiscountPolicy()),
     CHILDREN (age -> age >= 6 && age < 13, new ChildrenDiscountPolicy()),
     TEENAGER (age -> age >= 13 && age <= 18, new TeenagerDiscountPolicy()),
@@ -13,13 +13,13 @@ public enum Age {
     private final Predicate<Integer> ageCondition;
     private final AgeDiscountPolicy ageDiscountPolicy;
 
-    Age(Predicate<Integer> ageCondition, AgeDiscountPolicy ageDiscountPolicy) {
+    AgeDiscountFactory(Predicate<Integer> ageCondition, AgeDiscountPolicy ageDiscountPolicy) {
         this.ageCondition = ageCondition;
         this.ageDiscountPolicy = ageDiscountPolicy;
     }
 
-    public static AgeDiscountPolicy of(int rawAge) {
-        return Arrays.stream(Age.values())
+    public static AgeDiscountPolicy from(int rawAge) {
+        return Arrays.stream(AgeDiscountFactory.values())
             .filter(age -> age.ageCondition.test(rawAge))
             .findFirst()
             .map(age -> age.ageDiscountPolicy)
