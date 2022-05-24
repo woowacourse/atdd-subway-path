@@ -15,7 +15,7 @@ import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.exception.LineDuplicationException;
-import wooteco.subway.exception.NotExistLineException;
+import wooteco.subway.exception.LineNotFoundException;
 
 @Service
 public class LineService {
@@ -89,7 +89,7 @@ public class LineService {
     @Transactional(readOnly = true)
     public Line getById(final Long id) {
         return lineDao.findById(id)
-                .orElseThrow(() -> new NotExistLineException(LINE_NOT_EXIST));
+                .orElseThrow(() -> new LineNotFoundException(LINE_NOT_EXIST));
     }
 
     @Transactional
@@ -98,14 +98,14 @@ public class LineService {
                 new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare()));
 
         if (updateFlag != UPDATE_SUCCESS) {
-            throw new NotExistLineException(LINE_NOT_EXIST);
+            throw new LineNotFoundException(LINE_NOT_EXIST);
         }
     }
 
     @Transactional
     public void deleteById(final Long id) {
         if (lineDao.deleteById(id) != DELETE_SUCCESS) {
-            throw new NotExistLineException(LINE_NOT_EXIST);
+            throw new LineNotFoundException(LINE_NOT_EXIST);
         }
     }
 }

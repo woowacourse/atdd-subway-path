@@ -12,7 +12,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Line;
-import wooteco.subway.exception.NotExistLineException;
+import wooteco.subway.exception.LineNotFoundException;
 
 @Repository
 public class LineDao {
@@ -67,7 +67,7 @@ public class LineDao {
 
     public Line getById(long id) {
         return findById(id)
-                .orElseThrow(() -> new NotExistLineException(LINE_NOT_EXIST));
+                .orElseThrow(() -> new LineNotFoundException(LINE_NOT_EXIST));
     }
 
     public int update(Long id, Line line) {

@@ -6,7 +6,7 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.exception.NoReachableStationException;
-import wooteco.subway.exception.NotExistStationException;
+import wooteco.subway.exception.StationNotFoundException;
 
 public class Path {
 
@@ -43,7 +43,6 @@ public class Path {
         return path.orElseThrow(() -> new NoReachableStationException(NO_REACHABLE)).getEdgeList();
     }
 
-    // TODO: Section이 Line을 가지고 있지 않고 ID를 들고 있기 때문에 Dao를 한번 거쳐서야 도메인을 만들 수 있다. Section에서 객체를 가지고 있게 변경시켜보자.
     public int calculateExtraFare(Long source, Long target) {
         List<ShortestPathEdge> edges = getEdges(source, target);
 
@@ -63,7 +62,7 @@ public class Path {
             path = Optional.ofNullable(
                     dijkstraShortestPath.getPath(source, target));
         } catch (IllegalArgumentException exception) {
-            throw new NotExistStationException(NOT_EXIST_STATION);
+            throw new StationNotFoundException(NOT_EXIST_STATION);
         }
 
         return path;

@@ -22,12 +22,12 @@ public enum DiscountTable {
         this.predicate = predicate;
     }
 
-    public static int calculateFareWithDiscount(int value, int age) {
+    public static int calculateFareWithDiscount(int fare, int age) {
         return Arrays.stream(DiscountTable.values())
                 .filter(discountTable -> discountTable.predicate.test(age))
                 .findAny()
-                .map(discountTable -> discountTable.expression.apply(value))
-                .orElse(value);
+                .map(discountTable -> discountTable.expression.apply(fare))
+                .orElse(fare);
     }
 
     private static class Constants {

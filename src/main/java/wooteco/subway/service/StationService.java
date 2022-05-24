@@ -9,7 +9,7 @@ import wooteco.subway.dto.StationResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import wooteco.subway.exception.NotExistStationException;
+import wooteco.subway.exception.StationNotFoundException;
 import wooteco.subway.exception.StationDuplicationException;
 
 @Service
@@ -52,7 +52,7 @@ public class StationService {
     @Transactional
     public void deleteById(final Long id) {
         if (stationDao.deleteById(id) != DELETE_SUCCESS) {
-            throw new NotExistStationException(STATION_NOT_EXIST);
+            throw new StationNotFoundException(STATION_NOT_EXIST);
         }
     }
 }
