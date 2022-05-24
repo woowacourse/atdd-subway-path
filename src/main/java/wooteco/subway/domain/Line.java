@@ -89,4 +89,34 @@ public class Line {
     public List<Station> getStations() {
         return sections.getSortedStations();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Line line = (Line) o;
+
+        return id != null ? id.equals(line.id) : line.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Line{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                ", extraFare=" + extraFare +
+                ", sections=" + sections +
+                '}';
+    }
 }

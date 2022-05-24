@@ -1,19 +1,28 @@
-package wooteco.subway.utils;
+package wooteco.subway.strategy;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
+import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Lines;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 
-public class DijkstraShortestPathStation {
+@Component
+public class DijkstraShortestPathStrategy implements DijkstraPathStrategy {
 
-    public static Path getPath(Sections sections, Station source, Station target) {
+    @Override
+    public Path getPath(Lines lines, Station source, Station target) {
+        Sections sections = lines.getAllSections();
         validateExistInSections(sections, source);
         validateExistInSections(sections, target);
 
@@ -25,9 +34,10 @@ public class DijkstraShortestPathStation {
         }
 
         List<Station> visitStations = getVisitStations(graphPath);
+        Lines visitLines = getVisitLines(graphPath, lines);
         int distance = getDistance(graphPath);
 
-        return new Path(visitStations, distance);
+        return new Path(visitStations, visitLines, distance);
     }
 
     private static DijkstraShortestPath<Station, DefaultWeightedEdge> getDijkstraShortestPath(
@@ -43,17 +53,25 @@ public class DijkstraShortestPathStation {
         return new DijkstraShortestPath<>(graph);
     }
 
-    private static Station getStation(List<Station> stations, long stationId) {
-        return stations.stream()
-                .filter(station -> station.getId().equals(stationId))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("역이 없습니다."));
-    }
-
     private static List<Station> getVisitStations(GraphPath<Station, DefaultWeightedEdge> graphPath) {
         return graphPath.getVertexList().stream()
                 .map(station -> new Station(station.getId(), station.getName()))
                 .collect(Collectors.toList());
+    }
+
+    private Lines getVisitLines(GraphPath<Station, DefaultWeightedEdge> graphPath, Lines lines) {
+        Set<Line> visitLine = new HashSet<>();
+
+        List<Station> stations = graphPath.getVertexList();
+        for (int i = 0; i < stations.size() - 1; i++) {
+            Station upStation = stations.get(i);
+            Station downStation = stations.get(i + 1);
+
+            Line line = lines.getLineByMinDistance(upStation, downStation);
+            visitLine.add(line);
+        }
+
+        return new Lines(new ArrayList<>(visitLine));
     }
 
     private static int getDistance(GraphPath<Station, DefaultWeightedEdge> graphPath) {

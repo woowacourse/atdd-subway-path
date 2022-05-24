@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -89,6 +90,10 @@ public class Sections implements Iterable<Section> {
                 .orElse(null);
     }
 
+    public List<Section> get() {
+        return Collections.unmodifiableList(sections);
+    }
+
     public List<Station> getStations() {
         List<Station> upStations = sections.stream().map(Section::getUpStation).collect(Collectors.toList());
         List<Station> downStations = sections.stream().map(Section::getDownStation).collect(Collectors.toList());
@@ -175,6 +180,11 @@ public class Sections implements Iterable<Section> {
         sectionWithSameDownStation.concatenate(sectionWithSameUpStation);
         sections.remove(sectionWithSameUpStation);
         return sectionWithSameUpStation;
+    }
+
+    public boolean containsSection(Station upStation, Station downStation) {
+        return sections.stream()
+                .anyMatch(section -> section.containsByStations(upStation, downStation));
     }
 
     private class SectionIterator implements Iterator<Section> {

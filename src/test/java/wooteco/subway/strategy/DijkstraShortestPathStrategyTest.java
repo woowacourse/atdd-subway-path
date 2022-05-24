@@ -1,4 +1,4 @@
-package wooteco.subway.utils;
+package wooteco.subway.strategy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -7,12 +7,14 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Lines;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 
-class DijkstraShortestPathStationTest {
+class DijkstraShortestPathStrategyTest {
 
     @DisplayName("최단 거리를 구한다.")
     @Test
@@ -24,10 +26,11 @@ class DijkstraShortestPathStationTest {
         Section section1 = new Section(station1, station2, 10);
         Section section2 = new Section(station2, station3, 10);
         Sections sections = new Sections(List.of(section1, section2));
+        Lines lines = new Lines(List.of(new Line(1L, "2호선", "green", 300, sections)));
 
         // when
-        Path path = DijkstraShortestPathStation.getPath(
-                sections,
+        Path path = new DijkstraShortestPathStrategy().getPath(
+                lines,
                 station1,
                 station2
         );
@@ -46,10 +49,11 @@ class DijkstraShortestPathStationTest {
         Section section1 = new Section(station1, station2, 10);
         Section section2 = new Section(station2, station3, 10);
         Sections sections = new Sections(List.of(section1, section2));
+        Lines lines = new Lines(List.of(new Line(1L, "2호선", "green", 300, sections)));
 
         // when
-        Path path = DijkstraShortestPathStation.getPath(
-                sections,
+        Path path = new DijkstraShortestPathStrategy().getPath(
+                lines,
                 station1,
                 station3
         );
@@ -76,10 +80,14 @@ class DijkstraShortestPathStationTest {
         Section section5 = new Section(station4, station5, 4);
         Sections sections1 = new Sections(List.of(section1, section2));
         Sections sections2 = new Sections(List.of(section3, section4, section5));
+        List<Line> lines = List.of(
+                new Line(1L, "2호선", "green", 300, sections1),
+                new Line(2L, "수인분당선", "yellow", 500, sections2)
+        );
 
         // when
-        Path path = DijkstraShortestPathStation.getPath(
-                sections1,
+        Path path = new DijkstraShortestPathStrategy().getPath(
+                new Lines(lines),
                 station1,
                 station5
         );
@@ -103,12 +111,13 @@ class DijkstraShortestPathStationTest {
         Section section2 = new Section(station2, station3, 5);
         Section section3 = new Section(station4, station5, 3);
         Sections sections = new Sections(List.of(section1, section2, section3));
+        Lines lines = new Lines(List.of(new Line(1L, "2호선", "green", 300, sections)));
 
         // when
         // then
         assertThatThrownBy(() ->
-                DijkstraShortestPathStation.getPath(
-                        sections,
+                new DijkstraShortestPathStrategy().getPath(
+                        lines,
                         station1,
                         station5
                 ))
@@ -128,11 +137,12 @@ class DijkstraShortestPathStationTest {
         Section section2 = new Section(station2, station3, 10);
         Section section3 = new Section(station1, station3, 10);
         Sections sections = new Sections(List.of(section1, section2, section3));
+        Lines lines = new Lines(List.of(new Line(1L, "2호선", "green", 300, sections)));
 
         // when
         // then
-        assertThatThrownBy(() -> DijkstraShortestPathStation.getPath(
-                sections,
+        assertThatThrownBy(() -> new DijkstraShortestPathStrategy().getPath(
+                lines,
                 station1,
                 station4
         ))
