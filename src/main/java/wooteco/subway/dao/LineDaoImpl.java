@@ -134,6 +134,16 @@ public class LineDaoImpl implements LineDao {
         return updateSize != 0;
     }
 
+    @Override
+    public Integer findExtraFareById(Long id) {
+        try{
+            final String sql = "SELECT extraFare FROM LINE WHERE id = ?";
+            return jdbcTemplate.queryForObject(sql, Integer.class, id);
+        }catch (Exception e){
+            throw new IllegalArgumentException("해당 라인에 책정된 추가요금이 없습니다. 라인을 다시 저장해주세요.");
+        }
+    }
+
     private static class LineSection {
         private final Line line;
         private final Section section;

@@ -130,7 +130,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private ValidatableResponse requestShortestPath(Map<String, String> params) {
         return RestAssured.given().log().all()
                 .params(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .get("/paths")
                 .then().log().all();

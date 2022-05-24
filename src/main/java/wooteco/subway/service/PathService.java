@@ -46,10 +46,9 @@ public class PathService {
     private Integer findLineFare(Path path) {
         List<Long> shortestPathLines = path.findShortestPathLines();
         return shortestPathLines.stream()
-                .map(lineService::findLineById)
-                .max(Comparator.comparingInt(Line::getExtraFare))
-                .map(Line::getExtraFare)
-                .orElseThrow(() -> new IllegalArgumentException("잘못된 요금입니다."));
+                .map(lineDao::findExtraFareById)
+                .max(Comparator.comparingInt(extraFare -> extraFare))
+                .orElseThrow(() -> new IllegalArgumentException("알 수 없는 오류가 발생했습니다."));
     }
 
     private void validateSameStation(Long sourceStationId, Long targetStationId) {

@@ -1,12 +1,16 @@
 package wooteco.subway.ui;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.service.PathService;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/paths")
@@ -18,7 +22,7 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findPath(PathRequest pathRequest) {
+    public ResponseEntity<PathResponse> findPath(@Valid PathRequest pathRequest) {
         PathResponse pathResponse = pathService.findShortestPath(pathRequest);
         return ResponseEntity.ok(pathResponse);
     }

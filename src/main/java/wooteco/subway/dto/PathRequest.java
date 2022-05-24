@@ -1,16 +1,16 @@
 package wooteco.subway.dto;
 
-import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
-@Validated
 public class PathRequest {
-    @NotBlank
+    @NotNull
     private final Long source;
-    @NotBlank
+    @NotNull
     private final Long target;
-    @NotBlank
+    @NotNull
     private final Integer age;
 
 

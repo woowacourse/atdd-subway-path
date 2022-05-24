@@ -16,4 +16,6 @@ public interface LineDao {
     Optional<Line> findById(Long id);
 
     boolean updateById(Long id, Line line);
+
+    Integer findExtraFareById(Long id);
 }
