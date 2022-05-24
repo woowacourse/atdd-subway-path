@@ -5,15 +5,15 @@ import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Line;
 
 public interface LineDao {
-    Line save(Line line, Fare fare);
+    Line save(Line line, Fare extraFare);
 
     List<Line> findAll();
 
     Line findById(Long id);
 
-    Fare findFareById(Long id);
+    Fare findExtraFareById(Long id);
 
-    int update(Line line);
+    int update(Line line, Fare extraFare);
 
     int delete(Long id);
 }

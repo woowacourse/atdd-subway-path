@@ -33,12 +33,12 @@ public class JdbcLineDao implements LineDao {
     }
 
     @Override
-    public Line save(Line line, Fare fare) {
+    public Line save(Line line, Fare extraFare) {
         try {
             Map<String, Object> param = Map.of(
                     "name", line.getName(),
                     "color", line.getColor(),
-                    "extra_fare", fare.getValue()
+                    "extra_fare", extraFare.getValue()
             );
             final Long id = jdbcInsert.executeAndReturnKey(param).longValue();
             return createNewObject(line, id);
@@ -71,7 +71,7 @@ public class JdbcLineDao implements LineDao {
     }
 
     @Override
-    public Fare findFareById(Long id) {
+    public Fare findExtraFareById(Long id) {
         final String sql = "SELECT extra_fare FROM line WHERE id = ?";
         try {
             Integer extraFare = jdbcTemplate.queryForObject(sql, Integer.class, id);
@@ -118,9 +118,11 @@ public class JdbcLineDao implements LineDao {
     }
 
     @Override
-    public int update(Line line) {
-        final String sql = "UPDATE line SET name = ?, color = ? WHERE id = ?";
-        final int updatedCount = jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId());
+    public int update(Line line, Fare extraFare) {
+        final String sql = "UPDATE line SET name = ?, color = ?, extra_fare = ? WHERE id = ?";
+        final int updatedCount = jdbcTemplate.update(sql,
+                line.getName(), line.getColor(), extraFare.getValue(),
+                line.getId());
         validateUpdated(updatedCount);
         return updatedCount;
     }

@@ -140,7 +140,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Map<String, String> params = mapParams("신분당선", "bg-red-600");
         SimpleResponse createdResponse = SimpleRestAssured.post("/lines", params);
         // when
-        final Map<String, String> modificationParam = mapParams("구분당선", "bg-red-800");
+        final Map<String, String> modificationParam = mapParams("구분당선", "bg-red-800", 700);
         final String uri = createdResponse.getHeader("Location");
         final SimpleResponse modifiedResponse = SimpleRestAssured.put(uri, modificationParam);
         // then
@@ -199,6 +199,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 "downStationId", "2",
                 "distance", "10",
                 "extraFare", "1000"
+        );
+    }
+
+    private Map<String, String> mapParams(String name, String color, int extraFare) {
+        return Map.of(
+                "name", name,
+                "color", color,
+                "upStationId", "1",
+                "downStationId", "2",
+                "distance", "10",
+                "extraFare", String.valueOf(extraFare)
         );
     }
 }

@@ -104,7 +104,7 @@ class LineDaoTest {
         // given
         final Line saved = linDao.save(LINE_신분당선, FARE_1000);
         // when
-        final Fare found = linDao.findFareById(saved.getId());
+        final Fare found = linDao.findExtraFareById(saved.getId());
         // then
         assertThat(found.getValue()).isEqualTo(1000);
     }
@@ -112,10 +112,13 @@ class LineDaoTest {
     @Test
     @DisplayName("노선 정보를 수정한다.")
     public void update() {
-        // given & when
+        // given
         final Line saved = linDao.save(LINE_신분당선, FARE_1000);
+        //when
+        Line updatingLine = new Line(saved.getId(), "구분당선", "bg-red-500");
+        Fare updatingFare = new Fare(700);
         // then
-        assertThat(linDao.update(new Line(saved.getId(), "구분당선", "bg-red-500"))).isEqualTo(1);
+        assertThat(linDao.update(updatingLine, updatingFare)).isEqualTo(1);
     }
 
     @Test
@@ -124,10 +127,11 @@ class LineDaoTest {
         // given
         linDao.save(LINE_신분당선, FARE_1000);
         // when
-        Line updateLine = new Line(100L, "사랑이넘치는", "우테코");
+        Line updatingLine = new Line(100L, "사랑이넘치는", "우테코");
+        Fare updatingFare = new Fare(100);
         // then
         assertThatExceptionOfType(IllegalStateException.class)
-                .isThrownBy(() -> linDao.update(updateLine));
+                .isThrownBy(() -> linDao.update(updatingLine, updatingFare));
     }
 
     @Test
