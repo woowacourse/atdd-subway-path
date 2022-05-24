@@ -1,26 +1,34 @@
-package wooteco.subway.dao.station;
+package wooteco.subway.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import wooteco.subway.dao.station.JdbcStationDao;
+import wooteco.subway.dao.station.StationDao;
 import wooteco.subway.domain.Station;
 
-class InmemoryStationDaoTest {
+@JdbcTest
+class JdbcStationDaoTest {
 
-    private final InmemoryStationDao stationDao = InmemoryStationDao.getInstance();
+    private StationDao stationDao;
 
-    @AfterEach
-    void afterEach() {
-        stationDao.clear();
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @BeforeEach
+    void setUp() {
+        stationDao = new JdbcStationDao(jdbcTemplate);
     }
 
     @Test
     @DisplayName("Station을 저장할 수 있다.")
     void save() {
-        Station station = new Station("오리");
-        long savedStationId = stationDao.save(station);
+        long savedStationId = stationDao.save(new Station("배카라"));
 
         assertThat(savedStationId).isNotNull();
     }
@@ -43,17 +51,9 @@ class InmemoryStationDaoTest {
     }
 
     @Test
-    @DisplayName("Station을 삭제할 수 있다.")
-    void delete() {
-        Long stationId = stationDao.save(new Station("오리"));
-
-        assertThat(stationDao.delete(stationId)).isEqualTo(1);
-    }
-
-    @Test
     @DisplayName("Station 이름이 존재하는지 확인할 수 있다.")
     void existByName() {
-        String name = "오리";
+        String name = "배카라";
         stationDao.save(new Station(name));
 
         assertThat(stationDao.existByName(name)).isTrue();
@@ -62,8 +62,16 @@ class InmemoryStationDaoTest {
     @Test
     @DisplayName("id를 가진 Station이 존재하는지 확인할 수 있다.")
     void existById() {
-        Long stationId = stationDao.save(new Station("오리"));
+        long savedStationId = stationDao.save(new Station("오리"));
 
-        assertThat(stationDao.existById(stationId)).isTrue();
+        assertThat(stationDao.existById(savedStationId)).isTrue();
+    }
+
+    @Test
+    @DisplayName("Station을 삭제할 수 있다.")
+    void delete() {
+        long stationId = stationDao.save(new Station("오리"));
+
+        assertThat(stationDao.delete(stationId)).isEqualTo(1);
     }
 }

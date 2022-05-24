@@ -36,10 +36,9 @@ public class SectionService {
     }
 
     private Section getAdditionSection(final long lineId, final SectionSaveRequest sectionSaveRequest) {
-        Line line = lineDao.findById(lineId);
         Station upStation = stationDao.findById(sectionSaveRequest.getUpStationId());
         Station downStation = stationDao.findById(sectionSaveRequest.getDownStationId());
-        return new Section(line.getId(), upStation, downStation, sectionSaveRequest.getDistance());
+        return new Section(lineDao.findById(lineId), upStation, downStation, sectionSaveRequest.getDistance());
     }
 
     @Transactional

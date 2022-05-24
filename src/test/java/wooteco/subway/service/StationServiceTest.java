@@ -2,27 +2,29 @@ package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.dao.station.InmemoryStationDao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
+import wooteco.subway.dao.station.StationDao;
 import wooteco.subway.domain.Station;
 import wooteco.subway.exception.NotFoundException;
 
+@SpringBootTest
+@Sql({"classpath:schema-truncate.sql", "classpath:init.sql"})
 class StationServiceTest {
 
-    private final InmemoryStationDao inmemoryStationDao = InmemoryStationDao.getInstance();
-    private final StationService stationService = new StationService(inmemoryStationDao);
+    @Autowired
+    private StationDao stationDao;
 
-    @AfterEach
-    void afterEach() {
-        inmemoryStationDao.clear();
-    }
+    @Autowired
+    private StationService stationService;
 
     @Test
     @DisplayName("이미 존재하는 역 이름이 있을 때 예외가 발생한다.")
     void saveExceptionByDuplicatedName() {
-        inmemoryStationDao.save(new Station("오리"));
+        stationDao.save(new Station("오리"));
         assertThatThrownBy(() -> stationService.save(new Station("오리")))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("이미 존재하는 역 이름입니다.");

@@ -5,17 +5,17 @@ import java.util.Objects;
 public class Section {
 
     private final Long id;
-    private final long lineId;
+    private final Line line;
     private final Station upStation;
     private final Station downStation;
     private final int distance;
 
-    public Section(final Long id, final long lineId, final Station upStation, final Station downStation,
+    public Section(final Long id, final Line line, final Station upStation, final Station downStation,
                    final int distance) {
         validatePositiveDistance(distance);
         validateDuplicateStation(upStation, downStation);
         this.id = id;
-        this.lineId = lineId;
+        this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
@@ -33,12 +33,12 @@ public class Section {
         }
     }
 
-    public Section(final long lineId, final Station upStation, final Station downStation, final int distance) {
-        this(null, lineId, upStation, downStation, distance);
+    public Section(final Line line, final Station upStation, final Station downStation, final int distance) {
+        this(null, line, upStation, downStation, distance);
     }
 
     public Section(final Long id, final Section section) {
-        this(id, section.lineId, section.upStation, section.downStation, section.distance);
+        this(id, section.line, section.upStation, section.downStation, section.distance);
     }
 
     public boolean isUpperSection(final Section section) {
@@ -78,23 +78,23 @@ public class Section {
     }
 
     public Section createMiddleSectionByDownStationSection(final Section section) {
-        return new Section(id, lineId, section.downStation, this.downStation, this.distance - section.distance);
+        return new Section(id, line, section.downStation, this.downStation, this.distance - section.distance);
     }
 
     public Section createMiddleSectionByUpStationSection(final Section section) {
-        return new Section(id, lineId, this.upStation, section.upStation, this.distance - section.distance);
+        return new Section(id, line, this.upStation, section.upStation, this.distance - section.distance);
     }
 
     public Section createExtensionSection(final Section section) {
-        return new Section(id, lineId, this.upStation, section.downStation, this.distance + section.distance);
+        return new Section(id, line, this.upStation, section.downStation, this.distance + section.distance);
     }
 
     public Long getId() {
         return id;
     }
 
-    public long getLineId() {
-        return lineId;
+    public Line getLine() {
+        return line;
     }
 
     public Station getUpStation() {

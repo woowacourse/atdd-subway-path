@@ -23,6 +23,8 @@ dependencies {
 
 	testImplementation 'io.rest-assured:rest-assured:4.4.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	// hamcrest matcher
+	testImplementation 'org.hamcrest:hamcrest:2.2'
 
 	runtimeOnly 'com.h2database:h2'
 
