@@ -16,10 +16,10 @@ public enum DiscountPolicy {
         value -> FREE_FARE),
     CHILDREN(
         age -> age >= 6 && age < 13,
-        value -> (int) (value - ((value - DEDUCTION_AMOUNT) * TEENAGER_DISCOUNT_PERCENTAGE))),
+        value -> (int) ((value - DEDUCTION_AMOUNT) * TEENAGER_DISCOUNT_PERCENTAGE)),
     TEENAGER(
         age -> age >= 13 && age < 19,
-        value -> (int) (value - ((value - DEDUCTION_AMOUNT) * CHILDREN_DISCOUNT_PERCENTAGE))),
+        value -> (int) ((value - DEDUCTION_AMOUNT) * CHILDREN_DISCOUNT_PERCENTAGE)),
     NO_DISCOUNT_AGE_GROUP(
         age -> age >= 19,
         value -> value);
@@ -55,7 +55,7 @@ public enum DiscountPolicy {
 
         public static final int FREE_FARE = 0;
         public static final int DEDUCTION_AMOUNT = 350;
-        public static final double CHILDREN_DISCOUNT_PERCENTAGE = 0.2;
+        public static final double CHILDREN_DISCOUNT_PERCENTAGE = 0.8;
         public static final double TEENAGER_DISCOUNT_PERCENTAGE = 0.5;
     }
 }

@@ -124,7 +124,7 @@ class PathServiceTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"5, 0", "10, 1700", "15, 2510", "20, 3050"})
+    @CsvSource(value = {"5, 0", "10, 1350", "15, 2160", "20, 3050"})
     @DisplayName("연령별 요금 할인 정책을 적용한 금액 계산")
     void calculateFareWithDiscountPolicy(int age, int expectedFare) {
         PathResponse pathResponse = pathService.findShortestPath(new PathRequest(2L, 8L, age));

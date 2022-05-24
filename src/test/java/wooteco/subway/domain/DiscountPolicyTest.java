@@ -15,7 +15,7 @@ class DiscountPolicyTest {
     void discountTeenTest() {
         int discountValue = DiscountPolicy.getDiscountValue(1350, 13);
 
-        assertThat(discountValue).isEqualTo(1150);
+        assertThat(discountValue).isEqualTo(800);
     }
 
     @Test
@@ -23,7 +23,7 @@ class DiscountPolicyTest {
     void discountChildTest() {
         int discountValue = DiscountPolicy.getDiscountValue(1350, 12);
 
-        assertThat(discountValue).isEqualTo(850);
+        assertThat(discountValue).isEqualTo(500);
     }
 
     @ParameterizedTest
