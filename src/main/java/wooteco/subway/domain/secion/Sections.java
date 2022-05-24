@@ -1,10 +1,11 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.secion;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import wooteco.subway.domain.Station;
 import wooteco.subway.exception.AddSectionException;
 import wooteco.subway.exception.DeleteSectionException;
 

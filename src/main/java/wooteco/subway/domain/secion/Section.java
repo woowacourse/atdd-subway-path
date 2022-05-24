@@ -1,5 +1,6 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.secion;
 
+import wooteco.subway.domain.Station;
 import wooteco.subway.exception.AddSectionException;
 import wooteco.subway.exception.PositiveDigitException;
 

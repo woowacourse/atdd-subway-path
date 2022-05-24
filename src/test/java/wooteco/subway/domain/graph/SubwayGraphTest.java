@@ -1,10 +1,13 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.graph;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.Station;
+import wooteco.subway.domain.secion.Section;
+import wooteco.subway.domain.secion.Sections;
 import wooteco.subway.exception.NotLinkPathException;
 
 class SubwayGraphTest {

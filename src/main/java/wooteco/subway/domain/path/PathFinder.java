@@ -1,10 +1,13 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
+import wooteco.subway.domain.Station;
 import wooteco.subway.domain.fare.FareByAge;
 import wooteco.subway.domain.fare.FareByDistance;
+import wooteco.subway.domain.graph.ShortestPathEdge;
+import wooteco.subway.domain.line.Lines;
 
 public class PathFinder {
 

@@ -1,8 +1,11 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.graph;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.domain.Station;
+import wooteco.subway.domain.secion.Section;
+import wooteco.subway.domain.secion.Sections;
 import wooteco.subway.exception.NotLinkPathException;
 
 public class SubwayGraph {

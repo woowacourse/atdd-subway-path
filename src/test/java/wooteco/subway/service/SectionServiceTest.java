@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionJdbcDao;
-import wooteco.subway.domain.Section;
+import wooteco.subway.domain.secion.Section;
 import wooteco.subway.dto.SectionRequest;
 
 @SpringBootTest

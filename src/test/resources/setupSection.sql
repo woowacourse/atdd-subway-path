@@ -1,3 +1,4 @@
+truncate table section;
 drop table if exists station;
 
 create table if not exists STATION

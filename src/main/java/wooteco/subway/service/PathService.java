@@ -5,13 +5,13 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Lines;
-import wooteco.subway.domain.Path;
-import wooteco.subway.domain.PathFinder;
-import wooteco.subway.domain.Sections;
-import wooteco.subway.domain.ShortestPathEdge;
+import wooteco.subway.domain.line.Lines;
+import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.path.PathFinder;
+import wooteco.subway.domain.secion.Sections;
+import wooteco.subway.domain.graph.ShortestPathEdge;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.SubwayGraph;
+import wooteco.subway.domain.graph.SubwayGraph;
 import wooteco.subway.dto.PathResponse;
 
 @Service
