@@ -12,10 +12,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.dto.LineRequest;
-import wooteco.subway.dto.PathResponse;
-import wooteco.subway.dto.StationRequest;
-import wooteco.subway.dto.StationResponse;
+import wooteco.subway.dto.request.LineRequest;
+import wooteco.subway.dto.request.StationRequest;
+import wooteco.subway.dto.response.PathResponse;
+import wooteco.subway.dto.response.StationResponse;
 
 @JdbcTest
 class PathServiceTest {

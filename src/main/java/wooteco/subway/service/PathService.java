@@ -9,7 +9,7 @@ import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.pathfinder.DijkstraShortestPathFinder;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
-import wooteco.subway.dto.PathResponse;
+import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.exception.NotFoundStationException;
 
 @Service

@@ -1,7 +1,7 @@
 package wooteco.subway.domain.station;
 
 import java.util.Objects;
-import wooteco.subway.dto.StationRequest;
+import wooteco.subway.dto.request.StationRequest;
 
 public class Station {
     private Long id;
