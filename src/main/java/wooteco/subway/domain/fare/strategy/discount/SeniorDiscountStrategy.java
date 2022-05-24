@@ -13,6 +13,6 @@ public class SeniorDiscountStrategy implements DiscountStrategy {
 
     @Override
     public int calculate(final int fare) {
-        return 0;
+        return FREE;
     }
 }

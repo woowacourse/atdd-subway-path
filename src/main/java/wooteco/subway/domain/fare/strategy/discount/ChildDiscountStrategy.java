@@ -4,7 +4,6 @@ public class ChildDiscountStrategy implements DiscountStrategy {
 
     private static final DiscountStrategy INSTANCE = new ChildDiscountStrategy();
 
-    private static final int DEFAULT_DISCOUNT_AMOUNT = 350;
     private static final double DISCOUNT_RATE = 0.5;
 
     private ChildDiscountStrategy() {
