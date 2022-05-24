@@ -296,7 +296,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("source가 null일 떄")
     @Test
-    void searchPathInCaseOfSourceIsBlack() {
+    void searchPathInCaseOfSourceIsBlank() {
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .param("target", 2L)
                 .param("age", 20)
@@ -306,7 +306,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
 
         String message = response.jsonPath().getString("message");
-        assertThat(message).isEqualTo("source는 빈 값일 수 없습니다.");
+        assertThat(message).isEqualTo("출발역은 빈 값일 수 없습니다.");
     }
 
     @DisplayName("나이가 음수 일 떄")

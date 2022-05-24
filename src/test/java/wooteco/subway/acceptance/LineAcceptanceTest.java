@@ -211,6 +211,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         String newName = "1호선";
         String newColor = "bg-blue-600";
         String newExtraFare = "0";
+        String newDistance = "5";
         ExtractableResponse<Response> createResponse = requestCreateLine("신분당선", "bg-red-600",
             upStationId, downStationId, 10,900);
         long createdId = createResponse.jsonPath().getLong("id");
