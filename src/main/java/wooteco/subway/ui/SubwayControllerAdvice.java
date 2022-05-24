@@ -35,12 +35,6 @@ public class SubwayControllerAdvice {
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ErrorResponse> runtimeExceptionHandler(RuntimeException e) {
-        log.warn(Arrays.toString(e.getStackTrace()));
-        return ResponseEntity.internalServerError().body(new ErrorResponse("예측하지 못 한 에러입니다."));
-    }
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> exceptionHandler(Exception e) {
         log.error(Arrays.toString(e.getStackTrace()));
