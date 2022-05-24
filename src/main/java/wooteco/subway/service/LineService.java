@@ -14,6 +14,7 @@ import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.StationResponse;
+import wooteco.subway.exception.ExtraFareException;
 import wooteco.subway.exception.duplicatename.LineDuplicateException;
 
 @Service
@@ -31,11 +32,16 @@ public class LineService {
 
     @Transactional
     public LineResponse save(final LineRequest lineRequest) {
-        validateDuplicate(lineRequest);
-        final Line line = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
+        validate(lineRequest);
+        final Line line = createLine(lineRequest);
         final Line newLine = lineDao.save(line);
         saveSection(newLine.getId(), lineRequest);
         return LineResponse.of(newLine, getStationsFromSection(newLine.getId()));
+    }
+
+    private void validate(LineRequest lineRequest) {
+        validateDuplicate(lineRequest);
+        validateExtraFareNotNegative(lineRequest);
     }
 
     private void validateDuplicate(final LineRequest lineRequest) {
@@ -46,6 +52,20 @@ public class LineService {
 
     private boolean hasDuplicateLine(final LineRequest lineRequest) {
         return lineDao.getCount(lineRequest.getName()) > 0;
+    }
+
+    private void validateExtraFareNotNegative(final LineRequest lineRequest) {
+        if (lineRequest.getExtraFare() < 0) {
+            throw new ExtraFareException("추가요금은 0과 같거나 양수이어야 합니다.");
+        }
+    }
+
+    private Line createLine(final LineRequest lineRequest) {
+        try {
+            return new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
+        } catch (ExtraFareException e) {
+            throw new ExtraFareException(e.getMessage());
+        }
     }
 
     private void saveSection(final Long lineId, final LineRequest lineRequest) {

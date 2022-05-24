@@ -12,6 +12,7 @@ import wooteco.subway.dao.FakeSectionDao;
 import wooteco.subway.dao.FakeStationDao;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
+import wooteco.subway.exception.ExtraFareException;
 import wooteco.subway.exception.datanotfound.LineNotFoundException;
 import wooteco.subway.exception.datanotfound.StationNotFoundException;
 import wooteco.subway.exception.duplicatename.LineDuplicateException;
@@ -144,5 +145,15 @@ class LineServiceTest {
         assertThatThrownBy(() -> lineService.updateLine(12L, lineForUpdate))
                 .isInstanceOf(LineNotFoundException.class)
                 .hasMessageContaining("존재하지 않는 노선입니다.");
+    }
+
+    @Test
+    @DisplayName("노선의 추가요금이 0보다 작으면 예외를 발생한다.")
+    void extraFare_exception() {
+        LineRequest line = new LineRequest("11호선", "red", 1L, 2L, 10, -1);
+
+        assertThatThrownBy(() -> lineService.save(line))
+                .isInstanceOf(ExtraFareException.class)
+                .hasMessage("추가요금은 0과 같거나 양수이어야 합니다.");
     }
 }

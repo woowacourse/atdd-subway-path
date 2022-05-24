@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
 import java.util.Objects;
+import wooteco.subway.exception.ExtraFareException;
 
 public class Line {
 
