@@ -11,7 +11,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AcceptanceTest extends DBTest {
+class AcceptanceTest extends DBTest {
 
     @LocalServerPort
     int port;
@@ -21,7 +21,7 @@ public class AcceptanceTest extends DBTest {
         RestAssured.port = port;
     }
 
-    ExtractableResponse<Response> createStation(String name) {
+    ExtractableResponse<Response> requestToCreateStation(String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
         return RestAssured.given().log().all()
@@ -33,8 +33,8 @@ public class AcceptanceTest extends DBTest {
                 .extract();
     }
 
-    ExtractableResponse<Response> createLine(String name, String color, Long upStationId,
-                                             Long downStationId, Integer distance, Integer extraFare) {
+    ExtractableResponse<Response> requestToCreateLine(String name, String color, Long upStationId,
+                                                      Long downStationId, Integer distance, Integer extraFare) {
         Map<String, Object> params = new HashMap<>();
         params.put("name", name);
         params.put("color", color);
@@ -51,7 +51,8 @@ public class AcceptanceTest extends DBTest {
                 .extract();
     }
 
-    ExtractableResponse<Response> createSection(long lineId, Long upStationId, Long downStationId, Integer distance) {
+    ExtractableResponse<Response> requestToCreateSection(long lineId, Long upStationId, Long downStationId,
+                                                         Integer distance) {
         Map<String, Object> params = new HashMap<>();
         params.put("upStationId", upStationId);
         params.put("downStationId", downStationId);
@@ -65,7 +66,7 @@ public class AcceptanceTest extends DBTest {
                 .extract();
     }
 
-    ExtractableResponse<Response> findLineById(Long lineId) {
+    ExtractableResponse<Response> requestToFindLineById(Long lineId) {
         return RestAssured.given().log().all()
                 .when()
                 .get("/lines/" + lineId)

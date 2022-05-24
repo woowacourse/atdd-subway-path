@@ -24,7 +24,7 @@ class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStation() {
         // when
-        ExtractableResponse<Response> response = createStation("강남역");
+        ExtractableResponse<Response> response = requestToCreateStation("강남역");
         StationResponse stationResponse = response.as(StationResponse.class);
 
         // then
@@ -37,12 +37,12 @@ class StationAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성하면 BadRequest를 반환한다..")
     @Test
-    void createStationWithDuplicateName() {
+    void createStation_badRequest_DuplicateName() {
         // given
-        createStation("강남역");
+        requestToCreateStation("강남역");
 
         // when
-        ExtractableResponse<Response> response = createStation("강남역");
+        ExtractableResponse<Response> response = requestToCreateStation("강남역");
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         // then
@@ -54,9 +54,9 @@ class StationAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("null로 지하철 역을 생성하려고 하면 badRequest를 응답한다.")
     @Test
-    void createStationWithNullValue() {
+    void createStation_badRequest_null() {
         // when
-        ExtractableResponse<Response> response = createStation(null);
+        ExtractableResponse<Response> response = requestToCreateStation(null);
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         // then
@@ -69,9 +69,9 @@ class StationAcceptanceTest extends AcceptanceTest {
     @DisplayName("빈 문자열로 지하철 역을 생성하려고 하면 badRequest를 응답한다.")
     @ParameterizedTest
     @ValueSource(strings = {"", " "})
-    void createStationWithEmptyValue(String value) {
+    void createStation_badRequest_empty(String value) {
         // when
-        ExtractableResponse<Response> response = createStation(value);
+        ExtractableResponse<Response> response = requestToCreateStation(value);
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         // then
@@ -81,12 +81,12 @@ class StationAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    @DisplayName("지하철역을 조회한다.")
+    @DisplayName("모든 지하철역을 조회한다.")
     @Test
-    void getStations() {
+    void findAllStations() {
         /// given
-        ExtractableResponse<Response> createResponse1 = createStation("강남역");
-        ExtractableResponse<Response> createResponse2 = createStation("역삼역");
+        ExtractableResponse<Response> createResponse1 = requestToCreateStation("강남역");
+        ExtractableResponse<Response> createResponse2 = requestToCreateStation("역삼역");
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -108,9 +108,9 @@ class StationAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("지하철역을 제거한다.")
     @Test
-    void deleteStation() {
+    void deleteStationById() {
         // given
-        ExtractableResponse<Response> createResponse = createStation("강남역");
+        ExtractableResponse<Response> createResponse = requestToCreateStation("강남역");
 
         // when
         String uri = createResponse.header("Location");

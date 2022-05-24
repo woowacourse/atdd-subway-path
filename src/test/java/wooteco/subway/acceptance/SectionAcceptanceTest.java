@@ -28,9 +28,9 @@ class SectionAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void createStation() {
-        station1 = createStation("강남역").as(StationResponse.class);
-        station2 = createStation("역삼역").as(StationResponse.class);
-        station3 = createStation("잠실역").as(StationResponse.class);
+        station1 = requestToCreateStation("강남역").as(StationResponse.class);
+        station2 = requestToCreateStation("역삼역").as(StationResponse.class);
+        station3 = requestToCreateStation("잠실역").as(StationResponse.class);
     }
 
     @DisplayName("상행 종점이 같은 구간을 추가한다.")
@@ -40,7 +40,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         Long lineId = getCreatedLineId(station1.getId(), station3.getId());
 
         // when
-        ExtractableResponse<Response> response = createSection(lineId, station1.getId(), station2.getId(), 5);
+        ExtractableResponse<Response> response = requestToCreateSection(lineId, station1.getId(), station2.getId(), 5);
 
         // then
         assertSectionConnection(station1, station2, station3, lineId, response);
@@ -53,7 +53,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
         Long lineId = getCreatedLineId(station1.getId(), station3.getId());
 
         // when
-        ExtractableResponse<Response> response = createSection(lineId, station2.getId(), station3.getId(), 5);
+        ExtractableResponse<Response> response =
+                requestToCreateSection(lineId, station2.getId(), station3.getId(), 5);
 
         // then
         assertSectionConnection(station1, station2, station3, lineId, response);
@@ -66,7 +67,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
         Long lineId = getCreatedLineId(station2.getId(), station3.getId());
 
         // when
-        ExtractableResponse<Response> response = createSection(lineId, station1.getId(), station2.getId(), 10);
+        ExtractableResponse<Response> response =
+                requestToCreateSection(lineId, station1.getId(), station2.getId(), 10);
 
         // then
         assertSectionConnection(station1, station2, station3, lineId, response);
@@ -79,7 +81,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
         Long lineId = getCreatedLineId(station1.getId(), station2.getId());
 
         // when
-        ExtractableResponse<Response> response = createSection(lineId, station2.getId(), station3.getId(), 10);
+        ExtractableResponse<Response> response =
+                requestToCreateSection(lineId, station2.getId(), station3.getId(), 10);
 
         // then
         assertSectionConnection(station1, station2, station3, lineId, response);
@@ -87,13 +90,13 @@ class SectionAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("길이가 기존 구간의 길이를 초과한 구간을 추가할 경우 BAD_REQUEST 를 반환한다.")
     @Test
-    void createLongerMiddleSection() {
+    void createSection_badRequest_longerDistance() {
         // given
         Long lineId = getCreatedLineId(station1.getId(), station3.getId());
 
         // when
-        ExtractableResponse<Response> response = createSection(lineId, station2.getId(), station3.getId(), 10);
-
+        ExtractableResponse<Response> response =
+                requestToCreateSection(lineId, station2.getId(), station3.getId(), 10);
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         // then
@@ -105,13 +108,13 @@ class SectionAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("상행과 하행 종점이 모두 포함되지 않는 구간을 추가할 경우 BAD_REQUEST 를 반환한다.")
     @Test
-    void createNotMatchingSection() {
+    void createSection_badRequest_bothNonExistingStations() {
         // given
-        Station station4 = createStation("성수역").as(Station.class);
+        Station station4 = requestToCreateStation("성수역").as(Station.class);
         Long lineId = getCreatedLineId(station1.getId(), station3.getId());
 
         // when
-        ExtractableResponse<Response> response = createSection(lineId, station2.getId(), station4.getId(), 10);
+        ExtractableResponse<Response> response = requestToCreateSection(lineId, station2.getId(), station4.getId(), 10);
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         // then
@@ -124,12 +127,12 @@ class SectionAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("추가할 상행과 하행 종점이 이미 구간에 존재할 경우 BAD_REQUEST 를 반환한다.")
     @Test
-    void createAllMatchingSection() {
+    void createSection_badRequest_bothExistingStations() {
         // given
         Long lineId = getCreatedLineId(station1.getId(), station2.getId());
 
         // when
-        ExtractableResponse<Response> response = createSection(lineId, station1.getId(), station2.getId(), 10);
+        ExtractableResponse<Response> response = requestToCreateSection(lineId, station1.getId(), station2.getId(), 10);
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         // then
@@ -142,12 +145,12 @@ class SectionAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("상행과 하행 종점이 동일한 구간을 추가할 경우 BAD_REQUEST 를 반환한다.")
     @Test
-    void createSectionWhereUpStationsIsSameAsDownStation() {
+    void createSection_badRequest_sameUpStationAndSameDownStation() {
         // given
         Long lineId = getCreatedLineId(station1.getId(), station2.getId());
 
         // when
-        ExtractableResponse<Response> response = createSection(lineId, station1.getId(), station1.getId(), 10);
+        ExtractableResponse<Response> response = requestToCreateSection(lineId, station1.getId(), station1.getId(), 10);
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         // then
@@ -160,14 +163,14 @@ class SectionAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("상행 종점을 제거한다.")
     @Test
-    void deleteUpperSection() {
+    void deleteSection_upper() {
         // given
         Long lineId = getCreatedLineId(station1.getId(), station2.getId());
-        createSection(lineId, station2.getId(), station3.getId(), 10);
+        requestToCreateSection(lineId, station2.getId(), station3.getId(), 10);
 
         // when
-        ExtractableResponse<Response> response = deleteSection(station1, lineId);
-        LineResponse lineResponse = findLineById(lineId).as(LineResponse.class);
+        ExtractableResponse<Response> response = requestToDeleteSection(station1, lineId);
+        LineResponse lineResponse = requestToFindLineById(lineId).as(LineResponse.class);
         List<StationResponse> stationResponses = lineResponse.getStations();
 
         // then
@@ -183,15 +186,14 @@ class SectionAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("중간역을 제거한다.")
     @Test
-    void deleteMiddleSection() {
+    void deleteSection_middle() {
         // given
         Long lineId = getCreatedLineId(station1.getId(), station2.getId());
-        createSection(lineId, station2.getId(), station3.getId(), 10);
+        requestToCreateSection(lineId, station2.getId(), station3.getId(), 10);
 
         // when
-        ExtractableResponse<Response> response = deleteSection(station2, lineId);
-
-        LineResponse lineResponse = findLineById(lineId).as(LineResponse.class);
+        ExtractableResponse<Response> response = requestToDeleteSection(station2, lineId);
+        LineResponse lineResponse = requestToFindLineById(lineId).as(LineResponse.class);
         List<StationResponse> stationResponses = lineResponse.getStations();
 
         // then
@@ -207,14 +209,14 @@ class SectionAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("하행 종점을 제거한다.")
     @Test
-    void deleteLowerSection() {
+    void deleteSection_lower() {
         // given
         Long lineId = getCreatedLineId(station1.getId(), station2.getId());
-        createSection(lineId, station2.getId(), station3.getId(), 10);
+        requestToCreateSection(lineId, station2.getId(), station3.getId(), 10);
 
         // when
-        ExtractableResponse<Response> response = deleteSection(station3, lineId);
-        LineResponse lineResponse = findLineById(lineId).as(LineResponse.class);
+        ExtractableResponse<Response> response = requestToDeleteSection(station3, lineId);
+        LineResponse lineResponse = requestToFindLineById(lineId).as(LineResponse.class);
         List<StationResponse> stationResponses = lineResponse.getStations();
 
         // then
@@ -230,13 +232,12 @@ class SectionAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("구간이 하나뿐인 노선의 구간을 삭제할 경우 BAD_REQUEST 를 반환한다.")
     @Test
-    void deleteMinimumSection() {
+    void delete_badRequest_onlySection() {
         // given
         Long lineId = getCreatedLineId(station1.getId(), station2.getId());
 
         // when
-        ExtractableResponse<Response> response = deleteSection(station2, lineId);
-
+        ExtractableResponse<Response> response = requestToDeleteSection(station2, lineId);
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         // then
@@ -248,14 +249,14 @@ class SectionAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("노선에 포함되지 않는 구간을 삭제할 경우 NOT_FOUND 를 반환한다.")
     @Test
-    void deleteNotExistingSection() {
+    void deleteSection_NotFound_NotExisting() {
         // given
-        StationResponse station4 = createStation("성수역").as(StationResponse.class);
+        StationResponse station4 = requestToCreateStation("성수역").as(StationResponse.class);
         Long lineId = getCreatedLineId(station1.getId(), station2.getId());
-        createSection(lineId, station2.getId(), station3.getId(), 10);
+        requestToCreateSection(lineId, station2.getId(), station3.getId(), 10);
 
         // when
-        ExtractableResponse<Response> response = deleteSection(station4, lineId);
+        ExtractableResponse<Response> response = requestToDeleteSection(station4, lineId);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
@@ -264,10 +265,10 @@ class SectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("유효하지 않은 값들로 구간을 생성하려고 하면 예외를 발생시킨다.")
     @ParameterizedTest
     @MethodSource("provideInvalidSectionCreationResource")
-    void createSection_badRequestByInvalidSectionCreationResource(Long upStationId,
-                                                                  Long downStationId,
-                                                                  Integer distance) {
-        ExtractableResponse<Response> response = createSection(1L, upStationId, downStationId, distance);
+    void createSection_badRequest_InvalidSectionCreationResource(Long upStationId,
+                                                                 Long downStationId,
+                                                                 Integer distance) {
+        ExtractableResponse<Response> response = requestToCreateSection(1L, upStationId, downStationId, distance);
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         assertAll(
@@ -276,7 +277,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private ExtractableResponse<Response> deleteSection(StationResponse stationResponse, long lineId) {
+    private ExtractableResponse<Response> requestToDeleteSection(StationResponse stationResponse, long lineId) {
         return RestAssured.given().log().all()
                 .queryParam("stationId", stationResponse.getId())
                 .when()
@@ -287,7 +288,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
 
     private void assertSectionConnection(StationResponse station1, StationResponse station2, StationResponse station3,
                                          long lineId, ExtractableResponse<Response> response) {
-        LineResponse lineResponse = findLineById(lineId).as(LineResponse.class);
+        LineResponse lineResponse = requestToFindLineById(lineId).as(LineResponse.class);
         List<StationResponse> stationResponses = lineResponse.getStations();
         StationResponse stationResponse1 = stationResponses.get(0);
         StationResponse stationResponse2 = stationResponses.get(1);
@@ -308,7 +309,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
 
     private Long getCreatedLineId(Long upStationId, Long downStationId) {
         ExtractableResponse<Response> lineCreationResponse =
-                createLine("2호선", "green", upStationId, downStationId, 10, 200);
+                requestToCreateLine("2호선", "green", upStationId, downStationId, 10, 200);
         return Long.parseLong(lineCreationResponse.header("Location").split("/")[2]);
     }
 

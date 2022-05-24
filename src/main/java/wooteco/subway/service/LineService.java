@@ -62,7 +62,7 @@ public class LineService {
     public void update(Long id, LineModificationServiceRequest lineModificationServiceRequest) {
         Line updatingLine = new Line(lineModificationServiceRequest.getName(),
                 lineModificationServiceRequest.getColor(), lineModificationServiceRequest.getExtraFare());
-        lineDao.updateById(id, updatingLine);
+        lineDao.update(id, updatingLine);
     }
 
     @Transactional

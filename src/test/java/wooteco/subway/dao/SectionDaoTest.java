@@ -52,8 +52,6 @@ class SectionDaoTest extends DBTest {
     @DisplayName("노선 id 로 구간을 찾아낸다.")
     @Test
     void findAllByLineId() {
-
-
         Section section = new Section(line.getId(), upStation.getId(), downStation.getId(), 10);
 
         sectionDao.save(section);
@@ -63,14 +61,13 @@ class SectionDaoTest extends DBTest {
 
     @DisplayName("같은 상행 종점을 가진 구간을 찾아낸다.")
     @Test
-    void findBySameUpStation() {
-
-
+    void findSameUpStationOrDownStation_sameUpStation() {
         Section section = new Section(line.getId(), upStation.getId(), downStation.getId(), 10);
 
         sectionDao.save(section);
 
-        Section sameUpStation = sectionDao.findBy(section.getLineId(), upStation.getId(), 10L)
+        Section sameUpStation = sectionDao.findSameUpStationOrDownStation(
+                section.getLineId(), upStation.getId(), 10L)
                 .orElseThrow();
 
         assertThat(sameUpStation.getDownStationId()).isEqualTo(downStation.getId());
@@ -78,13 +75,14 @@ class SectionDaoTest extends DBTest {
 
     @DisplayName("같은 하행 종점을 가진 구간을 찾아낸다.")
     @Test
-    void findBySameDownStation() {
+    void findSameUpStationOrDownStation_sameDownStation() {
 
         Section section = new Section(line.getId(), upStation.getId(), downStation.getId(), 10);
 
         sectionDao.save(section);
 
-        Section sameUpStation = sectionDao.findBy(section.getLineId(), 10L, downStation.getId())
+        Section sameUpStation = sectionDao.findSameUpStationOrDownStation(
+                section.getLineId(), 10L, downStation.getId())
                 .orElseThrow();
 
         assertThat(sameUpStation.getUpStationId()).isEqualTo(upStation.getId());
@@ -92,8 +90,9 @@ class SectionDaoTest extends DBTest {
 
     @DisplayName("같은 상행 또는 하행 종점을 가진 구간을 찾아내지 못할 경우 빈값을 반환한다.")
     @Test
-    void findByNotExistingSection() {
-        Optional<Section> section = sectionDao.findBy(1L, 9L, 10L);
+    void findSameUpStationOrDownStation_nothing() {
+        Optional<Section> section = sectionDao.findSameUpStationOrDownStation(
+                1L, 9L, 10L);
 
         assertThat(section).isEmpty();
     }
@@ -101,9 +100,7 @@ class SectionDaoTest extends DBTest {
     @Test
     @DisplayName("id로 노선을 삭제한다.")
     void deleteById() {
-
         Section section = new Section(line.getId(), upStation.getId(), downStation.getId(), 10);
-
         Section savedSection = sectionDao.save(section);
 
         sectionDao.deleteById(savedSection.getId());

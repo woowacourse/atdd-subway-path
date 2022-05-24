@@ -41,7 +41,7 @@ class LineDaoTest extends DBTest {
 
     @DisplayName("같은 이름의 노선을 저장하는 경우 예외가 발생한다.")
     @Test
-    void saveExistingName() {
+    void save_exception_duplicatedName() {
         lineDao.save(line);
 
         assertThatThrownBy(() -> lineDao.save(line))
@@ -62,7 +62,7 @@ class LineDaoTest extends DBTest {
         assertThat(lineDao.findAll().size()).isEqualTo(3);
     }
 
-    @DisplayName("지하철 노선을 조회한다.")
+    @DisplayName("id를 통해 지하철 노선을 조회한다.")
     @Test
     void findById() {
         Line savedLine = lineDao.save(line);
@@ -79,7 +79,7 @@ class LineDaoTest extends DBTest {
 
     @DisplayName("존재하지 않는 지하철 노선을 조회할 경우 예외가 발생한다.")
     @Test
-    void findNotExistingLine() {
+    void find_exception_nonExistingLineId() {
         assertThatThrownBy(() -> lineDao.findById(1L))
                 .isInstanceOf(EmptyResultDataAccessException.class);
     }
@@ -90,7 +90,7 @@ class LineDaoTest extends DBTest {
         Line savedLine = lineDao.save(line);
         Line updatingLine = new Line("3호선", "orange", 500);
 
-        lineDao.updateById(savedLine.getId(), updatingLine);
+        lineDao.update(savedLine.getId(), updatingLine);
 
         Line foundLine = lineDao.findById(savedLine.getId());
 

@@ -37,7 +37,7 @@ public class LineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponse>> showLines() {
+    public ResponseEntity<List<LineResponse>> findAllLines() {
         List<LineResponse> lineResponses = lineService.findAll()
                 .stream()
                 .map(LineResponse::new)
@@ -46,7 +46,7 @@ public class LineController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> showLine(@PathVariable Long id) {
+    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
         LineServiceResponse lineServiceResponse = lineService.findById(id);
         LineResponse lineResponse = new LineResponse(lineServiceResponse);
         return ResponseEntity.ok().body(lineResponse);
@@ -60,7 +60,7 @@ public class LineController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteLineById(@PathVariable Long id) {
         lineService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

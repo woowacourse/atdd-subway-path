@@ -33,29 +33,30 @@ class PathAcceptanceTest extends AcceptanceTest {
     private String uri = "/paths?source=%d&target=%d&age=%d";
 
     @BeforeEach
-    void createLine() {
-        stationId1 = createStation("강남역").as(StationResponse.class)
+    void createPath() {
+        stationId1 = requestToCreateStation("강남역").as(StationResponse.class)
                 .getId();
-        stationId2 = createStation("선릉역").as(StationResponse.class)
+        stationId2 = requestToCreateStation("선릉역").as(StationResponse.class)
                 .getId();
-        stationId3 = createStation("수서역").as(StationResponse.class)
+        stationId3 = requestToCreateStation("수서역").as(StationResponse.class)
                 .getId();
-        stationId4 = createStation("천호역").as(StationResponse.class)
+        stationId4 = requestToCreateStation("천호역").as(StationResponse.class)
                 .getId();
-        lineId = createLine("2호선", "green", stationId1, stationId2, 2, 200)
+        lineId = requestToCreateLine("2호선", "green", stationId1, stationId2, 2, 200)
                 .as(LineResponse.class)
                 .getId();
-        createSection(lineId, stationId2, stationId3, 4);
+        requestToCreateSection(lineId, stationId2, stationId3, 4);
     }
 
     @DisplayName("최단 경로의 지하철 역들과 거리, 운임 비용을 응답한다.")
     @Test
     void findShortestPath() {
         // given
-        createLine("3호선", "orange", stationId2, stationId4, 2, 500);
+        requestToCreateLine("3호선", "orange", stationId2, stationId4, 2, 500);
 
         // when
-        ExtractableResponse<Response> response = findShortestPath(String.format(uri, stationId1, stationId4, 5));
+        ExtractableResponse<Response> response = requestToFindShortestPath(
+                String.format(uri, stationId1, stationId4, 5));
         PathResponse pathResponse = response.jsonPath()
                 .getObject(".", PathResponse.class);
         List<StationResponse> stationResponses = pathResponse.getStations();
@@ -76,14 +77,15 @@ class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("구간에 등록되지 않은 지하철역으로 최단 경로 조회시 badRequest를 응답한다.")
     @Test
-    void findShortestPath_badRequestByNotSavedInSection() {
+    void findShortestPath_badRequest_NotSavedInSection() {
         // given
-        Long stationId5 = createStation("가락시장역").as(StationResponse.class)
+        Long stationId5 = requestToCreateStation("가락시장역").as(StationResponse.class)
                 .getId();
-        createLine("3호선", "orange", stationId2, stationId4, 2, 500);
+        requestToCreateLine("3호선", "orange", stationId2, stationId4, 2, 500);
 
         // when
-        ExtractableResponse<Response> response = findShortestPath(String.format(uri, stationId1, stationId5, 1));
+        ExtractableResponse<Response> response = requestToFindShortestPath(
+                String.format(uri, stationId1, stationId5, 1));
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         // then
@@ -95,14 +97,15 @@ class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("연결되지 않은 구간의 최단 경로 조회시 badRequest를 응답한다.")
     @Test
-    void findShortestPath_badRequestByUnconnectedPath() {
+    void findShortestPath_badRequest_UnconnectedPath() {
         // given
-        Long stationId5 = createStation("가락시장역").as(StationResponse.class)
+        Long stationId5 = requestToCreateStation("가락시장역").as(StationResponse.class)
                 .getId();
-        createLine("3호선", "orange", stationId4, stationId5, 2, 500);
+        requestToCreateLine("3호선", "orange", stationId4, stationId5, 2, 500);
 
         // when
-        ExtractableResponse<Response> response = findShortestPath(String.format(uri, stationId1, stationId5, 5));
+        ExtractableResponse<Response> response = requestToFindShortestPath(
+                String.format(uri, stationId1, stationId5, 5));
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         //then
@@ -112,12 +115,13 @@ class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    @DisplayName("유효하지 않은 값들로 최단 경로를 조회하려하면 badRequest를 반환한다.")
+    @DisplayName("유효하지 범위의 값들로 최단 경로를 조회하려하면 badRequest를 반환한다.")
     @ParameterizedTest
     @MethodSource("provideInvalidPathResource")
-    void findShortestPath_badRequestByInvalidResource(Long departureId, Long arrivalId, Integer age) {
+    void findShortestPath_badRequest_InvalidRangeResource(Long departureId, Long arrivalId, Integer age) {
         // when
-        ExtractableResponse<Response> response = findShortestPath(String.format(uri, departureId, arrivalId, age));
+        ExtractableResponse<Response> response = requestToFindShortestPath(
+                String.format(uri, departureId, arrivalId, age));
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         // then
@@ -130,7 +134,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("출발역 id, 도착역 id, 나이 중에 null인 값이 하나라도 있는 요청을 한다먄 badRequest를 반환한다.")
     @ParameterizedTest
     @ValueSource(strings = {"/paths?target=2&age=2", "/paths?source=2&age=2", "/paths?source=2&target=3"})
-    void a(String uri) {
+    void findShortestPath_badRequest_null(String uri) {
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -146,7 +150,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private ExtractableResponse<Response> findShortestPath(String uri) {
+    private ExtractableResponse<Response> requestToFindShortestPath(String uri) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()

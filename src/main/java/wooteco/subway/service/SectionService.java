@@ -37,7 +37,7 @@ public class SectionService {
         Long downStationId = sectionServiceRequest.getDownStationId();
         Section newSection = new Section(lineId, upStationId, downStationId, sectionServiceRequest.getDistance());
 
-        sectionDao.findBy(lineId, upStationId, downStationId)
+        sectionDao.findSameUpStationOrDownStation(lineId, upStationId, downStationId)
                 .ifPresentOrElse(
                         section -> insert(section, newSection),
                         () -> extend(newSection)

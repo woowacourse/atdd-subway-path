@@ -56,8 +56,9 @@ public class SectionDao {
         return new Sections(jdbcTemplate.query(sql, getRowMapper()));
     }
 
-    public Optional<Section> findBy(Long lineId, Long upStationId, Long downStationId) {
-        String sql = "SELECT * FROM section WHERE line_id = :line_id AND (up_station_id = :up_station_id OR down_station_id = :down_station_id)";
+    public Optional<Section> findSameUpStationOrDownStation(Long lineId, Long upStationId, Long downStationId) {
+        String sql = "SELECT * FROM section WHERE line_id = :line_id AND "
+                + "(up_station_id = :up_station_id OR down_station_id = :down_station_id)";
 
         Map<String, Object> params = new HashMap<>();
         params.put("line_id", lineId);
