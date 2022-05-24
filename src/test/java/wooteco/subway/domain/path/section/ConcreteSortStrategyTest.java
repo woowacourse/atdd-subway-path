@@ -1,4 +1,4 @@
-package wooteco.subway.domain.section;
+package wooteco.subway.domain.path.section;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.section.ConcreteSortStrategy;
+import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 
 class ConcreteSortStrategyTest {

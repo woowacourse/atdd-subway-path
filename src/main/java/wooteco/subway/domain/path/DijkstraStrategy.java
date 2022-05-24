@@ -8,7 +8,8 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import java.util.List;
 
 public class DijkstraStrategy implements PathFindingStrategy {
-    public int calculateShortestDistance(Graph<Long, DefaultWeightedEdge> graph,Long source, Long target) {
+
+    public int calculateShortestDistance(Graph<Long, DefaultWeightedEdge> graph, Long source, Long target) {
         return (int) findShortestDijkstraPath(graph, source, target).getWeight();
     }
 
@@ -16,7 +17,8 @@ public class DijkstraStrategy implements PathFindingStrategy {
         return findShortestDijkstraPath(graph, source, target).getVertexList();
     }
 
-    private GraphPath<Long, DefaultWeightedEdge> findShortestDijkstraPath(Graph<Long, DefaultWeightedEdge> graph, Long source, Long target) {
+    private GraphPath<Long, DefaultWeightedEdge> findShortestDijkstraPath(Graph<Long, DefaultWeightedEdge> graph,
+            Long source, Long target) {
         GraphPath<Long, DefaultWeightedEdge> graphPath = DijkstraShortestPath.findPathBetween(graph, source, target);
 
         if (graphPath == null) {

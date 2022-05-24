@@ -1,10 +1,11 @@
-package wooteco.subway.domain.section;
+package wooteco.subway.domain.path.section;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.section.Section;
 
 class SectionTest {
 
@@ -76,7 +77,7 @@ class SectionTest {
         Section _1L_3L_5 = new Section(1L, 1L, 1L, 3L, 5);
         Section _2L_3L_7 = new Section(1L, 1L, 2L, 3L, 7);
 
-        assertThat(_1L_3L_5.isLongerThan(_2L_3L_7)).isTrue();
+        assertThat(_1L_3L_5.isLongerThan(_2L_3L_7)).isFalse();
     }
 
     @DisplayName("두 구간에 같은 역이 존재하는지 확인한다. / 참")
