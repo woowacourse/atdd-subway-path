@@ -6,6 +6,7 @@ import static wooteco.subway.Fixtures.STATION_1;
 import static wooteco.subway.Fixtures.LINE_1;
 import static wooteco.subway.Fixtures.RED;
 import static wooteco.subway.Fixtures.STATION_2;
+import static wooteco.subway.acceptance.AcceptanceFixture.*;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -34,7 +35,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         final Long stationId1 = createStation(STATION_1);
         final Long stationId2 = createStation(STATION_2);
         final Long stationId3 = createStation(STATION_3);
-        final Long lineId = createLine(LINE_1, RED, stationId1, stationId2, 10);
+        final Long lineId = createLine(LINE_1, RED, stationId1, stationId2, 10, 500);
         createSection(lineId, stationId2, stationId3, 10);
 
         // when
@@ -57,7 +58,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         final Long stationId1 = createStation(STATION_1);
         final Long stationId2 = createStation(STATION_2);
         final Long stationId3 = createStation(STATION_3);
-        final Long lineId = createLine(LINE_1, RED, stationId1, stationId2, 10);
+        final Long lineId = createLine(LINE_1, RED, stationId1, stationId2, 10, 500);
         createSection(lineId, stationId2, stationId3, 10);
 
         // when
@@ -80,7 +81,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         final Long stationId1 = createStation(STATION_1);
         final Long stationId2 = createStation(STATION_2);
         final Long stationId3 = createStation(STATION_3);
-        createLine(LINE_1, RED, stationId1, stationId2, 10);
+        createLine(LINE_1, RED, stationId1, stationId2, 10, 500);
 
         // when
         final ExtractableResponse<Response> response = getPath(stationId1, stationId3, 29);
@@ -99,55 +100,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .params(params)
                 .when()
                 .get("/paths")
-                .then().log().all()
-                .extract();
-    }
-
-    private Long createStation(final String name) {
-        final Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-
-        return RestAssured.given().log().all()
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all()
-                .extract()
-                .body().jsonPath().getLong("id");
-    }
-
-    private Long createLine(final String name, final String color, final Long upStationId, final Long downStationId,
-                            final int distance) {
-        final Map<String, Object> params = new HashMap<>();
-        params.put("name", name);
-        params.put("color", color);
-        params.put("upStationId", upStationId);
-        params.put("downStationId", downStationId);
-        params.put("distance", distance);
-
-        return Long.parseLong(RestAssured.given().log().all()
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines")
-                .then().log().all()
-                .extract()
-                .header("Location").split("/")[2]);
-    }
-
-    private void createSection(final Long lineId, final Long upStationId, final Long downStationId,
-                               final int distance) {
-        final Map<String, Object> params = new HashMap<>();
-        params.put("upStationId", upStationId);
-        params.put("downStationId", downStationId);
-        params.put("distance", distance);
-
-        RestAssured.given().log().all()
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines/" + lineId + "/sections")
                 .then().log().all()
                 .extract();
     }
