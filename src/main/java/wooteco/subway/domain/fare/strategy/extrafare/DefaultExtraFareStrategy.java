@@ -2,7 +2,7 @@ package wooteco.subway.domain.fare.strategy.extrafare;
 
 import wooteco.subway.domain.Distance;
 
-public class DefaultExtraFareStrategy implements ExtraFareStrategy {
+public final class DefaultExtraFareStrategy extends ExtraFareStrategy {
 
     private static final ExtraFareStrategy INSTANCE = new DefaultExtraFareStrategy();
 

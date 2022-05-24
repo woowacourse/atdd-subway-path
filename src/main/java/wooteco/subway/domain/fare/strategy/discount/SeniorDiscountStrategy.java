@@ -1,6 +1,6 @@
 package wooteco.subway.domain.fare.strategy.discount;
 
-public class SeniorDiscountStrategy implements DiscountStrategy {
+public final class SeniorDiscountStrategy extends DiscountStrategy {
 
     private static final DiscountStrategy INSTANCE = new SeniorDiscountStrategy();
 

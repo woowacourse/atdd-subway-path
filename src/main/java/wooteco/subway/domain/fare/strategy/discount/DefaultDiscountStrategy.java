@@ -1,6 +1,6 @@
 package wooteco.subway.domain.fare.strategy.discount;
 
-public class DefaultDiscountStrategy implements DiscountStrategy {
+public final class DefaultDiscountStrategy extends DiscountStrategy {
 
     private static final DiscountStrategy INSTANCE = new DefaultDiscountStrategy();
 

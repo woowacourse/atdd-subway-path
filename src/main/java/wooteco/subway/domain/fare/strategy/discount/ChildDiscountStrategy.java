@@ -1,9 +1,8 @@
 package wooteco.subway.domain.fare.strategy.discount;
 
-public class ChildDiscountStrategy implements DiscountStrategy {
+public final class ChildDiscountStrategy extends DiscountStrategy {
 
     private static final DiscountStrategy INSTANCE = new ChildDiscountStrategy();
-
     private static final double DISCOUNT_RATE = 0.5;
 
     private ChildDiscountStrategy() {
@@ -15,6 +14,6 @@ public class ChildDiscountStrategy implements DiscountStrategy {
 
     @Override
     public int calculate(final int fare) {
-        return (int) ((fare - DEFAULT_DISCOUNT_AMOUNT) * DISCOUNT_RATE);
+        return discountFareBy(fare, DISCOUNT_RATE);
     }
 }
