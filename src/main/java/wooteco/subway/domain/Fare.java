@@ -1,5 +1,8 @@
 package wooteco.subway.domain;
 
+import wooteco.subway.domain.discountstrategy.AgeDiscountStrategy;
+import wooteco.subway.domain.discountstrategy.AgeDiscountStrategyFactory;
+
 public class Fare {
 
     private static final int DEFAULT_FARE = 1250;

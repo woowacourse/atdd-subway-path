@@ -6,8 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.path.SubwayPathFinder;
 
-public class PathTest {
+public class PathFinderTest {
 
     private static final int CHILDREN_AGE = 12;
 
@@ -35,7 +36,7 @@ public class PathTest {
                 new Line(2L, "테스트2호선", "테스트2색", 500)
         );
 
-        var path = new Path(new Stations(stations), new Sections(sections), new Lines(lines));
+        var path = new SubwayPathFinder(new Stations(stations), new Sections(sections), new Lines(lines));
 
         var pathResult = path.getPath(1L, 3L, CHILDREN_AGE);
 

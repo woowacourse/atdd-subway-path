@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -6,16 +6,26 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.domain.Fare;
+import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Lines;
+import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.Station;
+import wooteco.subway.domain.Stations;
 import wooteco.subway.util.StationIdParser;
 
-public class Path {
+public class SubwayPathFinder implements PathFinder {
 
-    private Stations stations;
-    private Sections sections;
-    private Lines lines;
-    private DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath;
+    private final Stations stations;
+    private final Sections sections;
+    private final Lines lines;
+    private final DijkstraShortestPath<Long, DefaultWeightedEdge> graph;
 
-    public Path(Stations stations, Sections sections, Lines lines) {
+    public SubwayPathFinder(Stations stations,
+                            Sections sections,
+                            Lines lines
+    ) {
         this.stations = stations;
         this.sections = sections;
         this.lines = lines;
@@ -23,7 +33,7 @@ public class Path {
         WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
         setVertex(stations.get(), graph);
         setEdgeWeight(sections.get(), graph);
-        dijkstraShortestPath = new DijkstraShortestPath(graph);
+        this.graph = new DijkstraShortestPath(graph);
     }
 
     private void setVertex(List<Station> stations, WeightedMultigraph<Long, DefaultWeightedEdge> graph) {
@@ -41,11 +51,12 @@ public class Path {
         }
     }
 
-    public PathResult getPath(long source, long target, int age) {
-        var shortestPath = dijkstraShortestPath.getPath(source, target);
+    @Override
+    public PathResult getPath(Long source, Long target, int age) {
+        var shortestPath = graph.getPath(source, target);
 
         var stations = shortestPath.getVertexList().stream()
-                .map(it -> this.stations.find(it))
+                .map(this.stations::find)
                 .collect(Collectors.toList());
 
         var distance = shortestPath.getWeight();
@@ -60,7 +71,7 @@ public class Path {
     private int getExtraFare(GraphPath<Long, DefaultWeightedEdge> shortestPath) {
         return shortestPath.getEdgeList().stream()
                 .map(it -> StationIdParser.parse(it.toString()))
-                .map(it -> this.sections.findByStationIds(it))
+                .map(this.sections::findByStationIds)
                 .map(Section::getLineId)
                 .map(lines::find)
                 .map(Line::getExtraFare)

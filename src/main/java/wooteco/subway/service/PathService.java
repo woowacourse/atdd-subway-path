@@ -5,9 +5,9 @@ import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Lines;
-import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Stations;
+import wooteco.subway.domain.path.SubwayPathFinder;
 import wooteco.subway.dto.path.PathResponse;
 
 @Service
@@ -24,14 +24,12 @@ public class PathService {
     }
 
     public PathResponse findPath(Long source, Long target, int age) {
-        var path = new Path(
+        var path = new SubwayPathFinder(
                 new Stations(stationDao.findAll()),
                 new Sections(sectionDao.findAll()),
                 new Lines(lineDao.findAll())
         );
 
-        var shortestPath = path.getPath(source, target, age);
-
-        return new PathResponse(shortestPath);
+        return new PathResponse(path.getPath(source, target, age));
     }
 }

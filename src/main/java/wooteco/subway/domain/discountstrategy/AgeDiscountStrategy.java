@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.discountstrategy;
 
 public interface AgeDiscountStrategy {
 
