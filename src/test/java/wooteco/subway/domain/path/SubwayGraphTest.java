@@ -97,6 +97,7 @@ public class SubwayGraphTest {
     void getFare(Station source, Station target, int fare) {
         SubwayGraph subwayGraph = new SubwayGraph(SECTIONS);
         int distance = subwayGraph.getShortestDistance(source, target);
-        assertThat(new Fare(new ArrayList<>()).getFare(PolicyFactory.createDistance(distance).getFare(distance))).isEqualTo(fare);
+        int baseFare = PolicyFactory.createDistance(distance).getFare(distance);
+        assertThat(new Fare(new ArrayList<>(), baseFare).getFare()).isEqualTo(fare);
     }
 }

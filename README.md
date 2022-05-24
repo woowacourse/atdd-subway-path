@@ -181,8 +181,8 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-subwayGraph/blo
 - [x] 새 엔티티의 id를 null 대신 0으로 초기화하는군요. id 필드는 더이상 Long 타입일 필요가 없을까요? -> 모두 long으로 수정!
 - [x] 호출하게 되면 sections.isStationIn(station)처럼 호출하게 될 텐데, 코드가 부자연스러워보이네요.
     - [x] sections.contains(station)처럼 호출할 수 있으면 어떨까요?
-- [ ] getFare가 여러번 호출되면 계산도 매번 발생할텐데요. 매번 계산할 필요가 있을까요?
-    - [ ] baseFare는 기본요금일까요?
+- [x] getFare가 여러번 호출되면 계산도 매번 발생할텐데요. 매번 계산할 필요가 있을까요?
+    - [x] baseFare는 기본요금일까요?
 - [ ] Generator -> 매직 넘버는 상수로 분리하면 어떨까요?
 - [ ] UnderTenKMPolicy 에서도 같은 상수가 선언돼 있는데, 필요한 중복일까요?
 - [ ] removeStationById -> StationService 대신 이곳에 위치한 이유가 있을까요?

@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class FareTest {
-    private final Fare fare = new Fare(new ArrayList<>());
 
     @Test
     @DisplayName("10키로 이하시 기본요금을 계산한다.")
@@ -19,7 +18,7 @@ class FareTest {
     }
 
     private int getFare(int distance) {
-        return fare.getFare(getBaseFare(distance));
+        return new Fare(new ArrayList<>(), getBaseFare(distance)).getFare();
     }
 
     private int getBaseFare(int distance) {
@@ -46,9 +45,9 @@ class FareTest {
     @Test
     @DisplayName("연령별 요금을 계산한다.")
     void getFare_addAge() {
-        assertThat(new Fare(List.of(PolicyFactory.createAgeDiscount(3))).getFare(getBaseFare(9))).isEqualTo(0);
-        assertThat(new Fare(List.of(PolicyFactory.createAgeDiscount(12))).getFare(getBaseFare(9))).isEqualTo(450);
-        assertThat(new Fare(List.of(PolicyFactory.createAgeDiscount(15))).getFare(getBaseFare(9))).isEqualTo(720);
-        assertThat(new Fare(List.of(PolicyFactory.createAgeDiscount(22))).getFare(getBaseFare(9))).isEqualTo(1250);
+        assertThat(new Fare(List.of(PolicyFactory.createAgeDiscount(3)), getBaseFare(9)).getFare()).isEqualTo(0);
+        assertThat(new Fare(List.of(PolicyFactory.createAgeDiscount(12)), getBaseFare(9)).getFare()).isEqualTo(450);
+        assertThat(new Fare(List.of(PolicyFactory.createAgeDiscount(15)), getBaseFare(9)).getFare()).isEqualTo(720);
+        assertThat(new Fare(List.of(PolicyFactory.createAgeDiscount(22)), getBaseFare(9)).getFare()).isEqualTo(1250);
     }
 }

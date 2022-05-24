@@ -42,7 +42,7 @@ public class PathService {
         return new PathResponse(
                 toStationResponse(path.getStations()),
                 path.getDistance(),
-                new Fare(policies).getFare(baseFare));
+                new Fare(policies, baseFare).getFare());
     }
 
     private List<StationResponse> toStationResponse(List<Station> route) {
