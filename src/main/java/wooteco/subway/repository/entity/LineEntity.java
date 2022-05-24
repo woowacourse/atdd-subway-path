@@ -16,10 +16,6 @@ public class LineEntity {
         this.extraFare = extraFare;
     }
 
-    public LineEntity(String name, String color) {
-        this(null, name, color, 0);
-    }
-
     public Long getId() {
         return id;
     }

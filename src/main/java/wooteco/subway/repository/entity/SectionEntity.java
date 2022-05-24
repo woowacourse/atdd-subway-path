@@ -18,14 +18,6 @@ public class SectionEntity {
         this.distance = distance;
     }
 
-    public SectionEntity(Long lineId, long upStationId, long downStationId, int distance) {
-        this(null, lineId, upStationId, downStationId, distance);
-    }
-
-    public SectionEntity(Long upStationId, Long downStationId) {
-        this(null, null, upStationId, downStationId, 0);
-    }
-
     public long getId() {
         return id;
     }

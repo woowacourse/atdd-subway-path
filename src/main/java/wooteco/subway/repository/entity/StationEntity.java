@@ -12,10 +12,6 @@ public class StationEntity {
         this.name = name;
     }
 
-    public StationEntity(String name) {
-        this(null, name);
-    }
-
     public String getName() {
         return name;
     }
