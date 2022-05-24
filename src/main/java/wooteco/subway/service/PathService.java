@@ -6,6 +6,7 @@ import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.*;
+import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.service.pathInfra.PathFinder;
 import wooteco.subway.service.pathInfra.ShortestPathFinder;
@@ -28,25 +29,25 @@ public class PathService {
         this.sectionDao = sectionDao;
     }
 
-    public PathResponse findShortestPath(Long upStationId, Long downStationId, int age) {
-        validateNotSameStations(upStationId, downStationId);
-        final Path shortestPath = makePath(upStationId, downStationId);
+    public PathResponse findShortestPath(PathRequest pathRequest) {
+        validateNotSameStations(pathRequest.getSource(), pathRequest.getTarget());
+        final Path shortestPath = makePath(pathRequest.getSource(), pathRequest.getTarget());
 
         final List<Station> stations = shortestPath.getStations();
         final int shortestDistance = shortestPath.getDistance();
         final int extraFare = findMaximumExtraFare(shortestPath);
-        final Fare fare = Fare.of(shortestDistance, extraFare, age);
+        final Fare fare = Fare.of(shortestDistance, extraFare, pathRequest.getAge());
         return new PathResponse(stations, shortestDistance, fare.getValue());
     }
 
-    private Path makePath(Long upStationId, Long downStationId) {
+    private Path makePath(Long source, Long target) {
         final PathFinder pathFinder = new ShortestPathFinder(stationDao);
         final List<Section> sections = sectionDao.findAll();
-        return pathFinder.findShortestPath(sections, upStationId, downStationId);
+        return pathFinder.findShortestPath(sections, source, target);
     }
 
-    private void validateNotSameStations(Long upStationId, Long downStationId) {
-        if (Objects.equals(upStationId, downStationId)) {
+    private void validateNotSameStations(Long source, Long target) {
+        if (Objects.equals(source, target)) {
             throw new IllegalArgumentException("출발역과 도착역이 같을 수 없습니다.");
         }
     }

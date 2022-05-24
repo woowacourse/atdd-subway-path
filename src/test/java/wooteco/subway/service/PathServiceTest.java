@@ -7,6 +7,7 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
+import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.service.fakeDao.LineDaoImpl;
 import wooteco.subway.service.fakeDao.SectionDaoImpl;
@@ -54,7 +55,7 @@ public class PathServiceTest {
         final PathResponse expected =
                 new PathResponse(List.of(애플역, 갤럭시역, 옵티머스역), 30, 1650);
         // when
-        PathResponse actual = pathService.findShortestPath(애플역_id, 옵티머스역_id, 20);
+        PathResponse actual = pathService.findShortestPath(new PathRequest(애플역_id, 옵티머스역_id, 20));
 
         //then
         assertThat(actual)
@@ -73,7 +74,7 @@ public class PathServiceTest {
         SectionDaoImpl.getInstance().save(애플_갤럭시);
 
         //when then
-        assertThatThrownBy(() -> pathService.findShortestPath(애플역_id, 옵티머스역_id, 20))
+        assertThatThrownBy(() -> pathService.findShortestPath(new PathRequest(애플역_id, 옵티머스역_id, 20)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("해당 역 사이 경로가 존재하지 않습니다.");
     }
@@ -82,7 +83,7 @@ public class PathServiceTest {
     @DisplayName("요청에 해당 역이 존재하지 않을 때 예외를 발생시킨다.")
     void stationNotExistByRequest() {
         // when then
-        assertThatThrownBy(() -> pathService.findShortestPath(애플역_id, 갤럭시역_id + 1L, 20))
+        assertThatThrownBy(() -> pathService.findShortestPath(new PathRequest(애플역_id, 갤럭시역_id + 1L, 20)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("해당 역 사이 경로가 존재하지 않습니다.");
     }
@@ -95,7 +96,7 @@ public class PathServiceTest {
         final PathResponse expected =
                 new PathResponse(List.of(애플역, 갤럭시역, 옵티머스역), 25, 2150);
         // when
-        PathResponse actual = pathService.findShortestPath(애플역_id, 옵티머스역_id, 19);
+        PathResponse actual = pathService.findShortestPath(new PathRequest(애플역_id, 옵티머스역_id, 19));
 
         //then
         assertThat(actual)
@@ -111,7 +112,7 @@ public class PathServiceTest {
         final PathResponse expected =
                 new PathResponse(List.of(애플역, 갤럭시역, 옵티머스역), 25, 1250);
         // when
-        PathResponse actual = pathService.findShortestPath(애플역_id, 옵티머스역_id, 6);
+        PathResponse actual = pathService.findShortestPath(new PathRequest(애플역_id, 옵티머스역_id, 6));
 
         //then
         assertThat(actual)
@@ -128,7 +129,7 @@ public class PathServiceTest {
         final PathResponse expected =
                 new PathResponse(List.of(애플역, 갤럭시역, 옵티머스역), 25, 1790);
         // when
-        PathResponse actual = pathService.findShortestPath(애플역_id, 옵티머스역_id, 18);
+        PathResponse actual = pathService.findShortestPath(new PathRequest(애플역_id, 옵티머스역_id, 18));
 
         //then
         assertThat(actual)
