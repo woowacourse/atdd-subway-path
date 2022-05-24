@@ -32,8 +32,8 @@ public class LineService {
 
     @Transactional
     public LineResponse save(final LineSaveRequest lineSaveRequest) {
-        Line line = convertLine(lineSaveRequest);
-        Section section = convertSection(lineSaveRequest);
+        Line line = lineSaveRequest.toLine();
+        Section section = lineSaveRequest.convertSection();
 
         validateLine(line);
 
@@ -53,13 +53,13 @@ public class LineService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지하철 노선입니다."));
         List<Station> stations = lineDao.findStations(id);
 
-        List<StationResponse> stationResponses = convertStationResponses(stations);
+        List<StationResponse> stationResponses = StationResponse.convertStationResponses(stations);
         return LineResponse.from(line, stationResponses);
     }
 
     @Transactional
     public void update(final long id, final LineUpdateRequest lineUpdateRequest) {
-        Line line = convertLine(lineUpdateRequest);
+        Line line = lineUpdateRequest.toLine();
         validateLine(line);
         validateExistedLine(id);
         lineDao.update(id, line);
@@ -98,23 +98,5 @@ public class LineService {
         if (!lineDao.existLineById(id)) {
             throw new IllegalArgumentException("존재하지 않는 지하철 노선입니다.");
         }
-    }
-
-    private Line convertLine(final LineSaveRequest lineSaveRequest) {
-        return new Line(lineSaveRequest.getName(), lineSaveRequest.getColor());
-    }
-
-    private Line convertLine(final LineUpdateRequest lineUpdateRequest) {
-        return new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor());
-    }
-
-    private Section convertSection(final LineSaveRequest lineSaveRequest) {
-        return new Section(lineSaveRequest.getUpStationId(), lineSaveRequest.getDownStationId(), lineSaveRequest.getDistance());
-    }
-
-    private List<StationResponse> convertStationResponses(final List<Station> stations) {
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
     }
 }

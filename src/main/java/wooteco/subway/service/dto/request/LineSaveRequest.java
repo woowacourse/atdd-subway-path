@@ -1,5 +1,8 @@
 package wooteco.subway.service.dto.request;
 
+import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Section;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -30,6 +33,14 @@ public class LineSaveRequest {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+    }
+
+    public Line toLine() {
+        return new Line(getName(), getColor());
+    }
+
+    public Section convertSection() {
+        return new Section(getUpStationId(), getDownStationId(), getDistance());
     }
 
     public String getName() {

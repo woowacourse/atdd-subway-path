@@ -15,7 +15,7 @@ public class PathResponse {
 
     public PathResponse(final List<Station> stations, final int distance, final int fare) {
         this.stationResponses = stations.stream()
-                .map(StationResponse::from)
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
         this.distance = distance;
         this.fare = fare;

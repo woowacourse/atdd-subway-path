@@ -1,7 +1,6 @@
 package wooteco.subway.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,13 +21,13 @@ public class StationService {
 
     @Transactional
     public long save(final StationRequest stationRequest) {
-        Station station = convertStation(stationRequest);
+        Station station = stationRequest.toStation();
         validateName(station);
         return stationDao.save(station);
     }
 
     public List<StationResponse> findAll() {
-        return convertStationResponses(stationDao.findAll());
+        return StationResponse.convertStationResponses(stationDao.findAll());
     }
 
     @Transactional
@@ -47,15 +46,5 @@ public class StationService {
         if (!stationDao.existStationById(id)) {
             throw new IllegalArgumentException("존재하지 않는 지하철역입니다.");
         }
-    }
-
-    private Station convertStation(final StationRequest stationRequest) {
-        return new Station(stationRequest.getName());
-    }
-
-    private List<StationResponse> convertStationResponses(final List<Station> stations) {
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
     }
 }
