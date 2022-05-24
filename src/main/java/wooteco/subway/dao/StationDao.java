@@ -2,6 +2,7 @@ package wooteco.subway.dao;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -66,6 +67,9 @@ public class StationDao {
                 + "from (select distinct up_station_id ,down_station_id from section where line_id = :id) sc, station st "
                 + "where sc.up_station_id = st.id OR sc.down_station_id = st.id";
         SqlParameterSource source = new MapSqlParameterSource("id", id);
-        return jdbcTemplate.query(sql, source, eventRowMapper);
+        return jdbcTemplate.query(sql, source, eventRowMapper)
+                .stream()
+                .distinct()
+                .collect(Collectors.toList());
     }
 }
