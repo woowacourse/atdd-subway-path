@@ -1,8 +1,11 @@
 package wooteco.subway.domain.fare;
 
-import static wooteco.subway.domain.fare.FareConstant.*;
-
 public class Fare {
+
+	private static final int BASIC_FARE = 1250;
+	private static final int INCREASE_FARE = 100;
+	private static final int PER_DISTANCE_OVER_TEN = 5;
+	private static final int PER_DISTANCE_OVER_FIFTY = 8;
 
 	private final int value;
 

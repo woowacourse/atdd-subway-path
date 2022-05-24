@@ -1,6 +1,5 @@
 package wooteco.subway.domain.fare;
 
-import static wooteco.subway.domain.fare.FareConstant.*;
 
 import java.util.Arrays;
 import java.util.function.IntUnaryOperator;
@@ -9,16 +8,16 @@ import java.util.function.Predicate;
 public enum AgeDisCountPolicy implements DiscountPolicy{
 
 	ADULT(
-		age -> age >= MIN_ADULT_AGE,
+		age -> age >= Constant.MIN_ADULT_AGE,
 		fare -> fare
 	),
 	TEENAGER(
-		age -> age >= MIN_TEEN_AGE && age < MIN_ADULT_AGE,
-		fare -> (int)(DEDUCTED_AMOUNT + (fare - DEDUCTED_AMOUNT) * TEEN_DISCOUNT_RATE)
+		age -> age >= Constant.MIN_TEEN_AGE && age < Constant.MIN_ADULT_AGE,
+		fare -> (int)(Constant.DEDUCTED_AMOUNT + (fare - Constant.DEDUCTED_AMOUNT) * Constant.TEEN_DISCOUNT_RATE)
 	),
 	CHILD(
-		age -> age >= MIN_CHILD_AGE && age < MIN_TEEN_AGE,
-		fare -> (int)(DEDUCTED_AMOUNT + (fare - DEDUCTED_AMOUNT) * CHILD_DISCOUNT_RATE)
+		age -> age >= Constant.MIN_CHILD_AGE && age < Constant.MIN_TEEN_AGE,
+		fare -> (int)(Constant.DEDUCTED_AMOUNT + (fare - Constant.DEDUCTED_AMOUNT) * Constant.CHILD_DISCOUNT_RATE)
 	)
 	;
 
@@ -40,7 +39,7 @@ public enum AgeDisCountPolicy implements DiscountPolicy{
 	@Override
 	public int apply(int fare) {
 		validateFareMinus(fare);
-		if (fare < DEDUCTED_AMOUNT) {
+		if (fare < Constant.DEDUCTED_AMOUNT) {
 			return fare;
 		}
 		return discountOperator.applyAsInt(fare);
@@ -50,5 +49,15 @@ public enum AgeDisCountPolicy implements DiscountPolicy{
 		if (fare < 0) {
 			throw new IllegalArgumentException("음수는 할인할 수 없습니다.");
 		}
+	}
+
+	private static class Constant {
+		private static final int MIN_ADULT_AGE = 19;
+		private static final int MIN_TEEN_AGE = 13;
+		private static final int MIN_CHILD_AGE = 6;
+
+		private static final int DEDUCTED_AMOUNT = 350;
+		private static final double TEEN_DISCOUNT_RATE = 0.8;
+		private static final double CHILD_DISCOUNT_RATE = 0.5;
 	}
 }
