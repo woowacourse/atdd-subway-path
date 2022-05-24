@@ -32,7 +32,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         yeoksamId = requestPostStationAndReturnId(new StationRequest("역삼역"));
     }
 
-    @DisplayName("지하철 노선을 생성한다.")
+    @DisplayName("올바른 생성 요청으로 지하철 노선을 생성하면 201 CREATED와 노선 리소스 주소를 반환한다.")
     @Test
     void createLine() {
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1, 0);
@@ -43,7 +43,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.header("Location")).contains("/lines/");
     }
 
-    @DisplayName("기존에 존재하는 노선 이름으로 노선을 생성한다.")
+    @DisplayName("기존에 존재하는 노선 이름으로 노선 생성을 요청하면 400 BAD REQUEST를 반환한다.")
     @Test
     void createLineWithDuplicateName() {
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1, 0);
@@ -56,7 +56,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.body().asString()).isEqualTo("이미 존재하는 노선 이름입니다.");
     }
 
-    @DisplayName("기존에 존재하는 노선 색상으로 노선을 생성한다.")
+    @DisplayName("기존에 존재하는 노선 색상으로 노선 생성을 요청하면 400 BAD REQUEST를 반환한다.")
     @Test
     void createLineWithDuplicateColor() {
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1, 0);
@@ -69,7 +69,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.body().asString()).isEqualTo("이미 존재하는 노선 색상입니다.");
     }
 
-    @DisplayName("전체 지하철 노선을 조회한다.")
+    @DisplayName("전체 노선 조회를 요청하면 등록되어 있는 2호선과 3호선 정보를 조회하고 200 OK를 반환한다.")
     @Test
     void getLines() {
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1, 0);
@@ -92,7 +92,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 );
     }
 
-    @DisplayName("지하철 노선을 id로 조회한다.")
+    @DisplayName("등록되어 있는 노선의 id를 URI에 담아서 조회를 요청하면 해당 노선의 정보와 200 OK를 반환한다.")
     @Test
     void getLine() {
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1, 0);
@@ -116,7 +116,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 );
     }
 
-    @DisplayName("특정 id를 가지는 노선을 수정한다.")
+    @DisplayName("등록되어 있는 노선의 id를 URI에 담아서 수정 요청을 하면 수정된 노선 정보와 200 OK를 반환한다.")
     @Test
     void updateLine() {
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1, 0);
@@ -147,7 +147,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 );
     }
 
-    @DisplayName("특정 id의 노선을 삭제한다.")
+    @DisplayName("등록되어있는 노선의 id를 URI에 담아서 삭제 요청을 하면 204 NO CONTENT를 반환한다.")
     @Test
     void deleteLine() {
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1, 0);
@@ -167,7 +167,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(readResponse.jsonPath().getList(".")).isEmpty();
     }
 
-    @DisplayName("지하철 노선 이름이나 색으로 null 또는 공백이 올 수 없다.")
+    @DisplayName("지하철 노선 이름이나 색으로 null 또는 공백을 넣어서 생성 요청을 하면 400 BAD REQUEST를 반환한다.")
     @ParameterizedTest
     @CsvSource(value = {",", "'',''", "' ',' '"})
     void notAllowNullOrBlankNameAndColor(String name, String color) {
@@ -178,7 +178,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.body().asString()).contains("빈 값일 수 없습니다.");
     }
 
-    @DisplayName("시점 또는 종점 id로 null이 올 수 없다.")
+    @DisplayName("시점 또는 종점 id로 null 값을 넣어서 생성 요청을 하면 400 BAD REQUEST를 반환한다.")
     @Test
     void notAllowNullStationId() {
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", null, null, 1, 0);
@@ -189,7 +189,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.body().asString()).contains("id는 null일 수 없습니다.");
     }
 
-    @DisplayName("시점 또는 종점 id로 1보다 작은 값이 올 수 없다.")
+    @DisplayName("시점 또는 종점 id로 1보다 작은 값을 넣어서 생성 요청을 하면 400 BAD REQUEST를 반환한다.")
     @Test
     void notAllowStationIdLessThan1() {
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", 0L, 0L, 1, 0);
@@ -200,7 +200,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.body().asString()).contains("id는 1보다 작을 수 없습니다.");
     }
 
-    @DisplayName("노선 거리로 1보다 작은 값이 올 수 없다.")
+    @DisplayName("노선 거리로 1보다 작은 값을 넣어서 생성 요청을 하면 400 BAD REQUEST를 반환한다.")
     @Test
     void notAllowDistanceLessThan1() {
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 0, 0);
@@ -211,7 +211,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.body().asString()).contains("노선 거리는 1보다 작을 수 없습니다.");
     }
 
-    @DisplayName("추가 요금으로 음수가 올 수 없다.")
+    @DisplayName("추가 요금으로 음수를 넣어서 생성 요청을 하면 400 BAD REQUEST를 반환한다.")
     @Test
     void notAllowExtraFareLessThan0() {
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 0, -1);
@@ -222,7 +222,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.body().asString()).contains("추가 요금은 음수일 수 없습니다.");
     }
 
-    @DisplayName("노선 요청 시 인수 타입이 맞지 않으면 400 Bad Request를 돌려받는다.")
+    @DisplayName("노선 생성 요청 시 인수 타입이 맞지 않으면 400 Bad Request를 반환한다.")
     @Test
     void unSupportedMethodArgumentsType() {
         ExtractableResponse<Response> response = RestAssured

@@ -20,7 +20,7 @@ import wooteco.subway.dto.response.StationResponse;
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
 
-    @DisplayName("지하철역을 생성한다.")
+    @DisplayName("올바른 생성 요청으로 지하철 역을 생성하면 201 CREATED와 역 리소스 주소를 반환한다.")
     @Test
     void createStation() {
         StationRequest stationRequest = new StationRequest("강남역");
@@ -31,7 +31,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.header("Location")).isNotBlank();
     }
 
-    @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
+    @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역 생성을 요청하면 400 BAD REQUEST를 반환한다.")
     @Test
     void createStationWithDuplicateName() {
         StationRequest stationRequest = new StationRequest("강남역");
@@ -43,7 +43,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.body().asString()).isEqualTo("이미 존재하는 역 이름입니다.");
     }
 
-    @DisplayName("지하철역을 조회한다.")
+    @DisplayName("전체 역을 조회를 요청하면 등록된 강남역과 역삼역 정보를 조회하고 200 OK를 반환한다.")
     @Test
     void getStations() {
         StationRequest stationRequest = new StationRequest("강남역");
@@ -67,7 +67,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
 
-    @DisplayName("지하철역을 제거한다.")
+    @DisplayName("등록되어있는 역의 id를 URI에 담아서 삭제 요청을 하면 204 NO CONTENT를 반환한다.")
     @Test
     void deleteStation() {
         StationRequest stationRequest = new StationRequest("강남역");
@@ -83,7 +83,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    @DisplayName("해당 역 포함하는 구간이 있을 경우, 역 제거 요청 시 예외를 반환한다.")
+    @DisplayName("해당 역을 포함하고 있는 구간이 있을 경우, 삭제 요청을 하면 400 BAD REQUEST를 반환한다.")
     @Test
     void notAllowDeleteStation() {
         Long gangnamId = requestPostStationAndReturnId(new StationRequest("강남역"));
@@ -100,7 +100,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("지하철 역 이름으로 null 또는 공백이 올 수 없다.")
+    @DisplayName("지하철 역 이름으로 null 또는 공백을 넣어서 요청하면 400 BAD REQUEST를 반환한다.")
     @ParameterizedTest
     @NullAndEmptySource
     void notAllowNullOrBlankName(String name) {

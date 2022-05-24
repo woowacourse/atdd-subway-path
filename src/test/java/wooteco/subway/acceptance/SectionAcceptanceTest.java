@@ -25,7 +25,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         seolleungId = requestPostStationAndReturnId(new StationRequest("선릉역"));
     }
 
-    @DisplayName("구간을 추가로 등록한다.")
+    @DisplayName("등록된 노선에 추가 구간 생성 요청을 하면 200 OK를 반환한다.")
     @Test
     void createSection() {
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1, 0);
@@ -38,7 +38,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    @DisplayName("등록된 구간을 삭제한다.")
+    @DisplayName("등록된 구간을 포함하고 있는 노선과 역의 id를 URI에 담아서 구간 삭제 요청을 하면 204 NO CONTENT를 반환한다.")
     @Test
     void deleteSection() {
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 1, 0);
