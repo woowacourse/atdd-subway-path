@@ -1,6 +1,5 @@
 package wooteco.subway.service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
@@ -8,7 +7,7 @@ import wooteco.subway.domain.FareCalculator;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.farepolicy.FarePolicy;
+import wooteco.subway.domain.farepolicy.FarePolicyFactory;
 import wooteco.subway.service.dto.LineServiceResponse;
 import wooteco.subway.service.dto.PathServiceRequest;
 import wooteco.subway.service.dto.PathServiceResponse;
@@ -49,13 +48,14 @@ public class PathService {
     }
 
     private int getFare(int age, Sections sections, int distance) {
-        List<Integer> extraFares = sections.getAllLindIds()
+        int extraFare = sections.getAllLindIds()
                 .stream()
                 .map(lineService::findById)
-                .map(LineServiceResponse::getExtraFare)
-                .collect(Collectors.toList());
-        Integer extraFare = Collections.max(extraFares);
-        FareCalculator fareCalculator = new FareCalculator(FarePolicy.of(age));
+                .mapToInt(LineServiceResponse::getExtraFare)
+                .max()
+                .orElse(0);
+
+        FareCalculator fareCalculator = new FareCalculator(FarePolicyFactory.from(age));
         return fareCalculator.calculate(distance, extraFare);
     }
 }
