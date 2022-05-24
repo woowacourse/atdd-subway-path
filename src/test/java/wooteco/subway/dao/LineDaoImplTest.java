@@ -44,15 +44,6 @@ class LineDaoImplTest {
 
         station3 = stationDao.save(new Station("교대역"));
         station4 = stationDao.save(new Station("잠실역"));
-
-        List<Line> lines = lineDao.findAll();
-        List<Long> lineIds = lines.stream()
-            .map(Line::getId)
-            .collect(Collectors.toList());
-
-        for (Long lineId : lineIds) {
-            lineDao.deleteById(lineId);
-        }
     }
 
     @Test
