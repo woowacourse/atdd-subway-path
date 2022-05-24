@@ -5,35 +5,29 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
-import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.exception.DataNotFoundException;
 
 @Service
 public class SectionService {
 
     private final SectionDao sectionDao;
-    private final StationDao stationDao;
-    private final LineDao lineDao;
+    private final StationService stationService;
+    private final LineService lineService;
 
-    public SectionService(final SectionDao sectionDao, final StationDao stationDao, final LineDao lineDao) {
+    public SectionService(final SectionDao sectionDao, final StationService stationService, final LineService lineService) {
         this.sectionDao = sectionDao;
-        this.stationDao = stationDao;
-        this.lineDao = lineDao;
+        this.stationService = stationService;
+        this.lineService = lineService;
     }
 
     @Transactional
     public Section addSection(final long lineId, final Section requestSection) {
-        final Station upStation = stationDao.findById(requestSection.getUpStation().getId())
-                .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철역 ID입니다."));
-        final Station downStation = stationDao.findById(requestSection.getDownStation().getId())
-                .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철역 ID입니다."));
-        lineDao.findById(lineId)
-                .orElseThrow(() -> new DataNotFoundException("존재하지 않는 노선 ID입니다."));
+        final Station upStation = stationService.findStationById(requestSection.getUpStation().getId());
+        final Station downStation = stationService.findStationById(requestSection.getDownStation().getId());
+        lineService.findLineById(lineId);
 
         Section section = new Section(upStation, downStation, requestSection.getDistance(), lineId);
         final Sections sections = new Sections(sectionDao.findAllByLineId(lineId));

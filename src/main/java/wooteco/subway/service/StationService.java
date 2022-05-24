@@ -27,6 +27,11 @@ public class StationService {
         return stationDao.findAll();
     }
 
+    public Station findStationById(final Long id) {
+        return stationDao.findById(id)
+            .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철역 ID입니다."));
+    }
+
     public void delete(final Long id) {
         final int affectedRows = stationDao.deleteById(id);
 
