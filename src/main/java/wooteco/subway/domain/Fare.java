@@ -16,16 +16,8 @@ public class Fare {
 
     private final int value;
 
-    public Fare(int distance) {
-        value = calculate(distance);
-    }
-
     public Fare(int distance, int highestExtraFare, int age) {
         value = calculate(distance, highestExtraFare, age);
-    }
-
-    private int calculate(int distance) {
-        return BASIC_FARE + calculateOverDistanceFare(distance);
     }
 
     private int calculate(int distance, int highestExtraFare, int age) {
