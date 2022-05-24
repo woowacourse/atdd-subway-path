@@ -4,10 +4,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Path;
+import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.SubwayMap;
 import wooteco.subway.domain.fare.Fare;
+import wooteco.subway.domain.path.PathStrategy;
 import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
 
@@ -19,10 +19,12 @@ import java.util.List;
 public class PathService {
     private final LineDao lineDao;
     private final LineService lineService;
+    private final PathStrategy pathStrategy;
 
-    public PathService(LineDao lineDao, LineService lineService) {
+    public PathService(LineDao lineDao, LineService lineService, PathStrategy pathStrategy) {
         this.lineDao = lineDao;
         this.lineService = lineService;
+        this.pathStrategy = pathStrategy;
     }
 
     public PathResponse findShortestPath(PathRequest pathRequest) {
@@ -33,11 +35,10 @@ public class PathService {
         validateSameStation(sourceStationId, targetStationId);
 
         List<Line> lines = lineDao.findAll();
-        SubwayMap subwayMap = SubwayMap.of(lines);
         Station source = lineService.findStationById(sourceStationId);
         Station target = lineService.findStationById(targetStationId);
 
-        Path path = subwayMap.findShortestPath(source, target);
+        Path path = pathStrategy.findShortestPath(source, target,lines);
         Integer maxAdditionalLineFare = findLineFare(path);
 
         return PathResponse.of(path, new Fare(path.getDistance(), maxAdditionalLineFare, age));

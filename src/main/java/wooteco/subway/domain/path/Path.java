@@ -1,4 +1,7 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
+
+import wooteco.subway.domain.CustomEdge;
+import wooteco.subway.domain.Station;
 
 import java.util.List;
 import java.util.Objects;
@@ -9,14 +12,14 @@ public class Path {
     private final int distance;
     private final List<CustomEdge> edges;
 
-    private Path(List<Station> stations, int distance, List<CustomEdge> edgeList1) {
+    private Path(List<Station> stations, int distance, List<CustomEdge> edges) {
         this.stations = stations;
         this.distance = distance;
-        this.edges = edgeList1;
+        this.edges = edges;
     }
 
-    public static Path of(List<Station> stations, double distance, List<CustomEdge> edgeList) {
-        return new Path(stations, (int) Math.floor(distance), edgeList);
+    public static Path of(List<Station> stations, double distance, List<CustomEdge> edges) {
+        return new Path(stations, (int) Math.floor(distance), edges);
     }
 
     public List<Long> findShortestPathLines() {

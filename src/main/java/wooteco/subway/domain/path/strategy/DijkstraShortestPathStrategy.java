@@ -1,22 +1,36 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path.strategy;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
+import wooteco.subway.domain.CustomEdge;
+import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Station;
+import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.path.PathStrategy;
 import wooteco.subway.exception.EmptyResultException;
 
 import java.util.List;
 
-public class SubwayMap {
-    private final DijkstraShortestPath<Station, CustomEdge> pathFinder;
+@Component
+public class DijkstraShortestPathStrategy implements PathStrategy {
 
-    private SubwayMap(DijkstraShortestPath<Station, CustomEdge> pathFinder) {
-        this.pathFinder = pathFinder;
-    }
-
-    public static SubwayMap of(List<Line> lines) {
+    @Override
+    public Path findShortestPath(Station source, Station target, List<Line> lines) {
         WeightedMultigraph<Station, CustomEdge> graph = new WeightedMultigraph<>(CustomEdge.class);
 
+        setGraph(lines, graph);
+
+        DijkstraShortestPath<Station, CustomEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        GraphPath<Station, CustomEdge> path = dijkstraShortestPath.getPath(source, target);
+        checkNoPath(path);
+
+        return Path.of(path.getVertexList(), path.getWeight(), path.getEdgeList());
+    }
+
+    private void setGraph(List<Line> lines, WeightedMultigraph<Station, CustomEdge> graph) {
         for (Line line : lines) {
             addVertex(graph, line.getStations());
         }
@@ -24,8 +38,6 @@ public class SubwayMap {
         for (Line line : lines) {
             addEdge(graph, line.getSections(), line.getId());
         }
-
-        return new SubwayMap(new DijkstraShortestPath<Station, CustomEdge>(graph));
     }
 
     private static void addVertex(WeightedMultigraph<Station, CustomEdge> graph, List<Station> stations) {
@@ -38,13 +50,6 @@ public class SubwayMap {
         for (Section section : sections) {
             graph.addEdge(section.getUpStation(), section.getDownStation(), new CustomEdge(lineId, section.getDistance()));
         }
-    }
-
-    public Path findShortestPath(Station source, Station target) {
-        GraphPath<Station, CustomEdge> path = pathFinder.getPath(source, target);
-
-        checkNoPath(path);
-        return Path.of(path.getVertexList(), path.getWeight(), path.getEdgeList());
     }
 
     private void checkNoPath(GraphPath<Station, CustomEdge> path) {
