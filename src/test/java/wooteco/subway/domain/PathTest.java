@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class PathTest {
@@ -40,9 +41,13 @@ class PathTest {
         assertThat(path.calculateFare()).isEqualTo(fare);
     }
 
-    @Test
+    @ParameterizedTest
+    @CsvSource({"100, 1350", "20, 1270"})
     @DisplayName("노선의 추가 요금이 부과되는가")
-    void calculateFare_extraFare() {
+    void calculateFare_extraFare(final int extraFare, final int fare) {
+        final List<Station> routeStations = List.of(new Station(STATION_1), new Station(STATION_2));
+        Path path = new Path(routeStations, 10, extraFare);
+        assertThat(path.calculateFare()).isEqualTo(fare);
 
     }
 }

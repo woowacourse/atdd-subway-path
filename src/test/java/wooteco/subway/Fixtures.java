@@ -13,6 +13,9 @@ public class Fixtures {
     public static final String LINE_1 = "1호선";
     public static final String LINE_2 = "2호선";
 
+    public static final int LINE_1_EXTRA_FARE = 100;
+    public static final int LINE_2_EXTRA_FARE = 200;
+
     public static final String RED = "bg-red-600";
     public static final String BLUE = "bg-blue-500";
 
