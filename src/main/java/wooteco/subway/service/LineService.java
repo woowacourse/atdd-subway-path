@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.line.LineMap;
 import wooteco.subway.domain.line.Line;
-import wooteco.subway.domain.line.Lines;
+import wooteco.subway.domain.line.SubwayMap;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
 import wooteco.subway.domain.station.Station;
@@ -35,8 +35,8 @@ public class LineService {
     }
 
     public List<LineResponse> findAll() {
-        return Lines.of(lineRepository.findAllLines(), sectionRepository.findAllSections())
-                .toSortedList()
+        return SubwayMap.of(lineRepository.findAllLines(), sectionRepository.findAllSections())
+                .toSortedLines()
                 .stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toUnmodifiableList());

@@ -6,23 +6,23 @@ import java.util.stream.Collectors;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
 
-public class Lines {
+public class SubwayMap {
 
     private static final String LINES_AND_SECTIONS_NOT_MATCHING_EXCEPTION = "노선 정보와 구간들의 정보가 서로 불일치합니다.";
 
     private final List<LineMap> value;
 
-    private Lines(List<LineMap> value) {
+    private SubwayMap(List<LineMap> value) {
         this.value = value;
     }
 
-    public static Lines of(List<Line> lines, List<Section> sections) {
+    public static SubwayMap of(List<Line> lines, List<Section> sections) {
         validateRegisteredLines(lines, sections);
         List<LineMap> lineMaps = lines.stream()
-                .map(it -> toLine(it, sections))
+                .map(it -> toLineMap(it, sections))
                 .sorted(Comparator.comparingLong(LineMap::getId))
                 .collect(Collectors.toList());
-        return new Lines(lineMaps);
+        return new SubwayMap(lineMaps);
     }
 
     private static void validateRegisteredLines(List<Line> lines, List<Section> sections) {
@@ -44,7 +44,7 @@ public class Lines {
                 .collect(Collectors.toList());
     }
 
-    private static LineMap toLine(Line line, List<Section> sections) {
+    private static LineMap toLineMap(Line line, List<Section> sections) {
         Long lineId = line.getId();
         List<Section> registeredSections = extractRegisteredSections(sections, lineId);
         return new LineMap(line, new Sections(registeredSections));
@@ -56,7 +56,7 @@ public class Lines {
                 .collect(Collectors.toList());
     }
 
-    public List<LineMap> toSortedList() {
+    public List<LineMap> toSortedLines() {
         return value;
     }
 }

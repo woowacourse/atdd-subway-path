@@ -13,7 +13,7 @@ import wooteco.subway.domain.section.Sections;
 import wooteco.subway.domain.station.Station;
 
 @SuppressWarnings("NonAsciiCharacters")
-class LinesTest {
+class SubwayMapTest {
 
     private final Line LINE1 = new Line(1L, "노선", "색상", 1000);
     private final Line LINE2 = new Line(2L, "노선2", "색상", 0);
@@ -31,7 +31,7 @@ class LinesTest {
         @Test
         void emptyListAllowed() {
             assertThatNoException()
-                    .isThrownBy(() -> Lines.of(List.of(), List.of()));
+                    .isThrownBy(() -> SubwayMap.of(List.of(), List.of()));
        }
 
         @Test
@@ -41,7 +41,7 @@ class LinesTest {
             Section LINE2_SECTION = new Section(2L, STATION1, STATION2, 10);
             List<Section> lineSections = List.of(LINE1_SECTION, LINE2_SECTION);
 
-            assertThatThrownBy(() -> Lines.of(lines, lineSections))
+            assertThatThrownBy(() -> SubwayMap.of(lines, lineSections))
                     .isInstanceOf(RuntimeException.class);
         }
 
@@ -51,13 +51,13 @@ class LinesTest {
             Section LINE1_SECTION = new Section(1L, STATION1, STATION2, 10);
             List<Section> lineSections = List.of(LINE1_SECTION);
 
-            assertThatThrownBy(() -> Lines.of(lines, lineSections))
+            assertThatThrownBy(() -> SubwayMap.of(lines, lineSections))
                     .isInstanceOf(RuntimeException.class);
         }
     }
 
     @Test
-    void toSortedList_메서드는_노선의_id_순서대로_정렬된_노선들을_반환() {
+    void toSortedLines_메서드는_노선의_id_순서대로_정렬된_노선들을_반환() {
         List<Line> lineInfos = List.of(LINE1, LINE2, LINE3);
         Section LINE1_SECTION1 = new Section(1L, STATION1, STATION2, 10);
         Section LINE1_SECTION2 = new Section(1L, STATION2, STATION3, 30);
@@ -65,8 +65,8 @@ class LinesTest {
         Section LINE3_SECTION = new Section(3L, STATION2, STATION3, 30);
         List<Section> lineSections = List.of(LINE2_SECTION, LINE1_SECTION1, LINE1_SECTION2, LINE3_SECTION);
 
-        Lines lines = Lines.of(lineInfos, lineSections);
-        List<LineMap> actual = lines.toSortedList();
+        SubwayMap subwayMap = SubwayMap.of(lineInfos, lineSections);
+        List<LineMap> actual = subwayMap.toSortedLines();
         List<LineMap> expected = List.of(
                 new LineMap(LINE1, new Sections(List.of(LINE1_SECTION1, LINE1_SECTION2))),
                 new LineMap(LINE2, new Sections(List.of(LINE2_SECTION))),
