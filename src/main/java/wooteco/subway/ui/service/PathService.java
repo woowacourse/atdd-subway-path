@@ -31,10 +31,11 @@ public class PathService {
     public PathResponse getPath(PathRequest pathRequest) {
         long sourceStationId = pathRequest.getSource();
         long targetStationId = pathRequest.getTarget();
-        return getPath(sourceStationId, targetStationId);
+        int age = pathRequest.getAge();
+        return getPath(sourceStationId, targetStationId, age);
     }
 
-    private PathResponse getPath(long source, long target) {
+    private PathResponse getPath(long source, long target, int age) {
         List<Line> lines = lineDao.findAll();
         PathCalculator pathCalculator = PathCalculator.from(lines);
 
@@ -54,6 +55,6 @@ public class PathService {
                 .orElse(0);
         double distance = pathCalculator.calculateShortestDistance(sourceStation, targetStation);
 
-        return new PathResponse(StationResponse.of(path), distance, Fare.of(distance, maxExtraFare));
+        return new PathResponse(StationResponse.of(path), distance, Fare.of(distance, maxExtraFare, age));
     }
 }
