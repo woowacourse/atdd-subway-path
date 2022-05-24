@@ -11,13 +11,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import wooteco.subway.domain.Distance;
-import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Name;
+import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.path.PathResponse;
+import wooteco.subway.domain.fare.Fare;
 
 class PathServiceTest extends ServiceTest {
 
@@ -86,11 +86,14 @@ class PathServiceTest extends ServiceTest {
                 seoulForest
         );
         final Distance expectedDistance = new Distance(20);
-        final PathResponse expected = PathResponse.of(expectedStations, expectedDistance,
-                Fare.from(expectedFare - 1250));
+        final Path expected = new Path(
+                expectedStations,
+                expectedDistance,
+                Fare.from(expectedFare - 1250)
+        );
 
         // when
-        final PathResponse actual = pathService.find(gangnam.getId(), seoulForest.getId(), age);
+        final Path actual = pathService.find(gangnam.getId(), seoulForest.getId(), age);
 
         // then
         assertThat(actual).isEqualTo(expected);

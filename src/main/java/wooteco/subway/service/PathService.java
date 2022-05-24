@@ -6,12 +6,11 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Distance;
-import wooteco.subway.domain.Path;
-import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.subwaymap.SubwayMap;
-import wooteco.subway.dto.path.PathResponse;
 import wooteco.subway.exception.station.NoSuchStationException;
 
 @Service
@@ -27,23 +26,7 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse find(final Long sourceStationId, final Long targetStationId, final int age) {
-        final SubwayMap subwayMap = toSubwayMap();
-        final Station sourceStation = findStationById(sourceStationId);
-        final Station targetStation = findStationById(targetStationId);
-
-        final List<Station> stations = subwayMap.searchPath(sourceStation, targetStation);
-        final Distance distance = subwayMap.searchDistance(sourceStation, targetStation);
-        final int extraFare = subwayMap.calculateMaxExtraFare(sourceStation, targetStation);
-        final Fare fare = Fare.from(extraFare)
-                .addExtraFareByDistance(distance)
-                .discountByAge(age);
-
-        return PathResponse.of(stations, distance, fare);
-    }
-
-    @Transactional(readOnly = true)
-    public Path find2(final Long sourceStationId, final Long targetStationId, final int age) {
+    public Path find(final Long sourceStationId, final Long targetStationId, final int age) {
         final SubwayMap subwayMap = toSubwayMap();
         final Station sourceStation = findStationById(sourceStationId);
         final Station targetStation = findStationById(targetStationId);
