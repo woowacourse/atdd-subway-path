@@ -1,10 +1,17 @@
 package wooteco.subway.domain;
 
-import static wooteco.subway.domain.AgeGroup.Constants.*;
+import static wooteco.subway.domain.AgeGroup.Constants.ADULT_MIN_AGE;
+import static wooteco.subway.domain.AgeGroup.Constants.BABY_MIN_AGE;
+import static wooteco.subway.domain.AgeGroup.Constants.CHILD_DC_RATE;
+import static wooteco.subway.domain.AgeGroup.Constants.CHILD_MIN_AGE;
+import static wooteco.subway.domain.AgeGroup.Constants.COMMON_DC_FARE;
+import static wooteco.subway.domain.AgeGroup.Constants.FREE;
+import static wooteco.subway.domain.AgeGroup.Constants.TEENAGER_DC_RATE;
+import static wooteco.subway.domain.AgeGroup.Constants.TEENAGE_MIN_AGE;
 
 import java.util.Arrays;
+import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
-import java.util.function.Predicate;
 
 public enum AgeGroup {
     BABY(age -> BABY_MIN_AGE <= age && age < CHILD_MIN_AGE, value -> FREE),
@@ -17,10 +24,10 @@ public enum AgeGroup {
 
     ADULT(age -> ADULT_MIN_AGE <= age, value -> value);
 
-    private final Predicate<Integer> grouping;
+    private final IntPredicate grouping;
     private final IntUnaryOperator discountedValue;
 
-    AgeGroup(Predicate<Integer> grouping, IntUnaryOperator discountValue) {
+    AgeGroup(IntPredicate grouping, IntUnaryOperator discountValue) {
         this.grouping = grouping;
         this.discountedValue = discountValue;
     }
