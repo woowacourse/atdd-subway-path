@@ -1,4 +1,4 @@
-package wooteco.subway.domain.fare;
+package wooteco.subway.domain.fare.policy;
 
 import wooteco.subway.domain.fare.vo.Age;
 

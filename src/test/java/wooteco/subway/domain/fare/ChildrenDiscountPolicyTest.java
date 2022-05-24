@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.fare.policy.ChildrenDiscountPolicy;
+import wooteco.subway.domain.fare.policy.DiscountPolicy;
 
 class ChildrenDiscountPolicyTest {
 

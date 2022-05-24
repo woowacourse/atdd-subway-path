@@ -4,6 +4,7 @@ import java.util.List;
 import org.jgrapht.GraphPath;
 import wooteco.subway.domain.LineWeightedEdge;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.fare.policy.AgeDiscountPolicy;
 import wooteco.subway.domain.fare.vo.Age;
 
 public class SubwayFare {
