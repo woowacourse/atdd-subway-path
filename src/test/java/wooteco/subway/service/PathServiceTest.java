@@ -79,8 +79,7 @@ class PathServiceTest {
     private void createStations() {
         List<Station> stations = List.of(STATION1, STATION2, STATION3, STATION4, STATION5, STATION6, STATION7, STATION8, STATION9, STATION10, STATION11);
         for (Station station : stations) {
-            Station save = stationDao.save(station);
-            System.out.println(save.getId());
+            stationDao.save(station);
         }
     }
 
