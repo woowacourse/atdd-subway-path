@@ -36,7 +36,7 @@ class FareTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"9, 900, 1250", "10, 300, 950", "11, 400, 1100", "15, 1000, 1400", "50, 0, 1600"})
+    @CsvSource(value = {"9, 900, 900", "10, 300, 600", "11, 400, 700", "15, 1000, 1000", "50, 0, 850"})
     @DisplayName("노선 추가 요금이 있을 경우 거리에 따라 요금을 계산 후에 노선 추가 요금을 더해서 요금을 계산한다.")
     void calculateFareWithLineExtraFareChildren(final int distance, final int lineExtraFare, final int expectedFare) {
         final Fare fare = Fare.of(
@@ -47,7 +47,7 @@ class FareTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"9, 900, 1790", "10, 300, 1310", "11, 400, 1490", "15, 1000, 1970", "50, 0, 1870"})
+    @CsvSource(value = {"9, 900, 1440", "10, 300, 960", "11, 400, 1120", "15, 1000, 1600", "50, 0, 1360"})
     @DisplayName("노선 추가 요금이 있을 경우 거리에 따라 요금을 계산 후에 노선 추가 요금을 더해서 요금을 계산한다.")
     void calculateFareWithLineExtraFareTeenager(final int distance, final int lineExtraFare, final int expectedFare) {
         final Fare fare = Fare.of(

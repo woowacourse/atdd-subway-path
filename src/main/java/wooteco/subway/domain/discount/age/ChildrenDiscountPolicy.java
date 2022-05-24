@@ -10,8 +10,7 @@ public class ChildrenDiscountPolicy implements AgeDiscountPolicy {
 
     @Override
     public int applyDiscount(final int money) {
-        final int discountedMoney = (int) (((money - DEDUCTIBLE) * CHILDREN_DISCOUNT_RATE));
-        return money - discountedMoney;
+        return (int) (((money - DEDUCTIBLE) * CHILDREN_FARE_RATE));
     }
 
     @Override

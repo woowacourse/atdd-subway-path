@@ -57,7 +57,7 @@ class PathServiceTest {
                                 tuple(6L, "청계산입구역")
                         ),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(10),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(1300)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(950)
         );
     }
 
@@ -74,7 +74,7 @@ class PathServiceTest {
                                 tuple(6L, "청계산입구역")
                         ),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(10),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(1870)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1520)
         );
     }
 
@@ -156,7 +156,7 @@ class PathServiceTest {
                                 tuple(1L, "신도림역")
                         ),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(80),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(2000)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1050)
         );
     }
 
@@ -174,7 +174,7 @@ class PathServiceTest {
                                 tuple(1L, "신도림역")
                         ),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(80),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(2270)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1680)
         );
     }
 }

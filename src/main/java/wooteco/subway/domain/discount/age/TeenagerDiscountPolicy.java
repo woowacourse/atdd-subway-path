@@ -9,8 +9,7 @@ import wooteco.subway.domain.discount.DiscountCondition;
 public class TeenagerDiscountPolicy implements AgeDiscountPolicy {
     @Override
     public int applyDiscount(final int money) {
-        final int discountedMoney = (int) (((money - DEDUCTIBLE) * TEENAGER_DISCOUNT_RATE));
-        return money - discountedMoney;
+        return (int) (((money - DEDUCTIBLE) * TEENAGER_FARE_RATE));
     }
 
     @Override

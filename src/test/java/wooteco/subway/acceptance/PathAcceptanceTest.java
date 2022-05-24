@@ -60,7 +60,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(stationNames).containsExactly("신도림역", "왕십리역", "상일동역"),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(80),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(2000)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1050)
         );
     }
 
@@ -84,7 +84,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(stationNames).containsExactly("신도림역", "왕십리역", "상일동역"),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(80),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(2270)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1680)
         );
     }
 }

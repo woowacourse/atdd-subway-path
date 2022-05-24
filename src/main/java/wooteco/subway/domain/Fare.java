@@ -24,12 +24,14 @@ public class Fare {
             return new Fare(applyDiscounts(discountPolicies, discountCondition, STANDARD_FARE + lineExtraFare));
         }
         if (distance <= FIRST_OVER_FARE_DISTANCE) {
-            return new Fare(applyDiscounts(discountPolicies, discountCondition, STANDARD_FARE + lineExtraFare)
-                    + calculateOverFare(distance - STANDARD_DISTANCE, FIRST_OVER_DISTANCE_UNIT));
+            final int money = STANDARD_FARE + lineExtraFare
+                    + calculateOverFare(distance - STANDARD_DISTANCE, FIRST_OVER_DISTANCE_UNIT);
+            return new Fare(applyDiscounts(discountPolicies, discountCondition, money));
         }
-        return new Fare(applyDiscounts(discountPolicies, discountCondition, STANDARD_FARE + lineExtraFare)
+        final int money = STANDARD_FARE + lineExtraFare
                 + calculateOverFare(FIRST_OVER_FARE_DISTANCE - STANDARD_DISTANCE, FIRST_OVER_DISTANCE_UNIT)
-                + calculateOverFare(distance - FIRST_OVER_FARE_DISTANCE, SECOND_OVER_DISTANCE_UNIT));
+                + calculateOverFare(distance - FIRST_OVER_FARE_DISTANCE, SECOND_OVER_DISTANCE_UNIT);
+        return new Fare(applyDiscounts(discountPolicies, discountCondition, money));
     }
 
     private static int applyDiscounts(final List<DiscountPolicy> discountPolicies,
