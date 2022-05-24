@@ -78,13 +78,4 @@ public class SectionDao {
 
         return jdbcTemplate.query(sql, sectionRowMapper, id, id);
     }
-
-    public List<Section> findByStationId(List<Long> ids) {
-        var upStationId = ids.get(0);
-        var downStationId = ids.get(1);
-
-        var sql = "SELECT * FROM section WHERE up_station_id = ? AND down_station_id = ?";
-
-        return jdbcTemplate.query(sql, sectionRowMapper, upStationId, downStationId);
-    }
 }
