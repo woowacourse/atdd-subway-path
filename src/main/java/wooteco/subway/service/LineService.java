@@ -98,7 +98,6 @@ public class LineService {
                 .collect(Collectors.toList());
 
         sectionRepository.deleteByIdIn(deleteSectionIds);
-        sectionRepository.saveAll(line, insertTargets);
 
         for (Section updateTarget : insertTargets) {
             sectionRepository.save(line.getId(),
