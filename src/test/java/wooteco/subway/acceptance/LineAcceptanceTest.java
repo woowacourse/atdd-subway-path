@@ -29,11 +29,12 @@ class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = httpPost("/lines", 신분당선_param);
 
         // then
+        LineResponse lineResponse = response.as(LineResponse.class);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(response.header("Location")).isNotBlank(),
-                () -> assertThat(response.body().jsonPath().getString("name")).isEqualTo("신분당선"),
-                () -> assertThat(response.body().jsonPath().getList("stations", LineResponse.class))
+                () -> assertThat(lineResponse.getName()).isEqualTo("신분당선"),
+                () -> assertThat(lineResponse.getStations())
                         .extracting("name")
                         .containsExactly("강남역", "역삼역")
         );

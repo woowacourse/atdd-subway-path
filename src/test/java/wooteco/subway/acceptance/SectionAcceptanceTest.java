@@ -1,6 +1,7 @@
 package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -27,10 +28,12 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         List<StationResponse> 전체_구간_response = httpGet("/lines/1").jsonPath().get("stations");
-        assertThat(구간_response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(전체_구간_response).hasSize(3)
-                .extracting("name")
-                .containsExactly("선릉역", "강남역", "역삼역");
+        assertAll(
+                () -> assertThat(구간_response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(전체_구간_response).hasSize(3)
+                        .extracting("name")
+                        .containsExactly("선릉역", "강남역", "역삼역")
+        );
     }
 
     @Test
@@ -44,10 +47,13 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         List<StationResponse> 전체_구간_response = httpGet("/lines/1").jsonPath().get("stations");
-        assertThat(구간_response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(전체_구간_response).hasSize(3)
-                .extracting("name")
-                .containsExactly("강남역", "역삼역", "선릉역");
+        assertAll(
+                () -> assertThat(구간_response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(전체_구간_response).hasSize(3)
+                        .extracting("name")
+                        .containsExactly("강남역", "역삼역", "선릉역")
+        );
+
     }
 
     @Test
@@ -61,10 +67,12 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         List<StationResponse> 전체_구간_response = httpGet("/lines/1").jsonPath().get("stations");
-        assertThat(구간_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(전체_구간_response).hasSize(3)
-                .extracting("name")
-                .containsExactly("강남역", "역삼역", "선릉역");
+        assertAll(
+                () -> assertThat(구간_응답.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(전체_구간_response).hasSize(3)
+                        .extracting("name")
+                        .containsExactly("강남역", "역삼역", "선릉역")
+        );
     }
 
     @Test
@@ -79,10 +87,13 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         List<StationResponse> 전체_구간_response = httpGet("/lines/1").jsonPath().get("stations");
-        assertThat(삭제_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(전체_구간_response).hasSize(2)
-                .extracting("name")
-                .containsExactly("역삼역", "선릉역");
+        assertAll(
+                () -> assertThat(삭제_응답.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(전체_구간_response).hasSize(2)
+                        .extracting("name")
+                        .containsExactly("역삼역", "선릉역")
+        );
+
     }
 
     @Test
@@ -97,9 +108,12 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         List<StationResponse> 전체_구간_response = httpGet("/lines/1").jsonPath().get("stations");
-        assertThat(삭제_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(전체_구간_response).hasSize(2)
-                .extracting("name")
-                .containsExactly("강남역", "선릉역");
+        assertAll(
+                () -> assertThat(삭제_응답.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(전체_구간_response).hasSize(2)
+                        .extracting("name")
+                        .containsExactly("강남역", "선릉역")
+        );
+
     }
 }
