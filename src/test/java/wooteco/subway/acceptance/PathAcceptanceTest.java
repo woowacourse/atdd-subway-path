@@ -56,6 +56,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private void createLine1(Map<SectionRequest, String> sectionRequests) {
         LineRequest lineRequest = new LineRequest("1", "red", stationIds.get(0), stationIds.get(1), 5, 0);
+
         ExtractableResponse<Response> createLineResponse1 = createLineRequest(lineRequest).extract();
 
         sectionRequests.put(new SectionRequest(stationIds.get(1), stationIds.get(2), 15),
@@ -66,6 +67,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private void createLine2(Map<SectionRequest, String> sectionRequests) {
         LineRequest lineRequest2 = new LineRequest("2", "green", stationIds.get(1), stationIds.get(4), 4, 0);
+
         ExtractableResponse<Response> createLineResponse2 = createLineRequest(lineRequest2).extract();
 
         sectionRequests.put(new SectionRequest(stationIds.get(4), stationIds.get(5), 7),
@@ -76,6 +78,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private void createLine3(Map<SectionRequest, String> sectionRequests) {
         LineRequest lineRequest3 = new LineRequest("3", "orange", stationIds.get(6), stationIds.get(2), 10, 0);
+
         ExtractableResponse<Response> createLineResponse3 = createLineRequest(lineRequest3).extract();
 
         sectionRequests.put(new SectionRequest(stationIds.get(2), stationIds.get(7), 15),

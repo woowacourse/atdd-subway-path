@@ -87,7 +87,9 @@ class PathServiceTest {
     @DisplayName("최단거리 경로를 반환한다.")
     void findShortestPath() {
         PathRequest pathRequest = new PathRequest(STATION1.getId(), STATION9.getId(), 20);
+
         PathResponse pathResponse = pathService.findShortestPath(pathRequest);
+
         assertThat(pathResponse.getStations()).containsExactly(
                 StationResponse.from(STATION1),
                 StationResponse.from(STATION2),
@@ -103,6 +105,7 @@ class PathServiceTest {
     @DisplayName("출발역과 도착역이 같으면 예외를 던져야 한다.")
     void findSameStationsPath() {
         PathRequest pathRequest = new PathRequest(STATION1.getId(), STATION1.getId(), 0);
+
         assertThatThrownBy(() -> pathService.findShortestPath(pathRequest))
                 .hasMessage("출발역과 도착역이 동일합니다.")
                 .isInstanceOf(IllegalArgumentException.class);
@@ -112,7 +115,9 @@ class PathServiceTest {
     @DisplayName("노선 추가 요금을 더해서 반환한다.")
     void findShortestPath_lineFare() {
         PathRequest pathRequest = new PathRequest(STATION1.getId(), STATION5.getId(), 20);
+
         PathResponse pathResponse = pathService.findShortestPath(pathRequest);
+
         assertThat(pathResponse.getStations()).containsExactly(
                 StationResponse.from(STATION1),
                 StationResponse.from(STATION2),
