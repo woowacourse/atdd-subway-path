@@ -10,11 +10,21 @@ import wooteco.subway.domain.strategy.discount.NonDiscountStrategy;
 
 public enum DiscountRole {
 
-    BABY(age -> age < 6, new FreeDiscountStrategy()),
-    KID(age -> age >= 6 && age < 13, new KidDiscountStrategy()),
-    ADOLESCENT(age -> age >= 13 && age < 19, new AdolescentDiscountStrategy()),
-    ADULT(age -> age > 19 && age < 65, new NonDiscountStrategy()),
-    SENIOR(age -> age >= 65, new FreeDiscountStrategy());
+    BABY(age -> age < Constants.KID_STANDARD, new FreeDiscountStrategy()),
+    KID(age -> age >= Constants.KID_STANDARD && age < Constants.ADOLESCENT_STANDARD,
+            new KidDiscountStrategy()),
+    ADOLESCENT(age -> age >= Constants.ADOLESCENT_STANDARD && age < Constants.ADULT_STANDARD,
+            new AdolescentDiscountStrategy()),
+    ADULT(age -> age > Constants.ADULT_STANDARD && age < Constants.SENIOR_STANDARD,
+            new NonDiscountStrategy()),
+    SENIOR(age -> age >= Constants.SENIOR_STANDARD, new FreeDiscountStrategy());
+
+    private static class Constants {
+        private static final int KID_STANDARD = 6;
+        private static final int ADOLESCENT_STANDARD = 13;
+        private static final int ADULT_STANDARD = 19;
+        private static final int SENIOR_STANDARD = 65;
+    }
 
     private Predicate<Integer> predicate;
     private DiscountStrategy strategy;
