@@ -1,6 +1,7 @@
 package wooteco.subway.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
 import wooteco.subway.service.dto.station.StationResponse;
@@ -31,16 +32,22 @@ public class StationService {
         }
     }
 
+
+    @Transactional(readOnly = true)
     public List<StationResponse> findStations() {
         return stationDao.findAll().stream()
                 .map(StationResponse::new)
                 .collect(Collectors.toList());
     }
 
+
+    @Transactional(readOnly = true)
     public List<Station> findAll() {
         return stationDao.findAll();
     }
 
+
+    @Transactional(readOnly = true)
     public Station findById(Long id) {
         return stationDao.findById(id);
     }

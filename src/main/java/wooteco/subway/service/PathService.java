@@ -1,6 +1,7 @@
 package wooteco.subway.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.fare.FareCalculator;
@@ -27,6 +28,8 @@ public class PathService {
         this.sectionService = sectionService;
     }
 
+
+    @Transactional(readOnly = true)
     public PathResponse getPath(PathRequestDto pathRequestDto) {
         Path path = makePath(pathRequestDto);
         int fare = makeFare(pathRequestDto, path);
