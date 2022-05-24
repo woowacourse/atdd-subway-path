@@ -10,10 +10,12 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.dto.ExceptionMessageDto;
+import wooteco.subway.dto.ExceptionMessagesDto;
 import wooteco.subway.exception.EmptyResultException;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
@@ -41,11 +43,13 @@ public class ControllerExceptionHandler {
     public ResponseEntity<List<String>> handleValidateException(MethodArgumentNotValidException exception) {
         logger.error(exception.getMessage());
         List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
-        return ResponseEntity.badRequest().body(fieldErrors.stream()
+        List<String> exceptionMessages = fieldErrors.stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                .map(ExceptionMessageDto::new)
-                .map(ExceptionMessageDto::getMessage)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
+
+        return ResponseEntity.badRequest().body(
+                new ExceptionMessagesDto(exceptionMessages).getMessages()
+        );
     }
 
     @ExceptionHandler
