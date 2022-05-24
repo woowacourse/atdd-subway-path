@@ -12,7 +12,7 @@ public class FareCalculator {
     public int makeFare(int totalDistance, int maxExtraFare, int age) {
         int calculatedFairByDistance = calculateByDistance(basicFare, totalDistance);
         int calculatedFairByMaxExtraFare = calculatedFairByDistance + maxExtraFare;
-        return FareByAge.calculatorFare(age, calculatedFairByMaxExtraFare);
+        return FareByAge.calculateFare(age, calculatedFairByMaxExtraFare);
     }
 
     private int calculateByDistance(int fare, int distance) {
