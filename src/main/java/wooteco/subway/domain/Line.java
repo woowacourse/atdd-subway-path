@@ -4,6 +4,8 @@ import java.util.Objects;
 
 public class Line {
 
+    public static final int MAX_NAME_LENGTH = 255;
+    public static final int MAX_COLOR_LENGTH = 20;
     private Long id;
     private String name;
     private String color;
@@ -17,12 +19,26 @@ public class Line {
     }
 
     public Line(Long id, String name, String color, int extraFare) {
+        validateNameLength(name);
+        validateColorLength(color);
         validateExtraFare(extraFare);
 
         this.id = id;
         this.name = name;
         this.color = color;
         this.extraFare = extraFare;
+    }
+
+    private void validateNameLength(String name) {
+        if (name.length() > MAX_NAME_LENGTH) {
+            throw new IllegalArgumentException("노선 이름은 " + MAX_NAME_LENGTH + "자를 넘길 수 없습니다.");
+        }
+    }
+
+    private void validateColorLength(String color) {
+        if (color.length() > MAX_COLOR_LENGTH) {
+            throw new IllegalArgumentException("노선 색깔은 " + MAX_COLOR_LENGTH + "자를 넘길 수 없습니다.");
+        }
     }
 
     private void validateExtraFare(int extraFare) {
