@@ -187,5 +187,7 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-subwayGraph/blo
 - [x] removeStationById -> StationService 대신 이곳에 위치한 이유가 있을까요?
     - [x] 해당 역들을 지울 때, 역이 노선 구간들 안에 포함되어있는지 확인하는 과정이 필요하기 때문에 총괄적인 repository들을 참조하는 lineService 안에 해당 부분을 넣었습니다!
 - [x] extraFare INT 칼럼에 NOT NULL 추가
-- [ ] PathService.java
-    - [ ] -> 만약 정책 중에 정해진 금액을 할인하는 대신 정해진 비율(e.g., 20%)로 할인하는 정책이 추가된다면 이곳이 변경될까요?
+- [x] PathService.java
+    - [x] 만약 정책 중에 정해진 금액을 할인하는 대신 정해진 비율(e.g., 20%)로 할인하는 정책이 추가된다면 이곳이 변경될까요?
+    - [x] -> 이미 나이할인 시 운임요금 공제 후 일정비율의 할인이 들어감
+    - [x] 여러 정책들이 각자 어떤 순서로 실행될지에 대해서는 서비스 단에서 결정하는 편이 좋다고 생각했음.(변경이 일어나기 쉬운 부분이라 생각했음.)
