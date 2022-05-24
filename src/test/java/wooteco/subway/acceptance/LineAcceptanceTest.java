@@ -7,15 +7,18 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.StationRequest;
 
+import javax.validation.Validator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -30,6 +33,20 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private final LineRequest lineRequest2 =
             new LineRequest("분당선", "bg-green-600",
                     1L, 3L, 15, 900);
+
+    @DisplayName("지하철 노선 생성 요청값의 거리가 0일 때 예외를 발생시킨다.")
+    @Test
+    void createLineRequestWithNotDistance() {
+        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600",
+                1L, 2L, 0, 900);
+        RestAssured.given().log().all()
+                .body(lineRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines")
+                .then().log().all()
+                .statusCode(equalTo(HttpStatus.BAD_REQUEST.value()));
+    }
 
     @DisplayName("지하철노선을 생성한다.")
     @Test

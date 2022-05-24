@@ -8,6 +8,8 @@ import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.service.PathService;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/paths")
 public class PathController {
@@ -18,7 +20,7 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> showPath(PathRequest pathRequest) {
+    public ResponseEntity<PathResponse> showPath(@Valid PathRequest pathRequest) {
         final PathResponse pathResponse = pathService.findShortestPath(pathRequest);
         return ResponseEntity.ok().body(pathResponse);
     }
