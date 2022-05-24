@@ -58,13 +58,13 @@ public class SectionTest {
         Line line = new Line(1L, "2호선", "green");
 
         Section 기존_구간 = new Section(1L, line, 삼성, 성수, 10);
-        Section 추가할_구간 = new Section(line, 강남, 삼성, 4);
+        Section 추가할_구간 = new Section(line, 강남, 삼성, 11);
 
         List<Section> sections = 기존_구간.split(추가할_구간);
         assertThat(sections.get(0).getId()).isNull();
         assertThat(sections.get(0).getUpStation()).isEqualTo(강남);
         assertThat(sections.get(0).getDownStation()).isEqualTo(삼성);
-        assertThat(sections.get(0).getDistance()).isEqualTo(4);
+        assertThat(sections.get(0).getDistance()).isEqualTo(11);
     }
 
     @Test

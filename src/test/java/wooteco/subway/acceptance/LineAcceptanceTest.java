@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
 import wooteco.subway.service.dto.response.LineResponse;
 
 @DisplayName("노선 관련 기능")
@@ -233,7 +232,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         @Nested
         @DisplayName("존재하는 노선 id를 입력받는 경우")
-        class Context_Delete_Id {
+        class Context_Delete_Line {
 
             private long lineId;
 

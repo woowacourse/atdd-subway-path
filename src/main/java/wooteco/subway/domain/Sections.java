@@ -72,8 +72,8 @@ public class Sections {
 
     private Section findAddedSection(Section section) {
         return sections.stream()
-                .filter(it -> it.isEqualToUpStation(section.getUpStation()) || it
-                        .isEqualToDownStation(section.getDownStation()))
+                .filter(it -> it.isEqualToUpStation(section.getUpStation())
+                        || it.isEqualToDownStation(section.getDownStation()))
                 .findFirst()
                 .orElseGet(() -> isAddableFirstOrEndSection(section));
     }

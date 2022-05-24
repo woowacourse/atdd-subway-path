@@ -28,14 +28,15 @@ public class Section {
     }
 
     public List<Section> split(Section other) {
-        validateShortDistance(other.distance);
         if (upStation.equals(other.upStation)) {
+            validateShortDistance(other.distance);
             Section start = new Section(id, line, upStation, other.downStation, other.distance);
             Section end = new Section(line, other.downStation, downStation,
                     distance - other.distance);
             return List.of(start, end);
         }
         if (downStation.equals(other.downStation)) {
+            validateShortDistance(other.distance);
             Section start = new Section(id, line, upStation, other.upStation,
                     distance - other.distance);
             Section end = new Section(line, other.upStation, downStation, other.distance);
