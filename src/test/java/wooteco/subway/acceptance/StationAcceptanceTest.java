@@ -1,6 +1,7 @@
 package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -30,6 +31,22 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
+    }
+
+    @DisplayName("지하철역을 생성한다.")
+    @Test
+    void createStationWithLongName() {
+        // given
+
+        // when
+        ExtractableResponse<Response> response = RequestFrame.post(BodyCreator.makeStationBodyForPost("a".repeat(256)),
+                "/stations");
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(response.body().asString()).contains("존재할 수 없는 이름입니다.")
+        );
     }
 
     @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.(400에러)")

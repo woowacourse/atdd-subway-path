@@ -150,6 +150,27 @@ public class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    @DisplayName("잘못된 나이를 입력하면 400 에러를 응답한다.")
+    @Test
+    void wrongAge() {
+        createStation("신림역");
+        createStation("강남역");
+        createStation("역삼역");
+        createStation("선릉역");
+        createStation("잠실역");
+
+        createLine("1호선", "blue", "1", "2", "13", "100");
+        createLine("2호선", "green", "2", "3", "14", "300");
+        createLine("3호선", "orange", "1", "3", "30", "500");
+
+        ExtractableResponse<Response> response = RequestFrame.get("/paths?source=1&target=3&age=-1");
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(response.body().asString()).contains("나이는 1이상이어야 합니다.")
+        );
+    }
+
     @DisplayName("거리가 같은 경우 더 적은 역을 거치도록 응답한다.")
     @Test
     void getShortestPathSameDistance() {

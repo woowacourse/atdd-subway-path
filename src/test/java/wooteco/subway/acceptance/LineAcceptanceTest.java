@@ -38,6 +38,66 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.header("Location")).isNotBlank();
     }
 
+    @DisplayName("이름의 길이가 256 이상이면 노선을 만들 수 없다.")
+    @Test
+    void createLineWithLongName() {
+        // given
+        createStation("강남역");
+        createStation("선릉역");
+
+        // when
+        ExtractableResponse<Response> response = RequestFrame.post(
+                BodyCreator.makeLineBodyForPost("a".repeat(256), "green", "1", "2", "10", "900"),
+                "/lines"
+        );
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(response.body().asString()).contains("존재할 수 없는 이름입니다.")
+        );
+    }
+
+    @DisplayName("노선 색의 길이가 21 이상이면 노선을 만들 수 없다.")
+    @Test
+    void createLineWithLongColor() {
+        // given
+        createStation("강남역");
+        createStation("선릉역");
+
+        // when
+        ExtractableResponse<Response> response = RequestFrame.post(
+                BodyCreator.makeLineBodyForPost("2호선", "a".repeat(21), "1", "2", "10", "900"),
+                "/lines"
+        );
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(response.body().asString()).contains("존재할 수 없는 색상입니다.")
+        );
+    }
+
+    @DisplayName("거리가 1 이상이 아닌 경우 지하철 노선을 생성할 수 없다")
+    @Test
+    void createLineWithWrongDistance() {
+        // given
+        createStation("강남역");
+        createStation("선릉역");
+
+        // when
+        ExtractableResponse<Response> response = RequestFrame.post(
+                BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "-1", "900"),
+                "/lines"
+        );
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(response.body().asString()).contains("구간 사이의 거리는 양수여야합니다.")
+        );
+    }
+
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.(400에러)")
     @Test
     void createLineWithDuplicateName() {
@@ -57,6 +117,21 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("노선의 구간에 맞는 역이 없다면 지하철 노선을 생성할 수 없다.(404에러)")
+    @Test
+    void createLineNoStation() {
+        // given
+
+        // when
+        ExtractableResponse<Response> response = RequestFrame.post(
+                BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
+                "/lines"
+        );
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     @DisplayName("지하철 노선 전체를 조회한다.")
