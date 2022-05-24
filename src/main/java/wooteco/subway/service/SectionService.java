@@ -21,7 +21,7 @@ public class SectionService {
 
     public Long save(Section section) {
         Sections sections = new Sections(findAllByLineId(section.getLineId()));
-        if (!sections.isEmpty()){
+        if (!sections.isEmpty()) {
             sections.getUpdatedSectionForSaveIfRequired(section)
                     .ifPresent(sectionDao::update);
         }
@@ -31,7 +31,7 @@ public class SectionService {
     public void delete(Long lineId, Long stationId) {
         Sections sections = new Sections(findAllByLineId(lineId));
         sections.getUpdatedSectionForDeleteIfRequired(stationId)
-                        .ifPresent(sectionDao::update);
+                .ifPresent(sectionDao::update);
         sectionDao.delete(sections.getDeletedSectionId(stationId));
     }
 

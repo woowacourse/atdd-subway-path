@@ -12,10 +12,6 @@ public class Stations {
         this.stations = stations;
     }
 
-    public boolean contains(Long id) {
-        return getStationIds().contains(id);
-    }
-
     public Station findStationById(Long id) {
         return stations.stream()
                 .filter(station -> station.getId().equals(id))
