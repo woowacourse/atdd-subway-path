@@ -98,7 +98,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.OK.value())
                 .extract();
 
-        assertThat(extract.jsonPath().getInt("fare")).isEqualTo(2270);
+        assertThat(extract.jsonPath().getInt("fare")).isEqualTo(1920);
     }
 
     @DisplayName("6세 이상, 13세 미만이면 50% 할인을 받는다.")
@@ -127,7 +127,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.OK.value())
                 .extract();
 
-        assertThat(extract.jsonPath().getInt("fare")).isEqualTo(1550);
+        assertThat(extract.jsonPath().getInt("fare")).isEqualTo(1200);
     }
 
     private Map<String, Object> sectionParam(Long upStationId, Long downStationId, int distance) {
