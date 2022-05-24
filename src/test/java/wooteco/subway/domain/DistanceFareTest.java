@@ -8,15 +8,15 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class ExtraFareTest {
+public class DistanceFareTest {
 
     @ParameterizedTest(name = "{0}km일 때 요금은 {1}원이다")
     @MethodSource("provideDistanceAndFare")
     void calculate(double distance, int expected) {
-        Function<Double, Integer> fareCalculator = ExtraFare.fareCalculator();
-        int fare = fareCalculator.apply(distance);
+        Function<Double, Fare> fareCalculator = DistanceFare.fareCalculator();
+        Fare fare = fareCalculator.apply(distance);
 
-        assertThat(fare).isEqualTo(expected);
+        assertThat(fare.getValue()).isEqualTo(expected);
     }
 
     private static Stream<Arguments> provideDistanceAndFare() {

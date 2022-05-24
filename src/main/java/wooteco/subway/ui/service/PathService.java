@@ -41,7 +41,8 @@ public class PathService {
         Station sourceStation = stationDao.findById(source);
         Station targetStation = stationDao.findById(target);
         Path path = Path.from(shortestPath, sourceStation, targetStation);
+        Fare extraFare = path.calculateFare();
 
-        return new PathResponse(StationResponse.of(path.getStations()), path.getDistance(), path.calculateFare());
+        return new PathResponse(StationResponse.of(path.getStations()), path.getDistance(), extraFare.getValue());
     }
 }

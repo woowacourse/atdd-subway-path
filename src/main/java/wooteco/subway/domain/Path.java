@@ -56,8 +56,8 @@ public class Path {
         }
     }
 
-    public int calculateFare() {
-        return distance.calculateFare() + extraFare.getValue();
+    public Fare calculateFare() {
+        return Fare.sum(distance.calculateFare(), extraFare);
     }
 
     public List<Station> getStations() {

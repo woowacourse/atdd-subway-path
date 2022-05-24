@@ -76,15 +76,17 @@ public class PathTest {
     @DisplayName("추가 요금이 있는 노선을 이용하면 추가 요금이 함께 부과된다.")
     void calculateFare_extra_100() {
         Path path = Path.from(shortestPath, 강남, 역삼);
+        Fare extraFare = path.calculateFare();
 
-        assertThat(path.calculateFare()).isEqualTo(BASIC_FARE + 100);
+        assertThat(extraFare.getValue()).isEqualTo(BASIC_FARE + 100);
     }
 
     @Test
     @DisplayName("추가 요금이 있는 노선을 여러 개 이용하면 최대 추가 요금만 부과된다.")
     void calculateFare_extra_200() {
         Path path = Path.from(shortestPath, 강남, 선릉);
+        Fare extraFare = path.calculateFare();
 
-        assertThat(path.calculateFare()).isEqualTo(BASIC_FARE + 200);
+        assertThat(extraFare.getValue()).isEqualTo(BASIC_FARE + 200);
     }
 }

@@ -37,16 +37,6 @@ public class JdbcSectionDao implements SectionDao {
         save(section, lineId, 0);
     }
 
-    private void save(Section section, Long lineId, int index) {
-        Map<String, Object> param = new HashMap<>();
-        param.put("line_id", lineId);
-        param.put("up_station_id", section.getUpStationId());
-        param.put("down_station_id", section.getDownStationId());
-        param.put("distance", section.getDistance());
-        param.put("index_num", index);
-        jdbcInsert.execute(param);
-    }
-
     @Override
     public void save(Sections sections, Long lineId) {
         List<Section> values = sections.getSections();
@@ -67,6 +57,16 @@ public class JdbcSectionDao implements SectionDao {
         jdbcTemplate.update(sql,
                 section.getUpStationId(), section.getDownStationId(), section.getDistance(), index,
                 section.getId());
+    }
+
+    private void save(Section section, Long lineId, int index) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("line_id", lineId);
+        param.put("up_station_id", section.getUpStationId());
+        param.put("down_station_id", section.getDownStationId());
+        param.put("distance", section.getDistance());
+        param.put("index_num", index);
+        jdbcInsert.executeAndReturnKey(param);
     }
 
     @Override

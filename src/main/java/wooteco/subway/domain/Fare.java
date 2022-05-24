@@ -1,5 +1,7 @@
 package wooteco.subway.domain;
 
+import java.util.Arrays;
+
 public class Fare implements Comparable<Fare> {
     private final int value;
 
@@ -23,6 +25,13 @@ public class Fare implements Comparable<Fare> {
         if ((value % 10) != 0) {
             throw new IllegalArgumentException("요금은 최소 10원 단위여야 합니다.");
         }
+    }
+
+    public static Fare sum(Fare... fares) {
+        int totalAmount = Arrays.stream(fares)
+                .mapToInt(fare -> fare.value)
+                .sum();
+        return new Fare(totalAmount);
     }
 
     public int getValue() {

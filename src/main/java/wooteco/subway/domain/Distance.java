@@ -39,8 +39,8 @@ public class Distance {
         return this.value < distance.value;
     }
 
-    public int calculateFare() {
-        Function<Double, Integer> fareCalculator = ExtraFare.fareCalculator();
+    public Fare calculateFare() {
+        Function<Double, Fare> fareCalculator = DistanceFare.fareCalculator();
         return fareCalculator.apply(value);
     }
 
