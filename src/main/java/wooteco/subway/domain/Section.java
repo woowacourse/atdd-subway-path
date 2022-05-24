@@ -71,8 +71,8 @@ public class Section {
     }
 
     public boolean isSameValue(final Station upStation, final Station downStation, final int distance) {
-        return this.getUpStation().equals(upStation)
-                && this.getDownStation().equals(downStation)
+        return this.upStation.equals(upStation)
+                && this.downStation.equals(downStation)
                 && this.distance == distance;
     }
 
