@@ -2,7 +2,7 @@ package wooteco.subway.domain.fare;
 
 import java.util.Arrays;
 
-public class AgeDiscountFare extends Decorator {
+public final class AgeDiscountFare extends FarePolicy {
 
     private static final int BASIC_DISCOUNT_AMOUNT = 350;
 

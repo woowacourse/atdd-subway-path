@@ -2,7 +2,7 @@ package wooteco.subway.domain.fare;
 
 import java.util.Arrays;
 
-public class DistanceOverFare extends Decorator {
+public final class DistanceOverFare extends FarePolicy {
 
     private final int distance;
 

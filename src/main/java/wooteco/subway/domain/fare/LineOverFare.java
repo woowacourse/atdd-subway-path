@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 import wooteco.subway.domain.line.Line;
 
-public class LineOverFare extends Decorator {
+public final class LineOverFare extends FarePolicy {
 
     private static final String LINE_INFO_NOT_FOUND_EXCEPTION = "노선 정보가 제공되지 않았습니다.";
     private final List<Line> lines;
