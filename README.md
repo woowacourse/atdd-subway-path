@@ -185,3 +185,18 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-subwayGraph/blo
 
 - [x] Dto setter 제거
 - [x] SectionEntity의 경우 생성자에서 id를 제외한 필드는 long 타입으로 선언돼 있는 걸로 봐서는 null을 허용할 필요는 없어보이기도 하네요.
+
+### 2단계-1 피드백
+
+- [ ] AgeDiscountPolicy 인터페이스 제거
+- [ ] 새 엔티티의 id를 null 대신 0으로 초기화하는군요. id 필드는 더이상 Long 타입일 필요가 없을까요?
+- [ ] 호출하게되면 sections.isStationIn(station)처럼 호출하게 될 텐데, 코드가 부자연스러워보이네요.
+    - [ ] sections.contains(station)처럼 호출할 수 있으면 어떨까요?
+- [ ] getFare가 여러번 호출되면 계산도 매번 발생할텐데요. 매번 계산할 필요가 있을까요?
+    - [ ] baseFare는 기본요금일까요?
+- [ ] Generator -> 매직 넘버는 상수로 분리하면 어떨까요?
+- [ ] UnderTenKMPolicy 에서도 같은 상수가 선언돼 있는데, 필요한 중복일까요?
+- [ ] removeStationById -> StationService 대신 이곳에 위치한 이유가 있을까요?
+- [ ] extraFare INT 칼럼에 NOT NULL 추가
+- [ ] PathService.java
+    - [ ] -> 만약 정책 중에 정해진 금액을 할인하는 대신 정해진 비율(e.g., 20%)로 할인하는 정책이 추가된다면 이곳이 변경될까요?
