@@ -1,33 +1,27 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Sections;
 
 import java.util.List;
 
-public class Path {
+public class PathBuilder {
 
-    private final List<Long> shortestPath;
-    private final int totalDistance;
-    private final Sections sections;
-
-    public Path(Long source, Long target, List<Long> stationIds, Sections sections) {
+    public Path makePath(Long source, Long target, List<Long> stationIds, Sections sections) {
         validateExistStationId(source, target, stationIds);
         WeightedMultigraph<Long, DefaultWeightedEdge> graph = makeGraph(stationIds, sections);
         DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Long, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
         validateExistPath(path);
-        this.shortestPath = path.getVertexList();
-        this.totalDistance = (int) path.getWeight();
-        this.sections = sections;
-    }
 
-    private void validateExistPath(GraphPath<Long, DefaultWeightedEdge> path) {
-        if (path == null) {
-            throw new IllegalArgumentException("[ERROR] 경로를 찾을 수 없습니다");
-        }
+        List<Long> shortestPath = path.getVertexList();
+        int totalDistance = (int) path.getWeight();
+        Sections shortestSections = new Sections(sections.getShortestSections(shortestPath));
+        return new Path(shortestPath, totalDistance, shortestSections);
     }
 
     private void validateExistStationId(Long source, Long target, List<Long> stationIds) {
@@ -59,15 +53,10 @@ public class Path {
         }
     }
 
-    public List<Long> getShortestPath() {
-        return shortestPath;
-    }
 
-    public int getTotalDistance() {
-        return totalDistance;
-    }
-
-    public List<Section> getShortestSections() {
-        return sections.getShortestSections(shortestPath);
+    private void validateExistPath(GraphPath<Long, DefaultWeightedEdge> path) {
+        if (path == null) {
+            throw new IllegalArgumentException("[ERROR] 경로를 찾을 수 없습니다");
+        }
     }
 }

@@ -56,7 +56,7 @@ class PathServiceTest {
         //given
         Long source = 1L;
         Long target = 5L;
-        int age = 15;
+        int age = 20;
         //when
         PathResponse pathResponse = pathService.getPath(new PathRequestDto(source, target, age));
         //then
@@ -74,7 +74,7 @@ class PathServiceTest {
         lineService.create(new LineRequestDto("3호선", "bg-black-100", 1L, 3L, 5));
         Long source = 1L;
         Long target = 5L;
-        int age = 15;
+        int age = 20;
         //when
         PathResponse pathResponse = pathService.getPath(new PathRequestDto(source, target, age));
         //then
