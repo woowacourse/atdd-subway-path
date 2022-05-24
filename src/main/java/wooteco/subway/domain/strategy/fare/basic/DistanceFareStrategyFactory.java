@@ -3,7 +3,6 @@ package wooteco.subway.domain.strategy.fare.basic;
 
 import java.util.Arrays;
 import java.util.function.Predicate;
-import wooteco.subway.domain.strategy.fare.discount.DiscountStrategy;
 
 public enum DistanceFareStrategyFactory {
     BASIC(DistanceFareStrategyFactory::isBasic, new BasicDistanceFareStrategy()),

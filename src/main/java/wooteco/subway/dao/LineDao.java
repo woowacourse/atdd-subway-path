@@ -68,7 +68,8 @@ public class LineDao {
                 .collect(Collectors.groupingBy(LineSection::getLine));
         return groupByLine.keySet()
                 .stream()
-                .map(key -> new Line(key.getId(), key.getName(), key.getColor(), key.getExtraFare(), toSections(groupByLine.get(key))))
+                .map(key -> new Line(key.getId(), key.getName(), key.getColor(), key.getExtraFare(),
+                        toSections(groupByLine.get(key))))
                 .collect(Collectors.toList());
     }
 

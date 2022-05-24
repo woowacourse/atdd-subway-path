@@ -14,7 +14,6 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.exception.LineNotFoundException;
-import wooteco.subway.exception.StationNotFoundException;
 
 @Import({
         LineDao.class,
@@ -92,7 +91,6 @@ class LineDaoTest {
 
         // when
         Line findLine = lineDao.findById(신분당선_id).get();
-
 
         // then
         assertThat(findLine).extracting("name", "color")

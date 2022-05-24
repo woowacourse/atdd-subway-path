@@ -2,7 +2,7 @@ package wooteco.subway.exception;
 
 import wooteco.subway.domain.Station;
 
-public class PathNotFoundException extends BusinessException{
+public class PathNotFoundException extends BusinessException {
 
     public PathNotFoundException(String message) {
         super(message);

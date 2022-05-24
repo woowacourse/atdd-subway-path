@@ -1,7 +1,6 @@
 package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.response.ExtractableResponse;
@@ -85,7 +84,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.jsonPath().getList("stations")).extracting("name")
-                .containsExactly("강남역", "양재역"),
+                        .containsExactly("강남역", "양재역"),
                 () -> assertThat(response.jsonPath().getInt("distance")).isEqualTo(10),
                 () -> assertThat(response.jsonPath().getInt("fare")).isEqualTo(2150)
         );
@@ -140,7 +139,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.jsonPath().getList("stations")).extracting("name")
                         .containsExactly("교대역", "강남역", "양재역"),
                 () -> assertThat(response.jsonPath().getInt("distance")).isEqualTo(10),
-                () -> assertThat(response.jsonPath().getInt("fare")).isEqualTo((int)(2150 - (2150 - 350) * 0.2))
+                () -> assertThat(response.jsonPath().getInt("fare")).isEqualTo((int) (2150 - (2150 - 350) * 0.2))
         );
     }
 
@@ -165,7 +164,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.jsonPath().getList("stations")).extracting("name")
                         .containsExactly("교대역", "강남역", "양재역"),
                 () -> assertThat(response.jsonPath().getInt("distance")).isEqualTo(10),
-                () -> assertThat(response.jsonPath().getInt("fare")).isEqualTo((int)(2150 - (2150 - 350) * 0.5))
+                () -> assertThat(response.jsonPath().getInt("fare")).isEqualTo((int) (2150 - (2150 - 350) * 0.5))
         );
     }
 

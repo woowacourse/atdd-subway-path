@@ -1,6 +1,6 @@
 package wooteco.subway.domain.strategy.fare.discount;
 
-public class ChildDiscountStrategy implements DiscountStrategy{
+public class ChildDiscountStrategy implements DiscountStrategy {
 
     @Override
     public int calculateDiscount(int price) {

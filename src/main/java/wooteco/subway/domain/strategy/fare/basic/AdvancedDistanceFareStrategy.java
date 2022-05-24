@@ -23,11 +23,13 @@ public class AdvancedDistanceFareStrategy implements DistanceFareStrategy {
 
     private int calculateIntervalOne(int distance) {
         return (int) Math.ceil(Math.min(
-                Math.max(distance - BASIC_DISTANCE, NO_FARE_DISTANCE), INTERVAL_ONE - BASIC_DISTANCE) / INTERVAL_ONE_SURCHARGE_UNIT)
+                Math.max(distance - BASIC_DISTANCE, NO_FARE_DISTANCE), INTERVAL_ONE - BASIC_DISTANCE)
+                / INTERVAL_ONE_SURCHARGE_UNIT)
                 * FIRST_SURCHARGE;
     }
 
     private int calculateIntervalTwo(int distance) {
-        return (int) Math.ceil(Math.max(distance - INTERVAL_ONE, NO_FARE_DISTANCE) / INTERVAL_TWO_SURCHARGE_UNIT) * SECOND_SURCHARGE;
+        return (int) Math.ceil(Math.max(distance - INTERVAL_ONE, NO_FARE_DISTANCE) / INTERVAL_TWO_SURCHARGE_UNIT)
+                * SECOND_SURCHARGE;
     }
 }

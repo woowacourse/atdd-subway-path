@@ -21,7 +21,8 @@ public class IntermediateDistanceFareStrategy implements DistanceFareStrategy {
 
     private int calculateIntervalOne(int distance) {
         return (int) Math.ceil(Math.min(
-                Math.max(distance - BASIC_DISTANCE, NO_FARE_DISTANCE), INTERVAL_ONE - BASIC_DISTANCE) / INTERVAL_ONE_SURCHARGE_UNIT)
+                Math.max(distance - BASIC_DISTANCE, NO_FARE_DISTANCE), INTERVAL_ONE - BASIC_DISTANCE)
+                / INTERVAL_ONE_SURCHARGE_UNIT)
                 * FIRST_SURCHARGE;
     }
 }

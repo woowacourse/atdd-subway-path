@@ -31,12 +31,12 @@ public class AcceptanceTest {
 
     public ExtractableResponse<Response> httpPost(String path, Object object) {
         return RestAssured.given().log().all()
-                        .body(object)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .when()
-                        .post(path)
-                        .then().log().all()
-                        .extract();
+                .body(object)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post(path)
+                .then().log().all()
+                .extract();
     }
 
     public ExtractableResponse<Response> httpPut(String path, Object object) {

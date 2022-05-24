@@ -1,14 +1,12 @@
 package wooteco.subway.domain.strategy.fare;
 
 import java.util.List;
-import org.springframework.stereotype.Component;
 import wooteco.subway.domain.strategy.fare.basic.DistanceFareStrategy;
 import wooteco.subway.domain.strategy.fare.basic.DistanceFareStrategyFactory;
 import wooteco.subway.domain.strategy.fare.discount.DiscountStrategy;
 import wooteco.subway.domain.strategy.fare.discount.DiscountStrategyFactory;
 
-@Component
-public class FarePolicyImpl extends FarePolicy{
+public class FarePolicyImpl extends FarePolicy {
 
     @Override
     protected int calculateBasicFare(int distance) {
