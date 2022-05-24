@@ -17,10 +17,10 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
-import wooteco.subway.dto.LineRequest;
-import wooteco.subway.dto.LineResponse;
-import wooteco.subway.dto.SectionRequest;
-import wooteco.subway.dto.StationRequest;
+import wooteco.subway.ui.dto.LineRequest;
+import wooteco.subway.ui.dto.LineResponse;
+import wooteco.subway.ui.dto.SectionRequest;
+import wooteco.subway.ui.dto.StationRequest;
 
 @DisplayName("지하철 노선 관련 기능")
 class LineAcceptanceTest extends AcceptanceTest {
@@ -320,6 +320,18 @@ class LineAcceptanceTest extends AcceptanceTest {
             .delete(uri + "/sections?stationId=" + newDownStationId)
             .then().log().all()
             .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    @DisplayName("추가요금을 포함한 요청으로도 line을 생성할 수 있어야 한다.")
+    void createWithExtraFare() {
+        LineRequest lineRequest = new LineRequest("1호선", "bg-red-600", stationId1, stationId2, 5, 500);
+
+        ExtractableResponse<Response> response = extractCreateLineRequest(lineRequest);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header("Location")).isNotBlank();
     }
 
     private Long createNewStation(String stationName) {

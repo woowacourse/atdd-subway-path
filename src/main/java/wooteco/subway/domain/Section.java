@@ -21,7 +21,7 @@ public class Section {
         this.id = id;
     }
 
-    public static Section from(Long id, Section section) {
+    public static Section of(Long id, Section section) {
         return new Section(id, section.getUpStation(), section.getDownStation(), section.getDistance());
     }
 

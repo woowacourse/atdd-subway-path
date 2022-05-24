@@ -2,6 +2,9 @@ package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static wooteco.subway.domain.fixture.LineFixture.*;
+import static wooteco.subway.domain.fixture.SectionFixture.*;
+import static wooteco.subway.domain.fixture.StationFixture.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,85 +18,78 @@ import wooteco.subway.exception.EmptyResultException;
 
 public class SubwayTest {
     private static Subway subway;
-    private static final List<Station> stations = new ArrayList<>();
 
     @BeforeAll
     public static void setUp() {
-
-        for (char c = 'a'; c <= 'k'; c++) {
-            stations.add(new Station(String.valueOf(c)));
-        }
-
         Line line1 = createLine1();
         Line line2 = createLine2();
         Line line3 = createLine3();
         Line line4 = createLine4();
-        subway = Subway.of(List.of(line1, line2, line3, line4));
+        subway = Subway.from(List.of(line1, line2, line3, line4));
     }
 
     private static Line createLine1() {
         List<Section> sections1 = new ArrayList<>();
-        sections1.add(new Section(stations.get(0), stations.get(1), 5));
-        sections1.add(new Section(stations.get(1), stations.get(2), 15));
-        sections1.add(new Section(stations.get(2), stations.get(3), 10));
-        return Line.from(new Line(1L, "1", "red"), sections1);
+        sections1.add(LINE1_SECTION1);
+        sections1.add(LINE1_SECTION2);
+        sections1.add(LINE1_SECTION3);
+        return Line.from(LINE1, sections1);
     }
 
     private static Line createLine2() {
         List<Section> sections2 = new ArrayList<>();
-        sections2.add(new Section(stations.get(1), stations.get(4), 4));
-        sections2.add(new Section(stations.get(4), stations.get(5), 7));
-        sections2.add(new Section(stations.get(5), stations.get(6), 4));
-        return Line.from(new Line(2L, "2", "green"), sections2);
+        sections2.add(LINE2_SECTION1);
+        sections2.add(LINE2_SECTION2);
+        sections2.add(LINE2_SECTION3);
+        return Line.from(LINE2, sections2);
     }
 
     private static Line createLine3() {
         List<Section> sections3 = new ArrayList<>();
-        sections3.add(new Section(stations.get(6), stations.get(2), 10));
-        sections3.add(new Section(stations.get(2), stations.get(7), 15));
-        sections3.add(new Section(stations.get(7), stations.get(8), 23));
-        return Line.from(new Line(3L, "3", "orange"), sections3);
+        sections3.add(LINE3_SECTION1);
+        sections3.add(LINE3_SECTION2);
+        sections3.add(LINE3_SECTION3);
+        return Line.from(LINE3, sections3);
     }
 
     private static Line createLine4() {
         List<Section> sections4 = new ArrayList<>();
-        sections4.add(new Section(stations.get(9), stations.get(10), 10));
-        return Line.from(new Line(4L, "4", "blue"), sections4);
+        sections4.add(LINE4_SECTION1);
+        return Line.from(LINE4, sections4);
     }
 
     @Test
-    @DisplayName("0 -> 1의 경로는 0 1, 거리는 5가 반환되어야 한다.")
+    @DisplayName("A -> B의 경로는 A B, 거리는 5가 반환되어야 한다.")
     void findShortestPath1() {
-        Path path = subway.findShortestPath(stations.get(0), stations.get(1));
+        Path path = subway.findShortestPath(STATION_A, STATION_B);
 
         assertAll(
             () -> assertThat(path.getStations())
-                .containsExactly(stations.get(0), stations.get(1)),
+                .containsExactly(STATION_A, STATION_B),
             () -> assertThat(path.getDistance()).isEqualTo(5)
         );
     }
 
     @Test
-    @DisplayName("0 -> 6의 경로는 0 1 4 5 6, 거리는 20이 반환되어야 한다.")
-    // @DisplayName("최단경로 거리의 합이 10km 이상 50km 이하인 경우 경로, 거리, 요금은 1450원 이 반환되어야 한다.")
+    @DisplayName("A -> G의 경로는 A B E F G, 거리는 20이 반환되어야 한다.")
     void findShortestPath2() {
-        Path path = subway.findShortestPath(stations.get(0), stations.get(6));
+        Path path = subway.findShortestPath(STATION_A, STATION_G);
 
         assertAll(
             () -> assertThat(path.getStations())
-                .containsExactly(stations.get(0), stations.get(1), stations.get(4), stations.get(5), stations.get(6)),
+                .containsExactly(STATION_A, STATION_B, STATION_E, STATION_F, STATION_G),
             () -> assertThat(path.getDistance()).isEqualTo(20)
         );
     }
 
     @Test
-    @DisplayName("0 -> 8의 경로는 0 1 2 7 8, 거리는 58이 반환되어야 한다.")
+    @DisplayName("A -> I의 경로는 A B C H I, 거리는 58이 반환되어야 한다.")
     void findShortestPath3() {
-        Path path = subway.findShortestPath(stations.get(0), stations.get(8));
+        Path path = subway.findShortestPath(STATION_A, STATION_I);
 
         assertAll(
             () -> assertThat(path.getStations())
-                .containsExactly(stations.get(0), stations.get(1), stations.get(2), stations.get(7), stations.get(8)),
+                .containsExactly(STATION_A, STATION_B, STATION_C, STATION_H, STATION_I),
             () -> assertThat(path.getDistance()).isEqualTo(58)
         );
     }
@@ -101,32 +97,24 @@ public class SubwayTest {
     @Test
     @DisplayName("출발역과 도착역이 연결되어있지 않으면 예외를 던져야 한다.")
     void findInvalidPath() {
-        assertThatThrownBy(() -> subway.findShortestPath(stations.get(0), stations.get(9)))
+        assertThatThrownBy(() -> subway.findShortestPath(STATION_E, STATION_J))
             .hasMessage("출발역과 도착역 사이에 연결된 경로가 없습니다.")
             .isInstanceOf(EmptyResultException.class);
     }
 
     @Test
-    @DisplayName("0 -> 1 경로의 요금은 1250원이어야 한다.")
-    void calculateFare1() {
-        Path path = subway.findShortestPath(stations.get(0), stations.get(1));
-        int fare = subway.calculateFare(path.getDistance());
-        assertThat(fare).isEqualTo(1250);
+    @DisplayName("출발역과 도착역이 같으면 예외를 던져야 한다.")
+    void findSameStationsPath() {
+        assertThatThrownBy(() -> subway.findShortestPath(STATION_A, STATION_A))
+            .hasMessage("출발역과 도착역이 동일합니다.")
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("0 -> 6 경로의 요금은 1450원이어야 한다.")
-    void calculateFare2() {
-        Path path = subway.findShortestPath(stations.get(0), stations.get(6));
-        int fare = subway.calculateFare(path.getDistance());
-        assertThat(fare).isEqualTo(1450);
-    }
-
-    @Test
-    @DisplayName("0 -> 8 경로의 요금은 2150원이어야 한다.")
-    void calculateFare3() {
-        Path path = subway.findShortestPath(stations.get(0), stations.get(8));
-        int fare = subway.calculateFare(path.getDistance());
-        assertThat(fare).isEqualTo(2150);
+    @DisplayName("역이 존재하지 않으면 예외를 던져야 한다.")
+    void findNonStationPath() {
+        assertThatThrownBy(() -> subway.findShortestPath(new Station("없는역"), STATION_A))
+            .hasMessage("해당 역을 찾지 못했습니다.")
+            .isInstanceOf(IllegalArgumentException.class);
     }
 }

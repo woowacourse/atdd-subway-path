@@ -44,21 +44,24 @@ class LineDaoImplTest {
 
         station3 = stationDao.save(new Station("교대역"));
         station4 = stationDao.save(new Station("잠실역"));
-
-        List<Line> lines = lineDao.findAll();
-        List<Long> lineIds = lines.stream()
-            .map(Line::getId)
-            .collect(Collectors.toList());
-
-        for (Long lineId : lineIds) {
-            lineDao.deleteById(lineId);
-        }
     }
 
     @Test
     void save() {
         // given
         Line line = new Line("1호선", "bg-red-600");
+
+        // when
+        Long savedId = lineDao.save(line);
+
+        // then
+        assertThat(savedId).isPositive();
+    }
+
+    @Test
+    void saveWithExtraFare() {
+        // given
+        Line line = new Line("1호선", "bg-red-600", 100);
 
         // when
         Long savedId = lineDao.save(line);
@@ -124,6 +127,29 @@ class LineDaoImplTest {
         assertThat(names)
             .hasSize(2)
             .contains(line1.getName(), line2.getName());
+    }
+
+    @Test
+    void findAllWithExtraFare() {
+        // given
+        Line line1 = new Line("1호선", "bg-red-600", 100);
+        Line line2 = new Line("2호선", "bg-green-600", 200);
+
+        // when
+        Long savedId1 = lineDao.save(line1);
+        sectionDao.save(new Section(station1, station2, 10), savedId1);
+        Long savedId2 = lineDao.save(line2);
+        sectionDao.save(new Section(station3, station4, 10), savedId2);
+
+        // then
+        List<Integer> extraFares = lineDao.findAll()
+            .stream()
+            .map(Line::getExtraFare)
+            .collect(Collectors.toList());
+
+        assertThat(extraFares)
+            .hasSize(2)
+            .contains(line1.getExtraFare(), line2.getExtraFare());
     }
 
     @Test

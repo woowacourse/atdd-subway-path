@@ -17,7 +17,7 @@ public class Sections {
         this.sections = sections;
     }
 
-    public static Sections of(List<Section> sections) {
+    public static Sections from(List<Section> sections) {
         Map<Station, Station> stations = sections.stream()
             .collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
         Station upStation = findUpStation(stations);
@@ -199,6 +199,6 @@ public class Sections {
         }
         return stations.stream()
             .distinct()
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
     }
 }

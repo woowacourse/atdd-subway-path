@@ -13,7 +13,7 @@ public class FakeSectionDao implements SectionDao {
 
     @Override
     public Long save(Section section, Long lineId) {
-        Section newSection = Section.from(++seq, section);
+        Section newSection = Section.of(++seq, section);
         sections.put(seq, newSection);
         return seq;
     }

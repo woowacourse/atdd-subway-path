@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.ui.dto.SectionRequest;
 
 @Service
 @Transactional

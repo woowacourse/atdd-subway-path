@@ -11,9 +11,9 @@ import wooteco.subway.dao.LineDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.LineRequest;
-import wooteco.subway.dto.LineResponse;
-import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.ui.dto.LineRequest;
+import wooteco.subway.ui.dto.LineResponse;
+import wooteco.subway.ui.dto.SectionRequest;
 import wooteco.subway.exception.EmptyResultException;
 
 @Service
@@ -30,7 +30,7 @@ public class LineService {
     }
 
     public LineResponse save(LineRequest lineRequest) {
-        Line line = new Line(lineRequest.getName(), lineRequest.getColor());
+        Line line = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         Long savedLineId = lineDao.save(line);
 
         sectionService.save(SectionRequest.of(lineRequest), savedLineId);
