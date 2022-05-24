@@ -29,8 +29,6 @@ dependencies {
 
     runtimeOnly 'com.h2database:h2'
 
-    // jgrapht
-    implementation 'org.jgrapht:jgrapht-core:1.0.1'
 }
 
 test {
