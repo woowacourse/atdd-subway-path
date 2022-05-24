@@ -27,17 +27,31 @@ public class PathService {
     public PathServiceResponse findShortestPath(PathServiceRequest pathServiceRequest,
                                                 Function<List<Section>, Path> pathStrategy) {
         Path path = pathStrategy.apply(sectionService.findAll().getSections());
+        List<Long> shortestPathStationIds = findShortestPathStationIds(path, pathServiceRequest);
+        List<Station> stations = findShortestPathStationIds(shortestPathStationIds);
+        int distance =
+                path.getShortestPathDistance(pathServiceRequest.getDepartureId(), pathServiceRequest.getArrivalId());
+        int fare = calculateFare(path, distance, pathServiceRequest);
+        return new PathServiceResponse(stations, distance, fare);
+    }
+
+    private List<Long> findShortestPathStationIds(Path path, PathServiceRequest pathServiceRequest) {
         Long departureId = pathServiceRequest.getDepartureId();
         Long arrivalId = pathServiceRequest.getArrivalId();
-        List<Long> shortestPathStationIds = path.getShortestPathStationIds(departureId, arrivalId);
-        List<Station> stations = shortestPathStationIds.stream()
+        return path.getShortestPathStationIds(departureId, arrivalId);
+    }
+
+    private List<Station> findShortestPathStationIds(final List<Long> shortestPathStationIds) {
+        return shortestPathStationIds.stream()
                 .map(stationService::findById)
                 .collect(Collectors.toList());
+    }
 
-        int distance = path.getShortestPathDistance(departureId, arrivalId);
+    private int calculateFare(Path path, int distance, PathServiceRequest pathServiceRequest) {
         int highestExtraFare =
-                lineService.findHighestExtraFareByIds(path.getShortestPathLineIds(departureId, arrivalId));
+                lineService.findHighestExtraFareByIds(path.getShortestPathLineIds(pathServiceRequest.getDepartureId(),
+                        pathServiceRequest.getArrivalId()));
         Fare fare = new Fare(distance, highestExtraFare, pathServiceRequest.getAge());
-        return new PathServiceResponse(stations, distance, fare.value());
+        return fare.value();
     }
 }

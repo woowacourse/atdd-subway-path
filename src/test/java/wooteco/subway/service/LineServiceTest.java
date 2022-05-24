@@ -58,7 +58,7 @@ class LineServiceTest extends DBTest {
 
     @DisplayName("같은 이름의 노선을 저장하는 경우 예외가 발생한다.")
     @Test
-    void saveExistingName() {
+    void save_exception_duplicatedName() {
         lineService.save(lineCreationServiceRequest);
 
         assertThatThrownBy(() -> lineService.save(lineCreationServiceRequest))
@@ -114,7 +114,7 @@ class LineServiceTest extends DBTest {
 
     @DisplayName("존재하지 않는 지하철 노선을 조회할 경우 예외가 발생한다.")
     @Test
-    void findNotExistingLine() {
+    void find_exception_nonExistingLineId() {
         assertThatThrownBy(() -> lineService.findById(1L))
                 .isInstanceOf(EmptyResultDataAccessException.class);
     }
