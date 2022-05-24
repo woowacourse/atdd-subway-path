@@ -2,22 +2,39 @@ package wooteco.subway.domain.fare;
 
 import java.util.Arrays;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 public enum DiscountPolicy {
-    FREE((age) -> age.isLessThanOrEqualTo(5) || age.isGreaterThanOrEqualTo(65), 1),
-    CHILDREN((age) -> age.isBetween(6, 12), 0.5),
-    TEENAGER((age) -> age.isBetween(13, 18), 0.2),
-    ADULT((age) -> age.isGreaterThanOrEqualTo(19), 0),
+    BABY_OR_SENIOR(Age::isBabyOrSenior, DiscountPolicy::discountForBabyOrSenior),
+    CHILDREN(Age::isChildren, DiscountPolicy::discountForChildren),
+    TEENAGER(Age::isTeenager, DiscountPolicy::discountForTeenager),
+    ADULT(Age::isAdult, DiscountPolicy::discountForAdult),
     ;
 
     private static final int DEDUCTING_AMOUNT = 350;
 
     private final Predicate<Age> agePredicate;
-    private final double discountRate;
+    private final UnaryOperator<Fare> discount;
 
-    DiscountPolicy(Predicate<Age> agePredicate, double discountRate) {
+    DiscountPolicy(Predicate<Age> agePredicate, UnaryOperator<Fare> discount) {
         this.agePredicate = agePredicate;
-        this.discountRate = discountRate;
+        this.discount = discount;
+    }
+
+    private static Fare discountForBabyOrSenior(Fare fare) {
+        return new Fare(0);
+    }
+
+    private static Fare discountForChildren(Fare fare) {
+        return fare.subtract(DiscountPolicy.DEDUCTING_AMOUNT).multiply(0.5);
+    }
+
+    private static Fare discountForTeenager(Fare fare) {
+        return fare.subtract(DiscountPolicy.DEDUCTING_AMOUNT).multiply(0.8);
+    }
+
+    private static Fare discountForAdult(Fare fare) {
+        return fare;
     }
 
     public static DiscountPolicy from(Age age) {
@@ -28,11 +45,6 @@ public enum DiscountPolicy {
     }
 
     public Fare discount(Fare original) {
-        if (discountRate == 0) {
-            return original;
-        }
-
-        Fare deducted = original.subtract(DEDUCTING_AMOUNT);
-        return deducted.multiply(1 - discountRate);
+        return discount.apply(original);
     }
 }
