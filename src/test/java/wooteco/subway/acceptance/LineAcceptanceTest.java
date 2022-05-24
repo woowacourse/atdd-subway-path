@@ -1,6 +1,6 @@
 package wooteco.subway.acceptance;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 import java.util.Map;
@@ -11,21 +11,21 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.http.HttpStatus;
 
 import wooteco.subway.acceptance.fixture.SimpleResponse;
 import wooteco.subway.acceptance.fixture.SimpleRestAssured;
-import wooteco.subway.dto.response.LineResponse;
+import wooteco.subway.dto.request.StationRequest;
+import wooteco.subway.dto.response.LineCreateResponse;
 
 public class LineAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void setUpStations() {
-        Map<String, String> stationParams1 = Map.of("name", "강남역");
-        Map<String, String> stationParams2 = Map.of("name", "역삼역");
-        SimpleRestAssured.post("/stations", stationParams1);
-        SimpleRestAssured.post("/stations", stationParams2);
+        StationRequest stationRequest1 = new StationRequest("강남역");
+        StationRequest stationRequest2 = new StationRequest("역삼역");
+        SimpleRestAssured.post("/stations", stationRequest1);
+        SimpleRestAssured.post("/stations", stationRequest2);
     }
 
     @Test
@@ -87,8 +87,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
                 .map(SimpleResponse::getIdFromLocation)
                 .collect(Collectors.toList());
-        List<Long> resultLineIds = response.toList(LineResponse.class).stream()
-                .map(LineResponse::getId)
+        List<Long> resultLineIds = response.toList(LineCreateResponse.class).stream()
+                .map(LineCreateResponse::getId)
                 .collect(Collectors.toList());
 
         Assertions.assertAll(
@@ -106,12 +106,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // when
         final String uri = createdResponse.getHeader("Location");
         final SimpleResponse foundResponse = SimpleRestAssured.get(uri);
-        final LineResponse createdLineResponse = createdResponse.toObject(LineResponse.class);
-        final LineResponse foundLineResponse = foundResponse.toObject(LineResponse.class);
+        final LineCreateResponse createdLineCreateResponse = createdResponse.toObject(LineCreateResponse.class);
+        final LineCreateResponse foundLineCreateResponse = foundResponse.toObject(LineCreateResponse.class);
         // then
         Assertions.assertAll(
                 () -> foundResponse.assertStatus(HttpStatus.OK),
-                () -> assertThat(foundLineResponse.getId()).isEqualTo(createdLineResponse.getId())
+                () -> assertThat(foundLineCreateResponse.getId()).isEqualTo(createdLineCreateResponse.getId())
         );
     }
 

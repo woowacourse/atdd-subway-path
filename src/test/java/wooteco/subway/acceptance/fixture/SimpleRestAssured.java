@@ -1,11 +1,11 @@
 package wooteco.subway.acceptance.fixture;
 
-import io.restassured.RestAssured;
-import io.restassured.specification.RequestSpecification;
-
 import java.util.Map;
 
 import org.springframework.http.MediaType;
+
+import io.restassured.RestAssured;
+import io.restassured.specification.RequestSpecification;
 
 public class SimpleRestAssured {
 
@@ -14,9 +14,9 @@ public class SimpleRestAssured {
                 .when().get(path));
     }
 
-    public static SimpleResponse post(String path, Map<String, String> params) {
+    public static SimpleResponse post(String path, Object object) {
         return new SimpleResponse(given()
-                .body(params)
+                .body(object)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post(path));
     }

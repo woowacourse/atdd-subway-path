@@ -3,7 +3,6 @@ package wooteco.subway.acceptance;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -14,6 +13,7 @@ import org.springframework.http.HttpStatus;
 
 import wooteco.subway.acceptance.fixture.SimpleResponse;
 import wooteco.subway.acceptance.fixture.SimpleRestAssured;
+import wooteco.subway.dto.request.StationRequest;
 import wooteco.subway.dto.response.StationResponse;
 
 @DisplayName("지하철역 관련 기능")
@@ -23,9 +23,9 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStation() {
         // given
-        Map<String, String> params = Map.of("name", "강남역");
+        StationRequest stationRequest = new StationRequest("강남역");
         // when
-        SimpleResponse response = SimpleRestAssured.post("/stations", params);
+        SimpleResponse response = SimpleRestAssured.post("/stations", stationRequest);
         // then
         Assertions.assertAll(
                 () -> response.assertStatus(HttpStatus.CREATED),
@@ -37,10 +37,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStationWithDuplicateName() {
         // given
-        Map<String, String> params = Map.of("name", "강남역");
-        SimpleRestAssured.post("/stations", params);
+        StationRequest stationRequest = new StationRequest("강남역");
+        SimpleRestAssured.post("/stations", stationRequest);
         // when
-        SimpleResponse response = SimpleRestAssured.post("/stations", params);
+        SimpleResponse response = SimpleRestAssured.post("/stations", stationRequest);
         // then
         response.assertStatus(HttpStatus.BAD_REQUEST);
     }
@@ -49,10 +49,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void getStations() {
         /// given
-        Map<String, String> params1 = Map.of("name", "강남역");
-        Map<String, String> params2 = Map.of("name", "역삼역");
-        SimpleResponse createResponse1 = SimpleRestAssured.post("/stations", params1);
-        SimpleResponse createResponse2 = SimpleRestAssured.post("/stations", params2);
+        StationRequest stationRequest1 = new StationRequest("강남역");
+        StationRequest stationRequest2 = new StationRequest("역삼역");
+        SimpleResponse createResponse1 = SimpleRestAssured.post("/stations", stationRequest1);
+        SimpleResponse createResponse2 = SimpleRestAssured.post("/stations", stationRequest2);
 
         // when
         SimpleResponse response = SimpleRestAssured.get("/stations");
@@ -74,8 +74,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteStation() {
         // given
-        Map<String, String> params = Map.of("name", "강남역");
-        SimpleResponse createResponse = SimpleRestAssured.post("/stations", params);
+        StationRequest stationRequest = new StationRequest("강남역");
+        SimpleResponse createResponse = SimpleRestAssured.post("/stations", stationRequest);
         // when
         String uri = createResponse.getHeader("Location");
         SimpleResponse response = SimpleRestAssured.delete(uri);
@@ -87,8 +87,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않는 지하철 역을 삭제하면 예외를 던진다.")
     void deleteStation_throwsExceptionWithInvalidStation() {
         // given
-        Map<String, String> params = Map.of("name", "강남역");
-        SimpleResponse createResponse = SimpleRestAssured.post("/stations", params);
+        StationRequest stationRequest = new StationRequest("강남역");
+        SimpleRestAssured.post("/stations", stationRequest);
         // when
         SimpleResponse deleteResponse = SimpleRestAssured.delete("/lines/100");
         // then
