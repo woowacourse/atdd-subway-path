@@ -30,14 +30,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
             post(makeSectionJson(2L, 3L, 3), "/lines/2/sections");
 
             ExtractableResponse<Response> response = get(
-                "/paths?source=1&target=3&age=15");
+                "/paths?source=1&target=3&age=20");
             PathResponse actual = response.jsonPath().getObject(".", PathResponse.class);
 
             assertAll(() -> {
                 assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
                 assertThat(actual)
                     .extracting("distance", "fare")
-                    .containsExactly(6, 1250);
+                    .containsExactly(6, 2350);
             });
         }
 

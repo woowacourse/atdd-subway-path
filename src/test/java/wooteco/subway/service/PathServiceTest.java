@@ -29,9 +29,10 @@ class PathServiceTest {
     @DisplayName("findShortestPath는 최단경로를 찾는다")
     @Nested
     class findShortestPathTest {
+
         @Test
         void 가장_짧은_경로를_찾는다() {
-            PathResponse path = pathService.findShortestPath(1L, 3L);
+            PathResponse path = pathService.findShortestPath(1L, 3L, 20);
             List<StationResponse> stations = path.getStations();
 
             assertAll(() -> {
@@ -40,26 +41,26 @@ class PathServiceTest {
                     .containsExactly(1L, 2L, 3L);
                 assertThat(path)
                     .extracting("distance", "fare")
-                    .containsExactly(15, 1350);
+                    .containsExactly(15, 2250);
             });
         }
 
         @Test
         void 존재하지_않는_역_id를_입력받은_경우_예외발생() {
-            assertThatThrownBy(() -> pathService.findShortestPath(9999L, 3L))
+            assertThatThrownBy(() -> pathService.findShortestPath(9999L, 3L, 20))
                 .isInstanceOf(IllegalArgumentException.class);
         }
 
         @Test
         void 출발역과_도착역이_같은_경우_예외발생() {
-            assertThatThrownBy(() -> pathService.findShortestPath(1L, 1L))
+            assertThatThrownBy(() -> pathService.findShortestPath(1L, 1L, 20))
                 .isInstanceOf(PathNotFoundException.class);
         }
 
         @Test
         void 등록되지_않은_구간일_경우_예외발생() {
-                assertThatThrownBy(() -> pathService.findShortestPath(3L, 4L))
-                    .isInstanceOf(PathNotFoundException.class);
+            assertThatThrownBy(() -> pathService.findShortestPath(3L, 4L, 30))
+                .isInstanceOf(PathNotFoundException.class);
         }
     }
 }

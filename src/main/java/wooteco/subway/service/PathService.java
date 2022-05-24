@@ -9,6 +9,7 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.PathGraph;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.policy.FarePolicies;
 import wooteco.subway.dto.PathResponse;
 
 @Service
@@ -23,15 +24,16 @@ public class PathService {
         this.stationDao = stationDao;
     }
 
-    public PathResponse findShortestPath(Long source, Long target) {
+    public PathResponse findShortestPath(Long source, Long target, int age) {
         List<Line> lines = lineDao.findAll();
         PathGraph pathGraph = new PathGraph(lines);
 
         Station sourceStation = findStationById(source);
         Station targetStation = findStationById(target);
         Path path = pathGraph.findShortestPath(sourceStation, targetStation);
+        int fare = FarePolicies.of(path, age).calculate();
 
-        return PathResponse.of(path);
+        return PathResponse.of(path, fare);
     }
 
     private Station findStationById(Long id) {
