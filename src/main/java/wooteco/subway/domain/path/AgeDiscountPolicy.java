@@ -11,17 +11,17 @@ public enum AgeDiscountPolicy {
     ADULT(age -> 19 <= age, fare -> 0),
     ;
 
-    private final Predicate<Integer> containsAgePredicate;
+    private final Predicate<Integer> agePredicate;
     private final Function<Integer, Integer> discountPolicy;
 
-    AgeDiscountPolicy(final Predicate<Integer> containsAgePredicate, final Function<Integer, Integer> discountPolicy) {
-        this.containsAgePredicate = containsAgePredicate;
+    AgeDiscountPolicy(final Predicate<Integer> agePredicate, final Function<Integer, Integer> discountPolicy) {
+        this.agePredicate = agePredicate;
         this.discountPolicy = discountPolicy;
     }
 
     public static AgeDiscountPolicy from(final int age) {
         return Arrays.stream(values())
-                .filter(ageDisCountPolicy -> ageDisCountPolicy.containsAgePredicate.test(age))
+                .filter(ageDisCountPolicy -> ageDisCountPolicy.agePredicate.test(age))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("입력한 나이값이 올바르지 않습니다."));
     }
