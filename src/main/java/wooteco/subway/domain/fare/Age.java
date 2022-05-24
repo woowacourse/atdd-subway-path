@@ -1,4 +1,4 @@
-package wooteco.subway.domain.path;
+package wooteco.subway.domain.fare;
 
 public class Age {
 

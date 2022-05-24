@@ -14,10 +14,6 @@ public class Kilometer {
         return new Kilometer(value);
     }
 
-    public int value() {
-        return value;
-    }
-
     public boolean lessThanKm(int otherValue) {
         return value <= otherValue;
     }
@@ -28,6 +24,10 @@ public class Kilometer {
 
     public boolean exceedKm(int otherValue) {
         return value > otherValue;
+    }
+
+    public int value() {
+        return value;
     }
 
     @Override

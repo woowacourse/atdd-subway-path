@@ -2,13 +2,12 @@ package wooteco.subway.domain.fare;
 
 import java.util.Arrays;
 import java.util.function.Predicate;
-import wooteco.subway.domain.path.Age;
 
 public enum AgeFarePolicy {
     LESS_THAN_6(age -> age.lessThan(6)) {
         @Override
         public Fare apply(Fare fare, Age age) {
-            return new Fare(0);
+            return FREE;
         }
     },
     FROM_6_TO_13(age -> age.moreThan(6) && age.lessThan(13)) {
@@ -32,6 +31,7 @@ public enum AgeFarePolicy {
         }
     };
 
+    private static final Fare FREE = new Fare(0);
     private final Predicate<Age> condition;
 
     AgeFarePolicy(Predicate<Age> condition) {

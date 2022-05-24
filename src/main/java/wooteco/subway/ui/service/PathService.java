@@ -7,7 +7,7 @@ import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.distance.Kilometer;
-import wooteco.subway.domain.path.Age;
+import wooteco.subway.domain.fare.Age;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.response.PathResponse;

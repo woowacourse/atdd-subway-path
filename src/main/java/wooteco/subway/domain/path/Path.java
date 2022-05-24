@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.domain.fare.Age;
 import wooteco.subway.domain.fare.AgeFarePolicy;
 import wooteco.subway.domain.fare.DistanceFarePolicy;
 import wooteco.subway.domain.fare.Fare;
