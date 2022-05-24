@@ -6,13 +6,17 @@ import java.util.function.Predicate;
 import wooteco.subway.domain.fare.policy.FarePolicy;
 
 public enum AgeDiscountPolicyGenerator {
-    BABY((age) -> 0 <= age && age <= 5,
+    BABY((age) ->
+            Constants.MIN_AGE <= age && age <= Constants.BABY_MAX_AGE,
             new BabyDiscountPolicy()),
-    CHILD((age) -> 5 < age && age <= 12,
+    CHILD((age) ->
+            Constants.BABY_MAX_AGE < age && age <= Constants.CHILD_MAX_AGE,
             new ChildDiscountPolicy()),
-    TEENAGER((age) -> 12 < age && age <= 18,
+    TEENAGER((age) ->
+            Constants.CHILD_MAX_AGE < age && age <= Constants.TEENAGER_MAX_AGE,
             new TeenagerDiscountPolicy()),
-    ADULT((age) -> age > 18,
+    ADULT((age) ->
+            age > Constants.TEENAGER_MAX_AGE,
             new AdultDiscountPolicy());
 
     private static final String NO_AGE_DISCOUNT_POLICY_ERROR_MESSAGE = "해당되는 나이 정책이 없습니다.";
@@ -31,5 +35,12 @@ public enum AgeDiscountPolicyGenerator {
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException(NO_AGE_DISCOUNT_POLICY_ERROR_MESSAGE))
                 .ageDiscountPolicy;
+    }
+
+    private static class Constants {
+        private static final int MIN_AGE = 0;
+        private static final int BABY_MAX_AGE = 5;
+        private static final int CHILD_MAX_AGE = 12;
+        private static final int TEENAGER_MAX_AGE = 18;
     }
 }

@@ -5,11 +5,14 @@ import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
 public enum DistancePolicyGenerator {
-    UNDER_TEN((distance) -> 0 <= distance && distance < 10,
+    UNDER_TEN((distance) ->
+            Constants.MIN_DISTANCE <= distance && distance < Constants.TEN_DISTANCE,
             new UnderTenKMPolicy()),
-    TEN_TO_FIFTY((distance) -> 10 <= distance && distance < 50,
+    TEN_TO_FIFTY((distance) ->
+            Constants.TEN_DISTANCE <= distance && distance < Constants.FIFTY_DISTANCE,
             new TenToFiftyKMPolicy()),
-    OVER_FIFTY((distance) -> distance >= 50,
+    OVER_FIFTY((distance) ->
+            distance >= Constants.FIFTY_DISTANCE,
             new OverFiftyKMPolicy());
 
     private static final String NO_DISTANCE_POLICY_ERROR_MESSAGE = "해당되는 거리 정책이 없습니다.";
@@ -28,5 +31,11 @@ public enum DistancePolicyGenerator {
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException(NO_DISTANCE_POLICY_ERROR_MESSAGE))
                 .distancePolicy;
+    }
+
+    private static class Constants {
+        private static final int MIN_DISTANCE = 0;
+        private static final int TEN_DISTANCE = 10;
+        private static final int FIFTY_DISTANCE = 50;
     }
 }

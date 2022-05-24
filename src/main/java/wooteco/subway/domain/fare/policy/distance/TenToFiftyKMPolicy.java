@@ -1,7 +1,7 @@
 package wooteco.subway.domain.fare.policy.distance;
 
 public class TenToFiftyKMPolicy implements DistancePolicy {
-    static final int BASE_FEE = 1250;
+    private static final int BASE_FEE = UnderTenKMPolicy.BASE_FEE;
     private static final int OVER_TEN_DISTANCE = 10;
     private static final double OVER_TEN_RATE = 5;
 

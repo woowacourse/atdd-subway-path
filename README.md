@@ -183,8 +183,8 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-subwayGraph/blo
     - [x] sections.contains(station)처럼 호출할 수 있으면 어떨까요?
 - [x] getFare가 여러번 호출되면 계산도 매번 발생할텐데요. 매번 계산할 필요가 있을까요?
     - [x] baseFare는 기본요금일까요?
-- [ ] Generator -> 매직 넘버는 상수로 분리하면 어떨까요?
-- [ ] UnderTenKMPolicy 에서도 같은 상수가 선언돼 있는데, 필요한 중복일까요?
+- [x] Generator -> 매직 넘버는 상수로 분리하면 어떨까요?
+- [x] UnderTenKMPolicy 에서도 같은 상수가 선언돼 있는데, 필요한 중복일까요?
 - [ ] removeStationById -> StationService 대신 이곳에 위치한 이유가 있을까요?
 - [ ] extraFare INT 칼럼에 NOT NULL 추가
 - [ ] PathService.java
