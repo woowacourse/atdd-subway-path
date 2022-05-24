@@ -1,7 +1,6 @@
 package wooteco.subway.domain;
 
 import java.util.Objects;
-import wooteco.subway.exception.invalidrequest.InvalidSectionCreateRequestException;
 
 public class Section {
 
@@ -16,7 +15,7 @@ public class Section {
     }
 
     public Section(Long id, Line line, Station upStation, Station downStation, int distance) {
-        validateEndpoints(upStation, downStation);
+        validate(line, upStation, downStation, distance);
         this.id = id;
         this.line = line;
         this.upStation = upStation;
@@ -24,9 +23,30 @@ public class Section {
         this.distance = distance;
     }
 
+    private void validate(Line line, Station upStation, Station downStation, int distance) {
+        validateLine(line);
+        validateEndpoints(upStation, downStation);
+        validateDistance(distance);
+    }
+
+    private void validateLine(Line line) {
+        if (line == null) {
+            throw new IllegalArgumentException("구간의 노선은 null일 수 없습니다.");
+        }
+    }
+
     private void validateEndpoints(Station upStation, Station downStation) {
+        if (upStation == null || downStation == null) {
+            throw new IllegalArgumentException("구간의 시작과 끝은 null일 수 없습니다.");
+        }
         if (upStation.hasSameName(downStation)) {
-            throw new InvalidSectionCreateRequestException("구간의 시작과 끝은 같은 역일 수 없습니다.");
+            throw new IllegalArgumentException("구간의 시작과 끝은 같은 역일 수 없습니다.");
+        }
+    }
+
+    private void validateDistance(int distance) {
+        if (distance <= 0) {
+            throw new IllegalArgumentException("구간 거리는 1보다 작을 수 없습니다.");
         }
     }
 
