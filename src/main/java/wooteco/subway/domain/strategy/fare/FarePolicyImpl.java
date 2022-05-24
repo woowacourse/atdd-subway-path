@@ -1,8 +1,9 @@
 package wooteco.subway.domain.strategy.fare;
 
 import java.util.List;
+import wooteco.subway.domain.strategy.fare.distance.DistanceFareManager;
+import wooteco.subway.domain.strategy.fare.distance.DistanceFareManagerFactory;
 import wooteco.subway.domain.strategy.fare.distance.DistanceFareStrategy;
-import wooteco.subway.domain.strategy.fare.distance.DistanceFareStrategyFactory;
 import wooteco.subway.domain.strategy.fare.discount.DiscountStrategy;
 import wooteco.subway.domain.strategy.fare.discount.DiscountStrategyFactory;
 
@@ -10,8 +11,8 @@ public class FarePolicyImpl extends FarePolicy {
 
     @Override
     protected int calculateBasicFare(int distance) {
-        DistanceFareStrategy distanceFareStrategy = DistanceFareStrategyFactory.getDistanceFareStrategy(distance);
-        return distanceFareStrategy.calculateFare(distance);
+        DistanceFareManager distanceFareManager = DistanceFareManagerFactory.createDistanceFareManager();
+        return distanceFareManager.calculateFare(distance);
     }
 
     @Override
