@@ -9,10 +9,17 @@ public class Station {
     public Station(Long id, String name) {
         this.id = id;
         this.name = name;
+        validateStation(name);
     }
 
     public Station(String name) {
         this(null, name);
+    }
+
+    private void validateStation(String name) {
+        if (name.isBlank()) {
+            throw new IllegalArgumentException("이름은 빈 값일 수 없습니다.");
+        }
     }
 
     public boolean isSameStation(Long stationId) {
