@@ -11,7 +11,7 @@ public class Path {
     private final int distance;
     private final Lines lines;
 
-    public Path(List<Station> stations, int distance, Lines lines) {
+    private Path(List<Station> stations, int distance, Lines lines) {
         this.stations = stations;
         this.distance = distance;
         this.lines = lines;
