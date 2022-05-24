@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.exception.ClientException;
 
 @RestControllerAdvice
-public class StationControllerAdvice {
+public class SubwayControllerAdvice {
 
     @ExceptionHandler({ClientException.class})
     public ResponseEntity<String> handleIllegalArgumentException(ClientException exception) {
