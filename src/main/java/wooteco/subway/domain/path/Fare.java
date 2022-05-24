@@ -34,6 +34,15 @@ public class Fare implements Comparable<Fare> {
         return new Fare(totalAmount);
     }
 
+    Fare subtract(Fare fare) {
+        return new Fare(this.value - fare.value);
+    }
+
+    Fare discount(double rate) {
+        int discountAmount = (int) Math.ceil(this.value * rate);
+        return new Fare(this.value - discountAmount);
+    }
+
     public int getValue() {
         return value;
     }

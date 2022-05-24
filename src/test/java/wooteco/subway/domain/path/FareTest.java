@@ -30,4 +30,23 @@ public class FareTest {
         Fare fare = Fare.sum(new Fare(1000), new Fare(500));
         assertThat(fare.getValue()).isEqualTo(1500);
     }
+
+    @DisplayName("1000원에서 500원을 빼면 500원이다")
+    @Test
+    void subtract() {
+        Fare fare_1000 = new Fare(1000);
+        Fare fare_500 = new Fare(500);
+        Fare fare = fare_1000.subtract(fare_500);
+
+        assertThat(fare.getValue()).isEqualTo(500);
+    }
+
+    @DisplayName("1000원을 20% 할인하면 800원이다")
+    @Test
+    void discount() {
+        Fare fare_1000 = new Fare(1000);
+        Fare fare = fare_1000.discount(0.2);
+
+        assertThat(fare.getValue()).isEqualTo(800);
+    }
 }

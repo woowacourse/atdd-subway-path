@@ -58,8 +58,9 @@ public class Path {
         }
     }
 
-    public Fare calculateFare() {
-        return Fare.sum(distance.calculateFare(), extraFare);
+    public Fare calculateFare(Age age) {
+        Fare fare = Fare.sum(distance.calculateFare(), extraFare);
+        return AgeFare.calculate(fare, age);
     }
 
     public List<Station> getStations() {

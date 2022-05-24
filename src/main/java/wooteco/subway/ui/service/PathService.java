@@ -9,12 +9,14 @@ import org.springframework.stereotype.Service;
 
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.path.Age;
 import wooteco.subway.domain.path.Fare;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.PathEdge;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.path.ShortestPathFactory;
 import wooteco.subway.domain.Station;
+import wooteco.subway.dto.request.PathRequest;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.dto.response.StationResponse;
 
@@ -28,7 +30,7 @@ public class PathService {
         this.stationDao = stationDao;
     }
 
-    public PathResponse getPath(Long source, Long target) {
+    public PathResponse getPath(PathRequest pathRequest) {
         List<Section> sections = sectionDao.findAll();
         Map<Section, Fare> edges = sections.stream()
                 .collect(Collectors.toMap(
@@ -37,11 +39,11 @@ public class PathService {
                 ));
         DijkstraShortestPath<Station, PathEdge> shortestPath = ShortestPathFactory.getFrom(edges);
 
-        Station sourceStation = stationDao.findById(source);
-        Station targetStation = stationDao.findById(target);
+        Station sourceStation = stationDao.findById(pathRequest.getSource());
+        Station targetStation = stationDao.findById(pathRequest.getTarget());
         Path path = Path.from(shortestPath, sourceStation, targetStation);
-        Fare extraFare = path.calculateFare();
+        Fare fare = path.calculateFare(new Age(pathRequest.getAge()));
 
-        return new PathResponse(StationResponse.of(path.getStations()), path.getDistance(), extraFare.getValue());
+        return new PathResponse(StationResponse.of(path.getStations()), path.getDistance(), fare.getValue());
     }
 }

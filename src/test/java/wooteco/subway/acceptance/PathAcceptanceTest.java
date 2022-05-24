@@ -113,4 +113,42 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(pathResponse.getFare()).isEqualTo(1550)
         );
     }
+
+    @Test
+    @DisplayName("13세 청소년이 35km를 이용한 요금은 1120원이다.")
+    public void getPath_teenager_35km() {
+        // given
+        Map<String, String> stationParams1 = Map.of("name", "강남역");
+        Map<String, String> stationParams2 = Map.of("name", "역삼역");
+        SimpleRestAssured.post("/stations", stationParams1);
+        SimpleRestAssured.post("/stations", stationParams2);
+
+        Map<String, String> lineParams = Map.of(
+                "name", "신분당선",
+                "color", "bg-red-600",
+                "upStationId", "1",
+                "downStationId", "2",
+                "distance", "35000"
+        );
+        SimpleRestAssured.post("/lines", lineParams);
+
+        Map<String, Integer> params = Map.of("source", 1, "target", 2, "age", 13);
+
+        // when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .queryParams(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .get("/paths")
+                .then().log().all().extract();
+
+        // then
+        JsonPath jsonPath = response.body().jsonPath();
+        PathResponse pathResponse = jsonPath.getObject(".", PathResponse.class);
+
+        assertAll(
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(35),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1120)
+        );
+    }
 }
