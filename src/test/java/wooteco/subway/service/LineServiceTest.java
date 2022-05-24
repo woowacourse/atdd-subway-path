@@ -38,6 +38,9 @@ class LineServiceTest {
     @Mock
     private SectionDao sectionDao;
 
+    @Mock
+    private StationService stationService;
+
     @InjectMocks
     private LineService lineService;
 
@@ -46,15 +49,15 @@ class LineServiceTest {
     void createLine() {
         final String lineName = "신분당선";
         final String lineColor = "bg-red-600";
-        final Line line = new Line(lineName, lineColor);
+        final Line line = new Line(lineName, lineColor, 0);
         final Station station1 = new Station(1L, "선릉역");
         final Station station2 = new Station(2L, "강남역");
         final Section section = new Section(station1, station2, 3, 1L);
 
         given(lineDao.save(line)).willReturn(new Line(1L, lineName, lineColor, 0));
-        given(sectionDao.save(section)).willReturn(section);
-        given(stationDao.findById(section.getUpStation().getId())).willReturn(Optional.of(station1));
-        given(stationDao.findById(section.getDownStation().getId())).willReturn(Optional.of(station2));
+        given(sectionDao.save(section)).willReturn(new Section(1L, station1, station2, 3, 1L));
+        given(stationService.findStationById(section.getUpStation().getId())).willReturn(station1);
+        given(stationService.findStationById(section.getDownStation().getId())).willReturn(station2);
 
         final Line actual = lineService.createLine(line, section);
 
@@ -137,11 +140,13 @@ class LineServiceTest {
     void create_throwsExceptionIfStationsDoesNotExist() {
         final Station station1 = new Station("역삼역");
         final Station station2 = new Station("교대역");
-        final Section section = new Section(station1, station2, 10);
+        final Section section = new Section(new Station(3L, ""), station2, 10);
         final Line line = new Line("2호선", "bg-green-600");
+
+        given(stationService.findStationById(3L)).willThrow(new DataNotFoundException("존재하지 않는 지하철역 ID입니다."));
 
         assertThatThrownBy(() -> lineService.createLine(line, section))
                 .isInstanceOf(DataNotFoundException.class)
-                .hasMessage("존재하지 않는 지하철 역입니다.");
+                .hasMessage("존재하지 않는 지하철역 ID입니다.");
     }
 }
