@@ -30,7 +30,7 @@ class FareTest {
     @ParameterizedTest
     @DisplayName("나이에 따른 할인된 요금을 계산한다.")
     @CsvSource(
-            value = {"1:0", "5:0", "6:1000", "12:1000", "13:1600", "18:1600", "19:2350"},
+            value = {"1:0", "5:0", "6:1000", "12:1000", "13:1600", "18:1600", "19:2350", "64:2350", "65:0"},
             delimiter = ':'
     )
     void DiscountByAge(final int age, final int expected) {
