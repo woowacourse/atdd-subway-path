@@ -20,10 +20,12 @@ public class PathService {
 
     private final SubwayRepository subwayRepository;
     private final StationRepository stationRepository;
+    private final CostManager costManager;
 
-    public PathService(SubwayRepository subwayRepository, StationRepository stationRepository) {
+    public PathService(SubwayRepository subwayRepository, StationRepository stationRepository, CostManager costManager) {
         this.subwayRepository = subwayRepository;
         this.stationRepository = stationRepository;
+        this.costManager = costManager;
     }
 
     public PathResponse findShortestPath(long sourceStationId, long targetStationId, int age) {
@@ -32,7 +34,6 @@ public class PathService {
         Station startStation = stationRepository.findExistingStation(sourceStationId);
         Station endStation = stationRepository.findExistingStation(targetStationId);
         Path optimalPath = pathManager.calculateOptimalPath(startStation, endStation);
-        CostManager costManager = new CostManager();
         int fare = costManager.calculateFare(optimalPath.getTotalDistance(), optimalPath.getExtraFare(), age);
 
         return PathResponse.of(optimalPath, fare);
