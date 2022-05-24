@@ -48,7 +48,7 @@ public class PathService {
         return shortestPathLines.stream()
                 .map(lineDao::findExtraFareById)
                 .max(Comparator.comparingInt(extraFare -> extraFare))
-                .orElseThrow(() -> new IllegalArgumentException("알 수 없는 오류가 발생했습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("추가 요금이 존재하지 않습니다. 라인을 다시 추가해주세요."));
     }
 
     private void validateSameStation(Long sourceStationId, Long targetStationId) {
