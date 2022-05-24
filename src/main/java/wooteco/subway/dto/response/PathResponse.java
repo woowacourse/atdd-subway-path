@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import wooteco.subway.domain.property.Distance;
-import wooteco.subway.util.FareCalculator;
 import wooteco.subway.domain.station.Station;
 
 public class PathResponse {

@@ -9,7 +9,7 @@ import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.property.Age;
 import wooteco.subway.domain.property.Distance;
 import wooteco.subway.repository.LineRepository;
-import wooteco.subway.util.FareCalculator;
+import wooteco.subway.domain.property.Fare;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.repository.StationRepository;
@@ -43,6 +43,6 @@ public class PathService {
         final LineSeries lineSeries = new LineSeries(lines);
         final int extraFare = lineSeries.findMaxExtraFare(path.findUsedLineId());
 
-        return FareCalculator.calculate(distance, Age.from(age), extraFare);
+        return Fare.calculate(distance, Age.from(age), extraFare);
     }
 }

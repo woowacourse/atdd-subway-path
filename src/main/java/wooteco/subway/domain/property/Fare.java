@@ -1,9 +1,6 @@
-package wooteco.subway.util;
+package wooteco.subway.domain.property;
 
-import wooteco.subway.domain.property.Age;
-import wooteco.subway.domain.property.Distance;
-
-public class FareCalculator {
+public class Fare {
 
     private static final int BASIC_FARE = 1250;
     private static final int EXTRA_FARE = 100;
