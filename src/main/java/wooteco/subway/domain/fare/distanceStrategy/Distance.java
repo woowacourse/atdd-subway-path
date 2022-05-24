@@ -5,8 +5,8 @@ import java.util.function.Predicate;
 
 public enum Distance {
     BELOW_MINIMUM (discount -> discount < 10, new FreeDiscountPolicy()),
-    BELOW_MAXIMUM (discount -> 10 <= discount && discount < 50, new NormalDistanceDiscountPolicy()),
-    OVER_MAXIMUM (discount -> 50 <= discount, new ExtraDiscountPolicy())
+    BELOW_MAXIMUM (discount -> discount >= 10 && discount < 50, new NormalDistanceDiscountPolicy()),
+    OVER_MAXIMUM (discount -> discount >= 50, new ExtraDiscountPolicy())
     ;
 
     private final Predicate<Integer> discountCondition;

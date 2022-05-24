@@ -4,10 +4,10 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 public enum Age {
-    PREFERENTIAL (age -> age < 6 || 65 <= age, new PreferentialDiscountPolicy()),
-    CHILDREN (age -> 6 <= age && age < 13, new ChildrenDiscountPolicy()),
-    TEENAGER (age -> 13 <= age && age <= 18, new TeenagerDiscountPolicy()),
-    NORMAL (age -> 18 < age, new NormalAgeDiscountPolicy())
+    PREFERENTIAL (age -> age < 6 || age >= 65, new PreferentialDiscountPolicy()),
+    CHILDREN (age -> age >= 6 && age < 13, new ChildrenDiscountPolicy()),
+    TEENAGER (age -> age >= 13 && age <= 18, new TeenagerDiscountPolicy()),
+    NORMAL (age -> age > 18, new NormalAgeDiscountPolicy())
     ;
 
     private final Predicate<Integer> ageCondition;
