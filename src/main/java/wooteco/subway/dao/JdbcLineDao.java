@@ -63,7 +63,8 @@ public class JdbcLineDao implements LineDao {
                 resultSet.getLong("id"),
                 resultSet.getString("name"),
                 resultSet.getString("color"),
-                findSectionsById(resultSet.getLong("id"))
+                findSectionsById(resultSet.getLong("id")),
+                resultSet.getInt("extraFare")
         );
     }
 

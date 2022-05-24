@@ -19,7 +19,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStation() {
         // given
-        Map<String, String> params = Map.of("name", "강남역");
+        Map<String, Object> params = Map.of("name", "강남역");
         // when
         SimpleResponse response = SimpleRestAssured.post("/stations", params);
         // then
@@ -35,7 +35,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStationWithDuplicateName() {
         // given
-        Map<String, String> params = Map.of("name", "강남역");
+        Map<String, Object> params = Map.of("name", "강남역");
         SimpleRestAssured.post("/stations", params);
         // when
         SimpleResponse response = SimpleRestAssured.post("/stations", params);
@@ -47,8 +47,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void getStations() {
         /// given
-        Map<String, String> params1 = Map.of("name", "강남역");
-        Map<String, String> params2 = Map.of("name", "역삼역");
+        Map<String, Object> params1 = Map.of("name", "강남역");
+        Map<String, Object> params2 = Map.of("name", "역삼역");
         SimpleRestAssured.post("/stations", params1);
         SimpleRestAssured.post("/stations", params2);
 
@@ -67,7 +67,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteStation() {
         // given
-        Map<String, String> params = Map.of("name", "강남역");
+        Map<String, Object> params = Map.of("name", "강남역");
         SimpleResponse createResponse = SimpleRestAssured.post("/stations", params);
         // when
         String uri = createResponse.getHeader("Location");
@@ -80,7 +80,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않는 지하철 역을 삭제하면 예외를 던진다.")
     void deleteStation_throwsExceptionWithInvalidStation() {
         // given
-        Map<String, String> params = Map.of("name", "강남역");
+        Map<String, Object> params = Map.of("name", "강남역");
         SimpleRestAssured.post("/stations", params);
         // when
         final SimpleResponse deleteResponse = SimpleRestAssured.delete("/lines/100");

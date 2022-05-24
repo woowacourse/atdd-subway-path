@@ -22,14 +22,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("출발역과 도착역으로 최단 경로를 조회한다.")
     void getPath() {
         // given
-        Map<String, String> stationParams1 = Map.of("name", "강남역");
-        Map<String, String> stationParams2 = Map.of("name", "역삼역");
-        Map<String, String> stationParams3 = Map.of("name", "선릉역");
+        Map<String, Object> stationParams1 = Map.of("name", "강남역");
+        Map<String, Object> stationParams2 = Map.of("name", "역삼역");
+        Map<String, Object> stationParams3 = Map.of("name", "선릉역");
         SimpleRestAssured.post("/stations", stationParams1);
         SimpleRestAssured.post("/stations", stationParams2);
         SimpleRestAssured.post("/stations", stationParams3);
 
-        Map<String, String> lineParams = Map.of(
+        Map<String, Object> lineParams = Map.of(
                 "name", "신분당선",
                 "color", "bg-red-600",
                 "upStationId", "1",
@@ -38,7 +38,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         );
         SimpleRestAssured.post("/lines", lineParams);
 
-        Map<String, String> sectionParams =
+        Map<String, Object> sectionParams =
                 Map.of("upStationId", "2",
                         "downStationId", "3",
                         "distance", "7");
