@@ -1,4 +1,4 @@
-package wooteco.subway.domain.Fare;
+package wooteco.subway.domain.fare;
 
 import java.util.Objects;
 
@@ -12,6 +12,14 @@ public class Fare {
 
     public Fare add(int fareValue) {
         return new Fare(value + fareValue);
+    }
+
+    public Fare add(Fare extraFare) {
+        return new Fare(value + extraFare.value);
+    }
+
+    public Fare minus(int value) {
+        return new Fare(this.value - value);
     }
 
     @Override
@@ -38,5 +46,9 @@ public class Fare {
 
     public int value() {
         return value;
+    }
+
+    public Fare discountPercent(int percent) {
+        return new Fare((int) (value / 100.0) * (100 - percent));
     }
 }

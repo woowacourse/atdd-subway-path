@@ -1,10 +1,10 @@
-package wooteco.subway.domain.Fare;
+package wooteco.subway.domain.fare;
 
 import java.util.Arrays;
 import java.util.function.Predicate;
 import wooteco.subway.domain.distance.Kilometer;
 
-public enum FarePolicy {
+public enum DistanceFarePolicy {
 
     LESS_THAN_10KM(d -> d.lessThanKm(10)) {
         @Override
@@ -33,18 +33,18 @@ public enum FarePolicy {
 
     private final Predicate<Kilometer> condition;
 
-    FarePolicy(Predicate<Kilometer> condition) {
+    DistanceFarePolicy(Predicate<Kilometer> condition) {
         this.condition = condition;
     }
 
     abstract public Fare apply(Kilometer kilometer);
 
     public static Fare getFare(Kilometer kilometer) {
-        FarePolicy farePolicy = findFarePolicy(kilometer);
+        DistanceFarePolicy farePolicy = findFarePolicy(kilometer);
         return farePolicy.apply(kilometer);
     }
 
-    private static FarePolicy findFarePolicy(Kilometer kilometer) {
+    private static DistanceFarePolicy findFarePolicy(Kilometer kilometer) {
         return Arrays.stream(values())
                 .filter(farePolicy -> farePolicy.condition.test(kilometer))
                 .findAny()

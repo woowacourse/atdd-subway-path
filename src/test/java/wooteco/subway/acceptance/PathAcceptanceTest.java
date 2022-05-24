@@ -36,7 +36,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 "upStationId", "1",
                 "downStationId", "2",
                 "distance", "10",
-                "extraFare", 100
+                "extraFare", 900
         );
         SimpleRestAssured.post("/lines", lineParams);
 
@@ -62,8 +62,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(17),
                 () -> assertThat(pathResponse.getStationResponses()).hasSize(3),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(1450)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1600)
         );
     }
-
 }

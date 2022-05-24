@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.fare;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -6,16 +6,14 @@ import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import wooteco.subway.domain.Fare.Fare;
-import wooteco.subway.domain.Fare.FarePolicy;
 import wooteco.subway.domain.distance.Kilometer;
 
-public class FarePolicyTest {
+public class DistanceFarePolicyTest {
 
     @ParameterizedTest(name = "{0}일 때 요금은 {1}이다")
     @MethodSource("provideDistanceAndFare")
     void getFare(Kilometer distance, Fare expected) {
-        assertThat(FarePolicy.getFare(distance)).isEqualTo(expected);
+        assertThat(DistanceFarePolicy.getFare(distance)).isEqualTo(expected);
     }
 
     private static Stream<Arguments> provideDistanceAndFare() {
