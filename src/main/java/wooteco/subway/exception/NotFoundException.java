@@ -2,9 +2,9 @@ package wooteco.subway.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class NotFoundStationException extends SubwayException {
+public class NotFoundException extends SubwayException {
 
-    public NotFoundStationException(String message) {
+    public NotFoundException(String message) {
         super(message, HttpStatus.NOT_FOUND);
     }
 }

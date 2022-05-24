@@ -73,8 +73,8 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-path/blob/maste
 - [ ] 어린이는 운임에서 350원을 공제한 금액의 50% 할인한다. (어린이: 6세 이상~13세 미만)
 
 ## 리팩토링할 사항 정리
-- [ ] Math.ceil 5, 8 int에서 double로 바꾸기
-- [ ] Custom exception 합치기 (구체적인것 => 포괄적인것)
-- [ ] Exception, RuntimeException 메시지 숨기기
+- [x] Math.ceil 5, 8 int에서 double로 바꾸기
+- [x] Custom exception 합치기 (구체적인것 => 포괄적인것)
+- [x] Exception, RuntimeException 메시지 숨기기
 - [ ] Graph 라이브러리 주입받도록 변경(인터페이스를 선언하고 구현체 주입받기)
 
