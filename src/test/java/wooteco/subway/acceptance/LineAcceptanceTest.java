@@ -13,8 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import wooteco.subway.dto.response.LineResponse;
 import wooteco.subway.dto.response.StationResponse;
-import wooteco.subway.test_utils.HttpMethod;
-import wooteco.subway.test_utils.HttpUtils;
+import wooteco.utils.HttpMethod;
+import wooteco.utils.HttpUtils;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayName("인수테스트 - /lines")
@@ -28,7 +28,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         @Test
         void 성공시_201_CREATED() {
-            testFixtureManager.saveStations("강남역", "선릉역");
+            databaseFixtureUtils.saveStations("강남역", "선릉역");
             Map<String, Object> params = jsonLineOf("신분당선", "bg-red-600",
                     900, 1L, 2L, 10);
 
@@ -62,7 +62,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         @Test
         void 거리_정보가_0이하인_경우_400_BAD_REQUEST() {
-            testFixtureManager.saveStations("강남역", "선릉역");
+            databaseFixtureUtils.saveStations("강남역", "선릉역");
             Map<String, Object> params = jsonLineOf("신분당선", "bg-red-600",
                     900, 1L, 2L, 0);
 
@@ -73,7 +73,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         @Test
         void 이미_존재하는_노선명_입력시_400_BAD_REQUEST() {
-            testFixtureManager.saveStations("강남역", "선릉역");
+            databaseFixtureUtils.saveStations("강남역", "선릉역");
             Map<String, Object> duplicateNameParams = jsonLineOf("중복되는 노선명", "bg-red-600", 100, 1L, 2L, 10);
 
             HttpUtils.send(HttpMethod.POST, "/lines", duplicateNameParams);
@@ -120,12 +120,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         @Test
         void 성공시_200_OK() {
-            testFixtureManager.saveStations("강남역", "선릉역", "잠실역");
-            testFixtureManager.saveLine("1호선", "노란색", 1000);
-            testFixtureManager.saveLine("2호선", "빨간색", 0);
-            testFixtureManager.saveSection(1L, 2L, 3L);
-            testFixtureManager.saveSection(1L, 1L, 2L);
-            testFixtureManager.saveSection(2L, 1L, 3L);
+            databaseFixtureUtils.saveStations("강남역", "선릉역", "잠실역");
+            databaseFixtureUtils.saveLine("1호선", "노란색", 1000);
+            databaseFixtureUtils.saveLine("2호선", "빨간색", 0);
+            databaseFixtureUtils.saveSection(1L, 2L, 3L);
+            databaseFixtureUtils.saveSection(1L, 1L, 2L);
+            databaseFixtureUtils.saveSection(2L, 1L, 3L);
 
             ExtractableResponse<Response> response = HttpUtils.send(HttpMethod.GET, PATH);
             List<LineResponse> actualBody = extractJsonBody(response);
@@ -148,10 +148,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         @Test
         void 모든_구간은_상행종점부터_하행종점까지_순서대로_나열되며_성공시_200_OK() {
-            testFixtureManager.saveStations("강남역", "선릉역", "잠실역");
-            testFixtureManager.saveLine("1호선", "노란색", 1000);
-            testFixtureManager.saveSection(1L, 1L, 2L);
-            testFixtureManager.saveSection(1L, 3L, 1L);
+            databaseFixtureUtils.saveStations("강남역", "선릉역", "잠실역");
+            databaseFixtureUtils.saveLine("1호선", "노란색", 1000);
+            databaseFixtureUtils.saveSection(1L, 1L, 2L);
+            databaseFixtureUtils.saveSection(1L, 3L, 1L);
 
             ExtractableResponse<Response> response = HttpUtils.send(HttpMethod.GET, toPath(1L));
             LineResponse actualBody = extractSingleLineResponseBody(response);
@@ -182,7 +182,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         @Test
         void 성공시_200_OK() {
-            testFixtureManager.saveLine("신분당선", "노란색", 0);
+            databaseFixtureUtils.saveLine("신분당선", "노란색", 0);
             Map<String, Object> params = jsonLineOf("NEW 분당선", "bg-red-800", 900);
 
             ExtractableResponse<Response> response = HttpUtils.send(HttpMethod.PUT, toPath(1L), params);
@@ -201,8 +201,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         @Test
         void 이미_존재하는_지하철_노선_이름으로_수정시_400_BAD_REQUEST() {
-            testFixtureManager.saveLine("현재 노선명", "노란색", 1000);
-            testFixtureManager.saveLine("존재하는 노선명", "노란색", 1000);
+            databaseFixtureUtils.saveLine("현재 노선명", "노란색", 1000);
+            databaseFixtureUtils.saveLine("존재하는 노선명", "노란색", 1000);
             Map<String, Object> duplicateNameParams = jsonLineOf("존재하는 노선명", "bg-red-600", 100);
 
             ExtractableResponse<Response> response = HttpUtils.send(HttpMethod.PUT, toPath(2L), duplicateNameParams);
@@ -258,7 +258,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         @Test
         void 성공시_204_OK() {
-            testFixtureManager.saveLine("존재하는 노선", "노란색");
+            databaseFixtureUtils.saveLine("존재하는 노선", "노란색");
 
             ExtractableResponse<Response> response = HttpUtils.send(HttpMethod.DELETE, toPath(1L));
 

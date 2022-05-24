@@ -19,9 +19,10 @@ import wooteco.subway.entity.LineEntity;
 import wooteco.subway.entity.SectionEntity;
 import wooteco.subway.entity.StationEntity;
 import wooteco.subway.exception.NotFoundException;
+import wooteco.subway.fixture.DatabaseUsageTest;
 
 @SuppressWarnings("NonAsciiCharacters")
-class SubwayRepositoryTest extends RepositoryTest {
+class SubwayRepositoryTest extends DatabaseUsageTest {
 
     @Autowired
     private SubwayRepository repository;
@@ -42,14 +43,14 @@ class SubwayRepositoryTest extends RepositoryTest {
 
     @BeforeEach
     void setup() {
-        testFixtureManager.saveStations("강남역", "잠실역", "선릉역", "청계산입구역");
+        databaseFixtureUtils.saveStations("강남역", "잠실역", "선릉역", "청계산입구역");
     }
 
     @Test
     void findAllLines_메서드는_모든_노선_정보들을_조회하여_도메인들의_리스트로_반환() {
-        testFixtureManager.saveLine("노선명1", "색깔1", 1000);
-        testFixtureManager.saveLine("노선명2", "색깔2", 0);
-        testFixtureManager.saveLine("노선명3", "색깔3", 900);
+        databaseFixtureUtils.saveLine("노선명1", "색깔1", 1000);
+        databaseFixtureUtils.saveLine("노선명2", "색깔2", 0);
+        databaseFixtureUtils.saveLine("노선명3", "색깔3", 900);
 
         List<LineInfo> actual = repository.findAllLines();
         List<LineInfo> expected = List.of(
@@ -62,9 +63,9 @@ class SubwayRepositoryTest extends RepositoryTest {
 
     @Test
     void findAllLinesByIds_메서드는_id_목록에_해당되는_모든_노선_정보들을_조회하여_도메인들의_리스트로_반환() {
-        testFixtureManager.saveLine("노선명1", "색깔1", 1000);
-        testFixtureManager.saveLine("노선명2", "색깔2", 0);
-        testFixtureManager.saveLine("노선명3", "색깔3", 900);
+        databaseFixtureUtils.saveLine("노선명1", "색깔1", 1000);
+        databaseFixtureUtils.saveLine("노선명2", "색깔2", 0);
+        databaseFixtureUtils.saveLine("노선명3", "색깔3", 900);
 
         List<LineInfo> actual = repository.findAllLinesByIds(List.of(1L, 3L));
         List<LineInfo> expected = List.of(
@@ -76,9 +77,9 @@ class SubwayRepositoryTest extends RepositoryTest {
 
     @Test
     void findAllSections_메서드는_모든_구간_정보들을_조회하여_도메인들의_리스트로_반환() {
-        testFixtureManager.saveSection(1L, 1L, 2L, 10);
-        testFixtureManager.saveSection(1L, 2L, 3L, 15);
-        testFixtureManager.saveSection(2L, 1L, 3L, 5);
+        databaseFixtureUtils.saveSection(1L, 1L, 2L, 10);
+        databaseFixtureUtils.saveSection(1L, 2L, 3L, 15);
+        databaseFixtureUtils.saveSection(2L, 1L, 3L, 5);
 
         List<Section> actual = repository.findAllSections();
         List<Section> expected = List.of(
@@ -91,9 +92,9 @@ class SubwayRepositoryTest extends RepositoryTest {
 
     @Test
     void findAllSectionsByLineId_메서드는_특정_노선에_등록된_모든_구간_정보들을_조회하여_도메인들의_리스트로_반환() {
-        testFixtureManager.saveSection(1L, 1L, 2L, 10);
-        testFixtureManager.saveSection(1L, 2L, 3L, 15);
-        testFixtureManager.saveSection(2L, 1L, 3L, 5);
+        databaseFixtureUtils.saveSection(1L, 1L, 2L, 10);
+        databaseFixtureUtils.saveSection(1L, 2L, 3L, 15);
+        databaseFixtureUtils.saveSection(2L, 1L, 3L, 5);
 
         List<Section> actual = repository.findAllSectionsByLineId(1L);
         List<Section> expected = List.of(
@@ -105,9 +106,9 @@ class SubwayRepositoryTest extends RepositoryTest {
 
     @Test
     void findAllSectionsByStationId_메서드는_특정_지하철역이_등록된_모든_구간_정보들을_조회하여_도메인들의_리스트로_반환() {
-        testFixtureManager.saveSection(1L, 1L, 2L, 10);
-        testFixtureManager.saveSection(1L, 2L, 3L, 15);
-        testFixtureManager.saveSection(2L, 1L, 3L, 5);
+        databaseFixtureUtils.saveSection(1L, 1L, 2L, 10);
+        databaseFixtureUtils.saveSection(1L, 2L, 3L, 15);
+        databaseFixtureUtils.saveSection(2L, 1L, 3L, 5);
 
         List<Section> actual = repository.findAllSectionsByStationId(1L);
         List<Section> expected = List.of(
@@ -123,7 +124,7 @@ class SubwayRepositoryTest extends RepositoryTest {
 
         @Test
         void id에_대응되는_노선이_존재하는_경우_도메인으로_반환() {
-            testFixtureManager.saveLine("노선1", "색상", 1000);
+            databaseFixtureUtils.saveLine("노선1", "색상", 1000);
             LineInfo actual = repository.findExistingLine(1L);
             LineInfo expected = new LineInfo(1L, "노선1", "색상", 1000);
 
@@ -143,7 +144,7 @@ class SubwayRepositoryTest extends RepositoryTest {
 
         @Test
         void 존재하는_노선의_id인_경우_참_반환() {
-            testFixtureManager.saveLine("존재", "색상");
+            databaseFixtureUtils.saveLine("존재", "색상");
             boolean actual = repository.checkExistingLine(1L);
 
             assertThat(actual).isTrue();
@@ -163,7 +164,7 @@ class SubwayRepositoryTest extends RepositoryTest {
 
         @Test
         void 존재하는_노선의_이름인_경우_참_반환() {
-            testFixtureManager.saveLine("이름!", "색상");
+            databaseFixtureUtils.saveLine("이름!", "색상");
             boolean actual = repository.checkExistingLineName("이름!");
 
             assertThat(actual).isTrue();
@@ -226,7 +227,7 @@ class SubwayRepositoryTest extends RepositoryTest {
 
     @Test
     void updateLine_메서드는_노선_정보를_수정() {
-        testFixtureManager.saveLine("기존 노선명", "색상", 200);
+        databaseFixtureUtils.saveLine("기존 노선명", "색상", 200);
 
         repository.updateLine(new LineInfo(1L, "새로운 노선명", "새로운 색상", 0));
         LineEntity actual = lineDao.findById(1L).get();
@@ -237,9 +238,9 @@ class SubwayRepositoryTest extends RepositoryTest {
 
     @Test
     void deleteLine_메서드는_노선과_등록된_구간들을_제거() {
-        testFixtureManager.saveLine("노선1", "색상", 100);
-        testFixtureManager.saveSection(1L, 1L, 2L, 10);
-        testFixtureManager.saveSection(1L, 2L, 3L, 15);
+        databaseFixtureUtils.saveLine("노선1", "색상", 100);
+        databaseFixtureUtils.saveSection(1L, 1L, 2L, 10);
+        databaseFixtureUtils.saveSection(1L, 2L, 3L, 15);
 
         repository.deleteLine(new LineInfo(1L, "노선1", "색상", 100));
         boolean lineExistence = lineDao.findById(1L).isPresent();
@@ -251,10 +252,10 @@ class SubwayRepositoryTest extends RepositoryTest {
 
     @Test
     void deleteSections_메서드는_구간들을_제거() {
-        testFixtureManager.saveSection(1L, 1L, 2L, 10);
-        testFixtureManager.saveSection(1L, 2L, 3L, 15);
-        testFixtureManager.saveSection(1L, 3L, 4L, 5);
-        testFixtureManager.saveSection(2L, 1L, 3L, 5);
+        databaseFixtureUtils.saveSection(1L, 1L, 2L, 10);
+        databaseFixtureUtils.saveSection(1L, 2L, 3L, 15);
+        databaseFixtureUtils.saveSection(1L, 3L, 4L, 5);
+        databaseFixtureUtils.saveSection(2L, 1L, 3L, 5);
         List<Section> sections = List.of(new Section(station1, station2, 10),
                 new Section(station2, station3, 15));
 

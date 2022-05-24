@@ -12,9 +12,10 @@ import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.entity.StationEntity;
 import wooteco.subway.exception.NotFoundException;
+import wooteco.subway.fixture.DatabaseUsageTest;
 
 @SuppressWarnings("NonAsciiCharacters")
-class StationRepositoryTest extends RepositoryTest {
+class StationRepositoryTest extends DatabaseUsageTest {
 
     @Autowired
     private StationRepository repository;
@@ -24,7 +25,7 @@ class StationRepositoryTest extends RepositoryTest {
 
     @Test
     void findAllStations_메서드는_모든_지하철역들을_조회하여_도메인들의_리스트로_반환() {
-        testFixtureManager.saveStations("강남역", "선릉역", "잠실역");
+        databaseFixtureUtils.saveStations("강남역", "선릉역", "잠실역");
 
         List<Station> actual = repository.findAllStations();
         List<Station> expected = List.of(
@@ -41,7 +42,7 @@ class StationRepositoryTest extends RepositoryTest {
 
         @Test
         void id에_대응되는_지하철역이_존재하는_경우_도메인으로_반환() {
-            testFixtureManager.saveStations("강남역", "선릉역");
+            databaseFixtureUtils.saveStations("강남역", "선릉역");
 
             Station actual = repository.findExistingStation(1L);
             Station expected = new Station(1L, "강남역");
@@ -62,7 +63,7 @@ class StationRepositoryTest extends RepositoryTest {
 
         @Test
         void 존재하는_지하철역의_이름인_경우_참_반환(){
-            testFixtureManager.saveStations("강남역");
+            databaseFixtureUtils.saveStations("강남역");
 
             boolean actual = repository.checkExistingStationName("강남역");
 
@@ -88,7 +89,7 @@ class StationRepositoryTest extends RepositoryTest {
 
     @Test
     void delete_메서드는_지하철역_도메인을_받아_해당_새로운_지하철역을_제거() {
-        testFixtureManager.saveStations("강남역", "잠실역");
+        databaseFixtureUtils.saveStations("강남역", "잠실역");
 
         repository.delete(new Station(1L, "강남역"));
         List<StationEntity> actual = dao.findAll();

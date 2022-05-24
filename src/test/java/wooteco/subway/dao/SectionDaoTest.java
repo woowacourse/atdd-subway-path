@@ -13,9 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import wooteco.subway.entity.SectionEntity;
 import wooteco.subway.entity.StationEntity;
+import wooteco.subway.fixture.DatabaseUsageTest;
 
 @SuppressWarnings("NonAsciiCharacters")
-class SectionDaoTest extends DaoTest {
+class SectionDaoTest extends DatabaseUsageTest {
 
     private static final StationEntity STATION1 = new StationEntity(1L, "강남역");
     private static final StationEntity STATION2 = new StationEntity(2L, "선릉역");
@@ -26,9 +27,9 @@ class SectionDaoTest extends DaoTest {
 
     @BeforeEach
     void setup() {
-        testFixtureManager.saveStations("강남역", "선릉역", "잠실역", "강변역", "청계산입구역");
-        testFixtureManager.saveLine("1호선", "색깔");
-        testFixtureManager.saveLine("2호선", "색깔2");
+        databaseFixtureUtils.saveStations("강남역", "선릉역", "잠실역", "강변역", "청계산입구역");
+        databaseFixtureUtils.saveLine("1호선", "색깔");
+        databaseFixtureUtils.saveLine("2호선", "색깔2");
     }
 
     @DisplayName("findAll 메서드들은 조건에 부합하는 모든 데이터를 조회한다")
@@ -37,9 +38,9 @@ class SectionDaoTest extends DaoTest {
 
         @BeforeEach
         void setup() {
-            testFixtureManager.saveSection(1L, 1L, 2L, 20);
-            testFixtureManager.saveSection(1L, 2L, 3L, 10);
-            testFixtureManager.saveSection(2L, 1L, 3L, 30);
+            databaseFixtureUtils.saveSection(1L, 1L, 2L, 20);
+            databaseFixtureUtils.saveSection(1L, 2L, 3L, 10);
+            databaseFixtureUtils.saveSection(2L, 1L, 3L, 30);
         }
 
         @Test
@@ -91,7 +92,7 @@ class SectionDaoTest extends DaoTest {
 
         @Test
         void 중복되는_정보로_생성하려는_경우_예외발생() {
-            testFixtureManager.saveSection(1L, 1L, 2L, 10);
+            databaseFixtureUtils.saveSection(1L, 1L, 2L, 10);
 
             SectionEntity existingSection = new SectionEntity(1L, STATION1, STATION2, 10);
             assertThatThrownBy(() -> dao.save(existingSection))
@@ -105,7 +106,7 @@ class SectionDaoTest extends DaoTest {
 
         @Test
         void delete_메서드는_노선과_상행역_하행역에_부합하는_데이터를_삭제() {
-            testFixtureManager.saveSection(1L, 1L, 3L, 10);
+            databaseFixtureUtils.saveSection(1L, 1L, 3L, 10);
 
             dao.delete(new SectionEntity(1L, STATION1, STATION3, 10));
             boolean exists = jdbcTemplate.queryForObject(
@@ -116,7 +117,7 @@ class SectionDaoTest extends DaoTest {
 
         @Test
         void 거리_정보가_틀리더라도_성공적으로_데이터_삭제_성공() {
-            testFixtureManager.saveSection(1L, 1L, 3L, 10);
+            databaseFixtureUtils.saveSection(1L, 1L, 3L, 10);
 
             dao.delete(new SectionEntity(1L, STATION1, STATION3, 99999999));
             boolean exists = jdbcTemplate.queryForObject(
@@ -135,8 +136,8 @@ class SectionDaoTest extends DaoTest {
 
     @Test
     void deleteAllByLineId_메서드는_노선에_해당되는_모든_구간_데이터를_삭제() {
-        testFixtureManager.saveSection(1L, 2L, 3L, 10);
-        testFixtureManager.saveSection(1L, 1L, 2L, 5);
+        databaseFixtureUtils.saveSection(1L, 2L, 3L, 10);
+        databaseFixtureUtils.saveSection(1L, 1L, 2L, 5);
 
         dao.deleteAllByLineId(1L);
         boolean exists = jdbcTemplate.queryForObject(

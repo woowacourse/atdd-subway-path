@@ -14,9 +14,10 @@ import wooteco.subway.dto.request.CreateSectionRequest;
 import wooteco.subway.entity.SectionEntity;
 import wooteco.subway.entity.StationEntity;
 import wooteco.subway.exception.NotFoundException;
+import wooteco.subway.fixture.DatabaseUsageTest;
 
 @SuppressWarnings("NonAsciiCharacters")
-class SectionServiceTest extends ServiceTest {
+class SectionServiceTest extends DatabaseUsageTest {
 
     @Autowired
     private SectionService service;
@@ -34,13 +35,13 @@ class SectionServiceTest extends ServiceTest {
 
         @BeforeEach
         void setupStations() {
-            testFixtureManager.saveStations("강남역", "선릉역", "잠실역");
-            testFixtureManager.saveLine("존재하는 노선", "색깔");
+            databaseFixtureUtils.saveStations("강남역", "선릉역", "잠실역");
+            databaseFixtureUtils.saveLine("존재하는 노선", "색깔");
         }
 
         @Test
         void 상행_종점_등록시_그대로_저장() {
-            testFixtureManager.saveSection(1L, 2L, 3L, 10);
+            databaseFixtureUtils.saveSection(1L, 2L, 3L, 10);
 
             service.save(1L, new CreateSectionRequest(1L, 2L, 20));
             List<SectionEntity> actual = dao.findAllByLineId(1L);
@@ -53,7 +54,7 @@ class SectionServiceTest extends ServiceTest {
 
         @Test
         void 하행_종점_등록시_그대로_저장() {
-            testFixtureManager.saveSection(1L, 1L, 2L, 10);
+            databaseFixtureUtils.saveSection(1L, 1L, 2L, 10);
 
             service.save(1L, new CreateSectionRequest(2L, 3L, 30));
             List<SectionEntity> actual = dao.findAllByLineId(1L);
@@ -68,7 +69,7 @@ class SectionServiceTest extends ServiceTest {
         void 저장하려는_구간의_상행역이_이미_상행역으로_등록된_경우_저장_후_기존_구간은_수정() {
             int existingSectionDistance = 10;
             int newSectionDistance = 2;
-            testFixtureManager.saveSection(1L, 1L, 3L, existingSectionDistance);
+            databaseFixtureUtils.saveSection(1L, 1L, 3L, existingSectionDistance);
 
             service.save(1L, new CreateSectionRequest(1L, 2L, newSectionDistance));
             List<SectionEntity> actual = dao.findAllByLineId(1L);
@@ -83,7 +84,7 @@ class SectionServiceTest extends ServiceTest {
         void 저장하려는_구간의_히행역이_이미_하행역으로_등록된_경우_저장_후_기존_구간은_수정() {
             int existingSectionDistance = 10;
             int newSectionDistance = 3;
-            testFixtureManager.saveSection(1L, 1L, 3L, existingSectionDistance);
+            databaseFixtureUtils.saveSection(1L, 1L, 3L, existingSectionDistance);
 
             service.save(1L, new CreateSectionRequest(2L, 3L, newSectionDistance));
             List<SectionEntity> actual = dao.findAllByLineId(1L);
@@ -105,10 +106,10 @@ class SectionServiceTest extends ServiceTest {
 
         @Test
         void 노선의_종점을_제거하려는_경우_그와_연결된_구간만_하나_제거() {
-            testFixtureManager.saveStations("강남역", "선릉역", "잠실역");
-            testFixtureManager.saveLine("노선", "색깔");
-            testFixtureManager.saveSection(1L, 1L, 2L);
-            testFixtureManager.saveSection(1L, 2L, 3L, 10);
+            databaseFixtureUtils.saveStations("강남역", "선릉역", "잠실역");
+            databaseFixtureUtils.saveLine("노선", "색깔");
+            databaseFixtureUtils.saveSection(1L, 1L, 2L);
+            databaseFixtureUtils.saveSection(1L, 2L, 3L, 10);
 
             service.delete(1L, 1L);
             List<SectionEntity> actual = dao.findAllByLineId(1L);
@@ -120,10 +121,10 @@ class SectionServiceTest extends ServiceTest {
 
         @Test
         void 노선의_중앙에_있는_역을_제거한_경우_그_사이를_잇는_구간을_새로_생성() {
-            testFixtureManager.saveStations("강남역", "선릉역", "잠실역");
-            testFixtureManager.saveLine("노선", "색깔");
-            testFixtureManager.saveSection(1L, 1L, 2L, 5);
-            testFixtureManager.saveSection(1L, 2L, 3L, 10);
+            databaseFixtureUtils.saveStations("강남역", "선릉역", "잠실역");
+            databaseFixtureUtils.saveLine("노선", "색깔");
+            databaseFixtureUtils.saveSection(1L, 1L, 2L, 5);
+            databaseFixtureUtils.saveSection(1L, 2L, 3L, 10);
 
             service.delete(1L, 2L);
             List<SectionEntity> actual = dao.findAllByLineId(1L);
@@ -135,16 +136,16 @@ class SectionServiceTest extends ServiceTest {
 
         @Test
         void 등록되지_않은_노선_id가_입력된_경우_예외발생() {
-            testFixtureManager.saveStations("강남역", "선릉역", "잠실역");
+            databaseFixtureUtils.saveStations("강남역", "선릉역", "잠실역");
             assertThatThrownBy(() -> service.delete(99999L, 1L))
                     .isInstanceOf(NotFoundException.class);
         }
 
         @Test
         void 노선에_구간으로_등록되지_않은_지하철역_id가_입력된_경우_예외발생() {
-            testFixtureManager.saveStations("강남역", "선릉역", "잠실역");
-            testFixtureManager.saveLine("노선", "색깔");
-            testFixtureManager.saveSection(1L, 1L, 2L);
+            databaseFixtureUtils.saveStations("강남역", "선릉역", "잠실역");
+            databaseFixtureUtils.saveLine("노선", "색깔");
+            databaseFixtureUtils.saveSection(1L, 1L, 2L);
 
             assertThatThrownBy(() -> service.delete(1L, 3L))
                     .isInstanceOf(IllegalArgumentException.class);
@@ -152,9 +153,9 @@ class SectionServiceTest extends ServiceTest {
 
         @Test
         void 노선의_구간이_하나_남은_경우_구간_제거_시도시_예외발생() {
-            testFixtureManager.saveStations("강남역", "선릉역", "잠실역");
-            testFixtureManager.saveLine("노선", "색깔");
-            testFixtureManager.saveSection(1L, 1L, 2L);
+            databaseFixtureUtils.saveStations("강남역", "선릉역", "잠실역");
+            databaseFixtureUtils.saveLine("노선", "색깔");
+            databaseFixtureUtils.saveSection(1L, 1L, 2L);
 
             assertThatThrownBy(() -> service.delete(1L, 1L))
                     .isInstanceOf(IllegalArgumentException.class);

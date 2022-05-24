@@ -17,9 +17,10 @@ import wooteco.subway.dto.response.LineResponse;
 import wooteco.subway.dto.response.StationResponse;
 import wooteco.subway.entity.LineEntity;
 import wooteco.subway.exception.NotFoundException;
+import wooteco.subway.fixture.DatabaseUsageTest;
 
 @SuppressWarnings("NonAsciiCharacters")
-class LineServiceTest extends ServiceTest {
+class LineServiceTest extends DatabaseUsageTest {
 
     @Autowired
     private LineService service;
@@ -40,12 +41,12 @@ class LineServiceTest extends ServiceTest {
 
         @BeforeEach
         void setup() {
-            testFixtureManager.saveStations("강남역", "선릉역", "잠실역");
-            testFixtureManager.saveLine("1호선", "색깔", 1000);
-            testFixtureManager.saveLine("2호선", "색깔2", 0);
-            testFixtureManager.saveSection(2L, 3L, 1L);
-            testFixtureManager.saveSection(2L, 1L, 2L);
-            testFixtureManager.saveSection(1L, 1L, 3L);
+            databaseFixtureUtils.saveStations("강남역", "선릉역", "잠실역");
+            databaseFixtureUtils.saveLine("1호선", "색깔", 1000);
+            databaseFixtureUtils.saveLine("2호선", "색깔2", 0);
+            databaseFixtureUtils.saveSection(2L, 3L, 1L);
+            databaseFixtureUtils.saveSection(2L, 1L, 2L);
+            databaseFixtureUtils.saveSection(1L, 1L, 3L);
         }
 
         @Test
@@ -84,7 +85,7 @@ class LineServiceTest extends ServiceTest {
 
         @Test
         void 유효한_입력인_경우_성공() {
-            testFixtureManager.saveStations("강남역", "선릉역");
+            databaseFixtureUtils.saveStations("강남역", "선릉역");
 
             LineResponse actual = service.save(new CreateLineRequest(
                     "새로운 노선명", "색깔", 300, 1L, 2L, 10));
@@ -96,9 +97,9 @@ class LineServiceTest extends ServiceTest {
 
         @Test
         void 중복되는_노선명인_경우_예외발생() {
-            testFixtureManager.saveStations("강남역", "선릉역", "잠실역");
-            testFixtureManager.saveLine("존재하는 노선명", "색깔");
-            testFixtureManager.saveSection(1L, 1L, 2L);
+            databaseFixtureUtils.saveStations("강남역", "선릉역", "잠실역");
+            databaseFixtureUtils.saveLine("존재하는 노선명", "색깔");
+            databaseFixtureUtils.saveSection(1L, 1L, 2L);
 
             CreateLineRequest duplicateLineNameRequest = new CreateLineRequest(
                     "존재하는 노선명", "색깔", 200, 1L, 3L, 10);
@@ -108,9 +109,9 @@ class LineServiceTest extends ServiceTest {
 
         @Test
         void 존재하지_않는_상행역을_입력한_경우_예외발생() {
-            testFixtureManager.saveStations("강남역", "선릉역");
-            testFixtureManager.saveLine("노선1", "색깔");
-            testFixtureManager.saveSection(1L, 1L, 2L);
+            databaseFixtureUtils.saveStations("강남역", "선릉역");
+            databaseFixtureUtils.saveLine("노선1", "색깔");
+            databaseFixtureUtils.saveSection(1L, 1L, 2L);
 
             CreateLineRequest noneExistingUpStationRequest = new CreateLineRequest(
                     "유효 노선명", "유효한 색", 200, 999L, 1L, 10);
@@ -120,9 +121,9 @@ class LineServiceTest extends ServiceTest {
 
         @Test
         void 존재하지_않는_하행역을_입력한_경우_예외발생() {
-            testFixtureManager.saveStations("강남역", "선릉역");
-            testFixtureManager.saveLine("노선1", "색깔");
-            testFixtureManager.saveSection(1L, 1L, 2L);
+            databaseFixtureUtils.saveStations("강남역", "선릉역");
+            databaseFixtureUtils.saveLine("노선1", "색깔");
+            databaseFixtureUtils.saveSection(1L, 1L, 2L);
 
             CreateLineRequest noneExistingDownStationRequest = new CreateLineRequest(
                     "유효한 노선명", "유효한 색상", 200, 1L, 999L, 10);
@@ -132,7 +133,7 @@ class LineServiceTest extends ServiceTest {
 
         @Test
         void 거리가_1이하인_경우_예외발생() {
-            testFixtureManager.saveStations("강남역", "선릉역");
+            databaseFixtureUtils.saveStations("강남역", "선릉역");
 
             CreateLineRequest zeroDistanceRequest = new CreateLineRequest(
                     "유효한 노선명", "색깔", 200, 1L, 2L, 0);
@@ -142,7 +143,7 @@ class LineServiceTest extends ServiceTest {
 
         @Test
         void 추가비용이_0미만인_경우_예외발생() {
-            testFixtureManager.saveStations("강남역", "선릉역");
+            databaseFixtureUtils.saveStations("강남역", "선릉역");
 
             CreateLineRequest negativeExtraFareRequest = new CreateLineRequest(
                     "유효한 노선명", "색깔", -1, 1L, 2L, 0);
@@ -157,7 +158,7 @@ class LineServiceTest extends ServiceTest {
 
         @Test
         void 유효한_입력인_경우_성공() {
-            testFixtureManager.saveLine("노선1", "색깔", 100);
+            databaseFixtureUtils.saveLine("노선1", "색깔", 100);
 
             service.update(1L, new UpdateLineRequest("수정된 노선명", "수정된 색깔", 300));
             LineEntity actual = lineDao.findById(1L).get();
@@ -176,8 +177,8 @@ class LineServiceTest extends ServiceTest {
 
         @Test
         void 중복되는_노선명으로_수정하려는_경우_예외발생() {
-            testFixtureManager.saveLine("존재하는 노선명", "색깔");
-            testFixtureManager.saveLine("현재 노선명", "색깔");
+            databaseFixtureUtils.saveLine("존재하는 노선명", "색깔");
+            databaseFixtureUtils.saveLine("현재 노선명", "색깔");
 
             UpdateLineRequest duplicateLineNameRequest = new UpdateLineRequest(
                     "존재하는 노선명", "새로운 색깔", 300);
@@ -187,7 +188,7 @@ class LineServiceTest extends ServiceTest {
 
         @Test
         void 추가비용이_0미만인_경우_예외발생() {
-            testFixtureManager.saveLine("현재 노선명", "색깔");
+            databaseFixtureUtils.saveLine("현재 노선명", "색깔");
 
             UpdateLineRequest negativeExtraFareRequest = new UpdateLineRequest(
                     "유효한 노선명", "색깔", -1);
@@ -202,10 +203,10 @@ class LineServiceTest extends ServiceTest {
 
         @Test
         void 존재하는_데이터의_id가_입력된_경우_삭제성공() {
-            testFixtureManager.saveStations("강남역", "선릉역", "잠실역");
-            testFixtureManager.saveLine("존재하는 노선", "색깔");
-            testFixtureManager.saveSection(1L, 1L, 2L);
-            testFixtureManager.saveSection(1L, 2L, 3L);
+            databaseFixtureUtils.saveStations("강남역", "선릉역", "잠실역");
+            databaseFixtureUtils.saveLine("존재하는 노선", "색깔");
+            databaseFixtureUtils.saveSection(1L, 1L, 2L);
+            databaseFixtureUtils.saveSection(1L, 2L, 3L);
 
             service.delete(1L);
             boolean lineNotFound = lineDao.findById(1L).isEmpty();

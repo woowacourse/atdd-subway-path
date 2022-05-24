@@ -1,11 +1,11 @@
-package wooteco.subway.test_utils;
+package wooteco.subway.fixture;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TestFixtureManager {
+public class DatabaseFixtureUtils {
 
     @Autowired
     protected JdbcTemplate jdbcTemplate;

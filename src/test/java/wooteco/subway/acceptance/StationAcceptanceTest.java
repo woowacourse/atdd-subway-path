@@ -12,8 +12,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import wooteco.subway.dto.response.StationResponse;
-import wooteco.subway.test_utils.HttpMethod;
-import wooteco.subway.test_utils.HttpUtils;
+import wooteco.utils.HttpMethod;
+import wooteco.utils.HttpUtils;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayName("인수테스트 - /stations")
@@ -58,7 +58,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         @Test
         void 중복되는_이름의_지하철역_생성_시도시_400_BAD_REQUEST() {
-            testFixtureManager.saveStations("강남역");
+            databaseFixtureUtils.saveStations("강남역");
             Map<String, String> params = jsonStationOf("강남역");
 
             ExtractableResponse<Response> response = HttpUtils.send(HttpMethod.POST, PATH, params);
@@ -85,7 +85,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         @Test
         void 성공시_200_OK() {
-            testFixtureManager.saveStations("강남역", "역삼역");
+            databaseFixtureUtils.saveStations("강남역", "역삼역");
 
             ExtractableResponse<Response> response = HttpUtils.send(HttpMethod.GET, PATH);
             List<StationResponse> actualBody = extractJsonBody(response);
@@ -108,7 +108,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         @Test
         void 성공시_204_OK() {
-            testFixtureManager.saveStations("강남역");
+            databaseFixtureUtils.saveStations("강남역");
 
             ExtractableResponse<Response> response = HttpUtils.send(HttpMethod.DELETE, toPath(1L));
 
@@ -124,9 +124,9 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         @Test
         void 등록된_지하철역을_제거하려는_경우_400_BAD_REQUEST() {
-            testFixtureManager.saveStations("강남역", "선릉역");
-            testFixtureManager.saveLine("신분당선", "노란색");
-            testFixtureManager.saveSection(1L, 1L, 2L);
+            databaseFixtureUtils.saveStations("강남역", "선릉역");
+            databaseFixtureUtils.saveLine("신분당선", "노란색");
+            databaseFixtureUtils.saveSection(1L, 1L, 2L);
 
             ExtractableResponse<Response> response = HttpUtils.send(HttpMethod.DELETE, toPath(1L));
 

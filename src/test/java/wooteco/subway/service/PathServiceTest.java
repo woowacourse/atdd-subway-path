@@ -11,9 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.dto.response.StationResponse;
 import wooteco.subway.exception.NotFoundException;
+import wooteco.subway.fixture.DatabaseUsageTest;
 
 @SuppressWarnings("NonAsciiCharacters")
-class PathServiceTest extends ServiceTest {
+class PathServiceTest extends DatabaseUsageTest {
 
     @Autowired
     private PathService service;
@@ -28,10 +29,10 @@ class PathServiceTest extends ServiceTest {
 
         @Test
         void 최단경로에_대해_지하철역들의_목록과_거리_및_요금_정보를_반환() {
-            testFixtureManager.saveStations("강남역", "선릉역", "잠실역");
-            testFixtureManager.saveLine("노선", "색깔", 0);
-            testFixtureManager.saveSection(1L, 1L, 2L, 5);
-            testFixtureManager.saveSection(1L, 2L, 3L, 5);
+            databaseFixtureUtils.saveStations("강남역", "선릉역", "잠실역");
+            databaseFixtureUtils.saveLine("노선", "색깔", 0);
+            databaseFixtureUtils.saveSection(1L, 1L, 2L, 5);
+            databaseFixtureUtils.saveSection(1L, 2L, 3L, 5);
 
             PathResponse actual = service.findShortestPath(1L, 3L, 25);
             PathResponse expected = new PathResponse(
@@ -43,10 +44,10 @@ class PathServiceTest extends ServiceTest {
         @DisplayName("요금 계산은 기본요금 => 거리 추가비용 => 노선 추가비용 => 나이 할인 순으로 적용된다.")
         @Test
         void fareCalculation() {
-            testFixtureManager.saveStations("강남역", "선릉역", "잠실역");
-            testFixtureManager.saveLine("노선", "색깔", 500);
-            testFixtureManager.saveSection(1L, 1L, 2L, 10);
-            testFixtureManager.saveSection(1L, 2L, 3L, 8);
+            databaseFixtureUtils.saveStations("강남역", "선릉역", "잠실역");
+            databaseFixtureUtils.saveLine("노선", "색깔", 500);
+            databaseFixtureUtils.saveSection(1L, 1L, 2L, 10);
+            databaseFixtureUtils.saveSection(1L, 2L, 3L, 8);
 
             int actual = service.findShortestPath(1L, 3L, 15).getFare();
             int expected = (int) ((((1250 + 200) + 500) - 350) * 0.8);
@@ -56,10 +57,10 @@ class PathServiceTest extends ServiceTest {
 
         @Test
         void 존재하지_않는_지하철역을_입력한_경우_예외발생() {
-            testFixtureManager.saveStations("강남역", "선릉역", "잠실역");
-            testFixtureManager.saveLine("노선", "색깔", 0);
-            testFixtureManager.saveSection(1L, 1L, 2L, 5);
-            testFixtureManager.saveSection(1L, 2L, 3L, 5);
+            databaseFixtureUtils.saveStations("강남역", "선릉역", "잠실역");
+            databaseFixtureUtils.saveLine("노선", "색깔", 0);
+            databaseFixtureUtils.saveSection(1L, 1L, 2L, 5);
+            databaseFixtureUtils.saveSection(1L, 2L, 3L, 5);
 
             assertThatThrownBy(() -> service.findShortestPath(1L, 9999999999L, 10))
                     .isInstanceOf(NotFoundException.class);
@@ -67,10 +68,10 @@ class PathServiceTest extends ServiceTest {
 
         @Test
         void 연결되지_않은_지하철역들_사이의_경로를_조회하려는_경우_예외발생() {
-            testFixtureManager.saveStations("강남역", "선릉역", "잠실역", "청계산입구역");
-            testFixtureManager.saveLine("노선", "색깔", 0);
-            testFixtureManager.saveSection(1L, 1L, 2L, 10);
-            testFixtureManager.saveSection(1L, 3L, 4L, 10);
+            databaseFixtureUtils.saveStations("강남역", "선릉역", "잠실역", "청계산입구역");
+            databaseFixtureUtils.saveLine("노선", "색깔", 0);
+            databaseFixtureUtils.saveSection(1L, 1L, 2L, 10);
+            databaseFixtureUtils.saveSection(1L, 3L, 4L, 10);
 
             assertThatThrownBy(() -> service.findShortestPath(1L, 3L, 10))
                     .isInstanceOf(IllegalArgumentException.class);
@@ -78,8 +79,8 @@ class PathServiceTest extends ServiceTest {
 
         @Test
         void 구간에_등록되지_않은_지하철역이_입력된_경우_예외발생() {
-            testFixtureManager.saveStations("강남역", "선릉역");
-            testFixtureManager.saveLine("노선", "색깔", 0);
+            databaseFixtureUtils.saveStations("강남역", "선릉역");
+            databaseFixtureUtils.saveLine("노선", "색깔", 0);
 
             assertThatThrownBy(() -> service.findShortestPath(1L, 2L, 10))
                     .isInstanceOf(IllegalArgumentException.class);

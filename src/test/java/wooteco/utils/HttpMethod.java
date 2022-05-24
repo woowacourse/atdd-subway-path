@@ -1,4 +1,4 @@
-package wooteco.subway.test_utils;
+package wooteco.utils;
 
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSenderOptions;

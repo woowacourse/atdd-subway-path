@@ -11,18 +11,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import wooteco.subway.entity.LineEntity;
+import wooteco.subway.fixture.DatabaseUsageTest;
 
 @SuppressWarnings("NonAsciiCharacters")
-class LineDaoTest extends DaoTest {
+class LineDaoTest extends DatabaseUsageTest {
 
     @Autowired
     private LineDao dao;
 
     @Test
     void findAll_메서드는_존재하는_모든_노선_정보들의_리스트를_반환() {
-        testFixtureManager.saveLine("노선명1", "색깔1", 100);
-        testFixtureManager.saveLine("노선명2", "색깔2", 0);
-        testFixtureManager.saveLine("노선명3", "색깔3", 300);
+        databaseFixtureUtils.saveLine("노선명1", "색깔1", 100);
+        databaseFixtureUtils.saveLine("노선명2", "색깔2", 0);
+        databaseFixtureUtils.saveLine("노선명3", "색깔3", 300);
 
         List<LineEntity> actual = dao.findAll();
         List<LineEntity> expected = List.of(
@@ -39,7 +40,7 @@ class LineDaoTest extends DaoTest {
 
         @Test
         void 존재하는_데이터인_경우_해당_데이터가_담긴_Optional_반환() {
-            testFixtureManager.saveLine("존재하는 노선명", "색깔", 100);
+            databaseFixtureUtils.saveLine("존재하는 노선명", "색깔", 100);
 
             LineEntity actual = dao.findById(1L).get();
             LineEntity expected = new LineEntity(1L, "존재하는 노선명", "색깔", 100);
@@ -57,9 +58,9 @@ class LineDaoTest extends DaoTest {
 
     @Test
     void findAllByIds_메서드는_id_목록에_해당되는_모든_데이터를_조회() {
-        testFixtureManager.saveLine("노선명1", "색깔1", 100);
-        testFixtureManager.saveLine("노선명2", "색깔2", 0);
-        testFixtureManager.saveLine("노선명3", "색깔3", 300);
+        databaseFixtureUtils.saveLine("노선명1", "색깔1", 100);
+        databaseFixtureUtils.saveLine("노선명2", "색깔2", 0);
+        databaseFixtureUtils.saveLine("노선명3", "색깔3", 300);
 
         List<LineEntity> actual = dao.findAllByIds(List.of(1L, 3L));
         List<LineEntity> expected = List.of(
@@ -75,7 +76,7 @@ class LineDaoTest extends DaoTest {
 
         @Test
         void 저장된_name인_경우_해당_데이터가_담긴_Optional_반환() {
-            testFixtureManager.saveLine("존재하는 노선명", "색깔", 100);
+            databaseFixtureUtils.saveLine("존재하는 노선명", "색깔", 100);
 
             LineEntity actual = dao.findByName("존재하는 노선명").get();
             LineEntity expected = new LineEntity(1L, "존재하는 노선명", "색깔", 100);
@@ -97,8 +98,8 @@ class LineDaoTest extends DaoTest {
 
         @Test
         void 중복되지_않는_이름인_경우_성공() {
-            testFixtureManager.saveLine("존재하는 노선명1", "색깔");
-            testFixtureManager.saveLine("존재하는 노선명2", "색깔");
+            databaseFixtureUtils.saveLine("존재하는 노선명1", "색깔");
+            databaseFixtureUtils.saveLine("존재하는 노선명2", "색깔");
 
             LineEntity actual = dao.save(new LineEntity("새로운 노선명", "색깔", 900));
             LineEntity expected = new LineEntity(3L, "새로운 노선명", "색깔", 900);
@@ -108,7 +109,7 @@ class LineDaoTest extends DaoTest {
 
         @Test
         void 중복되는_이름인_경우_예외발생() {
-            testFixtureManager.saveLine("중복되는 노선명", "색깔");
+            databaseFixtureUtils.saveLine("중복되는 노선명", "색깔");
 
             assertThatThrownBy(() -> dao.save(new LineEntity("중복되는 노선명", "다른 색깔", 0)))
                     .isInstanceOf(DataAccessException.class);
@@ -121,7 +122,7 @@ class LineDaoTest extends DaoTest {
 
         @Test
         void 중복되지_않는_이름으로_수정_가능() {
-            testFixtureManager.saveLine("현재 노선명", "색깔은 그대로", 100);
+            databaseFixtureUtils.saveLine("현재 노선명", "색깔은 그대로", 100);
 
             dao.update(new LineEntity(1L, "새로운 노선 이름", "색깔은 그대로", 100));
             String actual = jdbcTemplate.queryForObject("SELECT name FROM line WHERE id = 1", String.class);
@@ -132,8 +133,8 @@ class LineDaoTest extends DaoTest {
 
         @Test
         void 색상은_자유롭게_수정_가능() {
-            testFixtureManager.saveLine("노선명 그대로", "현재 색깔", 1000);
-            testFixtureManager.saveLine("노선명2", "중복되는 색깔", 0);
+            databaseFixtureUtils.saveLine("노선명 그대로", "현재 색깔", 1000);
+            databaseFixtureUtils.saveLine("노선명2", "중복되는 색깔", 0);
 
             dao.update(new LineEntity(1L, "노선명 그대로", "중복되는 색깔", 1000));
             String actual = jdbcTemplate.queryForObject("SELECT color FROM line WHERE id = 1", String.class);
@@ -144,7 +145,7 @@ class LineDaoTest extends DaoTest {
 
         @Test
         void 추가_비용은_자유롭게_수정_가능() {
-            testFixtureManager.saveLine("노선명 그대로", "색깔 그대로", 1000);
+            databaseFixtureUtils.saveLine("노선명 그대로", "색깔 그대로", 1000);
 
             dao.update(new LineEntity(1L, "노선명 그대로", "색깔 그대로", 3000));
             int actual = jdbcTemplate.queryForObject("SELECT extra_fare FROM line WHERE id = 1", Integer.class);
@@ -155,8 +156,8 @@ class LineDaoTest extends DaoTest {
 
         @Test
         void 중복되는_이름으로_수정하려는_경우_예외발생() {
-            testFixtureManager.saveLine("현재 노선명", "색깔은 그대로");
-            testFixtureManager.saveLine("존재하는 노선명", "색깔");
+            databaseFixtureUtils.saveLine("현재 노선명", "색깔은 그대로");
+            databaseFixtureUtils.saveLine("존재하는 노선명", "색깔");
 
             assertThatThrownBy(() -> dao.update(new LineEntity(1L, "존재하는 노선명", "색깔은 그대로", 100)))
                     .isInstanceOf(DataAccessException.class);
@@ -170,7 +171,7 @@ class LineDaoTest extends DaoTest {
 
         @Test
         void 기존_정보와_동일하게_수정하려는_경우_결과는_동일하므로_예외_미발생() {
-            testFixtureManager.saveLine("노선명 그대로", "색깔 그대로", 1000);
+            databaseFixtureUtils.saveLine("노선명 그대로", "색깔 그대로", 1000);
 
             assertThatNoException()
                     .isThrownBy(() -> dao.update(new LineEntity(1L, "노선명 그대로", "색깔 그대로", 3000)));
@@ -183,7 +184,7 @@ class LineDaoTest extends DaoTest {
 
         @Test
         void 존재하는_데이터의_id가_입력된_경우_삭제성공() {
-            testFixtureManager.saveLine("존재하는 노선", "색깔");
+            databaseFixtureUtils.saveLine("존재하는 노선", "색깔");
             dao.deleteById(1L);
 
             boolean exists = jdbcTemplate.queryForObject(
