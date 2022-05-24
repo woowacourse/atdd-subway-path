@@ -11,7 +11,7 @@ import wooteco.subway.domain.fare.policy.distance.OverFiftyKMPolicy;
 import wooteco.subway.domain.fare.policy.distance.TenToFiftyKMPolicy;
 import wooteco.subway.domain.fare.policy.distance.UnderTenKMPolicy;
 
-class DistancePolicyGeneratorTest {
+class BasePolicyGeneratorTest {
 
     @Test
     @DisplayName("10카로 이하일 때 거리정책을 확인한다.")

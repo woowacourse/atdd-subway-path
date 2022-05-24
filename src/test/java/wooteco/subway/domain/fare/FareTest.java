@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.fare.policy.distance.BasePolicy;
 
 class FareTest {
 
@@ -21,8 +22,8 @@ class FareTest {
         return new Fare(new ArrayList<>(), getBaseFare(distance)).getFare();
     }
 
-    private int getBaseFare(int distance) {
-        return PolicyFactory.createDistance(distance).getFare(distance);
+    private BasePolicy getBaseFare(int distance) {
+        return PolicyFactory.createBase(distance);
     }
 
     @Test

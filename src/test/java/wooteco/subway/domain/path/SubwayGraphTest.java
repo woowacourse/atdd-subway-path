@@ -31,6 +31,7 @@ import wooteco.subway.domain.element.Section;
 import wooteco.subway.domain.element.Station;
 import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.fare.PolicyFactory;
+import wooteco.subway.domain.fare.policy.distance.BasePolicy;
 
 public class SubwayGraphTest {
 
@@ -97,7 +98,7 @@ public class SubwayGraphTest {
     void getFare(Station source, Station target, int fare) {
         SubwayGraph subwayGraph = new SubwayGraph(SECTIONS);
         int distance = subwayGraph.getShortestDistance(source, target);
-        int baseFare = PolicyFactory.createDistance(distance).getFare(distance);
-        assertThat(new Fare(new ArrayList<>(), baseFare).getFare()).isEqualTo(fare);
+        BasePolicy basePolicy = PolicyFactory.createBase(distance);
+        assertThat(new Fare(new ArrayList<>(), basePolicy).getFare()).isEqualTo(fare);
     }
 }

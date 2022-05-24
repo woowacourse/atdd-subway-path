@@ -4,12 +4,12 @@ import java.util.List;
 import wooteco.subway.domain.element.Line;
 import wooteco.subway.domain.fare.policy.FarePolicy;
 import wooteco.subway.domain.fare.policy.age.AgeDiscountPolicyGenerator;
-import wooteco.subway.domain.fare.policy.distance.DistancePolicy;
+import wooteco.subway.domain.fare.policy.distance.BasePolicy;
 import wooteco.subway.domain.fare.policy.distance.DistancePolicyGenerator;
 import wooteco.subway.domain.fare.policy.line.LineExtraFeePolicy;
 
 public class PolicyFactory {
-    public static DistancePolicy createDistance(int distance) {
+    public static BasePolicy createBase(int distance) {
         return DistancePolicyGenerator.of(distance);
     }
 
@@ -17,7 +17,7 @@ public class PolicyFactory {
         return AgeDiscountPolicyGenerator.of(age);
     }
 
-    public static LineExtraFeePolicy createLineFee(List<Line> lines) {
+    public static FarePolicy createLineFee(List<Line> lines) {
         return new LineExtraFeePolicy(lines);
     }
 }

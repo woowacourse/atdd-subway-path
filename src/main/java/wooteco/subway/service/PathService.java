@@ -7,6 +7,7 @@ import wooteco.subway.domain.element.Station;
 import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.fare.PolicyFactory;
 import wooteco.subway.domain.fare.policy.FarePolicy;
+import wooteco.subway.domain.fare.policy.distance.BasePolicy;
 import wooteco.subway.domain.path.GraphFactory;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.repository.SectionRepository;
@@ -38,11 +39,11 @@ public class PathService {
                 PolicyFactory.createLineFee(path.getLines()),
                 PolicyFactory.createAgeDiscount(age)
         );
-        int baseFare = PolicyFactory.createDistance(path.getDistance()).getFare(path.getDistance());
+        BasePolicy basePolicy = PolicyFactory.createBase(path.getDistance());
         return new PathResponse(
                 toStationResponse(path.getStations()),
                 path.getDistance(),
-                new Fare(policies, baseFare).getFare());
+                new Fare(policies, basePolicy).getFare());
     }
 
     private List<StationResponse> toStationResponse(List<Station> route) {
