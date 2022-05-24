@@ -6,6 +6,7 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
 
 public class LineServiceResponse {
+
     private final Long id;
     private final String name;
     private final String color;
