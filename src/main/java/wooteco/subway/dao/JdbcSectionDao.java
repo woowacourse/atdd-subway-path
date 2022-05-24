@@ -14,10 +14,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import wooteco.subway.domain.Distance;
-import wooteco.subway.domain.Fare;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.section.Distance;
+import wooteco.subway.domain.path.Fare;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Sections;
 import wooteco.subway.domain.Station;
 
 @Repository

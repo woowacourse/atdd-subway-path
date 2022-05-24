@@ -2,7 +2,6 @@ package wooteco.subway.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
 import static wooteco.subway.dao.Fixture.FARE_1000;
 import static wooteco.subway.dao.Fixture.LINE_신분당선;
 import static wooteco.subway.dao.Fixture.TERMINATION_DOWN;
@@ -17,10 +16,10 @@ import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-
 import org.springframework.context.annotation.Import;
-import wooteco.subway.domain.Fare;
+
 import wooteco.subway.domain.Line;
+import wooteco.subway.domain.path.Fare;
 
 @JdbcTest
 @Import({JdbcLineDao.class, JdbcStationDao.class})

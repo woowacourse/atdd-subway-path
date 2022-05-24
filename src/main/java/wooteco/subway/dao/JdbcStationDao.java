@@ -2,10 +2,8 @@ package wooteco.subway.dao;
 
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Objects;
 import javax.sql.DataSource;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;

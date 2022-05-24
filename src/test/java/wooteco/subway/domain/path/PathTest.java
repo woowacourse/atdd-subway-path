@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -8,6 +8,9 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.section.Distance;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.Station;
 
 public class PathTest {
     public static final int BASIC_FARE = 1250;

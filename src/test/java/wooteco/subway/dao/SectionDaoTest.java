@@ -1,23 +1,26 @@
 package wooteco.subway.dao;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import static wooteco.subway.dao.Fixture.TERMINATION_DOWN;
 import static wooteco.subway.dao.Fixture.TERMINATION_UP;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
-
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
-import wooteco.subway.domain.Distance;
-import wooteco.subway.domain.Fare;
+
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.path.Fare;
+import wooteco.subway.domain.section.Distance;
+import wooteco.subway.domain.section.Section;
 
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 @JdbcTest

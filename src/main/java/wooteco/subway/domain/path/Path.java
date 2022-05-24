@@ -1,10 +1,12 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import java.util.List;
 import java.util.Objects;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import wooteco.subway.domain.Station;
+import wooteco.subway.domain.section.Distance;
 
 public class Path {
     private final List<Station> stations;

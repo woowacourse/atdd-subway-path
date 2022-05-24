@@ -14,11 +14,11 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ReflectionUtils;
 
-import wooteco.subway.domain.Distance;
-import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.path.Fare;
+import wooteco.subway.domain.section.Distance;
+import wooteco.subway.domain.section.Section;
 
 @Repository
 public class JdbcLineDao implements LineDao {

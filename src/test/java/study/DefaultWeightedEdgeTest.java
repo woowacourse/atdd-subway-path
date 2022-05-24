@@ -10,8 +10,8 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import wooteco.subway.domain.Fare;
-import wooteco.subway.domain.PathEdge;
+import wooteco.subway.domain.path.Fare;
+import wooteco.subway.domain.path.PathEdge;
 
 public class DefaultWeightedEdgeTest {
     private final Fare extraFare = new Fare(1000);

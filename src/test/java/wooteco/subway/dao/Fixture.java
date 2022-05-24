@@ -1,10 +1,10 @@
 package wooteco.subway.dao;
 
-import wooteco.subway.domain.Distance;
-import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.path.Fare;
+import wooteco.subway.domain.section.Distance;
+import wooteco.subway.domain.section.Section;
 
 class Fixture {
     final static Station TERMINATION_UP = new Station(1L, "상행종점역");

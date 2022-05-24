@@ -2,9 +2,9 @@ package wooteco.subway.dao;
 
 import java.util.List;
 
-import wooteco.subway.domain.Fare;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.path.Fare;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Sections;
 
 public interface SectionDao {
     void save(Section section, Long lineId);

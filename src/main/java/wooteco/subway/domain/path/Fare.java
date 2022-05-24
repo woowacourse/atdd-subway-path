@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import java.util.Arrays;
 
@@ -27,7 +27,7 @@ public class Fare implements Comparable<Fare> {
         }
     }
 
-    public static Fare sum(Fare... fares) {
+    static Fare sum(Fare... fares) {
         int totalAmount = Arrays.stream(fares)
                 .mapToInt(fare -> fare.value)
                 .sum();

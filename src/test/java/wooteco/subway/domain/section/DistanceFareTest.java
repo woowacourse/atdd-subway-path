@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.section;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -7,6 +7,8 @@ import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import wooteco.subway.domain.path.Fare;
+import wooteco.subway.domain.section.DistanceFare;
 
 public class DistanceFareTest {
 

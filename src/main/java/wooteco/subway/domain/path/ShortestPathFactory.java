@@ -1,10 +1,12 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.domain.Station;
+import wooteco.subway.domain.section.Section;
 
 public class ShortestPathFactory {
 

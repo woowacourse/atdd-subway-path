@@ -1,9 +1,10 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.section;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import wooteco.subway.domain.Station;
 
 public class Sections {
     private final LinkedList<Section> sections;

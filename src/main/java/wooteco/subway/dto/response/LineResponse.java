@@ -1,7 +1,7 @@
 package wooteco.subway.dto.response;
 
 import java.util.List;
-import wooteco.subway.domain.Fare;
+import wooteco.subway.domain.path.Fare;
 import wooteco.subway.domain.Line;
 
 public class LineResponse {

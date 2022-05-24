@@ -1,6 +1,7 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.section;
 
 import java.util.function.Function;
+import wooteco.subway.domain.path.Fare;
 
 public class Distance {
     private final double value;
@@ -24,18 +25,18 @@ public class Distance {
         return new Distance(value / 1000.0);
     }
 
-    public Distance add(Distance distance) {
+    Distance add(Distance distance) {
         return new Distance(this.value + distance.value);
     }
 
-    public Distance subtract(Distance distance) {
+    Distance subtract(Distance distance) {
         if (this.value < distance.value) {
             throw new IllegalStateException("빼려는 거리가 더 커서 뺄 수 없습니다.");
         }
         return new Distance(this.value - distance.value);
     }
 
-    public boolean isSmallerThan(Distance distance) {
+    boolean isSmallerThan(Distance distance) {
         return this.value < distance.value;
     }
 
