@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.FareCalculator;
+import wooteco.subway.domain.fare.FareCalculator;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Paths;
 import wooteco.subway.domain.Sections;
@@ -44,7 +44,7 @@ public class PathService {
     private PathsResponse createPathsResponse(final Station source, final Station target, final int age) {
         SubwayGraph subwayGraph = initSubwayGraph();
         Paths paths = subwayGraph.createPathsResult(source, target);
-        return PathsResponse.of(paths, calculateFare(paths));
+        return PathsResponse.of(paths, calculateFare(paths, age));
     }
 
     private SubwayGraph initSubwayGraph() {
@@ -52,10 +52,10 @@ public class PathService {
         return new SubwayGraph(sections);
     }
 
-    private int calculateFare(final Paths paths) {
+    private int calculateFare(final Paths paths, final int age) {
         FareCalculator fareCalculator = new FareCalculator(paths.getDistance());
         List<Line> lines = findLinesByIds(paths.getLineIds());
-        return fareCalculator.calculateFare(lines);
+        return fareCalculator.calculateFare(lines, age);
     }
 
     private List<Line> findLinesByIds(final List<Long> lineIds) {
