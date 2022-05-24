@@ -1,6 +1,7 @@
 package wooteco.subway.service;
 
 import java.util.List;
+import java.util.Set;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.line.LineDao;
 import wooteco.subway.domain.line.Line;
@@ -46,7 +47,7 @@ public class LineService {
         return lineDao.findById(id);
     }
 
-    public List<Line> findByIds(List<Long> ids) {
+    public List<Line> findByIds(Set<Long> ids) {
         for (Long id: ids) {
             validateExistLine(id);
         }

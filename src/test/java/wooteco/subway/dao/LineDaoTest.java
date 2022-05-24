@@ -3,8 +3,9 @@ package wooteco.subway.dao;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -73,7 +74,7 @@ class LineDaoTest {
     @Test
     void findByIds() {
         Line line2 = new Line("다른분당선", "bg-red-700", 0);
-        List<Long> ids = new ArrayList<>();
+        Set<Long> ids = new HashSet<>();
         ids.add(lineDao.save(LINE));
         ids.add(lineDao.save(line2));
 

@@ -2,6 +2,7 @@ package wooteco.subway.domain.path;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -42,11 +43,11 @@ public class Path {
         return getPath(source, target).getVertexList();
     }
 
-    public List<Long> getLineIds(Long source, Long target) {
+    public Set<Long> getLineIds(Long source, Long target) {
         return getPath(source, target).getEdgeList()
                 .stream()
                 .map(ShortestPathEdge::getLineId)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     public int findDistance(Long source, Long target) {

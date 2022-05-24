@@ -3,6 +3,7 @@ package wooteco.subway.dao.line;
 import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -65,7 +66,7 @@ public class JdbcLineDao implements LineDao {
     }
 
     @Override
-    public List<Line> findByIds(List<Long> ids) {
+    public List<Line> findByIds(Set<Long> ids) {
         final String inCondition = ids.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(", "));
