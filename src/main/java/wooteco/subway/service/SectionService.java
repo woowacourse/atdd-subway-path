@@ -2,6 +2,7 @@ package wooteco.subway.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
@@ -25,11 +26,24 @@ public class SectionService {
     private final LineService lineService;
     private final StationService stationService;
 
-    public SectionService(final SectionDao sectionDao, final LineService lineService,
-                          final StationService stationService) {
+    public SectionService(final SectionDao sectionDao,
+                          @Lazy final LineService lineService,
+                          @Lazy final StationService stationService) {
         this.sectionDao = sectionDao;
         this.lineService = lineService;
         this.stationService = stationService;
+    }
+
+    public Section insert(final SectionCreationRequest request) {
+        final Section section = toSection(request);
+        final Long id = sectionDao.insert(section);
+        return new Section(
+                id,
+                section.getLine(),
+                section.getUpStation(),
+                section.getDownStation(),
+                new Distance(section.getDistance())
+        );
     }
 
     public void save(final SectionCreationRequest request) {

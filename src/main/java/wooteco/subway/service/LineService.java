@@ -1,34 +1,29 @@
 package wooteco.subway.service;
 
 import java.util.List;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
-import wooteco.subway.dao.SectionDao;
-import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Name;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
-import wooteco.subway.domain.Station;
 import wooteco.subway.dto.line.LineRequest;
+import wooteco.subway.dto.section.SectionCreationRequest;
 import wooteco.subway.exception.line.DuplicateLineException;
 import wooteco.subway.exception.line.NoSuchLineException;
-import wooteco.subway.exception.station.NoSuchStationException;
 
 @Service
 @Transactional
 public class LineService {
 
     private final LineDao lineDao;
-    private final StationDao stationDao;
-    private final SectionDao sectionDao;
+    private final SectionService sectionService;
 
-    public LineService(final LineDao lineDao, final StationDao stationDao, final SectionDao sectionDao) {
+    public LineService(final LineDao lineDao, @Lazy final SectionService sectionService) {
         this.lineDao = lineDao;
-        this.stationDao = stationDao;
-        this.sectionDao = sectionDao;
+        this.sectionService = sectionService;
     }
 
     public Line create(final LineRequest request) {
@@ -36,18 +31,13 @@ public class LineService {
         final Line savedLine = lineDao.insert(line)
                 .orElseThrow(DuplicateLineException::new);
 
-        final Station upStation = stationDao.findById(request.getUpStationId())
-                .orElseThrow(NoSuchStationException::new);
-        final Station downStation = stationDao.findById(request.getDownStationId())
-                .orElseThrow(NoSuchStationException::new);
-
-        final Section section = new Section(
-                savedLine,
-                upStation,
-                downStation,
-                new Distance(request.getDistance())
+        final SectionCreationRequest sectionCreationRequest = new SectionCreationRequest(
+                savedLine.getId(),
+                request.getUpStationId(),
+                request.getDownStationId(),
+                request.getDistance()
         );
-        sectionDao.insert(section);
+        final Section section = sectionService.insert(sectionCreationRequest);
 
         return savedLine.addSections(new Sections(List.of(section)));
     }
