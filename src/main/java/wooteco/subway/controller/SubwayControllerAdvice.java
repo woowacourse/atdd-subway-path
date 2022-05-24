@@ -27,7 +27,7 @@ public class SubwayControllerAdvice {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Void> handleException() {
-        return ResponseEntity.internalServerError().build();
+    public ResponseEntity<String> handleException() {
+        return ResponseEntity.internalServerError().body("서버 오류가 발생했습니다.");
     }
 }
