@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.station.StationRequest;
-import wooteco.subway.dto.station.StationResponse;
 import wooteco.subway.exception.IllegalInputException;
 import wooteco.subway.exception.station.DuplicateStationException;
 
@@ -35,7 +34,7 @@ class StationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(expected));
 
         // when
-        final StationResponse actual = stationService.create(request);
+        final Station actual = stationService.create(request);
 
         // then
         assertThat(actual.getName()).isEqualTo(expected.getName());
@@ -69,7 +68,7 @@ class StationServiceTest extends ServiceTest {
                 .willReturn(expected);
 
         // when
-        final List<StationResponse> actual = stationService.findAll();
+        final List<Station> actual = stationService.findAll();
 
         // then
         assertThat(actual).hasSameSizeAs(expected);
