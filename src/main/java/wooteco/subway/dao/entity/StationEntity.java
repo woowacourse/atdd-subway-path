@@ -2,19 +2,19 @@ package wooteco.subway.dao.entity;
 
 public class StationEntity {
 
-    private final Long id;
+    private final long id;
     private final String name;
 
-    public StationEntity(Long id, String name) {
+    public StationEntity(long id, String name) {
         this.id = id;
         this.name = name;
     }
 
     public StationEntity(String name) {
-        this(0L, name);
+        this(0, name);
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 

@@ -35,7 +35,7 @@ public class LineController {
     }
 
     @GetMapping("/{id}")
-    public LineResponse showLine(@PathVariable Long id) {
+    public LineResponse showLine(@PathVariable long id) {
         return lineService.showById(id);
     }
 
@@ -45,23 +45,23 @@ public class LineController {
     }
 
     @PutMapping("/{id}")
-    public void updateLine(@PathVariable Long id, @RequestBody LineUpdateRequest request) {
+    public void updateLine(@PathVariable long id, @RequestBody LineUpdateRequest request) {
         lineService.updateById(new LineUpdateRequest(id, request.getName(),request.getColor(),request.getExtraFare()));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteLineById(@PathVariable Long id) {
+    public void deleteLineById(@PathVariable long id) {
         lineService.removeLineById(id);
     }
 
     @PostMapping("/{id}/sections")
-    public void createSection(@PathVariable Long id, @RequestBody SectionRequest request) {
+    public void createSection(@PathVariable long id, @RequestBody SectionRequest request) {
         lineService.createSection(id, request);
     }
 
     @DeleteMapping("/{lineId}/sections")
-    public void deleteSection(@PathVariable Long lineId, @RequestParam Long stationId) {
+    public void deleteSection(@PathVariable long lineId, @RequestParam long stationId) {
         lineService.deleteSection(lineId, stationId);
     }
 }

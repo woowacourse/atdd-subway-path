@@ -28,7 +28,7 @@ public class SectionRepository {
     }
 
     public void save(Section section) {
-        if (section.getId() == 0L) {
+        if (section.getId() == 0) {
             sectionDao.save(toEntity(section));
             return;
         }
@@ -50,7 +50,7 @@ public class SectionRepository {
                 .collect(Collectors.toList());
     }
 
-    private Line toLine(Long id) {
+    private Line toLine(long id) {
         LineEntity entity = lineDao.findById(id)
                 .orElseThrow(() -> new NotFoundException("조회하려는 id가 존재하지 않습니다. id : " + id));
         return new Line(entity.getId(), entity.getName(), entity.getColor(), entity.getExtraFare());
@@ -72,11 +72,11 @@ public class SectionRepository {
                 .collect(Collectors.toList());
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(long id) {
         sectionDao.deleteById(id);
     }
 
-    public void deleteSectionByLineId(Long lineId) {
+    public void deleteSectionByLineId(long lineId) {
         for (SectionEntity sectionEntity : sectionDao.findByLineId(lineId)) {
             sectionDao.deleteById(sectionEntity.getId());
         }
@@ -95,7 +95,7 @@ public class SectionRepository {
                 section.getDistance());
     }
 
-    private StationEntity getStationEntity(Long id) {
+    private StationEntity getStationEntity(long id) {
         return stationDao.findById(id)
                 .orElseThrow(() -> new NotFoundException("조회하려는 id가 존재하지 않습니다. id : " + id));
     }

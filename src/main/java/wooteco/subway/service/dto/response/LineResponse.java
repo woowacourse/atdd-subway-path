@@ -4,7 +4,7 @@ import java.util.List;
 
 public class LineResponse {
 
-    private Long id;
+    private long id;
     private String name;
     private String color;
     private int extraFare;
@@ -13,7 +13,7 @@ public class LineResponse {
     public LineResponse() {
     }
 
-    public LineResponse(Long id, String name, String color, int extraFare, List<StationResponse> stations) {
+    public LineResponse(long id, String name, String color, int extraFare, List<StationResponse> stations) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -21,7 +21,7 @@ public class LineResponse {
         this.extraFare = extraFare;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 

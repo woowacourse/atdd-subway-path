@@ -2,7 +2,7 @@ package wooteco.subway.service.dto.request;
 
 public class LineUpdateRequest {
 
-    private Long id;
+    private long id;
     private String name;
     private String color;
     private int extraFare;
@@ -10,14 +10,14 @@ public class LineUpdateRequest {
 
     public LineUpdateRequest() {}
 
-    public LineUpdateRequest(Long id, String name, String color, int extraFare) {
+    public LineUpdateRequest(long id, String name, String color, int extraFare) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.extraFare = extraFare;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 

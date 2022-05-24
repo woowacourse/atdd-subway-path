@@ -41,7 +41,7 @@ public class LineDao {
         return new LineEntity(id, line.getName(), line.getColor(), line.getExtraFare());
     }
 
-    public Optional<LineEntity> findById(Long id) {
+    public Optional<LineEntity> findById(long id) {
         String sql = "select *  from line where id = ?";
         return Optional.ofNullable(DataAccessUtils.singleResult(jdbcTemplate.query(sql, mapper, id)));
     }
@@ -56,7 +56,7 @@ public class LineDao {
         jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getExtraFare(), line.getId());
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(long id) {
         String sql = "delete from line where id = ?";
         jdbcTemplate.update(sql, id);
     }

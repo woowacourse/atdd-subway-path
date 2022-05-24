@@ -18,7 +18,7 @@ public class LineRepository {
     }
 
     public Line save(Line line) {
-        if (line.getId() == 0L) {
+        if (line.getId() == 0) {
             return toLine(lineDao.save(new LineEntity(line.getName(), line.getColor(), line.getExtraFare())));
         }
         lineDao.modifyById(new LineEntity(line.getId(), line.getName(), line.getColor(), line.getExtraFare()));
@@ -29,7 +29,7 @@ public class LineRepository {
         return new Line(entity.getId(), entity.getName(), entity.getColor(), entity.getExtraFare());
     }
 
-    public Line findById(Long id) {
+    public Line findById(long id) {
         LineEntity entity = lineDao.findById(id)
                 .orElseThrow(() -> new NotFoundException("조회하려는 id가 존재하지 않습니다. id : " + id));
         return toLine(entity);
@@ -42,7 +42,7 @@ public class LineRepository {
                 .collect(Collectors.toList());
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(long id) {
         lineDao.deleteById(id);
     }
 

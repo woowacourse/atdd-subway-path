@@ -56,10 +56,10 @@ public class SectionDao {
 
     public void update(SectionEntity section) {
         String sql = "update section set up_station_id = ?, down_station_id = ?, distance = ? where id = ?";
-        Long upStationId = section.getUpStationId();
-        Long downStationId = section.getDownStationId();
+        long upStationId = section.getUpStationId();
+        long downStationId = section.getDownStationId();
         int distance = section.getDistance();
-        Long sectionId = section.getId();
+        long sectionId = section.getId();
 
         jdbcTemplate.update(sql, upStationId, downStationId, distance, sectionId);
     }
@@ -69,12 +69,12 @@ public class SectionDao {
         return jdbcTemplate.query(sql, mapper);
     }
 
-    public List<SectionEntity> findByLineId(Long lineId) {
+    public List<SectionEntity> findByLineId(long lineId) {
         String sql = "select * from section where line_id = ?";
         return jdbcTemplate.query(sql, mapper, lineId);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(long id) {
         String sql = "delete from section where id = ?";
         jdbcTemplate.update(sql, id);
     }

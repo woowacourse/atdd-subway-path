@@ -43,7 +43,7 @@ public class StationController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteStation(@PathVariable Long id) {
+    public void deleteStation(@PathVariable long id) {
         lineService.removeStationById(id);
     }
 }

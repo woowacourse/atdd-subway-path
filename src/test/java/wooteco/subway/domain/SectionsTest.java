@@ -158,7 +158,7 @@ class SectionsTest {
 
         Section sections = 기존_구간.combine(이호선, 합칠_구간);
 
-        assertThat(sections.getId()).isEqualTo(0L);
+        assertThat(sections.getId()).isEqualTo(0);
         assertThat(sections.getUpStation().getName()).isEqualTo("강남");
         assertThat(sections.getDownStation().getName()).isEqualTo("성수");
         assertThat(sections.getDistance()).isEqualTo(24);

@@ -36,7 +36,7 @@ public class StationDao {
         return new StationEntity(id, stationEntity.getName());
     }
 
-    public Optional<StationEntity> findById(Long id) {
+    public Optional<StationEntity> findById(long id) {
         String sql = "select * from station where id = ?";
         return Optional.ofNullable(DataAccessUtils.singleResult(jdbcTemplate.query(sql, mapper, id)));
     }
@@ -46,7 +46,7 @@ public class StationDao {
         return jdbcTemplate.query(sql, mapper);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(long id) {
         String sql = "delete from station where id = ?";
         jdbcTemplate.update(sql, id);
     }

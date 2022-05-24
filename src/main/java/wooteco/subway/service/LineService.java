@@ -53,7 +53,7 @@ public class LineService {
         return toLineResponse(savedLine, List.of(upStation, downStation));
     }
 
-    private Station findStation(Long stationId) {
+    private Station findStation(long stationId) {
         return stationRepository.findById(stationId);
     }
 
@@ -68,15 +68,15 @@ public class LineService {
                 toResponse(stations));
     }
 
-    public LineResponse showById(Long lineId) {
+    public LineResponse showById(long lineId) {
         return toLineResponse(findLine(lineId), getStations(lineId));
     }
 
-    private Line findLine(Long lineId) {
+    private Line findLine(long lineId) {
         return lineRepository.findById(lineId);
     }
 
-    private List<Station> getStations(Long lineId) {
+    private List<Station> getStations(long lineId) {
         Line line = lineRepository.findById(lineId);
         Sections sections = Sections.create(sectionRepository.findSectionByLine(line));
         return sections.getStations();
@@ -96,7 +96,7 @@ public class LineService {
         lineRepository.save(line);
     }
 
-    public void createSection(Long lineId, SectionRequest request) {
+    public void createSection(long lineId, SectionRequest request) {
         Line line = findLine(lineId);
         Station upStation = findStation(request.getUpStationId());
         Station downStation = findStation(request.getDownStationId());
@@ -109,7 +109,7 @@ public class LineService {
         }
     }
 
-    public void deleteSection(Long lineId, Long stationId) {
+    public void deleteSection(long lineId, long stationId) {
         Line line = findLine(lineId);
         Station station = findStation(stationId);
         Sections sections = Sections.create(sectionRepository.findSectionByLine(line));
@@ -125,17 +125,17 @@ public class LineService {
         }
     }
 
-    public void removeLineById(Long lineId) {
+    public void removeLineById(long lineId) {
         sectionRepository.deleteSectionByLineId(lineId);
         lineRepository.deleteById(lineId);
     }
 
-    public void removeStationById(Long id) {
+    public void removeStationById(long id) {
         validateStationNotLinked(id);
         stationRepository.deleteById(id);
     }
 
-    private void validateStationNotLinked(Long stationId) {
+    private void validateStationNotLinked(long stationId) {
         if (Sections.createUnSorted(sectionRepository.findAll()).isStationIn(findStation((stationId)))) {
             throw new IllegalArgumentException(ALREADY_IN_LINE_ERROR_MESSAGE);
         }

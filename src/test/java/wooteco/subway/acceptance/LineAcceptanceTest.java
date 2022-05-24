@@ -124,7 +124,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 노선_수정(Long lineId, Map<Object, Object> 노선_수정_파라미터) {
+    private ExtractableResponse<Response> 노선_수정(long lineId, Map<Object, Object> 노선_수정_파라미터) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(노선_수정_파라미터)
@@ -397,7 +397,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             @Test
             @DisplayName("404 응답을 한다.")
             void it_returns_404() {
-                ExtractableResponse<Response> response = 노선_수정(100L, 노선_수정_파라미터);
+                ExtractableResponse<Response> response = 노선_수정(100, 노선_수정_파라미터);
                 assertThat(response.statusCode())
                         .isEqualTo(404);
             }
@@ -405,7 +405,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             @Test
             @DisplayName("에러메시지를 응답한다.")
             void it_returns_message() {
-                ExtractableResponse<Response> response = 노선_수정(100L, 노선_수정_파라미터);
+                ExtractableResponse<Response> response = 노선_수정(100, 노선_수정_파라미터);
                 assertThat(response.body().jsonPath().getString("message"))
                         .contains("조회하려는 id가 존재하지 않습니다.");
             }

@@ -22,7 +22,7 @@ public class StationRepository {
         return toStation(saveEntity);
     }
 
-    public Station findById(Long id) {
+    public Station findById(long id) {
         StationEntity stationEntity = stationDao.findById(id)
                 .orElseThrow(() -> new NotFoundException("조회하려는 id가 존재하지 않습니다. id : " + id));
         return toStation(stationEntity);
@@ -35,7 +35,7 @@ public class StationRepository {
                 .collect(Collectors.toList());
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(long id) {
         stationDao.deleteById(id);
     }
 
