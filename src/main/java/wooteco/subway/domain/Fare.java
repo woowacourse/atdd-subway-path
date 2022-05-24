@@ -19,7 +19,8 @@ public class Fare {
         this.value = value;
     }
 
-    public static Fare of(final int distance, final int lineExtraFare, final List<DiscountPolicy> discountPolicies, final DiscountCondition discountCondition) {
+    public static Fare of(final int distance, final int lineExtraFare, final List<DiscountPolicy> discountPolicies,
+                          final DiscountCondition discountCondition) {
         if (distance <= STANDARD_DISTANCE) {
             return new Fare(applyDiscounts(discountPolicies, discountCondition, STANDARD_FARE + lineExtraFare));
         }

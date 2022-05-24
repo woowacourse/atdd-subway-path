@@ -26,7 +26,7 @@ public class ShortestPathFindStrategy implements PathFindStrategy {
     }
 
     private List<Long> findShortestPath(final long sourceId, final long targetId,
-                                               final DijkstraShortestPath<Long, SubwayPathEdge> shortestPath) {
+                                        final DijkstraShortestPath<Long, SubwayPathEdge> shortestPath) {
 
         try {
             return shortestPath.getPath(sourceId, targetId).getVertexList();

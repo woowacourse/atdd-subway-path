@@ -1,19 +1,18 @@
 package wooteco.subway.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
-import wooteco.subway.domain.discount.DiscountCondition;
-import wooteco.subway.domain.discount.DiscountPolicy;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.discount.DiscountCondition;
+import wooteco.subway.domain.discount.DiscountPolicy;
+import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.PathFindStrategy;
 import wooteco.subway.dto.request.PathRequest;
 import wooteco.subway.dto.response.PathResponse;
