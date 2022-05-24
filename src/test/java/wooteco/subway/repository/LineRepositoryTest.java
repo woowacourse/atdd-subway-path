@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
-import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.LineMap;
 import wooteco.subway.domain.line.LineInfo;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
@@ -141,8 +141,8 @@ class LineRepositoryTest extends DatabaseUsageTest {
             LineInfo lineInfo = new LineInfo("노선", "색상", 1000);
             Section initialSection = new Section(1L, station1, station2, 10);
 
-            Line actual = repository.saveLine(lineInfo, initialSection);
-            Line expected = Line.of(new LineInfo(1L, "노선", "색상", 1000), initialSection);
+            LineMap actual = repository.saveLine(lineInfo, initialSection);
+            LineMap expected = LineMap.of(new LineInfo(1L, "노선", "색상", 1000), initialSection);
 
             assertThat(actual).isEqualTo(expected);
         }

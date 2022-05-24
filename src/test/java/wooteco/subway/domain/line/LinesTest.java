@@ -66,11 +66,11 @@ class LinesTest {
         List<Section> lineSections = List.of(LINE2_SECTION, LINE1_SECTION1, LINE1_SECTION2, LINE3_SECTION);
 
         Lines lines = Lines.of(lineInfos, lineSections);
-        List<Line> actual = lines.toSortedList();
-        List<Line> expected = List.of(
-                new Line(LINE1, new Sections(List.of(LINE1_SECTION1, LINE1_SECTION2))),
-                new Line(LINE2, new Sections(List.of(LINE2_SECTION))),
-                new Line(LINE3, new Sections(List.of(LINE3_SECTION))));
+        List<LineMap> actual = lines.toSortedList();
+        List<LineMap> expected = List.of(
+                new LineMap(LINE1, new Sections(List.of(LINE1_SECTION1, LINE1_SECTION2))),
+                new LineMap(LINE2, new Sections(List.of(LINE2_SECTION))),
+                new LineMap(LINE3, new Sections(List.of(LINE3_SECTION))));
 
         assertThat(actual).isEqualTo(expected);
     }

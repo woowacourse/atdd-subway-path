@@ -10,19 +10,19 @@ public class Lines {
 
     private static final String LINES_AND_SECTIONS_NOT_MATCHING_EXCEPTION = "노선 정보와 구간들의 정보가 서로 불일치합니다.";
 
-    private final List<Line> value;
+    private final List<LineMap> value;
 
-    private Lines(List<Line> value) {
+    private Lines(List<LineMap> value) {
         this.value = value;
     }
 
     public static Lines of(List<LineInfo> lineInfos, List<Section> sections) {
         validateRegisteredLines(lineInfos, sections);
-        List<Line> lines = lineInfos.stream()
+        List<LineMap> lineMaps = lineInfos.stream()
                 .map(it -> toLine(it, sections))
-                .sorted(Comparator.comparingLong(Line::getId))
+                .sorted(Comparator.comparingLong(LineMap::getId))
                 .collect(Collectors.toList());
-        return new Lines(lines);
+        return new Lines(lineMaps);
     }
 
     private static void validateRegisteredLines(List<LineInfo> lineInfos, List<Section> sections) {
@@ -44,10 +44,10 @@ public class Lines {
                 .collect(Collectors.toList());
     }
 
-    private static Line toLine(LineInfo lineInfo, List<Section> sections) {
+    private static LineMap toLine(LineInfo lineInfo, List<Section> sections) {
         Long lineId = lineInfo.getId();
         List<Section> registeredSections = extractRegisteredSections(sections, lineId);
-        return new Line(lineInfo, new Sections(registeredSections));
+        return new LineMap(lineInfo, new Sections(registeredSections));
     }
 
     private static List<Section> extractRegisteredSections(List<Section> sections, Long lineId) {
@@ -56,7 +56,7 @@ public class Lines {
                 .collect(Collectors.toList());
     }
 
-    public List<Line> toSortedList() {
+    public List<LineMap> toSortedList() {
         return value;
     }
 }

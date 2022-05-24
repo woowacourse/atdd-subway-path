@@ -6,18 +6,18 @@ import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
 import wooteco.subway.domain.station.Station;
 
-public class Line {
+public class LineMap {
 
     private final LineInfo lineInfo;
     private final Sections sections;
 
-    public Line(LineInfo lineInfo, Sections sections) {
+    public LineMap(LineInfo lineInfo, Sections sections) {
         this.lineInfo = lineInfo;
         this.sections = sections;
     }
 
-    public static Line of(LineInfo lineInfo, Section section) {
-        return new Line(lineInfo, new Sections(List.of(section)));
+    public static LineMap of(LineInfo lineInfo, Section section) {
+        return new LineMap(lineInfo, new Sections(List.of(section)));
     }
 
     public Long getId() {
@@ -44,9 +44,9 @@ public class Line {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Line line = (Line) o;
-        return Objects.equals(lineInfo, line.lineInfo)
-                && Objects.equals(sections, line.sections);
+        LineMap lineMap = (LineMap) o;
+        return Objects.equals(lineInfo, lineMap.lineInfo)
+                && Objects.equals(sections, lineMap.sections);
     }
 
     @Override

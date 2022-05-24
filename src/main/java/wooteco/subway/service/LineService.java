@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.LineMap;
 import wooteco.subway.domain.line.LineInfo;
 import wooteco.subway.domain.line.Lines;
 import wooteco.subway.domain.section.Section;
@@ -45,7 +45,7 @@ public class LineService {
     public LineResponse find(Long id) {
         LineInfo lineInfo = lineRepository.findExistingLine(id);
         Sections sections = new Sections(sectionRepository.findAllSectionsByLineId(id));
-        return LineResponse.of(new Line(lineInfo, sections));
+        return LineResponse.of(new LineMap(lineInfo, sections));
     }
 
     @Transactional

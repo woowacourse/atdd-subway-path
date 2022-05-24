@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
-import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.LineMap;
 import wooteco.subway.domain.line.LineInfo;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.entity.LineEntity;
@@ -53,14 +53,14 @@ public class LineRepository {
         return lineDao.findByName(name).isPresent();
     }
 
-    public Line saveLine(LineInfo lineInfo, Section section) {
+    public LineMap saveLine(LineInfo lineInfo, Section section) {
         String name = lineInfo.getName();
         String color = lineInfo.getColor();
         int extraFare = lineInfo.getExtraFare();
 
         LineEntity lineEntity = lineDao.save(new LineEntity(name, color, extraFare));
         sectionDao.save(SectionEntity.of(lineEntity.getId(), section));
-        return Line.of(lineEntity.toDomain(), section);
+        return LineMap.of(lineEntity.toDomain(), section);
     }
 
     public void updateLine(LineInfo lineInfo) {
