@@ -10,10 +10,11 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import wooteco.subway.domain.Distance;
+import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.PathEdge;
 
 public class DefaultWeightedEdgeTest {
+    private final Fare extraFare = new Fare(1000);
 
     @Test
     @DisplayName("Custom Edge를 사용해서 원하는 Class type으로 weight를 지정할 수 있다")
@@ -24,8 +25,8 @@ public class DefaultWeightedEdgeTest {
         graph.addVertex("망원역");
         graph.addVertex("합정역");
 
-        PathEdge edgeBetween_마포구청_망원 = new PathEdge(1L, Distance.fromKilometer(0.15));
-        PathEdge edgeBetween_망원_합정 = new PathEdge(2L, Distance.fromKilometer(0.2));
+        PathEdge edgeBetween_마포구청_망원 = new PathEdge(extraFare, 0.15);
+        PathEdge edgeBetween_망원_합정 = new PathEdge(extraFare, 0.2);
         graph.addEdge("마포구청역", "망원역", edgeBetween_마포구청_망원);
         graph.addEdge("망원역", "합정역", edgeBetween_망원_합정);
 

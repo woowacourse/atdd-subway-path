@@ -1,6 +1,6 @@
 package wooteco.subway.domain;
 
-public class Fare {
+public class Fare implements Comparable<Fare> {
     private final int value;
 
     public Fare(int value) {
@@ -27,5 +27,10 @@ public class Fare {
 
     public int getValue() {
         return value;
+    }
+
+    @Override
+    public int compareTo(Fare otherFare) {
+        return Integer.compare(this.value, otherFare.value);
     }
 }

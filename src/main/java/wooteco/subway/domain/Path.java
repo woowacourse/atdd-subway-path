@@ -9,19 +9,25 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 public class Path {
     private final List<Station> stations;
     private final Distance distance;
+    private final Fare extraFare;
 
-    private Path(List<Station> stations, Distance distance) {
+    private Path(List<Station> stations, Distance distance, Fare extraFare) {
         this.stations = stations;
         this.distance = distance;
+        this.extraFare = extraFare;
     }
 
-    public static Path from(ShortestPathAlgorithm<Station, DefaultWeightedEdge> shortestPathAlgorithm,
+    public static Path from(ShortestPathAlgorithm<Station, PathEdge> shortestPathAlgorithm,
                             Station source, Station target) {
         checkStations(source, target);
         try {
-            GraphPath<Station, DefaultWeightedEdge> path = shortestPathAlgorithm.getPath(source, target);
+            GraphPath<Station, PathEdge> path = shortestPathAlgorithm.getPath(source, target);
             checkPath(path);
-            return new Path(path.getVertexList(), Distance.fromKilometer(path.getWeight()));
+            Fare extraFare = path.getEdgeList().stream()
+                    .map(PathEdge::getExtraFare)
+                    .max(Fare::compareTo)
+                    .get();
+            return new Path(path.getVertexList(), Distance.fromKilometer(path.getWeight()), extraFare);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("해당 역은 경로에 존재하지 않습니다.");
         }
@@ -44,14 +50,14 @@ public class Path {
         }
     }
 
-    private static void checkPath(GraphPath<Station, DefaultWeightedEdge> path) {
+    private static void checkPath(GraphPath<Station, ? extends DefaultWeightedEdge> path) {
         if (Objects.isNull(path)) {
             throw new IllegalStateException("해당하는 경로가 존재하지 않습니다.");
         }
     }
 
     public int calculateFare() {
-        return distance.calculateFare();
+        return distance.calculateFare() + extraFare.getValue();
     }
 
     public List<Station> getStations() {

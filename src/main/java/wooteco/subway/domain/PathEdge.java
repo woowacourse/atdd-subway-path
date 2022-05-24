@@ -3,20 +3,20 @@ package wooteco.subway.domain;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 public class PathEdge extends DefaultWeightedEdge {
-    private final Long lineId;
-    private final Distance distance;
+    private final Fare extraFare;
+    private final double distance;
 
-    public PathEdge(Long lineId, Distance distance) {
-        this.lineId = lineId;
+    public PathEdge(Fare extraFare, double distance) {
+        this.extraFare = extraFare;
         this.distance = distance;
     }
 
-    public Long getLineId() {
-        return lineId;
+    public Fare getExtraFare() {
+        return extraFare;
     }
 
     @Override
     protected double getWeight() {
-        return distance.getValue();
+        return distance;
     }
 }

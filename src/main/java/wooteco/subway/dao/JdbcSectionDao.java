@@ -9,11 +9,13 @@ import java.util.Objects;
 
 import javax.sql.DataSource;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import wooteco.subway.domain.Distance;
+import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
@@ -89,6 +91,21 @@ public class JdbcSectionDao implements SectionDao {
                 + "JOIN station AS us ON sec.up_station_id = us.id "
                 + "JOIN station AS ds ON sec.down_station_id = ds.id ";
         return jdbcTemplate.query(sql, (resultSet, rowNum) -> mapToSection(resultSet));
+    }
+
+    @Override
+    public Fare findExtraFareById(Long id) {
+        String sql = "SELECT "
+                + "l.extra_fare "
+                + "FROM section AS sec "
+                + "JOIN line AS l ON sec.line_id = l.id "
+                + "WHERE sec.id = ?";
+        try {
+            Integer extraFare = jdbcTemplate.queryForObject(sql, Integer.class, id);
+            return new Fare(extraFare);
+        } catch (EmptyResultDataAccessException e) {
+            throw new IllegalStateException("조회하고자 하는 구간이 존재하지 않습니다.");
+        }
     }
 
     private Section mapToSection(ResultSet resultSet) throws SQLException {
