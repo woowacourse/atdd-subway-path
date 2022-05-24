@@ -3,7 +3,6 @@ package wooteco.subway.service;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.domain.DiscountPolicy;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Sections;
@@ -29,16 +28,16 @@ public class PathService {
     public PathResponse findShortestPath(PathRequest pathRequest) {
         validateExistStations(pathRequest);
 
-        Path shortestPath = Path.of(new Sections(
-            sectionService.findAll()), pathRequest.getSource(), pathRequest.getTarget());
-        Fare fare = Fare.from(
-            shortestPath.getTotalDistance(),
-            lineService.getMaxExtraFare(shortestPath.getLineIds()));
+        Sections sections = new Sections(sectionService.findAll());
+        Path shortestPath = Path.of(sections, pathRequest.getSource(), pathRequest.getTarget());
+
+        int extraFare = lineService.getMaxExtraFare(shortestPath.getLineIds());
+        Fare fare = Fare.from(shortestPath.getTotalDistance(), extraFare, pathRequest.getAge());
 
         return new PathResponse(
             getStationResponses(pathRequest, shortestPath),
             shortestPath.getTotalDistance(),
-            DiscountPolicy.getDiscountValue(fare.getValue(), pathRequest.getAge()));
+            fare.getValue());
     }
 
     private void validateExistStations(PathRequest pathRequest) {
