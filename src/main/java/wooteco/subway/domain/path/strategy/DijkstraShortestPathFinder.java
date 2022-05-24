@@ -9,13 +9,13 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.path.Path;
-import wooteco.subway.domain.path.PathStrategy;
+import wooteco.subway.domain.path.PathFinder;
 import wooteco.subway.exception.EmptyResultException;
 
 import java.util.List;
 
 @Component
-public class DijkstraShortestPathStrategy implements PathStrategy {
+public class DijkstraShortestPathFinder implements PathFinder {
 
     @Override
     public Path findShortestPath(Station source, Station target, List<Line> lines) {

@@ -6,6 +6,6 @@ import wooteco.subway.domain.Station;
 
 import java.util.List;
 
-public interface PathStrategy {
+public interface PathFinder {
     Path findShortestPath(Station source, Station target, List<Line> lines);
 }

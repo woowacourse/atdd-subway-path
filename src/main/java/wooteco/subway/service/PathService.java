@@ -7,7 +7,7 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.fare.Fare;
-import wooteco.subway.domain.path.PathStrategy;
+import wooteco.subway.domain.path.PathFinder;
 import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
 
@@ -19,12 +19,12 @@ import java.util.List;
 public class PathService {
     private final LineDao lineDao;
     private final LineService lineService;
-    private final PathStrategy pathStrategy;
+    private final PathFinder pathFinder;
 
-    public PathService(LineDao lineDao, LineService lineService, PathStrategy pathStrategy) {
+    public PathService(LineDao lineDao, LineService lineService, PathFinder pathFinder) {
         this.lineDao = lineDao;
         this.lineService = lineService;
-        this.pathStrategy = pathStrategy;
+        this.pathFinder = pathFinder;
     }
 
     public PathResponse findShortestPath(PathRequest pathRequest) {
@@ -38,7 +38,7 @@ public class PathService {
         Station source = lineService.findStationById(sourceStationId);
         Station target = lineService.findStationById(targetStationId);
 
-        Path path = pathStrategy.findShortestPath(source, target,lines);
+        Path path = pathFinder.findShortestPath(source, target,lines);
         Integer maxAdditionalLineFare = findLineFare(path);
 
         return PathResponse.of(path, new Fare(path.getDistance(), maxAdditionalLineFare, age));

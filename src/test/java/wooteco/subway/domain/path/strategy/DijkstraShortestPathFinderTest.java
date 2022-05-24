@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.path.Path;
-import wooteco.subway.domain.path.PathStrategy;
+import wooteco.subway.domain.path.PathFinder;
 import wooteco.subway.exception.EmptyResultException;
 
 import java.util.ArrayList;
@@ -19,10 +19,10 @@ import static wooteco.subway.utils.LineFixture.*;
 import static wooteco.subway.utils.SectionFixture.*;
 import static wooteco.subway.utils.StationFixture.*;
 
-class DijkstraShortestPathStrategyTest {
+class DijkstraShortestPathFinderTest {
 
     private static List<Line> lines;
-    private PathStrategy pathStrategy = new DijkstraShortestPathStrategy();
+    private PathFinder pathFinder = new DijkstraShortestPathFinder();
 
     @BeforeAll
     public static void setUp() {
@@ -66,7 +66,7 @@ class DijkstraShortestPathStrategyTest {
     @Test
     @DisplayName("최단경로 거리의 합이 10km 이내인 경우 경로(1,2), 거리(5)가 반환된다.")
     void findShortestPath1() {
-        Path path = pathStrategy.findShortestPath(STATION1, STATION2, lines);
+        Path path = pathFinder.findShortestPath(STATION1, STATION2, lines);
 
         assertAll(
                 () -> assertThat(path.getStations())
@@ -78,7 +78,7 @@ class DijkstraShortestPathStrategyTest {
     @Test
     @DisplayName("최단경로 거리의 합이 10km 이상 50km 이하인 경우 경로(1,2,5,6,7), 거리(20)이 반환된다.")
     void findShortestPath2() {
-        Path path = pathStrategy.findShortestPath(STATION1, STATION7, lines);
+        Path path = pathFinder.findShortestPath(STATION1, STATION7, lines);
 
         assertAll(
                 () -> assertThat(path.getStations())
@@ -90,7 +90,7 @@ class DijkstraShortestPathStrategyTest {
     @Test
     @DisplayName("최단경로 거리의 합이 50km 초과인 경우 경로(1,2,3,8,9), 거리(58)이 반환되어야 한다.")
     void findShortestPath3() {
-        Path path =  pathStrategy.findShortestPath(STATION1, STATION9, lines);
+        Path path =  pathFinder.findShortestPath(STATION1, STATION9, lines);
 
         assertAll(
                 () -> assertThat(path.getStations())
@@ -102,7 +102,7 @@ class DijkstraShortestPathStrategyTest {
     @Test
     @DisplayName("출발역과 도착역이 연결되어있지 않으면 예외를 던져야 한다.")
     void findInvalidPath() {
-        assertThatThrownBy(() ->  pathStrategy.findShortestPath(STATION1, STATION10, lines))
+        assertThatThrownBy(() ->  pathFinder.findShortestPath(STATION1, STATION10, lines))
                 .hasMessage("출발역과 도착역 사이에 연결된 경로가 없습니다.")
                 .isInstanceOf(EmptyResultException.class);
     }
