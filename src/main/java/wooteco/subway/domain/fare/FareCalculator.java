@@ -1,6 +1,6 @@
 package wooteco.subway.domain.fare;
 
-public class FareFactory {
+public class FareCalculator {
 
     private final int basicFare = 1250;
     private final int firstCheckDistance = 10;
@@ -9,10 +9,10 @@ public class FareFactory {
     private final double secondCheckDivide = 8.0;
     private final int additionalFare = 100;
 
-    public Fare makeFare(int totalDistance, int maxExtraFare, int age) {
+    public int makeFare(int totalDistance, int maxExtraFare, int age) {
         int calculatedFairByDistance = calculateByDistance(basicFare, totalDistance);
         int calculatedFairByMaxExtraFare = calculatedFairByDistance + maxExtraFare;
-        return new Fare(FareByAge.calculatorFare(age, calculatedFairByMaxExtraFare));
+        return FareByAge.calculatorFare(age, calculatedFairByMaxExtraFare);
     }
 
     private int calculateByDistance(int fare, int distance) {

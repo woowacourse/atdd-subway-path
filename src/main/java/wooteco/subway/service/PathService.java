@@ -3,8 +3,7 @@ package wooteco.subway.service;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.fare.Fare;
-import wooteco.subway.domain.fare.FareFactory;
+import wooteco.subway.domain.fare.FareCalculator;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.PathFactory;
 import wooteco.subway.service.dto.path.PathRequestDto;
@@ -30,9 +29,9 @@ public class PathService {
 
     public PathResponse getPath(PathRequestDto pathRequestDto) {
         Path path = makePath(pathRequestDto);
-        Fare fare = makeFare(pathRequestDto, path);
+        int fare = makeFare(pathRequestDto, path);
         List<StationResponse> stations = toStationResponse(path);
-        return new PathResponse(stations, path.getTotalDistance(), fare.getFare());
+        return new PathResponse(stations, path.getTotalDistance(), fare);
     }
 
     private Path makePath(PathRequestDto pathRequestDto) {
@@ -49,9 +48,9 @@ public class PathService {
         return stationIds;
     }
 
-    private Fare makeFare(PathRequestDto pathRequestDto, Path path) {
-        FareFactory fareFactory = new FareFactory();
-        return fareFactory.makeFare(path.getTotalDistance(), findMaxExtraFare(path), pathRequestDto.getAge());
+    private int makeFare(PathRequestDto pathRequestDto, Path path) {
+        FareCalculator fareCalculator = new FareCalculator();
+        return fareCalculator.makeFare(path.getTotalDistance(), findMaxExtraFare(path), pathRequestDto.getAge());
     }
 
     private int findMaxExtraFare(Path path) {
