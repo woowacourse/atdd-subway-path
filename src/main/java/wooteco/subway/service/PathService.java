@@ -6,11 +6,13 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.DiscountSpecification;
 import wooteco.subway.domain.FareCacluateSpecification;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.PathFindSpecification;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.discount.DiscountStrategy;
 import wooteco.subway.domain.path.PathFindStrategy;
 import wooteco.subway.domain.pricing.PricingStrategy;
 import wooteco.subway.service.dto.PathResponse;
@@ -30,15 +32,24 @@ public class PathService {
         this.sectionDao = sectionDao;
     }
 
-    public PathResponse searchPaths(PathFindStrategy pathFindStrategy, PricingStrategy pricingStrategy, PathRequest pathRequest) {
+    public PathResponse searchPaths(PathFindStrategy pathFindStrategy, List<PricingStrategy> pricingStrategies, DiscountStrategy discountStrategy, PathRequest pathRequest) {
         Path path = getPath(pathFindStrategy, pathRequest);
-        int fare = getFare(pricingStrategy, pathRequest, path);
+        int fare = 0;
+        for (PricingStrategy strategy : pricingStrategies) {
+            fare += getFare(strategy, pathRequest, path);
+        }
+        int discountFare = applyFare(discountStrategy, pathRequest.getAge(), fare);
 
         return new PathResponse(
                 path.getDistance(),
-                fare,
+                discountFare,
                 generateStationResponses(path.getStationsInPath())
         );
+    }
+
+    private int applyFare(DiscountStrategy discountStrategy, int age, int fare) {
+        DiscountSpecification specification = new DiscountSpecification(age, fare);
+        return discountStrategy.discount(specification);
     }
 
     private int getFare(PricingStrategy pricingStrategy, PathRequest pathRequest, Path path) {
