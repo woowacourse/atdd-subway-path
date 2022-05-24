@@ -203,5 +203,32 @@ class PathManagerTest {
 
             assertThat(actual).isEqualTo(expected);
         }
+
+        @Test
+        void 도중에_노선이_바뀔_때_추가요금이_최대값으로만_바뀌는지_테스트() {
+            /*
+            전체 호선 : 1호선, 2호선, 3호선
+            1호선 구간 정보 : 1번역 - 2번역 - 3번역
+            2호선 구간 정보 : 3번역 - 4번역
+            3호선 구간 정보 : 4번역 - 5번역 - 6번역
+            */
+            List<Section> sections = List.of(
+                    new Section(1L, STATION1, STATION2, 1),
+                    new Section(1L, STATION2, STATION3, 1),
+                    new Section(2L, STATION3, STATION4, 1),
+                    new Section(3L, STATION4, STATION5, 1),
+                    new Section(3L, STATION5, STATION6, 1));
+
+            Map<Long, Integer> lineExtraFares = Map.of(
+                    1L, 10,
+                    2L, 70,
+                    3L, 30);
+            PathManager pathManager = PathManager.of(GraphGenerator.toAdjacentPath(sections, lineExtraFares));
+
+            Path actual = pathManager.calculateOptimalPath(STATION1, STATION6);
+            Path expected = new Path(5, List.of(STATION1, STATION2, STATION3, STATION4, STATION5, STATION6), 70);
+
+            assertThat(actual).isEqualTo(expected);
+        }
     }
 }
