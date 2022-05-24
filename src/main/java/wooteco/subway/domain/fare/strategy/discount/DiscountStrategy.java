@@ -7,7 +7,7 @@ public abstract class DiscountStrategy {
 
     public abstract boolean isMatch(final int age);
 
-    public abstract int calculate(final int fare);
+    public abstract int apply(final int fare);
 
     protected int discountFareBy(final int fare, final double discountRate) {
         return (int) ((fare - DEFAULT_DISCOUNT_AMOUNT) * discountRate);

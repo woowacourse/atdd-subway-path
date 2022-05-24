@@ -19,7 +19,7 @@ public final class DefaultDiscountStrategy extends DiscountStrategy {
     }
 
     @Override
-    public int calculate(final int fare) {
+    public int apply(final int fare) {
         return fare;
     }
 }

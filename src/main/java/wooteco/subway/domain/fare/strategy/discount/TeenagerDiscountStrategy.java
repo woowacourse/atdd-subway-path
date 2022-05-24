@@ -20,7 +20,7 @@ public final class TeenagerDiscountStrategy extends DiscountStrategy {
     }
 
     @Override
-    public int calculate(final int fare) {
+    public int apply(final int fare) {
         return discountFareBy(fare, DISCOUNT_RATE);
     }
 }
