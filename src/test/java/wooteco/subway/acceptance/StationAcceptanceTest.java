@@ -33,6 +33,22 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.header("Location")).isNotBlank();
     }
 
+    @DisplayName("역 저장 시 요청 객체의 요청 정보를 누락(공백, null)하면 에러를 응답한다.")
+    @Test
+    void createStationMissingParam() {
+        // given
+
+        // when
+        ExtractableResponse<Response> response = RequestFrame.post(BodyCreator.makeStationBodyForPost(""),
+                "/stations");
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(response.body().asString()).contains("name")
+        );
+    }
+
     @DisplayName("지하철역을 생성한다.")
     @Test
     void createStationWithLongName() {

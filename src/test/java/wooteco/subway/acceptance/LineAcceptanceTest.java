@@ -38,6 +38,25 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.header("Location")).isNotBlank();
     }
 
+    @DisplayName("노선 저장 시 요청 객체의 요청 정보를 누락(공백, null)하면 에러를 응답한다.")
+    @Test
+    void createLineMissingParam() {
+        // given
+
+        // when
+        ExtractableResponse<Response> response = RequestFrame.post(
+                BodyCreator.makeLineBodyForPost("", "", "", "", "", ""),
+                "/lines"
+        );
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(response.body().asString())
+                        .contains("name", "color", "upStationId", "downStationId", "distance", "extraFare")
+        );
+    }
+
     @DisplayName("이름의 길이가 256 이상이면 노선을 만들 수 없다.")
     @Test
     void createLineWithLongName() {
@@ -262,7 +281,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         String uri = createResponse1.header("Location");
 
         // when
-        ExtractableResponse<Response> response = RequestFrame.put(makeBodyForPut("다른분당선", "green", "900"), uri);
+        ExtractableResponse<Response> response = RequestFrame.put(
+                makeBodyForPut("다른분당선", "green", "1", "2", "10", "900"), uri);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -274,7 +294,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
 
         // when
-        ExtractableResponse<Response> response = RequestFrame.put(makeBodyForPut("다른분당선", "green", "900"), "/lines/1");
+        ExtractableResponse<Response> response = RequestFrame.put(
+                makeBodyForPut("다른분당선", "green", "1", "2", "10", "900"), "/lines/1");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
@@ -299,7 +320,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         );
 
         // when
-        ExtractableResponse<Response> response = RequestFrame.put(makeBodyForPut("다른분당선", "green", "900"), uri);
+        ExtractableResponse<Response> response = RequestFrame.put(
+                makeBodyForPut("다른분당선", "green", "1", "2", "10", "900"), uri);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -337,10 +359,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
-    private Map<String, String> makeBodyForPut(String name, String color, String extraFare) {
+    private Map<String, String> makeBodyForPut(String name, String color, String upStationId,
+                                               String downStationId, String distance, String extraFare) {
         Map<String, String> body = new HashMap<>();
         body.put("name", name);
         body.put("color", color);
+        body.put("upStationId", upStationId);
+        body.put("downStationId", downStationId);
+        body.put("distance", distance);
         body.put("extraFare", extraFare);
         return body;
     }
