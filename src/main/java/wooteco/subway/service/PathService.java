@@ -36,15 +36,18 @@ public class PathService {
 
         Path path = pathStrategy.calculatePath(source, target, sections);
 
+        return createResponse(pathRequest, path);
+    }
+
+    private PathResponse createResponse(PathRequest pathRequest, Path path) {
         int distance = path.getDistance();
         int extraFare = path.getMostExpensiveExtraFare();
         int age = pathRequest.getAge();
 
-        return new PathResponse(
-                toResponses(path.getStations()),
-                distance,
-                fareStrategy.calculateFare(distance, extraFare, age)
-        );
+        List<StationResponse> stations = toResponses(path.getStations());
+        int fare = fareStrategy.calculateFare(distance, extraFare, age);
+
+        return new PathResponse(stations, distance, fare);
     }
 
     private List<StationResponse> toResponses(List<Station> stations) {
