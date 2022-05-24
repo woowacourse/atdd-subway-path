@@ -9,13 +9,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import wooteco.subway.exception.EmptyResultException;
-import wooteco.subway.exception.LowFareException;
 import wooteco.subway.ui.dto.ExceptionResponse;
 
 @ControllerAdvice
@@ -47,8 +46,9 @@ public class ExceptionController {
     }
 
     @ExceptionHandler
-    public ResponseEntity<List<ExceptionResponse>> handleValidateException(MethodArgumentNotValidException exception) {
+    public ResponseEntity<List<ExceptionResponse>> handleValidateException(BindException exception) {
         logger.error(exception.getMessage());
+
         List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
         List<ExceptionResponse> responses = fieldErrors.stream()
             .map(DefaultMessageSourceResolvable::getDefaultMessage)
@@ -57,7 +57,7 @@ public class ExceptionController {
         return ResponseEntity.badRequest().body(responses);
     }
 
-    @ExceptionHandler({Exception.class, LowFareException.class})
+    @ExceptionHandler
     public ResponseEntity<ExceptionResponse> handleException(Exception exception) {
         logger.error(exception.getMessage());
         return ResponseEntity.internalServerError().body(new ExceptionResponse("서버 에러가 발생했습니다."));

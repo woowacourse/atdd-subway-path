@@ -9,10 +9,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Named;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -123,6 +128,46 @@ public class PathAcceptanceTest extends AcceptanceTest {
             () -> assertThat(pathResponse.getDistance()).isEqualTo(58),
             () -> assertThat(pathResponse.getFare()).isEqualTo(1680)
         );
+    }
+
+    @ParameterizedTest(name = "{index} : {0}")
+    @MethodSource("invalidInputs")
+    @DisplayName("사용자 입력을 검증한다.")
+    void findShortestInvalidInput(Map<String, String> params) {
+        requestShortestPath(params)
+            .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private static Stream<Arguments> invalidInputs() {
+        return Stream.of(
+            Arguments.of(Named.of("출발역이 null", new HashMap<String, String>() {
+                {
+                    put("source", null);
+                    put("target", "9");
+                    put("age", "15");
+                }
+            })),
+            Arguments.of(Named.of("도착역이 null", new HashMap<String, String>() {
+                {
+                    put("source", "1");
+                    put("target", null);
+                    put("age", "15");
+                }
+            })),
+            Arguments.of(Named.of("나이가 null", new HashMap<String, String>() {
+                {
+                    put("source", "1");
+                    put("target", "9");
+                    put("age", null);
+                }
+            })),
+            Arguments.of(Named.of("나이가 음수", new HashMap<String, String>() {
+                {
+                    put("source", "1");
+                    put("target", "9");
+                    put("age", "-15");
+                }
+            })));
     }
 
     @Test
