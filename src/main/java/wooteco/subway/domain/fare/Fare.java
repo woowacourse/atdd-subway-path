@@ -26,16 +26,17 @@ public class Fare {
     }
 
     public int calculate(int extraFare) {
-        DistanceStrategy distanceStrategy = new BasicDistanceStrategy();
+        int fare = getDistanceStrategy().getPrice(distance) + extraFare;
+        return discountStrategy.getDiscountedFare(fare);
+    }
 
+    private DistanceStrategy getDistanceStrategy() {
         if (distance > 10 && distance <= 50) {
-            distanceStrategy = new FirstDistanceStrategy();
+            return new FirstDistanceStrategy();
         }
         if (distance > 50) {
-            distanceStrategy = new SecondDistanceFareStrategy();
+            return new SecondDistanceFareStrategy();
         }
-
-        int fare = distanceStrategy.getPrice(distance) + extraFare;
-        return discountStrategy.getDiscountedFare(fare);
+        return new BasicDistanceStrategy();
     }
 }

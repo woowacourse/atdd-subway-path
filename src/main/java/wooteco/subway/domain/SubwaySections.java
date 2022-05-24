@@ -16,6 +16,7 @@ public class SubwaySections {
 
     private static final String UNREGISTERED_SECTION_STATION = "노선에 등록되지 않은 지하철역입니다.";
     private static final String NOT_EXIST_PATH = "경로가 존재하지 않습니다.";
+    private static final String NOT_EXIST_MATCHED_SECTION = "일치하는 구간이 없습니다.";
 
     private final List<Section> sections;
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
@@ -72,7 +73,7 @@ public class SubwaySections {
         Section foundSection = sections.stream()
                 .filter(section -> section.existsStation(upStation) && section.existsStation(downStation))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("일치하는 구간이 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_MATCHED_SECTION));
         return foundSection.getLine();
     }
 

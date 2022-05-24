@@ -23,20 +23,20 @@ public class Path {
 
     public int calculateFare(int age) {
         validateAge(age);
+        return new Fare(distance, getDiscountStrategy(age)).calculate(extraFare);
+    }
 
-        DiscountStrategy discountStrategy = new AdultDiscountStrategy();
-
+    private DiscountStrategy getDiscountStrategy(int age) {
         if (age < 6 || age >= 65) {
-            discountStrategy = new FreeDiscountStrategy();
+            return new FreeDiscountStrategy();
         }
         if (age < 13) {
-            discountStrategy = new ChildDiscountStrategy();
+            return new ChildDiscountStrategy();
         }
         if (age < 19) {
-            discountStrategy = new TeenagerDiscountStrategy();
+            return new TeenagerDiscountStrategy();
         }
-
-        return new Fare(distance, discountStrategy).calculate(extraFare);
+        return new AdultDiscountStrategy();
     }
 
     private void validateAge(int age) {
