@@ -27,9 +27,8 @@ public class PathService {
 
     public PathResponse getPath(Long source, Long target) {
         List<Section> sections = sectionDao.findAll();
-        List<Station> stations = stationDao.findAll();
         DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath =
-                ShortestPathFactory.getFrom(stations, sections);
+                ShortestPathFactory.getFrom(sections);
 
         Station sourceStation = stationDao.findById(source);
         Station targetStation = stationDao.findById(target);

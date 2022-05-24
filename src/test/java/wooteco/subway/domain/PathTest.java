@@ -22,7 +22,6 @@ public class PathTest {
         강남 = new Station(1L, "강남");
         역삼 = new Station(2L, "역삼");
         선릉 = new Station(3L, "선릉");
-        List<Station> stations = List.of(강남, 역삼, 선릉);
         List<Section> sections = List.of(
                 new Section(강남, 역삼, Distance.fromMeter(10)),
                 new Section(역삼, 선릉, Distance.fromMeter(10)),
@@ -30,7 +29,7 @@ public class PathTest {
         );
 
         shortestPath =
-                ShortestPathFactory.getFrom(stations, sections);
+                ShortestPathFactory.getFrom(sections);
     }
 
     @Test
@@ -57,18 +56,6 @@ public class PathTest {
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> Path.from(shortestPath, 선릉, 망원))
                 .withMessageContaining("존재하지 않습니다");
-    }
-
-    @DisplayName("해당 역에 대한 구간이 존재하지 않을 경우 예외가 발생한다.")
-    @Test
-    void from_no_such_path() {
-        List<Station> stations = List.of(강남, 역삼, 선릉);
-        List<Section> sections = List.of(new Section(강남, 역삼, Distance.fromMeter(10)));
-        DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPathWithout_선릉 = ShortestPathFactory.getFrom(stations, sections);
-
-        assertThatExceptionOfType(IllegalStateException.class)
-                .isThrownBy(() -> Path.from(shortestPathWithout_선릉, 강남, 선릉))
-                .withMessageContaining("경로가 존재하지");
     }
 
     @Test
