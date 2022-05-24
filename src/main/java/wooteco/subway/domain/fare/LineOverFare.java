@@ -2,16 +2,16 @@ package wooteco.subway.domain.fare;
 
 import java.util.Comparator;
 import java.util.List;
-import wooteco.subway.domain.line.LineInfo;
+import wooteco.subway.domain.line.Line;
 
 public class LineOverFare extends Decorator {
 
     private static final String LINE_INFO_NOT_FOUND_EXCEPTION = "노선 정보가 제공되지 않았습니다.";
-    private final List<LineInfo> lineInfos;
+    private final List<Line> lines;
 
-    public LineOverFare(Fare delegate, List<LineInfo> lineInfos) {
+    public LineOverFare(Fare delegate, List<Line> lines) {
         super(delegate);
-        this.lineInfos = lineInfos;
+        this.lines = lines;
     }
 
     @Override
@@ -22,8 +22,8 @@ public class LineOverFare extends Decorator {
     }
 
     private Integer calculateMaxExtraFare() {
-        return lineInfos.stream()
-                .map(LineInfo::getExtraFare)
+        return lines.stream()
+                .map(Line::getExtraFare)
                 .max(Comparator.comparingInt(Integer::intValue))
                 .orElseThrow(() -> new IllegalArgumentException(LINE_INFO_NOT_FOUND_EXCEPTION));
     }

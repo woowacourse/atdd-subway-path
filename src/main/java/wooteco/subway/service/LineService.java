@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.line.LineMap;
-import wooteco.subway.domain.line.LineInfo;
+import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.Lines;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
@@ -43,9 +43,9 @@ public class LineService {
     }
 
     public LineResponse find(Long id) {
-        LineInfo lineInfo = lineRepository.findExistingLine(id);
+        Line line = lineRepository.findExistingLine(id);
         Sections sections = new Sections(sectionRepository.findAllSectionsByLineId(id));
-        return LineResponse.of(new LineMap(lineInfo, sections));
+        return LineResponse.of(new LineMap(line, sections));
     }
 
     @Transactional
@@ -55,7 +55,7 @@ public class LineService {
         Station downStation = stationRepository.findExistingStation(lineRequest.getDownStationId());
         Section newSection = new Section(upStation, downStation, lineRequest.getDistance());
 
-        LineInfo newLine = new LineInfo(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
+        Line newLine = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         return LineResponse.of(lineRepository.saveLine(newLine, newSection));
     }
 
@@ -64,12 +64,12 @@ public class LineService {
         String name = lineRequest.getName();
         validateExistingLine(id);
         validateUniqueLineName(name);
-        lineRepository.updateLine(new LineInfo(id, name, lineRequest.getColor(), lineRequest.getExtraFare()));
+        lineRepository.updateLine(new Line(id, name, lineRequest.getColor(), lineRequest.getExtraFare()));
     }
 
     @Transactional
     public void delete(Long id) {
-        LineInfo line = lineRepository.findExistingLine(id);
+        Line line = lineRepository.findExistingLine(id);
         lineRepository.deleteLine(line);
     }
 

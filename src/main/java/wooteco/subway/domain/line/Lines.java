@@ -16,24 +16,24 @@ public class Lines {
         this.value = value;
     }
 
-    public static Lines of(List<LineInfo> lineInfos, List<Section> sections) {
-        validateRegisteredLines(lineInfos, sections);
-        List<LineMap> lineMaps = lineInfos.stream()
+    public static Lines of(List<Line> lines, List<Section> sections) {
+        validateRegisteredLines(lines, sections);
+        List<LineMap> lineMaps = lines.stream()
                 .map(it -> toLine(it, sections))
                 .sorted(Comparator.comparingLong(LineMap::getId))
                 .collect(Collectors.toList());
         return new Lines(lineMaps);
     }
 
-    private static void validateRegisteredLines(List<LineInfo> lineInfos, List<Section> sections) {
-        if (!extractAllLineIds(lineInfos).containsAll(extractAllRegisteredLineIds(sections))) {
+    private static void validateRegisteredLines(List<Line> lines, List<Section> sections) {
+        if (!extractAllLineIds(lines).containsAll(extractAllRegisteredLineIds(sections))) {
             throw new RuntimeException(LINES_AND_SECTIONS_NOT_MATCHING_EXCEPTION);
         }
     }
 
-    private static List<Long> extractAllLineIds(List<LineInfo> lineInfos) {
-        return lineInfos.stream()
-                .map(LineInfo::getId)
+    private static List<Long> extractAllLineIds(List<Line> lines) {
+        return lines.stream()
+                .map(Line::getId)
                 .collect(Collectors.toList());
     }
 
@@ -44,10 +44,10 @@ public class Lines {
                 .collect(Collectors.toList());
     }
 
-    private static LineMap toLine(LineInfo lineInfo, List<Section> sections) {
-        Long lineId = lineInfo.getId();
+    private static LineMap toLine(Line line, List<Section> sections) {
+        Long lineId = line.getId();
         List<Section> registeredSections = extractRegisteredSections(sections, lineId);
-        return new LineMap(lineInfo, new Sections(registeredSections));
+        return new LineMap(line, new Sections(registeredSections));
     }
 
     private static List<Section> extractRegisteredSections(List<Section> sections, Long lineId) {

@@ -1,7 +1,7 @@
 package wooteco.subway.entity;
 
 import java.util.Objects;
-import wooteco.subway.domain.line.LineInfo;
+import wooteco.subway.domain.line.Line;
 
 public class LineEntity {
 
@@ -37,8 +37,8 @@ public class LineEntity {
         return extraFare;
     }
 
-    public LineInfo toDomain() {
-        return new LineInfo(id, name, color, extraFare);
+    public Line toDomain() {
+        return new Line(id, name, color, extraFare);
     }
 
     @Override

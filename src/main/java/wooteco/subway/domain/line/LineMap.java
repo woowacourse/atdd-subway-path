@@ -8,24 +8,24 @@ import wooteco.subway.domain.station.Station;
 
 public class LineMap {
 
-    private final LineInfo lineInfo;
+    private final Line line;
     private final Sections sections;
 
-    public LineMap(LineInfo lineInfo, Sections sections) {
-        this.lineInfo = lineInfo;
+    public LineMap(Line line, Sections sections) {
+        this.line = line;
         this.sections = sections;
     }
 
-    public static LineMap of(LineInfo lineInfo, Section section) {
-        return new LineMap(lineInfo, new Sections(List.of(section)));
+    public static LineMap of(Line line, Section section) {
+        return new LineMap(line, new Sections(List.of(section)));
     }
 
     public Long getId() {
-        return lineInfo.getId();
+        return line.getId();
     }
 
-    public LineInfo getLineInfo() {
-        return lineInfo;
+    public Line getLineInfo() {
+        return line;
     }
 
     public Sections getSections() {
@@ -45,17 +45,17 @@ public class LineMap {
             return false;
         }
         LineMap lineMap = (LineMap) o;
-        return Objects.equals(lineInfo, lineMap.lineInfo)
+        return Objects.equals(line, lineMap.line)
                 && Objects.equals(sections, lineMap.sections);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(lineInfo, sections);
+        return Objects.hash(line, sections);
     }
 
     @Override
     public String toString() {
-        return "Line{" + "lineInfo=" + lineInfo + ", sections=" + sections + '}';
+        return "LineMap{" + "lineInfo=" + line + ", sections=" + sections + '}';
     }
 }

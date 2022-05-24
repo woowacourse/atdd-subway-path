@@ -7,7 +7,7 @@ import wooteco.subway.domain.fare.BasicFare;
 import wooteco.subway.domain.fare.DistanceOverFare;
 import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.fare.LineOverFare;
-import wooteco.subway.domain.line.LineInfo;
+import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.path.Navigator;
 import wooteco.subway.domain.path.NavigatorJgraphtAdapter;
 import wooteco.subway.domain.path.Path;
@@ -39,7 +39,7 @@ public class PathService {
         Navigator<Station, Section> navigator = new NavigatorJgraphtAdapter(sections);
         Path path = Path.of(startStation, endStation, navigator);
         int distance = path.getDistance();
-        List<LineInfo> lines = lineRepository.findAllLinesByIds(path.getPassingLineIds());
+        List<Line> lines = lineRepository.findAllLinesByIds(path.getPassingLineIds());
         Fare fare = new BasicFare();
         fare = new DistanceOverFare(fare, distance);
         fare =new LineOverFare(fare, lines);

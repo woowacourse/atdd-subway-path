@@ -15,9 +15,9 @@ import wooteco.subway.domain.station.Station;
 @SuppressWarnings("NonAsciiCharacters")
 class LinesTest {
 
-    private final LineInfo LINE1 = new LineInfo(1L, "노선", "색상", 1000);
-    private final LineInfo LINE2 = new LineInfo(2L, "노선2", "색상", 0);
-    private final LineInfo LINE3 = new LineInfo(3L, "노선2", "색상", 900);
+    private final Line LINE1 = new Line(1L, "노선", "색상", 1000);
+    private final Line LINE2 = new Line(2L, "노선2", "색상", 0);
+    private final Line LINE3 = new Line(3L, "노선2", "색상", 900);
 
     private final Station STATION1 = new Station(1L, "역1");
     private final Station STATION2 = new Station(2L, "역2");
@@ -36,29 +36,29 @@ class LinesTest {
 
         @Test
         void 노선_정보에_해당되지_않는_구간이_존재하는_경우_예외_발생() {
-            List<LineInfo> lineInfos = List.of(LINE1);
+            List<Line> lines = List.of(LINE1);
             Section LINE1_SECTION = new Section(1L, STATION1, STATION2, 10);
             Section LINE2_SECTION = new Section(2L, STATION1, STATION2, 10);
             List<Section> lineSections = List.of(LINE1_SECTION, LINE2_SECTION);
 
-            assertThatThrownBy(() -> Lines.of(lineInfos, lineSections))
+            assertThatThrownBy(() -> Lines.of(lines, lineSections))
                     .isInstanceOf(RuntimeException.class);
         }
 
         @Test
         void 노선_정보들_중_등록된_구간이_전혀_존재하지_않는_경우_예외_발생() {
-            List<LineInfo> lineInfos = List.of(LINE1, LINE2);
+            List<Line> lines = List.of(LINE1, LINE2);
             Section LINE1_SECTION = new Section(1L, STATION1, STATION2, 10);
             List<Section> lineSections = List.of(LINE1_SECTION);
 
-            assertThatThrownBy(() -> Lines.of(lineInfos, lineSections))
+            assertThatThrownBy(() -> Lines.of(lines, lineSections))
                     .isInstanceOf(RuntimeException.class);
         }
     }
 
     @Test
     void toSortedList_메서드는_노선의_id_순서대로_정렬된_노선들을_반환() {
-        List<LineInfo> lineInfos = List.of(LINE1, LINE2, LINE3);
+        List<Line> lineInfos = List.of(LINE1, LINE2, LINE3);
         Section LINE1_SECTION1 = new Section(1L, STATION1, STATION2, 10);
         Section LINE1_SECTION2 = new Section(1L, STATION2, STATION3, 30);
         Section LINE2_SECTION = new Section(2L, STATION1, STATION2, 10);

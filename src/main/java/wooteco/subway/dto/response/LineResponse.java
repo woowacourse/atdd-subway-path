@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import wooteco.subway.domain.line.LineMap;
-import wooteco.subway.domain.line.LineInfo;
+import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.station.Station;
 
 public class LineResponse {
@@ -28,11 +28,11 @@ public class LineResponse {
     }
 
     public static LineResponse of(LineMap lineMap) {
-        LineInfo lineInfo = lineMap.getLineInfo();
-        Long lineId = lineInfo.getId();
-        String lineName = lineInfo.getName();
-        String lineColor = lineInfo.getColor();
-        int extraFare = lineInfo.getExtraFare();
+        Line line = lineMap.getLineInfo();
+        Long lineId = line.getId();
+        String lineName = line.getName();
+        String lineColor = line.getColor();
+        int extraFare = line.getExtraFare();
         List<StationResponse> stations = toStationResponse(lineMap.getSortedStations());
         return new LineResponse(lineId, lineName, lineColor, extraFare, stations);
     }

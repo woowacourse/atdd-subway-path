@@ -2,7 +2,7 @@ package wooteco.subway.domain.line;
 
 import java.util.Objects;
 
-public class LineInfo {
+public class Line {
 
     private static final int MIN_EXTRA_FARE = 0;
     private static final String INVALID_EXTRA_FARE_VALUE_EXCEPTION = "노선 추가비용은 0원 이상이어야 합니다.";
@@ -12,7 +12,7 @@ public class LineInfo {
     private final String color;
     private final int extraFare;
 
-    public LineInfo(Long id, String name, String color, int extraFare) {
+    public Line(Long id, String name, String color, int extraFare) {
         validateExtraFare(extraFare);
         this.id = id;
         this.name = name;
@@ -20,7 +20,7 @@ public class LineInfo {
         this.extraFare = extraFare;
     }
 
-    public LineInfo(String name, String color, int extraFare) {
+    public Line(String name, String color, int extraFare) {
         this(null, name, color, extraFare);
     }
 
@@ -54,11 +54,11 @@ public class LineInfo {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        LineInfo lineInfo = (LineInfo) o;
-        return extraFare == lineInfo.extraFare
-                && Objects.equals(id, lineInfo.id)
-                && Objects.equals(name, lineInfo.name)
-                && Objects.equals(color, lineInfo.color);
+        Line line = (Line) o;
+        return extraFare == line.extraFare
+                && Objects.equals(id, line.id)
+                && Objects.equals(name, line.name)
+                && Objects.equals(color, line.color);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class LineInfo {
 
     @Override
     public String toString() {
-        return "LineInfo{" +
+        return "Line{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", color='" + color + '\'' +

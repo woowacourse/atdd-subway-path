@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.line.LineMap;
-import wooteco.subway.domain.line.LineInfo;
+import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.entity.LineEntity;
@@ -49,11 +49,11 @@ class LineRepositoryTest extends DatabaseUsageTest {
         databaseFixtureUtils.saveLine("노선명2", "색깔2", 0);
         databaseFixtureUtils.saveLine("노선명3", "색깔3", 900);
 
-        List<LineInfo> actual = repository.findAllLines();
-        List<LineInfo> expected = List.of(
-                new LineInfo(1L, "노선명1", "색깔1", 1000),
-                new LineInfo(2L, "노선명2", "색깔2", 0),
-                new LineInfo(3L, "노선명3", "색깔3", 900));
+        List<Line> actual = repository.findAllLines();
+        List<Line> expected = List.of(
+                new Line(1L, "노선명1", "색깔1", 1000),
+                new Line(2L, "노선명2", "색깔2", 0),
+                new Line(3L, "노선명3", "색깔3", 900));
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -64,10 +64,10 @@ class LineRepositoryTest extends DatabaseUsageTest {
         databaseFixtureUtils.saveLine("노선명2", "색깔2", 0);
         databaseFixtureUtils.saveLine("노선명3", "색깔3", 900);
 
-        List<LineInfo> actual = repository.findAllLinesByIds(List.of(1L, 3L));
-        List<LineInfo> expected = List.of(
-                new LineInfo(1L, "노선명1", "색깔1", 1000),
-                new LineInfo(3L, "노선명3", "색깔3", 900));
+        List<Line> actual = repository.findAllLinesByIds(List.of(1L, 3L));
+        List<Line> expected = List.of(
+                new Line(1L, "노선명1", "색깔1", 1000),
+                new Line(3L, "노선명3", "색깔3", 900));
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -79,8 +79,8 @@ class LineRepositoryTest extends DatabaseUsageTest {
         @Test
         void id에_대응되는_노선이_존재하는_경우_도메인으로_반환() {
             databaseFixtureUtils.saveLine("노선1", "색상", 1000);
-            LineInfo actual = repository.findExistingLine(1L);
-            LineInfo expected = new LineInfo(1L, "노선1", "색상", 1000);
+            Line actual = repository.findExistingLine(1L);
+            Line expected = new Line(1L, "노선1", "색상", 1000);
 
             assertThat(actual).isEqualTo(expected);
         }
@@ -138,20 +138,20 @@ class LineRepositoryTest extends DatabaseUsageTest {
 
         @Test
         void 생성된_노선의_도메인을_반환() {
-            LineInfo lineInfo = new LineInfo("노선", "색상", 1000);
+            Line line = new Line("노선", "색상", 1000);
             Section initialSection = new Section(1L, station1, station2, 10);
 
-            LineMap actual = repository.saveLine(lineInfo, initialSection);
-            LineMap expected = LineMap.of(new LineInfo(1L, "노선", "색상", 1000), initialSection);
+            LineMap actual = repository.saveLine(line, initialSection);
+            LineMap expected = LineMap.of(new Line(1L, "노선", "색상", 1000), initialSection);
 
             assertThat(actual).isEqualTo(expected);
         }
 
         @Test
         void 새로운_노선과_구간을_저장() {
-            LineInfo lineInfo = new LineInfo("노선", "색상", 300);
+            Line line = new Line("노선", "색상", 300);
             Section initialSection = new Section(1L, station1, station2, 10);
-            repository.saveLine(lineInfo, initialSection);
+            repository.saveLine(line, initialSection);
 
             LineEntity actualLine = lineDao.findById(1L).get();
             List<SectionEntity> actualSections = sectionDao.findAll();
@@ -168,7 +168,7 @@ class LineRepositoryTest extends DatabaseUsageTest {
     void updateLine_메서드는_노선_정보를_수정() {
         databaseFixtureUtils.saveLine("기존 노선명", "색상", 200);
 
-        repository.updateLine(new LineInfo(1L, "새로운 노선명", "새로운 색상", 0));
+        repository.updateLine(new Line(1L, "새로운 노선명", "새로운 색상", 0));
         LineEntity actual = lineDao.findById(1L).get();
         LineEntity expected = new LineEntity(1L, "새로운 노선명", "새로운 색상", 0);
 
@@ -181,7 +181,7 @@ class LineRepositoryTest extends DatabaseUsageTest {
         databaseFixtureUtils.saveSection(1L, 1L, 2L, 10);
         databaseFixtureUtils.saveSection(1L, 2L, 3L, 15);
 
-        repository.deleteLine(new LineInfo(1L, "노선1", "색상", 100));
+        repository.deleteLine(new Line(1L, "노선1", "색상", 100));
         boolean lineExistence = lineDao.findById(1L).isPresent();
         List<SectionEntity> existingSections = sectionDao.findAll();
 
