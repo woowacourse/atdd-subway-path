@@ -13,13 +13,13 @@ public class SectionRepository {
 
     private final SectionDao sectionDao;
     private final LineRepository lineRepository;
-    private final StationRepository stations;
+    private final StationRepository stationRepository;
 
     public SectionRepository(SectionDao sectionDao, LineRepository lineRepository,
-                             StationRepository stations) {
+                             StationRepository stationRepository) {
         this.sectionDao = sectionDao;
         this.lineRepository = lineRepository;
-        this.stations = stations;
+        this.stationRepository = stationRepository;
     }
 
     public void saveAll(List<Section> sections) {
@@ -42,8 +42,8 @@ public class SectionRepository {
     private Section toSection(SectionEntity entity) {
         Line line = lineRepository.findById(entity.getLineId());
         return new Section(entity.getId(), line,
-                stations.findById(entity.getUpStationId()),
-                stations.findById(entity.getDownStationId()),
+                stationRepository.findById(entity.getUpStationId()),
+                stationRepository.findById(entity.getDownStationId()),
                 entity.getDistance());
     }
 
