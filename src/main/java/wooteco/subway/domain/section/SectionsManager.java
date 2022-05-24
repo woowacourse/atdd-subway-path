@@ -112,11 +112,11 @@ public class SectionsManager {
         return new Sections(sections);
     }
 
-    public SectionsCompareResult compareDifference(Sections updatedSections) {
+    public SectionUpdates compareDifference(Sections updatedSections) {
         List<Section> newSections = extractNewSections(updatedSections);
         List<Section> deletedSections = extractOldSections(updatedSections);
 
-        return new SectionsCompareResult(newSections, deletedSections);
+        return new SectionUpdates(newSections, deletedSections);
     }
 
     private List<Section> extractNewSections(Sections updatedSections) {
@@ -154,6 +154,6 @@ public class SectionsManager {
 
     @Override
     public String toString() {
-        return "Sections{" + "value=" + sections + '}';
+        return "SectionsManager{" + "sections=" + sections + '}';
     }
 }

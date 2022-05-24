@@ -27,7 +27,7 @@ class SectionsManagerTest {
         void 기존_상행종점에_새로운_상행_종점을_연결하는_경우_재조정_작업_없이_추가_후_반환() {
             Section existingSection = new Section(STATION2, STATION3, 10);
             Section newUpperSection = new Section(STATION1, STATION2, 10);
-            SectionsManager sectionsManager = new SectionsManager(List.of(existingSection));
+            SectionsManager sectionsManager = createSectionsManager(existingSection);
 
             Sections actual = sectionsManager.save(newUpperSection);
             Sections expected = new Sections(List.of(newUpperSection, existingSection));
@@ -39,7 +39,7 @@ class SectionsManagerTest {
         void 기존_하행종점에_새로운_하행_종점을_연결하는_경우_재조정_작업_없이_추가_후_반환() {
             Section existingSection = new Section(STATION1, STATION2, 10);
             Section newLowerSection = new Section(STATION2, STATION3, 10);
-            SectionsManager sectionsManager = new SectionsManager(List.of(existingSection));
+            SectionsManager sectionsManager = createSectionsManager(existingSection);
 
             Sections actual = sectionsManager.save(newLowerSection);
             Sections expected = new Sections(List.of(existingSection, newLowerSection));
@@ -50,7 +50,7 @@ class SectionsManagerTest {
         @Test
         void 기존_구간_사이에_구간_추가시_덮어써지는_구간의_거리_재조정_후_반환() {
             Section existingSection = new Section(STATION1, STATION3, 10);
-            SectionsManager sectionsManager = new SectionsManager(List.of(existingSection));
+            SectionsManager sectionsManager = createSectionsManager(existingSection);
             Section inBetweenSection = new Section(STATION1, STATION2, 3);
 
             Sections actual = sectionsManager.save(inBetweenSection);
@@ -63,7 +63,7 @@ class SectionsManagerTest {
 
         @Test
         void 구간들에_등록되지_않은_지하철역들로_구성된_구간_추가_시도시_예외발생() {
-            SectionsManager sectionsManager = new SectionsManager(List.of(new Section(STATION1, STATION5, 10)));
+            SectionsManager sectionsManager = createSectionsManager(new Section(STATION1, STATION5, 10));
             Section noneRegisteredStationsSection = new Section(STATION2, STATION3, 5);
 
             assertThatThrownBy(() -> sectionsManager.save(noneRegisteredStationsSection))
@@ -74,7 +74,7 @@ class SectionsManagerTest {
         void 이미_등록된_지하철역들로만_구성된_구간_추가_시도시_예외발생() {
             Section section1 = new Section(STATION1, STATION2, 10);
             Section section2 = new Section(STATION2, STATION3, 10);
-            SectionsManager sectionsManager = new SectionsManager(List.of(section1, section2));
+            SectionsManager sectionsManager = createSectionsManager(section1, section2);
             Section bothRegisteredStationsSection = new Section(STATION1, STATION3, 15);
 
             assertThatThrownBy(() -> sectionsManager.save(bothRegisteredStationsSection))
@@ -89,7 +89,7 @@ class SectionsManagerTest {
             void 상행종점에_새로운_상행_종점을_연결하는_경우_거리는_1이상이면_무조건_허용() {
                 Section existingSection = new Section(STATION2, STATION3, 10);
                 Section newUpperSection = new Section(STATION1, STATION2, 9999999);
-                SectionsManager sectionsManager = new SectionsManager(List.of(existingSection));
+                SectionsManager sectionsManager = createSectionsManager(existingSection);
 
                 assertThatNoException()
                         .isThrownBy(() -> sectionsManager.save(newUpperSection));
@@ -99,7 +99,7 @@ class SectionsManagerTest {
             void 하행종점에_새로운_하행_종점을_연결하는_경우_거리는_1이상이면_무조건_허용() {
                 Section existingSection = new Section(STATION1, STATION2, 10);
                 Section newLowerSection = new Section(STATION2, STATION3, 9999999);
-                SectionsManager sectionsManager = new SectionsManager(List.of(existingSection));
+                SectionsManager sectionsManager = createSectionsManager(existingSection);
 
                 assertThatNoException()
                         .isThrownBy(() -> sectionsManager.save(newLowerSection));
@@ -109,7 +109,7 @@ class SectionsManagerTest {
             void 기존_구간_위에_다른_구간_등록시_기존_구간과_거리가_동일하면_예외() {
                 Section existingSection = new Section(STATION1, STATION3, 10);
                 Section newCoveringSection = new Section(STATION1, STATION2, 10);
-                SectionsManager sectionsManager = new SectionsManager(List.of(existingSection));
+                SectionsManager sectionsManager = createSectionsManager(existingSection);
 
                 assertThatThrownBy(() -> sectionsManager.save(newCoveringSection))
                         .isInstanceOf(IllegalArgumentException.class);
@@ -119,7 +119,7 @@ class SectionsManagerTest {
             void 기존_구간_위에_다른_구간_등록시_기존_구간보다_거리가_크면_예외() {
                 Section existingSection = new Section(STATION1, STATION3, 10);
                 Section newCoveringSection = new Section(STATION1, STATION2, 11);
-                SectionsManager sectionsManager = new SectionsManager(List.of(existingSection));
+                SectionsManager sectionsManager = createSectionsManager(existingSection);
 
                 assertThatThrownBy(() -> sectionsManager.save(newCoveringSection))
                         .isInstanceOf(IllegalArgumentException.class);
@@ -135,7 +135,7 @@ class SectionsManagerTest {
         void 상행_종점_제거시_재조정_작업_없이_연결된_구간만_제거() {
             Section section1 = new Section(STATION1, STATION2, 10);
             Section section2 = new Section(STATION2, STATION3, 10);
-            SectionsManager sectionsManager = new SectionsManager(List.of(section1, section2));
+            SectionsManager sectionsManager = createSectionsManager(section1, section2);
 
             Sections actual = sectionsManager.delete(STATION1);
             Sections expected = new Sections(List.of(section2));
@@ -147,7 +147,7 @@ class SectionsManagerTest {
         void 하행_종점_제거시_재조정_작업_없이_연결된_구간만_제거() {
             Section section1 = new Section(STATION1, STATION2, 10);
             Section section2 = new Section(STATION2, STATION3, 10);
-            SectionsManager sectionsManager = new SectionsManager(List.of(section1, section2));
+            SectionsManager sectionsManager = createSectionsManager(section1, section2);
 
             Sections actual = sectionsManager.delete(STATION3);
             Sections expected = new Sections(List.of(section1));
@@ -159,7 +159,7 @@ class SectionsManagerTest {
         void 구간들_중앙의_지하철역_제거시_인접한_두_구간을_합친_후_반환() {
             Section section1 = new Section(STATION1, STATION2, 10);
             Section section2 = new Section(STATION2, STATION3, 5);
-            SectionsManager sectionsManager = new SectionsManager(List.of(section1, section2));
+            SectionsManager sectionsManager = createSectionsManager(section1, section2);
 
             Sections actual = sectionsManager.delete(STATION2);
             Sections expected = new Sections(List.of(
@@ -172,7 +172,7 @@ class SectionsManagerTest {
         void 구간들에_등록되지_않은_지하철역_제거_시도시_예외발생() {
             Section section1 = new Section(STATION1, STATION2, 10);
             Section section2 = new Section(STATION2, STATION3, 5);
-            SectionsManager sectionsManager = new SectionsManager(List.of(section1, section2));
+            SectionsManager sectionsManager = createSectionsManager(section1, section2);
 
             assertThatThrownBy(() -> sectionsManager.delete(STATION5))
                     .isInstanceOf(IllegalArgumentException.class);
@@ -181,7 +181,7 @@ class SectionsManagerTest {
         @Test
         void 마지막_구간_제거_시도시_예외발생() {
             Section section1 = new Section(STATION1, STATION2, 10);
-            SectionsManager sectionsManager = new SectionsManager(List.of(section1));
+            SectionsManager sectionsManager = createSectionsManager(section1);
 
             assertThatThrownBy(() -> sectionsManager.delete(STATION1))
                     .isInstanceOf(IllegalArgumentException.class);
@@ -198,54 +198,58 @@ class SectionsManagerTest {
 
         @Test
         void 인자로_들어온_구간들에서_새로_생겨났거나_없어진_구간들의_정보를_반환() {
-            SectionsManager sectionsManager = new SectionsManager(List.of(SECTION1, SECTION2));
+            SectionsManager sectionsManager = createSectionsManager(SECTION1, SECTION2);
             Section newSection1 = new Section(STATION2, STATION3, 5);
             Section newSection2 = new Section(STATION3, STATION4, 5);
             Sections updatedSections = new Sections(List.of(SECTION1, newSection1, newSection2));
 
-            SectionsCompareResult actual = sectionsManager.compareDifference(updatedSections);
+            SectionUpdates actual = sectionsManager.compareDifference(updatedSections);
             List<Section> expectedNewSections = List.of(newSection1, newSection2);
             List<Section> expectedOldSections = List.of(SECTION2);
-            SectionsCompareResult expected = new SectionsCompareResult(expectedNewSections, expectedOldSections);
+            SectionUpdates expected = new SectionUpdates(expectedNewSections, expectedOldSections);
 
             assertThat(actual).isEqualTo(expected);
         }
 
         @Test
         void 생성된_구간만_존재하는_경우_제거된_구간들의_정보에는_빈_리스트_반환() {
-            SectionsManager sectionsManager = new SectionsManager(List.of(SECTION1, SECTION2));
+            SectionsManager sectionsManager = createSectionsManager(SECTION1, SECTION2);
             Sections updatedSections = new Sections(List.of(SECTION1, SECTION2, SECTION3));
 
-            SectionsCompareResult actual = sectionsManager.compareDifference(updatedSections);
+            SectionUpdates actual = sectionsManager.compareDifference(updatedSections);
             List<Section> expectedNewSections = List.of(SECTION3);
             List<Section> expectedOldSections = List.of();
-            SectionsCompareResult expected = new SectionsCompareResult(expectedNewSections, expectedOldSections);
+            SectionUpdates expected = new SectionUpdates(expectedNewSections, expectedOldSections);
 
             assertThat(actual).isEqualTo(expected);
         }
 
         @Test
         void 제거된_구간만_존재하는_경우_새로운_구간들의_정보에는_빈_리스트_반환() {
-            SectionsManager sectionsManager = new SectionsManager(List.of(SECTION1, SECTION2, SECTION3));
+            SectionsManager sectionsManager = createSectionsManager(SECTION1, SECTION2, SECTION3);
             Sections updatedSections = new Sections(List.of(SECTION1, SECTION2));
 
-            SectionsCompareResult actual = sectionsManager.compareDifference(updatedSections);
+            SectionUpdates actual = sectionsManager.compareDifference(updatedSections);
             List<Section> expectedNewSections = List.of();
             List<Section> expectedOldSections = List.of(SECTION3);
-            SectionsCompareResult expected = new SectionsCompareResult(expectedNewSections, expectedOldSections);
+            SectionUpdates expected = new SectionUpdates(expectedNewSections, expectedOldSections);
 
             assertThat(actual).isEqualTo(expected);
         }
 
         @Test
         void 현재와_동일한_구간들이_들어오더라도_예외는_발생하지_않으며_빈_리스트들을_반환() {
-            SectionsManager sectionsManager = new SectionsManager(List.of(SECTION1, SECTION2, SECTION3));
+            SectionsManager sectionsManager = createSectionsManager(SECTION1, SECTION2, SECTION3);
             Sections updatedSections = new Sections(List.of(SECTION1, SECTION2, SECTION3));
 
-            SectionsCompareResult actual = sectionsManager.compareDifference(updatedSections);
-            SectionsCompareResult expected = new SectionsCompareResult(List.of(), List.of());
+            SectionUpdates actual = sectionsManager.compareDifference(updatedSections);
+            SectionUpdates expected = new SectionUpdates(List.of(), List.of());
 
             assertThat(actual).isEqualTo(expected);
         }
+    }
+
+    private SectionsManager createSectionsManager(Section... sections){
+        return new SectionsManager(List.of(sections));
     }
 }
