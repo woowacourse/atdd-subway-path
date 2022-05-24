@@ -1,7 +1,6 @@
 package wooteco.subway.domain.strategy.fare;
 
 import java.util.List;
-import org.springframework.stereotype.Component;
 
 public abstract class FarePolicy {
 

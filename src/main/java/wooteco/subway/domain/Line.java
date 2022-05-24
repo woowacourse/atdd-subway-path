@@ -5,9 +5,9 @@ import java.util.Objects;
 public class Line {
 
     private Long id;
-    private String name;
-    private String color;
-    private Integer extraFare;
+    private final String name;
+    private final String color;
+    private final Integer extraFare;
     private Sections sections;
 
     public Line(Long id, String name, String color, Integer extraFare, Sections sections) {

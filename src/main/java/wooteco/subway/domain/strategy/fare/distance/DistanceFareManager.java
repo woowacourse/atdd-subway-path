@@ -3,6 +3,7 @@ package wooteco.subway.domain.strategy.fare.distance;
 import java.util.List;
 
 public class DistanceFareManager {
+
     private final List<DistanceFareStrategy> distanceFareStrategies;
 
     public DistanceFareManager(List<DistanceFareStrategy> distanceFareStrategies) {

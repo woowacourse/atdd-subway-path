@@ -1,7 +1,5 @@
 package wooteco.subway.dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -131,18 +129,13 @@ public class LineDao {
         String sql = "SELECT extraFare FROM line WHERE id IN (:lineIds)";
         SqlParameterSource nameParameters = new MapSqlParameterSource("lineIds", lineIds);
 
-        return namedParameterJdbcTemplate.query(sql, nameParameters, new RowMapper<Integer>() {
-            @Override
-            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return rs.getInt(1);
-            }
-        });
+        return namedParameterJdbcTemplate.query(sql, nameParameters, (rs, rowNum) -> rs.getInt(1));
     }
 
     static class LineSection {
 
-        private Line line;
-        private Section sectionV2;
+        private final Line line;
+        private final Section sectionV2;
 
         public LineSection(Line line, Section sectionV2) {
             this.line = line;

@@ -7,7 +7,6 @@ public class ChildDiscountStrategy implements DiscountStrategy {
     private static final int CHILD_AGE_MIN = 6;
     private static final int CHILD_AGE_MAX = 12;
 
-
     @Override
     public int calculateDiscount(int price) {
         return (int) ((price - DEDUCT_MONEY) * CHILD_DISCOUNT_RATE);
