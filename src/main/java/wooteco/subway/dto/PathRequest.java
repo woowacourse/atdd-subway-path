@@ -1,5 +1,7 @@
 package wooteco.subway.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 import javax.validation.constraints.Min;
 
 public class PathRequest {
@@ -10,6 +12,7 @@ public class PathRequest {
     @Min(value = 0, message = "연령은 양수이어야 합니다.")
     private final int age;
 
+    @JsonCreator
     public PathRequest(final long source, final long target, final int age) {
         this.source = source;
         this.target = target;

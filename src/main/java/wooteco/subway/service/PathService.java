@@ -21,8 +21,9 @@ public class PathService {
 
     @Transactional
     public PathResponse getPath(final PathRequest pathRequest) {
-        final Path graph = Path.of(new Sections(sectionDao.findAll()));
-        final ShortestPath shortestPath = graph.getShortestPath(getStationById(pathRequest.getSource()), getStationById(pathRequest.getTarget()));
+        final Path path = Path.of(new Sections(sectionDao.findAll()));
+        final ShortestPath shortestPath = path.getShortestPath(getStationById(pathRequest.getSource()),
+                getStationById(pathRequest.getTarget()));
 
         final int fare = Fare.calculate(shortestPath.getSections(), Age.findAge(pathRequest.getAge()));
         return PathResponse.from(shortestPath, fare);
