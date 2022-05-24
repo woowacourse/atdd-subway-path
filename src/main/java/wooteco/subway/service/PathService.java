@@ -1,18 +1,17 @@
 package wooteco.subway.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Lines;
+import wooteco.subway.domain.Path;
+import wooteco.subway.domain.PathFinder;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.ShortestPathEdge;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.SubwayGraph;
-import wooteco.subway.domain.fare.FareCalculator;
 import wooteco.subway.dto.PathResponse;
 
 @Service
@@ -36,15 +35,10 @@ public class PathService {
 
     private PathResponse createPathResponse(final Station source, final Station target, final int age) {
         GraphPath<Station, ShortestPathEdge> graph = findGraph(source, target);
-        List<Station> stations = graph.getVertexList();
-        double distance = graph.getWeight();
-        List<Long> lineIds = graph.getEdgeList().stream()
-                .map(ShortestPathEdge::getLineId)
-                .collect(Collectors.toList());
         Lines lines = new Lines(lineDao.findAll());
-        int maxExtraFare = lines.findMaxExtraFare(lineIds);
-        int fare = new FareCalculator(distance).calculateFare(age, maxExtraFare);
-        return new PathResponse(stations, distance, fare);
+        PathFinder pathFinder = new PathFinder();
+        Path path = pathFinder.getPath(graph, lines, age);
+        return PathResponse.from(path);
     }
 
     private GraphPath<Station, ShortestPathEdge> findGraph(final Station source, final Station target) {
