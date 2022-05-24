@@ -197,8 +197,8 @@ class SectionsTest {
     @DisplayName("특정 역이 노선에 있는지 확인한다.")
     void isStationIn() {
         Sections 기존_구간 = Sections.create(getSavedSections(이호선));
-        assertThat(기존_구간.isStationIn(강남)).isTrue();
-        assertThat(기존_구간.isStationIn(당고개)).isFalse();
+        assertThat(기존_구간.contains(강남)).isTrue();
+        assertThat(기존_구간.contains(당고개)).isFalse();
     }
 
     private List<Section> getSections(Line line) {

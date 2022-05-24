@@ -136,7 +136,7 @@ public class LineService {
     }
 
     private void validateStationNotLinked(long stationId) {
-        if (Sections.createUnSorted(sectionRepository.findAll()).isStationIn(findStation((stationId)))) {
+        if (Sections.createUnSorted(sectionRepository.findAll()).contains(findStation((stationId)))) {
             throw new IllegalArgumentException(ALREADY_IN_LINE_ERROR_MESSAGE);
         }
     }
