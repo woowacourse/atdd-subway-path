@@ -7,9 +7,13 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpStatus;
 import wooteco.subway.domain.Station;
 import wooteco.subway.ui.dto.ExceptionResponse;
@@ -155,24 +159,6 @@ class SectionAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    @DisplayName("추가하려는 구간의 길이가 1 미만일 경우 BAD_REQUEST 를 반환한다.")
-    @Test
-    void createSectionWithInvalidDistance() {
-        // given
-        Long lineId = getCreatedLineId(station1.getId(), station2.getId());
-
-        // when
-        ExtractableResponse<Response> response = createSection(lineId, station2.getId(), station3.getId(), 0);
-        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
-
-        // then
-        assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(exceptionResponse.getErrorMessage())
-                        .isEqualTo("역간의 거리는 1 이상이어야 합니다.")
-        );
-    }
-
     @DisplayName("상행 종점을 제거한다.")
     @Test
     void deleteUpperSection() {
@@ -276,6 +262,21 @@ class SectionAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
+    @DisplayName("유효하지 않은 값들로 구간을 생성하려고 하면 예외를 발생시킨다.")
+    @ParameterizedTest
+    @MethodSource("provideInvalidSectionCreationResource")
+    void createSection_badRequestByInvalidSectionCreationResource(Long upStationId,
+                                                                  Long downStationId,
+                                                                  Integer distance) {
+        ExtractableResponse<Response> response = createSection(1L, upStationId, downStationId, distance);
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(exceptionResponse.getErrorMessage()).contains("이(가) 유효하지 않습니다.")
+        );
+    }
+
     private ExtractableResponse<Response> deleteSection(StationResponse stationResponse, long lineId) {
         return RestAssured.given().log().all()
                 .queryParam("stationId", stationResponse.getId())
@@ -310,5 +311,16 @@ class SectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> lineCreationResponse =
                 createLine("2호선", "green", upStationId, downStationId, 10, 200);
         return Long.parseLong(lineCreationResponse.header("Location").split("/")[2]);
+    }
+
+    private static Stream<Arguments> provideInvalidSectionCreationResource() {
+        return Stream.of(
+                Arguments.of(null, 2L, 3),
+                Arguments.of(0L, 2L, 3),
+                Arguments.of(1L, null, 3),
+                Arguments.of(1L, 0L, 3),
+                Arguments.of(1L, 2L, null),
+                Arguments.of(1L, 2L, 0)
+        );
     }
 }

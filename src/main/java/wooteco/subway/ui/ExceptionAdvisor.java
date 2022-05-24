@@ -27,7 +27,8 @@ public class ExceptionAdvisor {
     }
 
     @ExceptionHandler(BindException.class)
-    public ResponseEntity<ExceptionResponse> handleNotEnoughResourceException(Exception e) {
+    public ResponseEntity<ExceptionResponse> handleNotEnoughResourceException(BindException e) {
+        e.printStackTrace();
         return ResponseEntity.badRequest().body(new ExceptionResponse(e.getMessage()));
     }
 

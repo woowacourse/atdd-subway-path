@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.ui.dto.ExceptionResponse;
@@ -29,6 +30,8 @@ class PathAcceptanceTest extends AcceptanceTest {
     private Long stationId3;
     private Long stationId4;
     private Long lineId;
+
+    private String uri = "/paths?source=%d&target=%d&age=%d";
 
     @BeforeEach
     void createLine() {
@@ -53,7 +56,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         createLine("3호선", "orange", stationId2, stationId4, 2, 500);
 
         // when
-        ExtractableResponse<Response> response = findShortestPath(stationId1, stationId4, 5);
+        ExtractableResponse<Response> response = findShortestPath(String.format(uri, stationId1, stationId4, 5));
         PathResponse pathResponse = response.jsonPath()
                 .getObject(".", PathResponse.class);
         List<StationResponse> stationResponses = pathResponse.getStations();
@@ -81,28 +84,13 @@ class PathAcceptanceTest extends AcceptanceTest {
         createLine("3호선", "orange", stationId2, stationId4, 2, 500);
 
         // when
-        ExtractableResponse<Response> response = findShortestPath(stationId1, stationId5, 5);
+        ExtractableResponse<Response> response = findShortestPath(String.format(uri, stationId1, stationId5, 1));
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
                 () -> assertThat(exceptionResponse.getErrorMessage()).isEqualTo("구간에 등록 되지 않은 역입니다.")
-        );
-    }
-
-    @DisplayName("유효하지 않은 값들로 최단 경로를 조회하려하면 badRequest를 반환한다.")
-    @ParameterizedTest
-    @MethodSource("provideInvalidPathResource")
-    void findShortestPath_badRequestByInvalidResource(Long departureId, Long arrivalId, Integer age) {
-        // when
-        ExtractableResponse<Response> response = findShortestPath(departureId, arrivalId, age);
-        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
-
-        // then
-        assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(exceptionResponse.getErrorMessage()).contains("이(가) 유효하지 않습니다.")
         );
     }
 
@@ -115,7 +103,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         createLine("3호선", "orange", stationId4, stationId5, 2, 500);
 
         // when
-        ExtractableResponse<Response> response = findShortestPath(stationId1, stationId5, 5);
+        ExtractableResponse<Response> response = findShortestPath(String.format(uri, stationId1, stationId5, 5));
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         //then
@@ -125,22 +113,53 @@ class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private ExtractableResponse<Response> findShortestPath(Long departureId, Long arrivalId, Integer age) {
+    @DisplayName("유효하지 않은 값들로 최단 경로를 조회하려하면 badRequest를 반환한다.")
+    @ParameterizedTest
+    @MethodSource("provideInvalidPathResource")
+    void findShortestPath_badRequestByInvalidResource(Long departureId, Long arrivalId, Integer age) {
+        // when
+        ExtractableResponse<Response> response = findShortestPath(String.format(uri, departureId, arrivalId, age));
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(exceptionResponse.getErrorMessage()).contains("이(가) 유효하지 않습니다.")
+        );
+    }
+
+    @DisplayName("출발역 id, 도착역 id, 나이 중에 null인 값이 하나라도 있는 요청을 한다먄 badRequest를 반환한다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"/paths?target=2&age=2", "/paths?source=2&age=2", "/paths?source=2&target=3"})
+    void a(String uri) {
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .get(uri)
+                .then().log().all()
+                .extract();
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(exceptionResponse.getErrorMessage()).contains("이(가) 유효하지 않습니다.")
+        );
+    }
+
+    private ExtractableResponse<Response> findShortestPath(String uri) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .get("/paths?source=" + departureId + "&target=" + arrivalId + "&age=" + age)
+                .get(uri)
                 .then().log().all()
                 .extract();
     }
 
     private static Stream<Arguments> provideInvalidPathResource() {
         return Stream.of(
-                Arguments.of(null, 2L, 15),
                 Arguments.of(0L, 2L, 15),
-                Arguments.of(1L, null, 15),
                 Arguments.of(1L, 0L, 15),
-                Arguments.of(1L, 2L, null),
                 Arguments.of(1L, 2L, 0)
         );
     }

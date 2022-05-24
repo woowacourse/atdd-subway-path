@@ -24,6 +24,9 @@ public class LineCreationRequest {
     @Min(value = 1, message = "추가 요금 값" + OMISSION_MESSAGE)
     private Integer extraFare;
 
+    public LineCreationRequest() {
+    }
+
     public String getName() {
         return name;
     }

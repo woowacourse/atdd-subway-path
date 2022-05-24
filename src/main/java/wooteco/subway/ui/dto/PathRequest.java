@@ -11,23 +11,19 @@ public class PathRequest {
     @NotNull(message = "출발역" + OMISSION_MESSAGE)
     @Min(value = 1, message = "도착역" + OMISSION_MESSAGE)
     private Long source;
+
     @NotNull(message = "도착역" + OMISSION_MESSAGE)
     @Min(value = 1, message = "도착역" + OMISSION_MESSAGE)
     private Long target;
+
     @NotNull(message = "나이" + OMISSION_MESSAGE)
     @Min(value = 1, message = "나이" + OMISSION_MESSAGE)
     private Integer age;
 
-    public Long getSource() {
-        return source;
-    }
-
-    public Long getTarget() {
-        return target;
-    }
-
-    public Integer getAge() {
-        return age;
+    public PathRequest(Long source, Long target, Integer age) {
+        this.source = source;
+        this.target = target;
+        this.age = age;
     }
 
     public PathServiceRequest toServiceRequest() {
