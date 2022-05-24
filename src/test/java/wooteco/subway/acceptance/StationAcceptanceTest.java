@@ -11,13 +11,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import wooteco.subway.ui.dto.ExceptionResponse;
 import wooteco.subway.ui.dto.StationRequest;
 import wooteco.subway.ui.dto.StationResponse;
 
 @DisplayName("지하철역 관련 기능")
-public class StationAcceptanceTest extends AcceptanceTest {
+class StationAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("지하철역을 생성한다.")
     @Test
@@ -50,6 +52,43 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
                 () -> assertThat(exceptionResponse.getErrorMessage()).isEqualTo("이름은 중복될 수 없습니다.")
+        );
+    }
+
+    @DisplayName("null로 지하철 역을 생성하려고 하면 badRequest를 응답한다.")
+    @Test
+    void createStationWithNullValue() {
+        // given
+        StationRequest stationRequest = new StationRequest(null);
+
+        createStation(stationRequest);
+
+        // when
+        ExtractableResponse<Response> response = createStation(stationRequest);
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(exceptionResponse.getErrorMessage()).contains("지하철 역 이름이(가) 유효하지 않습니다.")
+        );
+    }
+
+    @DisplayName("빈 문자열로 지하철 역을 생성하려고 하면 badRequest를 응답한다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"", " "})
+    void createStationWithEmptyValue(String value) {
+        // given
+        StationRequest stationRequest = new StationRequest(value);
+
+        createStation(stationRequest);
+
+        // when
+        ExtractableResponse<Response> response = createStation(stationRequest);
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(exceptionResponse.getErrorMessage()).contains("지하철 역 이름이(가) 유효하지 않습니다.")
         );
     }
 
@@ -101,4 +140,3 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
-
