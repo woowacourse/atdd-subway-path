@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
@@ -23,9 +24,8 @@ public class NavigatorJgraphtAdapter implements Navigator<Station, Section> {
         this.dijkstraPath = dijkstraPath;
     }
 
-    public static NavigatorJgraphtAdapter of(List<Section> sections) {
-        DijkstraShortestPath<Station, SectionEdge> shortestPath = new DijkstraShortestPath<>(toGraph(sections));
-        return new NavigatorJgraphtAdapter(shortestPath);
+    public NavigatorJgraphtAdapter(List<Section> sections) {
+        this(new DijkstraShortestPath<>(toGraph(sections)));
     }
 
     private static WeightedMultigraph<Station, SectionEdge> toGraph(List<Section> sections) {
@@ -63,11 +63,8 @@ public class NavigatorJgraphtAdapter implements Navigator<Station, Section> {
     }
 
     private GraphPath<Station, SectionEdge> toValidShortestPath(Station source, Station target) {
-        GraphPath<Station, SectionEdge> path = dijkstraPath.getPath(source, target);
-        if (path == null) {
-            throw new IllegalArgumentException(PATH_NOT_CONNECTED_EXCEPTION);
-        }
-        return path;
+        return Optional.ofNullable(dijkstraPath.getPath(source, target))
+                .orElseThrow(() -> new IllegalArgumentException(PATH_NOT_CONNECTED_EXCEPTION));
     }
 
     private static class SectionEdge extends DefaultWeightedEdge {

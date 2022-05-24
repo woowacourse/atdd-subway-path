@@ -36,7 +36,7 @@ public class PathService {
         Station endStation = stationRepository.findExistingStation(targetStationId);
         List<Section> sections = sectionRepository.findAllSections();
 
-        Navigator<Station, Section> navigator = NavigatorJgraphtAdapter.of(sections);
+        Navigator<Station, Section> navigator = new NavigatorJgraphtAdapter(sections);
         Path path = Path.of(startStation, endStation, navigator);
         int distance = path.getDistance();
         List<LineInfo> lines = lineRepository.findAllLinesByIds(path.getPassingLineIds());
