@@ -12,6 +12,6 @@ public class ChildrenDiscountPolicy implements AgeDiscountPolicy {
         if (fare < DISCOUNT_AMOUNT) {
             throw new LowFareException("금액 계산중 오류가 발생했습니다.");
         }
-        return (int)((fare - DISCOUNT_AMOUNT) * DISCOUNT_RATE);
+        return (int) ((fare - DISCOUNT_AMOUNT) * DISCOUNT_RATE);
     }
 }
