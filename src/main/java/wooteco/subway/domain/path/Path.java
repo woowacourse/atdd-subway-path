@@ -27,7 +27,9 @@ public class Path {
         if (tempDistance > 10) {
             fare += calculateOverFare(tempDistance - 10, 5);
         }
-        return AgeDiscountPolicy.from(age).discountAmount(fare);
+        int discountAmount = AgeDiscountPolicy.from(age).discountAmount(fare);
+        fare -= discountAmount;
+        return fare;
     }
 
     private int calculateOverFare(int distance, int kilo) {

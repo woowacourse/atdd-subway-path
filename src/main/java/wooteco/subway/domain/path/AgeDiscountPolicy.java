@@ -5,12 +5,10 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public enum AgeDiscountPolicy {
-    BABY(age -> 1 <= age && age < 6, fare -> 0),
-    CHILDREN(age -> 6 <= age && age < 13,
-            fare -> (fare - Constants.DEDUCTIBLE) * (100 - Constants.CHILDREN_DISCOUNT_PERCENT) / 100),
-    TEENAGER(age -> 13 <= age && age < 19,
-            fare -> (fare - Constants.DEDUCTIBLE) * (100 - Constants.TEENAGER_DISCOUNT_PERCENT) / 100),
-    ADULT(age -> 19 <= age, fare -> fare),
+    BABY(age -> 1 <= age && age < 6, fare -> fare),
+    CHILDREN(age -> 6 <= age && age < 13, fare -> (fare - Constants.DEDUCTIBLE) * Constants.CHILDREN_DISCOUNT_PERCENT / 100),
+    TEENAGER(age -> 13 <= age && age < 19, fare -> (fare - Constants.DEDUCTIBLE) * Constants.TEENAGER_DISCOUNT_PERCENT / 100),
+    ADULT(age -> 19 <= age, fare -> 0),
     ;
 
     private final Predicate<Integer> containsAgePredicate;
