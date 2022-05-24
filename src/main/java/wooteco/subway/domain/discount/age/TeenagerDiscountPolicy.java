@@ -5,8 +5,9 @@ import org.springframework.stereotype.Component;
 import wooteco.subway.domain.discount.DiscountCondition;
 
 @Component
-@Order(1)
+@Order(2)
 public class TeenagerDiscountPolicy implements AgeDiscountPolicy {
+
     @Override
     public int applyDiscount(final int money) {
         return (int) (((money - DEDUCTIBLE) * TEENAGER_FARE_RATE));

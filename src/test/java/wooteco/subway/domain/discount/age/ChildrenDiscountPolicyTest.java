@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import wooteco.subway.domain.discount.DiscountCondition;
 
 class ChildrenDiscountPolicyTest {
 
@@ -20,7 +21,12 @@ class ChildrenDiscountPolicyTest {
         assertThat(childrenDiscountPolicy.applyDiscount(money)).isEqualTo(expected);
     }
 
-    @Test
-    void accept() {
+
+    @ParameterizedTest
+    @CsvSource(value = {"5,false", "6,true", "12,true", "13,false"})
+    @DisplayName("나이를 입력받아 해당 할인 정책이 적용되는 지 확인한다.")
+    void accept(final int age, final boolean expected) {
+        final DiscountCondition discountCondition = new DiscountCondition(age, 10);
+        assertThat(childrenDiscountPolicy.accept(discountCondition)).isEqualTo(expected);
     }
 }
