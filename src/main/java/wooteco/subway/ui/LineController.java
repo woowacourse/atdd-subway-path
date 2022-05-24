@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import wooteco.subway.dto.ExceptionResponse;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.service.LineService;
@@ -21,6 +22,7 @@ import wooteco.subway.service.LineService;
 @RequestMapping("/lines")
 @RestController
 public class LineController {
+
     private final LineService lineService;
 
     public LineController(LineService lineService) {
@@ -73,9 +75,9 @@ public class LineController {
     }
 
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<Void> lineNotFound() {
+    public ResponseEntity<ExceptionResponse> lineNotFound(NoSuchElementException noSuchElementException) {
         return ResponseEntity
-                .noContent()
-                .build();
+                .badRequest()
+                .body(new ExceptionResponse(noSuchElementException.getMessage()));
     }
 }

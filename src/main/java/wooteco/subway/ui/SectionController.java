@@ -2,6 +2,7 @@ package wooteco.subway.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import wooteco.subway.dto.ExceptionResponse;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.service.SectionService;
 
@@ -11,6 +12,7 @@ import java.util.NoSuchElementException;
 @RequestMapping("/lines/{lineId}/sections")
 @RestController
 public class SectionController {
+
     private final SectionService sectionService;
 
     public SectionController(SectionService sectionService) {
@@ -18,7 +20,8 @@ public class SectionController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createSection(@PathVariable Long lineId, @Valid @RequestBody SectionRequest sectionRequest) {
+    public ResponseEntity<Void> createSection(@PathVariable Long lineId,
+            @Valid @RequestBody SectionRequest sectionRequest) {
         sectionService.save(lineId, sectionRequest);
 
         return ResponseEntity
@@ -36,9 +39,9 @@ public class SectionController {
     }
 
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<Void> lineNotFound() {
+    public ResponseEntity<ExceptionResponse> sectionNotFound(NoSuchElementException noSuchElementException) {
         return ResponseEntity
                 .badRequest()
-                .build();
+                .body(new ExceptionResponse(noSuchElementException.getMessage()));
     }
 }
