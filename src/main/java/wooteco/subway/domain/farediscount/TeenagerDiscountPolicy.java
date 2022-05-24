@@ -2,14 +2,18 @@ package wooteco.subway.domain.farediscount;
 
 public class TeenagerDiscountPolicy extends AgeDiscountPolicy {
 
+    private static final int PERCENT_UNIT = 100;
+    public static final int TEENAGER_DISCOUNT_PRICE = 350;
+    public static final int TEENAGER_DISCOUNT_PERCENT = 20;
+
     @Override
     public int apply(int price) {
-        price = price - 350;
+        price = price - TEENAGER_DISCOUNT_PRICE;
         int i = percentageCalculate(price);
         return price - i;
     }
 
     private int percentageCalculate(int price) {
-        return (price / 100) * 20;
+        return (price / PERCENT_UNIT) * TEENAGER_DISCOUNT_PERCENT;
     }
 }
