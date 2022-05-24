@@ -19,7 +19,7 @@ public class SectionService {
 
     @Transactional
     public Long create(SectionRequestDto sectionRequestDto) {
-        Section newSection = ServiceDtoAssembler.Section(sectionRequestDto);
+        Section newSection = ServiceDtoAssembler.section(sectionRequestDto);
         Sections sections = findAllByLineId(newSection.getLineId());
         sections.validateAddNewSection(newSection);
 
