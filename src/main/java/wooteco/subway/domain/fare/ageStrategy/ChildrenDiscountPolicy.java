@@ -10,7 +10,7 @@ public class ChildrenDiscountPolicy implements AgeDiscountPolicy {
     @Override
     public int calculateFare(int fare) {
         if (fare < DISCOUNT_AMOUNT) {
-            throw new LowFareException("금액 계산중 오류가 발생했습니다.");
+            throw new LowFareException(DISCOUNT_AMOUNT + "원 미만의 금액은 할인할 수 없습니다.");
         }
         return (int) ((fare - DISCOUNT_AMOUNT) * DISCOUNT_RATE);
     }
