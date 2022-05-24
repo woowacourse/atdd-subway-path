@@ -6,6 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.path.ShortestPathFindStrategy;
 import wooteco.subway.exception.NotFoundPathException;
 import wooteco.subway.exception.NotFoundStationException;
 
@@ -19,7 +21,7 @@ class PathTest {
                 new Section(2L, 1L, 2L, 3L, 5, 2L)
         );
 
-        final Path path = Path.of(new Sections(sections), 1L, 3L);
+        final Path path = Path.of(new Sections(sections), 1L, 3L, new ShortestPathFindStrategy());
 
         assertThat(path.getTotalDistance()).isEqualTo(10);
     }
@@ -33,7 +35,9 @@ class PathTest {
                 new Section(3L, 2L, 4L, 5L, 5, 1L)
         );
 
-        assertThatThrownBy(() -> Path.of(new Sections(sections), 1L, 4L))
+        assertThatThrownBy(() -> Path.of(
+                new Sections(sections), 1L, 4L, new ShortestPathFindStrategy())
+        )
                 .isInstanceOf(NotFoundPathException.class)
                 .hasMessageContaining("현재 구간으로 해당 지하철역을 갈 수 없습니다.");
     }
@@ -47,7 +51,7 @@ class PathTest {
                 new Section(3L, 2L, 4L, 5L, 5, 1L)
         );
 
-        assertThatThrownBy(() -> Path.of(new Sections(sections), 1L, 6L))
+        assertThatThrownBy(() -> Path.of(new Sections(sections), 1L, 6L, new ShortestPathFindStrategy()))
                 .isInstanceOf(NotFoundStationException.class)
                 .hasMessageContaining("해당 지하철역이 등록이 안되어 있습니다.");
     }
@@ -61,7 +65,9 @@ class PathTest {
                 new Section(3L, 2L, 4L, 5L, 5, 1L)
         );
 
-        assertThatThrownBy(() -> Path.of(new Sections(sections), 1L, 1L))
+        assertThatThrownBy(() -> Path.of(
+                new Sections(sections), 1L, 1L, new ShortestPathFindStrategy())
+        )
                 .isInstanceOf(NotFoundPathException.class)
                 .hasMessageContaining("같은 위치로는 경로를 찾을 수 없습니다.");
     }

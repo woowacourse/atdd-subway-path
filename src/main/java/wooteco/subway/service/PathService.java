@@ -11,9 +11,10 @@ import wooteco.subway.domain.discount.DiscountCondition;
 import wooteco.subway.domain.discount.DiscountPolicy;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Path;
+import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.path.PathFindStrategy;
 import wooteco.subway.dto.request.PathRequest;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.dto.response.StationResponse;
@@ -25,13 +26,16 @@ public class PathService {
     private final LineDao lineDao;
     private final StationService stationService;
     private final List<DiscountPolicy> discountPolicies;
+    private final PathFindStrategy pathFindStrategy;
 
     public PathService(final SectionDao sectionDao, final LineDao lineDao,
-                       final StationService stationService, final List<DiscountPolicy> discountPolicies) {
+                       final StationService stationService, final List<DiscountPolicy> discountPolicies,
+                       final PathFindStrategy pathFindStrategy) {
         this.sectionDao = sectionDao;
         this.lineDao = lineDao;
         this.stationService = stationService;
         this.discountPolicies = discountPolicies;
+        this.pathFindStrategy = pathFindStrategy;
     }
 
     @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
@@ -52,7 +56,7 @@ public class PathService {
 
     private Path createPath(final PathRequest pathRequest) {
         final List<Section> allSections = sectionDao.findAll();
-        return Path.of(new Sections(allSections), pathRequest.getSource(), pathRequest.getTarget());
+        return Path.of(new Sections(allSections), pathRequest.getSource(), pathRequest.getTarget(), pathFindStrategy);
     }
 
     private Fare calculateFare(final PathRequest pathRequest, final Path shortestPath) {
