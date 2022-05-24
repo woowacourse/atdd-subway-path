@@ -9,9 +9,11 @@ import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
+import wooteco.subway.dto.SectionDto;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.exception.LineDuplicationException;
 import wooteco.subway.exception.NotExistLineException;
@@ -71,8 +73,15 @@ public class LineService {
         }
     }
 
-    private List<StationResponse> createStationResponsesByLine(Line newLine) {
-        Sections sections = new Sections(sectionDao.findAllByLineId(newLine.getId()));
+    public List<StationResponse> createStationResponsesByLine(Line newLine) {
+        List<SectionDto> sectionDtos = sectionDao.findAllByLineId(newLine.getId());
+
+        List<Section> values = sectionDtos.stream()
+                .map(sectionDto -> new Section(sectionDto.getId(), lineDao.findById(sectionDto.getLineId()).get(),
+                        sectionDto.getUpStationId(), sectionDto.getDownStationId(), sectionDto.getDistance()))
+                .collect(Collectors.toList());
+
+        Sections sections = new Sections(values);
         Set<Long> stationIds = sections.getStations();
         return stationIds.stream()
                 .map(stationDao::getById)
@@ -90,12 +99,9 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public LineResponse getById(final Long id) {
-        Line line = lineDao.findById(id)
+    public Line getById(final Long id) {
+        return lineDao.findById(id)
                 .orElseThrow(() -> new NotExistLineException(LINE_NOT_EXIST));
-
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), createStationResponsesByLine(line),
-                line.getExtraFare());
     }
 
     @Transactional

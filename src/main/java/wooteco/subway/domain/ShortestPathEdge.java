@@ -4,16 +4,16 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 
 public class ShortestPathEdge extends DefaultWeightedEdge {
 
-    private long lineId;
+    private Line line;
     private int distance;
 
-    public ShortestPathEdge(final long lineId, final int distance) {
-        this.lineId = lineId;
+    public ShortestPathEdge(final Line line, final int distance) {
+        this.line = line;
         this.distance = distance;
     }
 
-    public long getLineId() {
-        return lineId;
+    public Line getLine() {
+        return line;
     }
 
     @Override

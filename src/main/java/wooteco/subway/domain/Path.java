@@ -2,7 +2,6 @@ package wooteco.subway.domain;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -22,7 +21,7 @@ public class Path {
             graph.addVertex(section.getUpStationId());
             graph.addVertex(section.getDownStationId());
             graph.addEdge(section.getUpStationId(), section.getDownStationId(),
-                    new ShortestPathEdge(section.getLineId(),
+                    new ShortestPathEdge(section.getLine(),
                             section.getDistance()));
         }
     }
@@ -45,13 +44,15 @@ public class Path {
     }
 
     // TODO: Section이 Line을 가지고 있지 않고 ID를 들고 있기 때문에 Dao를 한번 거쳐서야 도메인을 만들 수 있다. Section에서 객체를 가지고 있게 변경시켜보자.
-    public List<Long> calculateExtraFare(Long source, Long target) {
+    public int calculateExtraFare(Long source, Long target) {
         List<ShortestPathEdge> edges = getEdges(source, target);
 
         return edges.stream()
                 .distinct()
-                .map(shortestPathEdge -> shortestPathEdge.getLineId())
-                .collect(Collectors.toList());
+                .map(shortestPathEdge -> shortestPathEdge.getLine())
+                .mapToInt(line -> line.getExtraFare())
+                .max()
+                .orElse(0);
     }
 
     private Optional<GraphPath> makeGraphPath(Long source, Long target) {

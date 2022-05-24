@@ -153,7 +153,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(fare).isEqualTo(850)
+                () -> assertThat(fare).isEqualTo(500)
         );
     }
 

@@ -45,14 +45,14 @@ public class PathServiceTest {
         sectionDao.save(신분당선.getId(), 잠실역.getId(), 선릉역.getId(), 12);
         sectionDao.save(신분당선.getId(), 마라도.getId(), 독도역.getId(), 3);
     }
-
+;
     @Test
     @DisplayName("출발지에서 목적지로 갈 수 있는 최단 경로와 최단 거리, 요금을 계산한다.")
     void findPath() {
         PathResponse pathResponse = pathService.findPath(1L, 2L, 0);
         assertAll(
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(12),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(1350)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1850)
         );
     }
 
@@ -87,6 +87,6 @@ public class PathServiceTest {
         PathResponse pathResponse = pathService.findPath(1L, 2L, 7);
         int fare = pathResponse.getFare();
 
-        assertThat(fare).isEqualTo(1100);
+        assertThat(fare).isEqualTo(750);
     }
 }

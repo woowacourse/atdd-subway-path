@@ -2,6 +2,7 @@ package wooteco.subway.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import wooteco.subway.domain.Line;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.service.LineService;
@@ -33,7 +34,8 @@ public class LineController {
 
     @GetMapping("/{id}")
     public ResponseEntity<LineResponse> getLine(@PathVariable final Long id) {
-        final LineResponse lineResponse = lineService.getById(id);
+        Line line = lineService.getById(id);
+        LineResponse lineResponse = new LineResponse(line, lineService.createStationResponsesByLine(line));
         return ResponseEntity.ok().body(lineResponse);
     }
 
