@@ -19,7 +19,7 @@ import wooteco.subway.exception.LowFareException;
 import wooteco.subway.ui.dto.ExceptionResponse;
 
 @ControllerAdvice
-public class ControllerExceptionHandler {
+public class ExceptionController {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
