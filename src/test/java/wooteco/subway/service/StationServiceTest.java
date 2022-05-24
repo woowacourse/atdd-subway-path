@@ -36,7 +36,7 @@ class StationServiceTest extends DBTest {
 
     @DisplayName("같은 이름의 지하철 역을 저장하는 경우 예외가 발생한다.")
     @Test
-    void saveExistingName() {
+    void save_exception_duplicateName() {
         stationService.save(SEOLLEUNG);
 
         assertThatThrownBy(() -> stationService.save(SEOLLEUNG))
@@ -65,7 +65,7 @@ class StationServiceTest extends DBTest {
         );
     }
 
-    @DisplayName("지하철 역을 삭제한다.")
+    @DisplayName("id에 해당하는 지하철 역을 삭제한다.")
     @Test
     void deleteById() {
         StationServiceResponse stationServiceResponse = stationService.save(SEOLLEUNG);
