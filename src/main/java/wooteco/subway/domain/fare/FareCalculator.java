@@ -10,8 +10,7 @@ public class FareCalculator {
     private final AgeDiscountPolicy ageDiscountPolicy;
     private final DistanceDiscountPolicy distanceDiscountPolicy;
 
-    public FareCalculator(AgeDiscountPolicy ageDiscountPolicy,
-        DistanceDiscountPolicy distanceDiscountPolicy) {
+    public FareCalculator(AgeDiscountPolicy ageDiscountPolicy, DistanceDiscountPolicy distanceDiscountPolicy) {
         this.ageDiscountPolicy = ageDiscountPolicy;
         this.distanceDiscountPolicy = distanceDiscountPolicy;
     }
