@@ -27,7 +27,7 @@ public class PathElement implements Comparable<PathElement> {
 
     @Override
     public int compareTo(PathElement o) {
-        if (Integer.compare(this.distance, o.distance) == 0) {
+        if (this.distance == o.distance) {
             return Integer.compare(this.extraFare, o.extraFare);
         }
         return Integer.compare(this.distance, o.distance);

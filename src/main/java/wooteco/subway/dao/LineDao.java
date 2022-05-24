@@ -65,7 +65,7 @@ public class LineDao {
     }
 
     public void update(LineEntity lineEntity) {
-        final String sql = "UPDATE line SET name = :name, color = :color extraFare = :extraFare WHERE id = :id";
+        final String sql = "UPDATE line SET name = :name, color = :color, extraFare = :extraFare WHERE id = :id";
         SqlParameterSource paramSource = new BeanPropertySqlParameterSource(lineEntity);
 
         jdbcTemplate.update(sql, paramSource);
