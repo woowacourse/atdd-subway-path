@@ -9,7 +9,7 @@ public class SectionDeleteRequest {
     @NotNull
     private Long stationId;
 
-    public SectionDeleteRequest() {
+    private SectionDeleteRequest() {
     }
 
     public SectionDeleteRequest(Long lineId, Long stationId) {

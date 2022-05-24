@@ -5,7 +5,7 @@ public class LineUpdateRequest {
     private String color;
     private Long extraFare;
 
-    public LineUpdateRequest() {
+    private LineUpdateRequest() {
     }
 
     public LineUpdateRequest(String name, String color, Long extraFare) {

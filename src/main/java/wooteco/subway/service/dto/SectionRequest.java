@@ -11,7 +11,7 @@ public class SectionRequest {
     @NotNull
     private Integer distance;
 
-    public SectionRequest() {
+    private SectionRequest() {
     }
 
     public SectionRequest(Long upStationId, Long downStationId, Integer distance) {

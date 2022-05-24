@@ -11,7 +11,7 @@ public class StationResponse {
     @NotEmpty
     private String name;
 
-    public StationResponse() {
+    private StationResponse() {
     }
 
     public StationResponse(Long id, String name) {

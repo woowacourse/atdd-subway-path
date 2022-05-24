@@ -17,7 +17,7 @@ public class LineRequest {
     @NotNull
     private Long extraFare;
 
-    public LineRequest() {
+    private LineRequest() {
     }
 
     public LineRequest(String name, String color, Long upStationId, Long downStationId, Integer distance,
