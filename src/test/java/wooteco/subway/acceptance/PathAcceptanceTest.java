@@ -58,7 +58,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                         new Station(6L, "이수역"),
                         new Station(7L, "건대역")),
                 () -> assertThat(distance).isEqualTo(10),
-                () -> assertThat(fare).isEqualTo(1250));
+                () -> assertThat(fare).isEqualTo(1440));
     }
 
     private ExtractableResponse<Response> getPaths(Map<String, Object> params) {

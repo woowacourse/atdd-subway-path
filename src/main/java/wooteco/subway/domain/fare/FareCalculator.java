@@ -8,9 +8,9 @@ public class FareCalculator {
         this.distance = distance;
     }
 
-    public int calculateFare(final int age) {
+    public int calculateFare(final int age, int maxExtraFare) {
         int distanceFare = FareByDistance.findFare(distance);
-        return FareByAge.findFare(age, distanceFare);
+        return FareByAge.findFare(age, distanceFare + maxExtraFare);
     }
 
 }

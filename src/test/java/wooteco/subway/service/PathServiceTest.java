@@ -24,7 +24,7 @@ class PathServiceTest {
     void setUp() {
         FakeSectionDao.init();
         FakeStationDao.init();
-        pathService = new PathService(new FakeSectionDao(), new FakeStationDao());
+        pathService = new PathService(new FakeSectionDao(), new FakeStationDao(), new FakeLineDao());
     }
 
     @DisplayName("경로를 조회한다.")
@@ -32,7 +32,7 @@ class PathServiceTest {
     void showRoute() {
         Long sourceStationId = 4L;
         Long targetStationId = 7L;
-        int age = 15;
+        int age = 20;
 
         FakeStationDao fakeStationDao = new FakeStationDao();
         fakeStationDao.save(new Station("이대역"));
@@ -42,10 +42,10 @@ class PathServiceTest {
         fakeStationDao.save(new Station("사가정역"));
 
         FakeLineDao fakeLineDao = new FakeLineDao();
-        fakeLineDao.save(new Line("1호선", "blue", 900));
-        fakeLineDao.save(new Line("2호선", "green", 900));
-        fakeLineDao.save(new Line("3호선", "orange", 900));
-        fakeLineDao.save(new Line("4호선", "black", 900));
+        fakeLineDao.save(new Line("1호선", "blue", 0));
+        fakeLineDao.save(new Line("2호선", "green", 0));
+        fakeLineDao.save(new Line("3호선", "orange", 0));
+        fakeLineDao.save(new Line("4호선", "black", 0));
 
         FakeSectionDao fakeSectionDao = new FakeSectionDao();
         fakeSectionDao.save(new Section(1L, new Station(4L, "이대역"), new Station(5L, "학동역"), 3));
@@ -63,7 +63,7 @@ class PathServiceTest {
                                 new Station(5L, "학동역"),
                                 new Station(6L, "이수역"),
                                 new Station(7L, "건대역")
-                ),
+                        ),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(10),
                 () -> assertThat(pathResponse.getFare()).isEqualTo(1250)
         );

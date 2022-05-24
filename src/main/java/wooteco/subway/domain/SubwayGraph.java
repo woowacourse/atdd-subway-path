@@ -3,17 +3,16 @@ package wooteco.subway.domain;
 import java.util.List;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.domain.fare.FareCalculator;
 import wooteco.subway.exception.NotLinkPathException;
 
 public class SubwayGraph {
 
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> subwayGraph;
+    private final WeightedMultigraph<Station, ShortestPathEdge> subwayGraph;
 
     public SubwayGraph() {
-        subwayGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        subwayGraph = new WeightedMultigraph<>(ShortestPathEdge.class);
     }
 
     public void init(final Sections sections) {
@@ -31,27 +30,27 @@ public class SubwayGraph {
         for (Section section : sections.getSections()) {
             Station upStation = section.getUpStation();
             Station downStation = section.getDownStation();
-            int distance = section.getDistance();
-            subwayGraph.setEdgeWeight(subwayGraph.addEdge(upStation, downStation), distance);
+            subwayGraph.addEdge(upStation, downStation,
+                    new ShortestPathEdge(section.getLineId(), section.getDistance()));
         }
     }
 
     public Path findShortestPath(final Station source, final Station target, final int age) {
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = graphResult(source, target);
+        GraphPath<Station, ShortestPathEdge> shortestPath = graphResult(source, target);
         List<Station> stations = shortestPath.getVertexList();
         double distance = shortestPath.getWeight();
-        int fare = new FareCalculator(distance).calculateFare(age);
+        int fare = new FareCalculator(distance).calculateFare(age, 0);
         return new Path(stations, distance, fare);
     }
 
-    private GraphPath<Station, DefaultWeightedEdge> graphResult(final Station source, final Station target) {
-        DijkstraShortestPath<Station, DefaultWeightedEdge> pathFinder = new DijkstraShortestPath<>(subwayGraph);
-        GraphPath<Station, DefaultWeightedEdge> path = pathFinder.getPath(source, target);
+    public GraphPath<Station, ShortestPathEdge> graphResult(final Station source, final Station target) {
+        DijkstraShortestPath<Station, ShortestPathEdge> pathFinder = new DijkstraShortestPath<>(subwayGraph);
+        GraphPath<Station, ShortestPathEdge> path = pathFinder.getPath(source, target);
         validateSourceToTargetLink(path);
         return path;
     }
 
-    private void validateSourceToTargetLink(GraphPath<Station, DefaultWeightedEdge> path) {
+    private void validateSourceToTargetLink(GraphPath<Station, ShortestPathEdge> path) {
         if (path == null) {
             throw new NotLinkPathException("출발역과 도착역이 연결되어 있지 않습니다.");
         }
