@@ -1,7 +1,5 @@
 package wooteco.subway.domain.path;
 
-import static java.util.stream.Collectors.*;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,30 +47,36 @@ public class SubwayShortestPath {
 	private void addSection(WeightedMultigraph<Station, SectionEdge> graph, Section section) {
 		graph.addVertex(section.getUpStation());
 		graph.addVertex(section.getDownStation());
-		graph.addEdge(section.getUpStation(), section.getDownStation(), new SectionEdge(section));
+		graph.addEdge(
+			section.getUpStation(),
+			section.getDownStation(),
+			new SectionEdge(section.getDistance(), values.get(section).getExtraFare())
+		);
 	}
 
 	private int getMaxExtraFare(GraphPath<Station, SectionEdge> path) {
 		return path.getEdgeList().stream()
-			.mapToInt(edge -> values.get(edge.getValue()).getExtraFare())
+			.mapToInt(SectionEdge::getExtraFare)
 			.max()
 			.orElseThrow();
 	}
 
 	private static class SectionEdge extends DefaultWeightedEdge {
-		private final Section value;
+		private final int distance;
+		private final int extraFare;
 
-		private SectionEdge(Section section) {
-			this.value = section;
+		private SectionEdge(int distance, int extraFare) {
+			this.distance = distance;
+			this.extraFare = extraFare;
 		}
 
 		@Override
 		protected double getWeight() {
-			return value.getDistance();
+			return distance;
 		}
 
-		private Section getValue() {
-			return value;
+		public int getExtraFare() {
+			return extraFare;
 		}
 	}
 }
