@@ -5,32 +5,36 @@ import java.util.List;
 
 public class Path {
     private final List<Station> stations;
+    private final List<Line> usedLines;
     private final int distance;
-    private final Fare fare;
 
-    private Path(List<Station> stations, int distance, Fare fare) {
+    public Path(List<Station> stations, List<Line> usedLines, int distance) {
         this.stations = stations;
+        this.usedLines = usedLines;
         this.distance = distance;
-        this.fare = fare;
     }
 
     public static Path from(List<Section> sections, Station departure, Station arrival) {
         ShortestPath shortestPath = ShortestPath.generate(sections, departure, arrival);
         final List<Station> stations = shortestPath.getPath();
         final int distance = shortestPath.getDistance();
-        final Fare fare = Fare.from(distance);
-        return new Path(stations, distance, fare);
+        final List<Line> lines = shortestPath.getUsedLines();
+
+        return new Path(stations, lines, distance);
     }
 
     public List<Station> getStations() {
         return Collections.unmodifiableList(stations);
     }
 
-    public int getFare() {
-        return this.fare.getFare();
-    }
-
     public int getDistance() {
         return distance;
+    }
+
+    public int getMaxExtraFare() {
+        return usedLines.stream()
+                .map(Line::getExtraFare)
+                .max(Integer::compareTo)
+                .orElseThrow();
     }
 }

@@ -9,24 +9,26 @@ public class Line {
     private Name name;
     private String color;
     private Sections sections;
+    private int extraFare;
 
-    private Line(Long id, String name, String color, Sections sections) {
+    private Line(Long id, Name name, String color, Sections sections, int extraFare) {
         this.id = id;
-        this.name = new Name(name);
+        this.name = name;
         this.color = color;
         this.sections = sections;
+        this.extraFare = extraFare;
     }
 
-    public static Line initialCreateWithoutId(String name, String color, Station upStation, Station downStation, int distance) {
-        return new Line(null, name, color, new Sections(upStation, downStation, distance));
+    public static Line initialCreateWithoutId(String name, String color, Station upStation, Station downStation, int distance, int extraFare) {
+        return new Line(null, new Name(name), color, new Sections(upStation, downStation, distance), extraFare);
     }
 
-    public static Line createWithoutSection(Long id, String name, String color) {
-        return new Line(id, name, color,null);
+    public static Line createWithoutSection(Long id, String name, String color, int extraFare) {
+        return new Line(id, new Name(name), color, null, extraFare);
     }
 
-    public static Line createWithId(Long id, String name, String color, List<Section> sections) {
-        return new Line(id, name, color, new Sections(sections));
+    public static Line createWithId(Long id, String name, String color, int extraFare, List<Section> sections) {
+        return new Line(id, new Name(name), color, new Sections(sections), extraFare);
     }
 
     public void addSection(Section section) {
@@ -55,6 +57,10 @@ public class Line {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     @Override

@@ -20,7 +20,7 @@ public class SectionsTest {
     
     @BeforeEach
     void init(){
-        line = Line.initialCreateWithoutId("신분당선", "빨간색", upStation, downStation, 7);
+        line = Line.initialCreateWithoutId("신분당선", "빨간색", upStation, downStation, 7, 0);
     }
 
     @Test

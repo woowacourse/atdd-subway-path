@@ -6,6 +6,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
@@ -77,17 +78,17 @@ class PathTest {
         assertThat(actual).containsExactly(강남역, 역삼역, 선릉역, 삼성역, 종합운동장역, 잠실새내역);
     }
 
-    @DisplayName("강남역에서 잠실역까지의 요금은 1650원이다.")
+    @DisplayName("추가요금이 있는 여러 노선을 환승할 경우 가장 높은 추가요금을 받는다.")
     @Test
-    void fare_of_shortest_path() {
-        // given
-        Path createdPath = Path.from(sections, 강남역, 잠실역);
-
-        // when
-        int actual = createdPath.getFare();
-
-        // then
-        int expected = 1650;
-        assertThat(actual).isEqualTo(expected);
+    void get_max_extra_fare() {
+        //given
+        final Line 신분당선 = Line.createWithoutSection(1L, "신분당선", "빨강", 500);
+        final Line 호선9 = Line.createWithoutSection(2L, "9호선", "곤색", 700);
+        final Path path = Path.from(List.of(Section.createWithLine(1L, 신분당선, 강남역, 역삼역, 5),
+                Section.createWithLine(2L, 호선9, 역삼역, 삼성역, 5)), 강남역, 삼성역);
+        //when
+        final int maxExtraFare = path.getMaxExtraFare();
+        //then
+        assertThat(maxExtraFare).isEqualTo(700);
     }
 }
