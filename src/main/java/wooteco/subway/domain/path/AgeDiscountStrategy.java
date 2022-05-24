@@ -1,8 +1,8 @@
 package wooteco.subway.domain.path;
 
 import java.util.Arrays;
+import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntPredicate;
-import java.util.function.IntToDoubleFunction;
 import wooteco.subway.exception.DataNotExistException;
 
 public enum AgeDiscountStrategy {
@@ -13,9 +13,9 @@ public enum AgeDiscountStrategy {
     ADULT(age -> age >= 19, fare -> fare);
 
     private final IntPredicate ageBoundary;
-    private final IntToDoubleFunction discountStrategy;
+    private final DoubleUnaryOperator discountStrategy;
 
-    AgeDiscountStrategy(IntPredicate ageBoundary, IntToDoubleFunction discountStrategy) {
+    AgeDiscountStrategy(IntPredicate ageBoundary, DoubleUnaryOperator discountStrategy) {
         this.ageBoundary = ageBoundary;
         this.discountStrategy = discountStrategy;
     }
@@ -27,7 +27,7 @@ public enum AgeDiscountStrategy {
                 .orElseThrow(() -> new DataNotExistException("존재하지 않는 나이입니다."));
     }
 
-    public int discount(int fare) {
+    public int discount(double fare) {
         return (int) discountStrategy.applyAsDouble(fare);
     }
 }

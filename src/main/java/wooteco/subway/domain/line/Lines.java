@@ -1,6 +1,8 @@
 package wooteco.subway.domain.line;
 
 import java.util.List;
+import java.util.Set;
+import wooteco.subway.exception.DataNotExistException;
 import wooteco.subway.exception.SubwayException;
 
 public class Lines {
@@ -38,6 +40,14 @@ public class Lines {
         return lines.stream()
                 .filter(it -> !it.isSameId(line))
                 .anyMatch(it -> it.isSameColor(line));
+    }
+
+    public int findMaxExtraFare(Set<Long> usedLineIds) {
+        return lines.stream()
+                .filter(line -> usedLineIds.contains(line.getId()))
+                .mapToInt(Line::getExtraFare)
+                .max()
+                .orElseThrow(() -> new DataNotExistException("최대 추가 요금을 계산할 수 없습니다."));
     }
 
     public List<Line> getLines() {

@@ -3,7 +3,7 @@ package wooteco.subway.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import wooteco.subway.domain.path.Fare;
+import wooteco.subway.domain.line.Lines;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.PathDijkstraAlgorithm;
 import wooteco.subway.domain.section.Section;
@@ -16,10 +16,12 @@ import wooteco.subway.dto.station.StationResponse;
 public class PathService {
 
     private final StationService stationService;
+    private final LineService lineService;
     private final SectionService sectionService;
 
-    public PathService(StationService stationService, SectionService sectionService) {
+    public PathService(StationService stationService, LineService lineService, SectionService sectionService) {
         this.stationService = stationService;
+        this.lineService = lineService;
         this.sectionService = sectionService;
     }
 
@@ -28,13 +30,16 @@ public class PathService {
         Stations stations = stationService.findAll();
         PathDijkstraAlgorithm algorithm = PathDijkstraAlgorithm.of(sections, stations);
         Path path = algorithm.findPath(pathRequest.getSource(), pathRequest.getTarget());
-        return getPathResponse(stations, path.getPath(), path.getDistance());
+
+        List<StationResponse> stationsResponses = getStationsResponses(stations, path.getStationIds());
+        int fare = getFare(path, pathRequest.getAge());
+        return new PathResponse(stationsResponses, path.getDistance(), fare);
     }
 
-    private PathResponse getPathResponse(Stations stations, List<Long> path, int distance) {
-        List<StationResponse> stationsResponses = getStationsResponses(stations, path);
-        Fare fare = new Fare(distance);
-        return new PathResponse(stationsResponses, distance, fare.calculate());
+    private int getFare(Path path, int age) {
+        Lines lines = lineService.findAll();
+        int maxExtraFare = lines.findMaxExtraFare(path.getUsedLineIds());
+        return path.calculateFare(age, maxExtraFare);
     }
 
     private List<StationResponse> getStationsResponses(Stations stations, List<Long> shortestPath) {

@@ -11,10 +11,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import wooteco.subway.dao.line.JdbcLineDao;
+import wooteco.subway.dao.line.LineDao;
 import wooteco.subway.dao.section.JdbcSectionDao;
 import wooteco.subway.dao.section.SectionDao;
 import wooteco.subway.dao.station.JdbcStationDao;
 import wooteco.subway.dao.station.StationDao;
+import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.path.PathRequest;
@@ -47,16 +50,22 @@ class PathServiceTest {
         stationId4 = stationDao.save(new Station("강남역"));
         stationId5 = stationDao.save(new Station("교대역"));
 
+        LineDao lineDao = new JdbcLineDao(jdbcTemplate);
+        Long lineId1 = lineDao.save(new Line("일호선", "bg-red-600", 200));
+        Long lineId2 = lineDao.save(new Line("이호선", "bg-green-600", 300));
+
         SectionDao sectionDao = new JdbcSectionDao(jdbcTemplate);
-        sectionDao.save(new Section(1L, 1L, stationId1, stationId2, 2));
-        sectionDao.save(new Section(2L, 1L, stationId2, stationId3, 2));
-        sectionDao.save(new Section(3L, 1L, stationId3, stationId4, 7));
-        sectionDao.save(new Section(4L, 2L, stationId2, stationId5, 3));
-        sectionDao.save(new Section(5L, 2L, stationId5, stationId4, 4));
+        sectionDao.save(new Section(1L, lineId1, stationId1, stationId2, 2));
+        sectionDao.save(new Section(2L, lineId1, stationId2, stationId3, 2));
+        sectionDao.save(new Section(3L, lineId1, stationId3, stationId4, 7));
+        sectionDao.save(new Section(4L, lineId2, stationId2, stationId5, 3));
+        sectionDao.save(new Section(5L, lineId2, stationId5, stationId4, 4));
+
 
         StationService stationService = new StationService(stationDao);
         SectionService sectionService = new SectionService(sectionDao, stationService);
-        pathService = new PathService(stationService, sectionService);
+        LineService lineService = new LineService(lineDao, sectionService);
+        pathService = new PathService(stationService, lineService, sectionService);
     }
 
     @DisplayName("경로를 조회한다.")

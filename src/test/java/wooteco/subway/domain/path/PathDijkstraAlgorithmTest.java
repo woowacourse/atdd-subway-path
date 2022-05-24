@@ -39,7 +39,7 @@ class PathDijkstraAlgorithmTest {
         Path path = algorithm.findPath(1L, 4L);
 
         assertAll(
-                () -> assertThat(path.getPath()).containsExactly(1L, 2L, 5L, 4L),
+                () -> assertThat(path.getStationIds()).containsExactly(1L, 2L, 5L, 4L),
                 () -> assertThat(path.getDistance()).isEqualTo(9),
                 () -> assertThat(path.getUsedLineIds()).contains(1L, 2L)
         );
