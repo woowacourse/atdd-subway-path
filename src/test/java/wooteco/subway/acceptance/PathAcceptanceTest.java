@@ -171,7 +171,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("출발지 또는 도착지의 id로 1보다 작은 값이 들어올 수 없다.")
     @Test
-    void notAllowLessThan1StationId() {
+    void notAllowStationIdLessThan1() {
         ExtractableResponse<Response> response = requestGetPath(0L, 0L, 1);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -180,7 +180,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("나이로 1보다 작은 숫자가 들어올 수 없다.")
     @Test
-    void notAllowLessThan1Age() {
+    void notAllowAgeLessThan1() {
         ExtractableResponse<Response> response = requestGetPath(seolleungId, samjeonId, 0);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());

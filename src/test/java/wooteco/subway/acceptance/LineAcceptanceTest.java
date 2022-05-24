@@ -191,7 +191,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("시점 또는 종점 id로 1보다 작은 값이 올 수 없다.")
     @Test
-    void notAllowLessThan1StationId() {
+    void notAllowStationIdLessThan1() {
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", 0L, 0L, 1, 0);
 
         ExtractableResponse<Response> response = requestPostLine(lineCreateRequest);
@@ -202,7 +202,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("노선 거리로 1보다 작은 값이 올 수 없다.")
     @Test
-    void notAllowLessThan1Distance() {
+    void notAllowDistanceLessThan1() {
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 0, 0);
 
         ExtractableResponse<Response> response = requestPostLine(lineCreateRequest);
@@ -213,7 +213,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("추가 요금으로 음수가 올 수 없다.")
     @Test
-    void notAllowLessThan0ExtraFare() {
+    void notAllowExtraFareLessThan0() {
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "초록색", gangnamId, yeoksamId, 0, -1);
 
         ExtractableResponse<Response> response = requestPostLine(lineCreateRequest);

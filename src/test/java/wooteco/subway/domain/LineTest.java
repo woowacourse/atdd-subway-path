@@ -32,7 +32,7 @@ public class LineTest {
 
     @DisplayName("노선의 추가 요금이 음수일 경우 예외를 반환한다.")
     @Test
-    void notAllowLessThan0ExtraFare() {
+    void notAllowExtraFareLessThan0() {
         assertThatThrownBy(() -> new Line("2호선", "초록색", -1))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("추가 요금은 음수일 수 없습니다.");
