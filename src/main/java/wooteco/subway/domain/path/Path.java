@@ -1,6 +1,9 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import java.util.List;
+import wooteco.subway.domain.AgeFarePolicy;
+import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Station;
 
 public class Path {
 
@@ -43,9 +46,9 @@ public class Path {
         }
     }
 
-    public double calculateFinalFare(final int age) {
-        AgeType ageType = AgeType.from(age);
-        return ageType.calculateFare(calculateGeneralFare());
+    public int calculateFinalFare(final int age) {
+        AgeFarePolicy ageFarePolicy = AgeFarePolicy.from(age);
+        return ageFarePolicy.calculateFare(calculateGeneralFare());
     }
 
     private int calculateGeneralFare() {

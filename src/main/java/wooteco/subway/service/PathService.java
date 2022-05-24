@@ -6,7 +6,8 @@ import wooteco.subway.dao.section.SectionDao;
 import wooteco.subway.dao.station.StationDao;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.strategy.FindPathStrategy;
+import wooteco.subway.domain.path.FindPathStrategy;
+import wooteco.subway.domain.path.Path;
 import wooteco.subway.dto.path.PathFindRequest;
 import wooteco.subway.dto.path.PathFindResponse;
 
@@ -26,9 +27,10 @@ public class PathService {
     }
 
     public PathFindResponse findPath(final PathFindRequest pathFindRequest) {
-        Sections sections = new Sections(sectionDao.findAll());
         Station source = stationDao.findById(pathFindRequest.getSource());
         Station target = stationDao.findById(pathFindRequest.getTarget());
-        return PathFindResponse.from(findPathStrategy.findPath(source, target, sections), pathFindRequest.getAge());
+        Sections sections = new Sections(sectionDao.findAll());
+        Path path = findPathStrategy.findPath(source, target, sections);
+        return PathFindResponse.from(path, path.calculateFinalFare(pathFindRequest.getAge()));
     }
 }
