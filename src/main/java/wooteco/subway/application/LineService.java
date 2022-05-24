@@ -99,8 +99,4 @@ public class LineService {
         sectionDao.deleteByLineId(lineId);
         sectionDao.save(line.getSections(), lineId);
     }
-
-    public int findMaxExtraFareByLineIds(List<Long> usedLines) {
-        return lineDao.findMaxExtraFareByLineIds(usedLines);
-    }
 }

@@ -3,7 +3,6 @@ package wooteco.subway.acceptance.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
 
@@ -21,6 +20,7 @@ import wooteco.subway.application.LineService;
 import wooteco.subway.application.PathService;
 import wooteco.subway.application.StationService;
 import wooteco.subway.dao.SectionDao;
+import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.PathResponse;
@@ -41,16 +41,16 @@ class PathServiceTest {
 
     @DisplayName("최단 경로와 거리에 비례한 요금이 정확힌지 확인")
     @ParameterizedTest
-    @CsvSource(value = {"10,1250", "11,1350", "16,1450","50,2050", "51,2150", "58, 2150", "59,2250"})
+    @CsvSource(value = {"10,1250", "11,1350", "16,1450", "50,2050", "51,2150", "58, 2150", "59,2250"})
     void getPath(int distance, int expectedCost) {
         // given
         final Station 강남역 = new Station("강남역");
         final Station 역삼역 = new Station("역삼역");
+        final Line 신분당 = Line.createWithoutSection(1L, "신분당", "빨강", 0);
 
-        final List<Section> sections = List.of(Section.createWithoutId(강남역, 역삼역, distance));
+        final List<Section> sections = List.of(Section.createWithLine(1L, 신분당, 강남역, 역삼역, distance));
 
         given(sectionDao.findAll()).willReturn(sections);
-        given(lineService.findMaxExtraFareByLineIds(any())).willReturn(0);
         doReturn(강남역).when(stationService).findStationById(1L);
         doReturn(역삼역).when(stationService).findStationById(2L);
         // when
@@ -91,11 +91,12 @@ class PathServiceTest {
         final Station 강남역 = new Station("강남역");
         final Station 역삼역 = new Station("역삼역");
         final Station 삼성역 = new Station("삼성역");
+        final Line 신분당 = Line.createWithoutSection(1L, "신분당", "빨강", 900);
+        final Line 호선3 = Line.createWithoutSection(2L, "3호선", "주황", 500);
+        final List<Section> sections = List.of(Section.createWithLine(1L, 신분당, 강남역, 역삼역, 5),
+                Section.createWithLine(2L, 호선3, 역삼역, 삼성역, 5));
 
-        final List<Section> sections = List.of(Section.createWithLine(1L, 1L, 강남역, 역삼역, 5),
-                Section.createWithLine(2L, 2L, 역삼역, 삼성역, 5));
         given(sectionDao.findAll()).willReturn(sections);
-        given(lineService.findMaxExtraFareByLineIds(any())).willReturn(900);
         doReturn(강남역).when(stationService).findStationById(1L);
         doReturn(삼성역).when(stationService).findStationById(3L);
         //when

@@ -103,10 +103,4 @@ public class LineDao {
             throw new IllegalArgumentException(NON_EXISTENT_ID_EXCEPTION);
         }
     }
-
-    public int findMaxExtraFareByLineIds(List<Long> usedLines) {
-        final SqlParameterSource parameters = new MapSqlParameterSource("ids", usedLines);
-        final String sql = "select max(extra_fare) from line where id in (:ids)";
-        return namedParameterJdbcTemplate.queryForObject(sql, parameters, Integer.class);
-    }
 }

@@ -28,7 +28,7 @@ public class PathService {
 
         List<Section> sections = sectionDao.findAll();
         final Path path = Path.from(sections, departure, arrival);
-        final int extraFare = lineService.findMaxExtraFareByLineIds(path.getUsedLines());
+        final int extraFare = path.getMaxExtraFare();
         final Fare fare = Fare.from(path.getDistance(), extraFare, age);
         return PathResponse.of(path, fare);
     }

@@ -3,14 +3,14 @@ package wooteco.subway.domain;
 public class Section {
 
     private final Long id;
-    private final Long lineId;
+    private final Line line;
     private final Station upStation;
     private final Station downStation;
     private final int distance;
 
-    private Section(Long id, Long lineId, Station upStation, Station downStation, int distance) {
+    public Section(Long id, Line line, Station upStation, Station downStation, int distance) {
         this.id = id;
-        this.lineId = lineId;
+        this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
@@ -24,8 +24,8 @@ public class Section {
         return new Section(null, null, upStation, downStation, distance);
     }
 
-    public static Section createWithLine(Long id, Long lineId, Station upStation, Station downStation, int distance){
-        return new Section(id, lineId, upStation, downStation, distance);
+    public static Section createWithLine(Long id, Line line, Station upStation, Station downStation, int distance) {
+        return new Section(id, line, upStation, downStation, distance);
     }
 
     public boolean isEqualToUpStation(Station station) {
@@ -48,7 +48,7 @@ public class Section {
         return distance;
     }
 
-    public Long getLineId() {
-        return lineId;
+    public Line getLine() {
+        return line;
     }
 }

@@ -7,6 +7,7 @@ import javax.sql.DataSource;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 
@@ -25,13 +26,14 @@ public class SectionDao {
 
     public List<Section> findAll() {
         final String sql =
-                "select s.id sid, s.line_id slid, s.distance sdistance, us.id usid, us.name usname, ds.id dsid, ds.name dsname " +
+                "select s.id sid, s.line_id slid, s.distance sdistance, us.id usid, us.name usname, ds.id dsid, ds.name dsname, l.id lid, l.name lname, l.color lcolor, l.extra_fare lfare " +
                         "from sections s " +
+                        "join line l on s.line_id = l.id " +
                         "join station us on s.up_station_id = us.id " +
                         "join station ds on s.down_station_id = ds.id";
         return jdbcTemplate.query(sql, ((rs, rowNum) -> {
             return Section.createWithLine(rs.getLong("sid"),
-                    rs.getLong("slid"),
+                    Line.createWithoutSection(rs.getLong("lid"), rs.getString("lname"), rs.getString("lcolor"), rs.getInt("lfare")),
                     new Station(rs.getLong("usid"), rs.getString("usname")),
                     new Station(rs.getLong("dsid"), rs.getString("dsname")), rs.getInt("sdistance"));
         }));
