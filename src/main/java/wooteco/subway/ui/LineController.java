@@ -2,6 +2,7 @@ package wooteco.subway.ui;
 
 import java.net.URI;
 import java.util.List;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,7 +34,7 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLines(@RequestBody LineRequest lineRequest) {
+    public ResponseEntity<LineResponse> createLines(@RequestBody @Valid LineRequest lineRequest) {
         Line line = lineService.save(lineRequest);
         LineResponse response = lineService.getById(line.getId());
         return ResponseEntity.created(URI.create("/lines/" + response.getId())).body(response);
@@ -53,7 +54,7 @@ public class LineController {
 
     @PutMapping("/{id}")
     public ResponseEntity<LineResponse> updateLine(@PathVariable Long id,
-                                                   @RequestBody LineRequest lineRequest) {
+                                                   @RequestBody @Valid LineRequest lineRequest) {
         lineService.update(id, lineRequest);
         LineResponse lineResponse = lineService.getById(id);
         return ResponseEntity.ok(lineResponse);
@@ -67,14 +68,14 @@ public class LineController {
 
     @PostMapping("/{id}/sections")
     public ResponseEntity<Void> addSection(@PathVariable Long id,
-                                           @RequestBody AddSectionRequest request) {
+                                           @RequestBody @Valid AddSectionRequest request) {
         sectionService.addSection(id, request);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}/sections")
     public ResponseEntity<Void> deleteSection(@PathVariable Long id,
-                                              @ModelAttribute DeleteSectionRequest request) {
+                                              @ModelAttribute @Valid DeleteSectionRequest request) {
         sectionService.deleteSection(id, request);
         return ResponseEntity.ok().build();
     }

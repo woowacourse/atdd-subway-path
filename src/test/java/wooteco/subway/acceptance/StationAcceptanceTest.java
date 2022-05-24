@@ -7,12 +7,14 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 @DisplayName("지하철 역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
@@ -52,6 +54,23 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    @DisplayName("기존에 존재하는 지하철 역 이름으로 지하철 역을 생성한다.")
+    @Test
+    void createStationWithNameISNull() {
+        // when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .body(Map.of())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/stations")
+                .then().log().all()
+                .extract();
+        String message = response.jsonPath().getString("message");
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(message).isEqualTo("지하철역 이름은 빈 값일 수 있습니다.");
+    }
+
     @DisplayName("지하철 역을 조회한다.")
     @Test
     void getStations() {
@@ -61,15 +80,15 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .when()
-            .get("/stations")
-            .then().log().all()
-            .extract();
+                .when()
+                .get("/stations")
+                .then().log().all()
+                .extract();
 
         List<Long> actualLineIds = response.jsonPath().getList("id", Long.class);
         List<Long> expectedLineIds = Arrays.asList(createResponse1, createResponse2).stream()
-            .map(it -> it.body().jsonPath().getLong("id"))
-            .collect(Collectors.toList());
+                .map(it -> it.body().jsonPath().getLong("id"))
+                .collect(Collectors.toList());
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(actualLineIds).containsAll(expectedLineIds);
@@ -84,10 +103,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // when
         String uri = createResponse.header("Location");
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .when()
-            .delete(uri)
-            .then().log().all()
-            .extract();
+                .when()
+                .delete(uri)
+                .then().log().all()
+                .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -98,10 +117,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
     void deleteNotExistStation() {
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .when()
-            .delete("/stations/50")
-            .then().log().all()
-            .extract();
+                .when()
+                .delete("/stations/50")
+                .then().log().all()
+                .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());

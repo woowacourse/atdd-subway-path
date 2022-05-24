@@ -149,7 +149,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(actualStationIds).containsExactly(강남역, 역삼역);
         assertThat(distance).isEqualTo(20);
-        assertThat(fare).isEqualTo(1450+900);
+        assertThat(fare).isEqualTo(1450 + 900);
     }
 
     @DisplayName("나이가 청소년인 경우 경로 탐색")
@@ -173,7 +173,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         List<Long> actualStationIds = response.jsonPath().getList("stations.id", Long.class);
         int distance = response.jsonPath().getObject("distance", Integer.class);
         int actualFare = response.jsonPath().getObject("fare", Integer.class);
-        int expectedFare = (int) ((1250-350)*0.8);
+        int expectedFare = (int) ((1250 - 350) * 0.8);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(actualStationIds).containsExactly(강남역, 역삼역);
@@ -286,11 +286,46 @@ public class PathAcceptanceTest extends AcceptanceTest {
         List<Long> actualStationIds = response.jsonPath().getList("stations.id", Long.class);
         int distance = response.jsonPath().getObject("distance", Integer.class);
         int actualFare = response.jsonPath().getObject("fare", Integer.class);
-        int expectedFare = (int) ((1450+900-350)*0.8);
+        int expectedFare = (int) ((1450 + 900 - 350) * 0.8);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(actualStationIds).containsExactly(강남역, 역삼역);
         assertThat(distance).isEqualTo(20);
         assertThat(actualFare).isEqualTo(expectedFare);
+    }
+
+    @DisplayName("source가 null일 떄")
+    @Test
+    void searchPathInCaseOfSourceIsBlack() {
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .param("target", 2L)
+                .param("age", 20)
+                .when()
+                .get("/paths")
+                .then().log().all()
+                .extract();
+
+        String message = response.jsonPath().getString("message");
+        assertThat(message).isEqualTo("source는 빈 값일 수 없습니다.");
+    }
+
+    @DisplayName("나이가 음수 일 떄")
+    @Test
+    void searchPathInCaseOfAgeIsNegative() {
+        long 강남역 = requestCreateStation("강남역").jsonPath().getLong("id");
+        long 역삼역 = requestCreateStation("역삼역").jsonPath().getLong("id");
+        requestCreateLine("신분당선", "bg-red-600", 강남역, 역삼역, 20, 900);
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .param("source", 강남역)
+                .param("target", 역삼역)
+                .param("age", -1)
+                .when()
+                .get("/paths")
+                .then().log().all()
+                .extract();
+
+        String message = response.jsonPath().getString("message");
+        assertThat(message).isEqualTo("나이는 음수일 수 없습니다.");
     }
 }
