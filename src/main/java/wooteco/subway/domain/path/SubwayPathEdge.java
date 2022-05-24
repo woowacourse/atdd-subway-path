@@ -1,27 +1,26 @@
 package wooteco.subway.domain.path;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
+import wooteco.subway.domain.Section;
 
 public class SubwayPathEdge extends DefaultWeightedEdge {
 
-    private final Long lineId;
-    private final int distance;
+    private final Section section;
 
-    public SubwayPathEdge(final Long lineId, final int distance) {
-        this.lineId = lineId;
-        this.distance = distance;
+    public SubwayPathEdge(final Section section) {
+        this.section = section;
     }
 
     public Long getLineId() {
-        return lineId;
+        return section.getLineId();
     }
 
     public int getDistance() {
-        return distance;
+        return section.getDistance();
     }
 
     @Override
     protected double getWeight() {
-        return distance;
+        return section.getDistance();
     }
 }

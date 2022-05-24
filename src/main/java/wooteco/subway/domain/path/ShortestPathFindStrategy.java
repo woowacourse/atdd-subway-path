@@ -48,7 +48,7 @@ public class ShortestPathFindStrategy implements PathFindStrategy {
                 section -> graph.addEdge(
                         section.getUpStationId(),
                         section.getDownStationId(),
-                        new SubwayPathEdge(section.getLineId(), section.getDistance())
+                        new SubwayPathEdge(section)
                 )
         );
         return graph;
