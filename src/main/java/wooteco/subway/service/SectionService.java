@@ -113,4 +113,8 @@ public class SectionService {
                 .collect(Collectors.toList());
         sectionDao.deleteByIdIn(sectionIds);
     }
+
+    public boolean existStation(final Long stationId) {
+        return sectionDao.existStation(stationId);
+    }
 }
