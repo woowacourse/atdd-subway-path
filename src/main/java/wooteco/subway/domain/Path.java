@@ -7,4 +7,6 @@ public interface Path {
     List<Long> getShortestPathStationIds(Long departureId, Long arrivalId);
 
     int getShortestPathDistance(Long departureId, Long arrivalId);
+
+    List<Long> getShortestPathLineIds(Long departureId, Long arrivalId);
 }

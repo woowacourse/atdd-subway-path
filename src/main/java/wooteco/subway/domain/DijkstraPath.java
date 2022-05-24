@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
@@ -19,14 +20,11 @@ public class DijkstraPath implements Path {
 
     @Override
     public List<Long> getShortestPathStationIds(Long departureId, Long arrivalId) {
-        List<String> stationIds = findShortestPath(departureId, arrivalId).getVertexList();
-        return stationIds.stream()
-                .map(Long::valueOf)
-                .collect(Collectors.toList());
+        return findShortestPath(departureId, arrivalId).getVertexList();
     }
 
     private GraphPath findShortestPath(Long departureId, Long arrivalId) {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        WeightedMultigraph<Long, LineEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
         addStationVertex(graph);
         addSectionEdge(graph);
         GraphPath path = getGraphPath(departureId, arrivalId, graph);
@@ -41,44 +39,48 @@ public class DijkstraPath implements Path {
     }
 
     private GraphPath getGraphPath(Long departureId, Long arrivalId,
-                                   WeightedMultigraph<String, DefaultWeightedEdge> graph) {
-        org.jgrapht.alg.shortestpath.DijkstraShortestPath dijkstraShortestPath = new org.jgrapht.alg.shortestpath.DijkstraShortestPath(
-                graph);
+                                   WeightedMultigraph<Long, LineEdge> graph) {
+        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         try {
-            return dijkstraShortestPath.getPath(String.valueOf(departureId), String.valueOf(arrivalId));
+            return dijkstraShortestPath.getPath(departureId, arrivalId);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("구간에 등록 되지 않은 역입니다.");
         }
     }
 
-    private void addStationVertex(WeightedMultigraph<String, DefaultWeightedEdge> graph) {
+    private void addStationVertex(WeightedMultigraph<Long, LineEdge> graph) {
         for (Long stationId : getAllStationIds()) {
-            graph.addVertex(String.valueOf(stationId));
+            graph.addVertex(stationId);
         }
     }
 
     private List<Long> getAllStationIds() {
         Set<Long> stationIds = new HashSet<>();
-
         for (Section section : sections) {
             stationIds.add(section.getUpStationId());
             stationIds.add(section.getDownStationId());
         }
-
         return new ArrayList<>(stationIds);
     }
 
-    private void addSectionEdge(WeightedMultigraph<String, DefaultWeightedEdge> graph) {
+    private void addSectionEdge(WeightedMultigraph<Long, LineEdge> graph) {
         for (Section section : sections) {
-            String upStationId = String.valueOf(section.getUpStationId());
-            String downStationId = String.valueOf(section.getDownStationId());
             int distance = section.getDistance();
-            graph.setEdgeWeight(graph.addEdge(upStationId, downStationId), distance);
+            Long lineId = section.getLineId();
+            graph.addEdge(section.getUpStationId(), section.getDownStationId(), new LineEdge(lineId, distance));
         }
     }
 
     @Override
     public int getShortestPathDistance(Long departureId, Long arrivalId) {
         return (int) findShortestPath(departureId, arrivalId).getWeight();
+    }
+
+    @Override
+    public List<Long> getShortestPathLineIds(Long departureId, Long arrivalId) {
+        List<LineEdge> edges = findShortestPath(departureId, arrivalId).getEdgeList();
+        return edges.stream()
+                .map(LineEdge::getLindId)
+                .collect(Collectors.toList());
     }
 }

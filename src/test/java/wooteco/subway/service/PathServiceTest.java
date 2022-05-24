@@ -59,21 +59,25 @@ class PathServiceTest extends DBTest {
     @DisplayName("최단 경로의 경유역들과 거리, 운임비용을 반환한다.")
     @Test
     void findShortestPath() {
-        lineService.save(new LineServiceRequest("3호선", "orange", station2.getId(), station4.getId(), 4));
+        LineServiceRequest secondLineRequest = new LineServiceRequest(
+                "3호선", "orange", station2.getId(), station4.getId(), 4, 300);
+        lineService.save(secondLineRequest);
         PathServiceRequest pathServiceRequest = new PathServiceRequest(station1.getId(), station4.getId(), 10);
         PathServiceResponse pathServiceResponse = pathService.findShortestPath(pathServiceRequest, DijkstraPath::new);
 
         assertAll(
                 () -> assertThat(pathServiceResponse.getStations()).containsExactly(station1, station2, station4),
                 () -> assertThat(pathServiceResponse.getDistance()).isEqualTo(6),
-                () -> assertThat(pathServiceResponse.getFare()).isEqualTo(1250)
+                () -> assertThat(pathServiceResponse.getFare()).isEqualTo(600)
         );
     }
 
     @DisplayName("구간에 등록되지 않은 지하철역으로 최단 경로 조회시 예외가 발생한다.")
     @Test
     void findShortestPath_exceptionNotSavedInSection() {
-        lineService.save(new LineServiceRequest("3호선", "orange", station2.getId(), station4.getId(), 4));
+        final LineServiceRequest secondLineRequest = new LineServiceRequest(
+                "3호선", "orange", station2.getId(), station4.getId(), 4, 300);
+        lineService.save(secondLineRequest);
         PathServiceRequest pathServiceRequest = new PathServiceRequest(station1.getId(), station5.getId(), 10);
 
         assertThatThrownBy(() -> pathService.findShortestPath(pathServiceRequest, DijkstraPath::new))
@@ -84,7 +88,9 @@ class PathServiceTest extends DBTest {
     @DisplayName("연결되지 않은 구간의 최단 경로 조회시 예외가 발생한다.")
     @Test
     void findShortestPath_exceptionInvalidPath() {
-        lineService.save(new LineServiceRequest("3호선", "orange", station5.getId(), station4.getId(), 4));
+        LineServiceRequest secondLineRequest = new LineServiceRequest(
+                "3호선", "orange", station5.getId(), station4.getId(), 4, 300);
+        lineService.save(secondLineRequest);
         PathServiceRequest pathServiceRequest = new PathServiceRequest(station1.getId(), station5.getId(), 10);
 
         assertThatThrownBy(() -> pathService.findShortestPath(pathServiceRequest, DijkstraPath::new))

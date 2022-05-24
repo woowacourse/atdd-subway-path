@@ -16,10 +16,12 @@ public class PathService {
 
     private final StationService stationService;
     private final SectionService sectionService;
+    private final LineService lineService;
 
-    public PathService(StationService stationService, SectionService sectionService) {
+    public PathService(StationService stationService, SectionService sectionService, LineService lineService) {
         this.stationService = stationService;
         this.sectionService = sectionService;
+        this.lineService = lineService;
     }
 
     public PathServiceResponse findShortestPath(PathServiceRequest pathServiceRequest,
@@ -33,7 +35,9 @@ public class PathService {
                 .collect(Collectors.toList());
 
         int distance = path.getShortestPathDistance(departureId, arrivalId);
-        Fare fare = new Fare(distance);
+        int highestExtraFare =
+                lineService.findHighestExtraFareByIds(path.getShortestPathLineIds(departureId, arrivalId));
+        Fare fare = new Fare(distance, highestExtraFare, pathServiceRequest.getAge());
         return new PathServiceResponse(stations, distance, fare.value());
     }
 }

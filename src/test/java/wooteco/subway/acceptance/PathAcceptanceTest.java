@@ -52,7 +52,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         createLine(new LineRequest("3호선", "orange", stationId2, stationId4, 2, 500));
 
         // when
-        ExtractableResponse<Response> response = findShortestPath(stationId1, stationId4);
+        ExtractableResponse<Response> response = findShortestPath(stationId1, stationId4, 5);
         PathResponse pathResponse = response.jsonPath()
                 .getObject(".", PathResponse.class);
         List<StationResponse> stationResponses = pathResponse.getStations();
@@ -67,7 +67,7 @@ class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(stationResponses.get(2).getId()).isEqualTo(stationId4),
                 () -> assertThat(stationResponses.get(2).getName()).isEqualTo("천호역"),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(4),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(1250)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(700)
         );
     }
 
@@ -80,7 +80,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         createLine(new LineRequest("3호선", "orange", stationId2, stationId4, 2, 500));
 
         // when
-        ExtractableResponse<Response> response = findShortestPath(stationId1, stationId5);
+        ExtractableResponse<Response> response = findShortestPath(stationId1, stationId5, 5);
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         // then
@@ -99,7 +99,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         createLine(new LineRequest("3호선", "orange", stationId4, stationId5, 2, 500));
 
         // when
-        ExtractableResponse<Response> response = findShortestPath(stationId1, stationId5);
+        ExtractableResponse<Response> response = findShortestPath(stationId1, stationId5, 5);
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         //then
@@ -109,11 +109,11 @@ class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private ExtractableResponse<Response> findShortestPath(Long departureId, Long arrivalId) {
+    private ExtractableResponse<Response> findShortestPath(Long departureId, Long arrivalId, int age) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .get("/paths?source=" + departureId + "&target=" + arrivalId + "&age=15")
+                .get("/paths?source=" + departureId + "&target=" + arrivalId + "&age=" + age)
                 .then().log().all()
                 .extract();
     }

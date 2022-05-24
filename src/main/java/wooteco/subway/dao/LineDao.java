@@ -3,6 +3,7 @@ package wooteco.subway.dao;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -76,5 +77,16 @@ public class LineDao {
     private RowMapper<Line> getRowMapper() {
         return (rs, rowNum) -> new Line(rs.getLong("id"), rs.getString("name"),
                 rs.getString("color"), rs.getInt("extra_fare"));
+    }
+
+    public List<Integer> findExtraFaresByIds(List<Long> ids) {
+        String sql = "select extra_fare from line where id in (" + stringify(ids) + ")";
+        return jdbcTemplate.query(sql, (resultSet, rowNum) -> resultSet.getInt("extra_fare"));
+    }
+
+    private String stringify(List<Long> ids) {
+        return ids.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(", "));
     }
 }

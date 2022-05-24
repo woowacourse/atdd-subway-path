@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,5 +110,18 @@ class LineDaoTest extends DBTest {
         lineDao.deleteById(savedLine.getId());
 
         assertThat(lineDao.findAll().size()).isZero();
+    }
+
+    @DisplayName("id들을 받아, 추가 요금들을 반환한다.")
+    @Test
+    void findExtraFaresByIds() {
+        Line firstLine = lineDao.save(line);
+        Line secondLine = lineDao.save(new Line("3호선", "orange", 300));
+        Line thirdLine = lineDao.save(new Line("4호선", "skyblue", 400));
+
+        List<Integer> extraFares =
+                lineDao.findExtraFaresByIds(List.of(firstLine.getId(), secondLine.getId(), thirdLine.getId()));
+
+        assertThat(extraFares).contains(200, 300, 400);
     }
 }

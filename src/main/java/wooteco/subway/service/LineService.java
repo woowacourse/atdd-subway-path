@@ -68,4 +68,12 @@ public class LineService {
     public void deleteById(Long id) {
         lineDao.deleteById(id);
     }
+
+    public int findHighestExtraFareByIds(List<Long> ids) {
+        return lineDao.findExtraFaresByIds(ids)
+                .stream()
+                .mapToInt(Integer::valueOf)
+                .max()
+                .orElse(0);
+    }
 }

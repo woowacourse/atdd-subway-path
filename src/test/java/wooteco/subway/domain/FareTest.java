@@ -8,11 +8,14 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 class FareTest {
 
-    @DisplayName("거리를 받아, 운임 비용을 반환한다.")
+    @DisplayName("거리, 가장 비싼 추가 운임, 나이를 받아 운임을 계산한다.")
     @ParameterizedTest
-    @CsvSource({"10, 1250", "11, 1350", "16, 1450", "51, 2150"})
-    void calculateFare(int distance, int expected) {
-        Fare fare = new Fare(distance);
+    @CsvSource({"10, 300, 21, 1550", "10, 300, 13, 960", "10, 300, 12, 600",
+            "11, 300, 21, 1650", "11, 300, 13, 1040", "11, 300, 12, 650",
+            "16, 300, 21, 1750", "16, 300, 13, 1120", "16, 300, 12, 700",
+            "51, 300, 21, 2450", "51, 300, 13, 1680", "51, 300, 12, 1050"})
+    void calculate(int distance, int highestExtraFare, int age, int expected) {
+        Fare fare = new Fare(distance, highestExtraFare, age);
 
         int actual = fare.value();
 

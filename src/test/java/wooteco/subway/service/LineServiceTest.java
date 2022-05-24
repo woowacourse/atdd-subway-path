@@ -143,4 +143,20 @@ class LineServiceTest extends DBTest {
 
         assertThat(lineService.findAll().size()).isZero();
     }
+
+    @DisplayName("노선 id들을 받아 노선들의 추가 운임 비용 중 가장 높은 비용을 반환한다.")
+    @Test
+    void findHighestExtraFareByIds() {
+        LineServiceResponse firstLine = lineService.save(lineServiceRequest);
+        LineServiceResponse secondLine = lineService.save(new LineServiceRequest(
+                "3호선", "orange", upStation.getId(), downStation.getId(), 10, 300));
+        LineServiceResponse thirdLine = lineService.save(new LineServiceRequest(
+                "4호선", "skyBlue", upStation.getId(), downStation.getId(), 10, 400));
+
+        int highestExtraFare =
+                lineService
+                        .findHighestExtraFareByIds(List.of(firstLine.getId(), secondLine.getId(), thirdLine.getId()));
+        //then
+        assertThat(highestExtraFare).isEqualTo(400);
+    }
 }
