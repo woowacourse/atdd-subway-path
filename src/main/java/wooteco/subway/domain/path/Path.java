@@ -14,6 +14,7 @@ public class Path {
     private static final int DISTANCE_OF_FIRST_ADDITIONAL_UNIT = 5;
     private static final int DISTANCE_OF_OVER_ADDITIONAL_UNIT = 8;
     private static final int DISTANCE_OF_OVER_ADDITIONAL_FARE = 50;
+    private static final int NUMBER_TO_MATCH_THE_UNITS = 1;
 
     private final List<Station> stations;
     private final int distance;
@@ -53,13 +54,13 @@ public class Path {
 
     private int calculateGeneralFare() {
         if (distance <= DISTANCE_OF_DEFAULT_FARE) {
-            return DEFAULT_FARE + calculateFareWithLine();
+            return DEFAULT_FARE + getMaxFareInLines();
         }
         if (distance <= DISTANCE_OF_OVER_ADDITIONAL_FARE) {
-            return DEFAULT_FARE + calculateFirstAdditionalFare() + calculateFareWithLine();
+            return DEFAULT_FARE + calculateFirstAdditionalFare() + getMaxFareInLines();
         }
         return DEFAULT_FARE + calculateFirstAdditionalMaxFare() + calculateOverAdditionalFare()
-                + calculateFareWithLine();
+                + getMaxFareInLines();
     }
 
     private int calculateFirstAdditionalFare() {
@@ -67,7 +68,7 @@ public class Path {
     }
 
     private int calculateOverFare(final int distance, final int unitDistance) {
-        return (((distance - 1) / unitDistance) * UNIT_OF_ADDITIONAL_FARE) + UNIT_OF_ADDITIONAL_FARE;
+        return (((distance - NUMBER_TO_MATCH_THE_UNITS) / unitDistance) * UNIT_OF_ADDITIONAL_FARE) + UNIT_OF_ADDITIONAL_FARE;
     }
 
     private int calculateFirstAdditionalMaxFare() {
@@ -79,7 +80,7 @@ public class Path {
         return calculateOverFare(distance - DISTANCE_OF_OVER_ADDITIONAL_FARE, DISTANCE_OF_OVER_ADDITIONAL_UNIT);
     }
 
-    private int calculateFareWithLine() {
+    private int getMaxFareInLines() {
         return lines.stream()
                 .map(Line::getExtraFare)
                 .mapToInt(fare -> fare)
