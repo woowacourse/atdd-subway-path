@@ -7,7 +7,7 @@ public enum FarePolicy {
 
     BASE(distance -> distance <= 10, 1250),
     FIRST_CHARGED(distance -> distance > 10 && distance <= 50, 1250),
-    SECOND_CHARGED(distance -> distance > 50, 1250),
+    SECOND_CHARGED(distance -> distance > 50, 2050),
     ;
 
     private static final int FIRST_EXTRA_FARE_STANDARD = 5;
@@ -30,23 +30,20 @@ public enum FarePolicy {
     }
 
     public int calculateFare(final double distance) {
-        return this.baseFare + addFirstExtraFare(distance - 10) + addSecondExtraFare(distance - 50);
+        if (distance > 50) {
+            return this.baseFare + addSecondExtraFare(distance - 50);
+        }
+        if (distance > 10) {
+            return this.baseFare + addFirstExtraFare(distance - 10);
+        }
+        return this.baseFare;
     }
 
     private int addFirstExtraFare(final double distance) {
-        double checkedDistance = checkDistanceOverThanZero(distance);
-        return (int) ((Math.ceil((checkedDistance) / FIRST_EXTRA_FARE_STANDARD)) * EXTRA_FARE);
+        return (int) ((Math.ceil((distance) / FIRST_EXTRA_FARE_STANDARD)) * EXTRA_FARE);
     }
 
     private int addSecondExtraFare(final double distance) {
-        double checkedDistance = checkDistanceOverThanZero(distance);
-        return (int) ((Math.ceil((checkedDistance) / SECOND_EXTRA_FARE_STANDARD)) * EXTRA_FARE);
-    }
-
-    private double checkDistanceOverThanZero(final double distance) {
-        if (distance < 0) {
-            return 0;
-        }
-        return distance;
+        return (int) ((Math.ceil((distance) / SECOND_EXTRA_FARE_STANDARD)) * EXTRA_FARE);
     }
 }

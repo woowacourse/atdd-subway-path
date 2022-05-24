@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 import wooteco.subway.domain.Line;
 import wooteco.subway.exception.CalculatePathsException;
+import wooteco.subway.exception.datanotfound.LineNotFoundException;
 
 public class FareCalculator {
 
@@ -23,13 +24,14 @@ public class FareCalculator {
     public int calculateFare(final List<Line> lines, final int age) {
         int extraFare = findExtraFareToCharged(lines);
         FarePolicy farePolicy = FarePolicy.choosePolicy(distance);
-        return farePolicy.calculateFare(distance) + extraFare;
+        int totalFare = farePolicy.calculateFare(distance) + extraFare;
+        return AgePolicy.calculateFareByAgePolicy(totalFare, age);
     }
 
     private int findExtraFareToCharged(final List<Line> lines) {
         return lines.stream()
                 .max(Comparator.comparing(Line::getExtraFare))
-                .orElseThrow(() -> new IllegalArgumentException("d"))
+                .orElseThrow(() -> new LineNotFoundException("존재하는 노선이 없습니다."))
                 .getExtraFare();
     }
 }
