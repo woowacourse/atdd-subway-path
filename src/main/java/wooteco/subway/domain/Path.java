@@ -2,15 +2,16 @@ package wooteco.subway.domain;
 
 import java.util.List;
 import org.jgrapht.GraphPath;
+import org.jgrapht.WeightedGraph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class Path {
 
-    private final WeightedMultigraph<Station, ShortestPathEdge> graph;
+    private final WeightedGraph<Station, ShortestPathEdge> graph;
 
-    public Path(List<Section> sections) {
-        graph = new WeightedMultigraph<>(ShortestPathEdge.class);
+    public Path(List<Section> sections,WeightedGraph weightedGraph ) {
+        graph = weightedGraph;
         addVertex(sections);
         addEdge(sections);
     }

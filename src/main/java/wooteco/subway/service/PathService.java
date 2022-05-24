@@ -3,6 +3,7 @@ package wooteco.subway.service;
 import java.util.ArrayList;
 import java.util.List;
 import org.jgrapht.GraphPath;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.DiscountRole;
 import wooteco.subway.domain.Fare;
@@ -39,7 +40,7 @@ public class PathService {
 
         List<Section> sections = sectionRepository.findAll();
 
-        Path path = new Path(sections);
+        Path path = new Path(sections, new WeightedMultigraph<>(ShortestPathEdge.class));
         GraphPath<Station, ShortestPathEdge> shortestPath = path.createShortestPath(source, target);
 
         int distance = (int) shortestPath.getWeight();

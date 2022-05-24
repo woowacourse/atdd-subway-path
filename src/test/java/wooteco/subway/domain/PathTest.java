@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.jgrapht.GraphPath;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +23,7 @@ class PathTest {
         List<Section> list = List.of(new Section(1L, 일호선, 강남역, 역삼역, 10),
                 new Section(1L, 일호선, 역삼역, 삼성역, 10), new Section(1L, 일호선, 삼성역, 양재역, 10));
         // when
-        Path path = new Path(list);
+        Path path = new Path(list, new WeightedMultigraph<>(ShortestPathEdge.class));
         // then
         GraphPath<Station, ShortestPathEdge> shortestPath = path.createShortestPath(강남역, 삼성역);
         assertThat(shortestPath.getVertexList()).containsExactly(강남역, 역삼역, 삼성역);
@@ -40,7 +41,7 @@ class PathTest {
         List<Section> list = List.of(new Section(1L, 일호선, 강남역, 역삼역, 10),
                 new Section(1L, 일호선, 역삼역, 삼성역, 10));
         // when
-        Path path = new Path(list);
+        Path path = new Path(list, new WeightedMultigraph<>(ShortestPathEdge.class));
         // then
         Assertions.assertThatIllegalArgumentException()
                 .isThrownBy(() -> path.createShortestPath(강남역, 양재역))
@@ -59,7 +60,7 @@ class PathTest {
         List<Section> list = List.of(new Section(1L, 일호선, 강남역, 역삼역, 10),
                 new Section(1L, 일호선, 역삼역, 삼성역, 10), new Section(1L, 일호선, 삼성역, 양재역, 10));
         // when
-        Path path = new Path(list);
+        Path path = new Path(list, new WeightedMultigraph<>(ShortestPathEdge.class));
         // then
         GraphPath<Station, ShortestPathEdge> shortestPath = path.createShortestPath(강남역, 삼성역);
         assertThat(shortestPath.getWeight()).isEqualTo(20);
