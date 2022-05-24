@@ -6,7 +6,9 @@ public abstract class ExtraFareStrategy {
 
     private static final int EXTRA_FARE_PER_DISTANCE = 100;
 
-    public abstract int calculate(final Distance distance);
+    abstract boolean isMatch(final int distance);
+
+    public abstract int apply(final Distance distance);
 
     protected int calculateExtraFare(final Distance distance, final int distanceOfExtraFare,
                                      final int standardDistanceForExtraFare) {

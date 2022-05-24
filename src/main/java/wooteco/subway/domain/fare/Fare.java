@@ -2,9 +2,7 @@ package wooteco.subway.domain.fare;
 
 import java.util.Objects;
 import wooteco.subway.domain.Distance;
-import wooteco.subway.domain.fare.strategy.discount.DiscountStrategy;
 import wooteco.subway.domain.fare.strategy.discount.DiscountStrategyMapper;
-import wooteco.subway.domain.fare.strategy.extrafare.ExtraFareStrategy;
 import wooteco.subway.domain.fare.strategy.extrafare.ExtraFareStrategyMapper;
 
 public class Fare {
@@ -22,14 +20,14 @@ public class Fare {
     }
 
     public Fare addExtraFareByDistance(final Distance distance) {
-        final ExtraFareStrategy strategy = ExtraFareStrategyMapper.findStrategyBy(distance);
-        final int extraFare = strategy.calculate(distance);
+        final int extraFare = ExtraFareStrategyMapper.findStrategyBy(distance)
+                .apply(distance);
         return new Fare(value + extraFare);
     }
 
     public Fare discountByAge(final int age) {
-        final DiscountStrategy strategy = DiscountStrategyMapper.findStrategyBy(age);
-        final int discountedFare = strategy.calculate(value);
+        final int discountedFare = DiscountStrategyMapper.findStrategyBy(age)
+                .apply(value);
         return new Fare(discountedFare);
     }
 
