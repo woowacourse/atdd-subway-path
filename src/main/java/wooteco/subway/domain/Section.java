@@ -45,6 +45,12 @@ public class Section {
                 || isSameDownStation(section);
     }
 
+
+    public boolean containsByStations(Station upStation, Station downStation) {
+        return (isSameUpStation(upStation) && isSameDownStation(downStation))
+                || (isSameUpStation(downStation) && isSameDownStation(upStation));
+    }
+
     public boolean isSameUpStation(Section section) {
         return section.upStation.equals(this.upStation);
     }

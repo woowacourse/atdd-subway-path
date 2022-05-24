@@ -55,7 +55,7 @@ public class LineService {
         Line resultLine = domainCreatorService.createLine(lineEntity.getId());
 
         return new LineServiceResponse(resultLine.getId(), resultLine.getName(), resultLine.getColor(),
-                resultLine.getExtraFare(), convertStationToInfo(resultLine.getStations()));
+                resultLine.getExtraFare(), convertStationToDto(resultLine.getStations()));
     }
 
     private void validateBeforeSave(String lineName, Long upStationId, Long downStationId) {
@@ -85,7 +85,7 @@ public class LineService {
                             line.getName(),
                             line.getColor(),
                             line.getExtraFare(),
-                            convertStationToInfo(line.getStations())
+                            convertStationToDto(line.getStations())
                     ));
         }
         return lineServiceResponses;
@@ -100,10 +100,10 @@ public class LineService {
                 line.getName(),
                 line.getColor(),
                 line.getExtraFare(),
-                convertStationToInfo(line.getStations()));
+                convertStationToDto(line.getStations()));
     }
 
-    private List<StationDto> convertStationToInfo(List<Station> stations) {
+    private List<StationDto> convertStationToDto(List<Station> stations) {
         return stations.stream()
                 .map(station -> new StationDto(station.getId(), station.getName()))
                 .collect(Collectors.toList());

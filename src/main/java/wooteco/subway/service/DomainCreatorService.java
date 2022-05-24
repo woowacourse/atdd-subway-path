@@ -7,7 +7,6 @@ import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.entity.LineEntity;
@@ -25,13 +24,6 @@ public class DomainCreatorService {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
-    }
-
-    Path createPath() {
-        List<Section> sections = sectionDao.findAll().stream()
-                .map(this::findSection)
-                .collect(Collectors.toList());
-        return new Path(new Sections(sections));
     }
 
     Line createLine(Long lineId) {

@@ -1,38 +1,31 @@
 package wooteco.subway.domain;
 
 import java.util.List;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.strategy.DistanceFareStrategy;
 
 public class Path {
-    private final Sections sections;
 
-    public Path(Sections sections) {
-        this.sections = sections;
+    private final List<Station> stations;
+    private final Lines visitLines;
+    private final int distance;
+
+    public Path(List<Station> stations, Lines visitLines, int distance) {
+        this.stations = stations;
+        this.visitLines = visitLines;
+        this.distance = distance;
     }
 
-    public int getShortestDistance(Station source, Station target) {
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = getDijkstraShortestPath();
-
-        return (int) dijkstraShortestPath.getPath(source, target).getWeight();
+    public List<Station> getStations() {
+        return stations;
     }
 
-    public List<Station> getShortestPath(Station source, Station target) {
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = getDijkstraShortestPath();
-
-        return dijkstraShortestPath.getPath(source, target).getVertexList();
+    public int getDistance() {
+        return distance;
     }
 
-    private DijkstraShortestPath<Station, DefaultWeightedEdge> getDijkstraShortestPath() {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        for (Station station : sections.getStations()) {
-            graph.addVertex(station);
-        }
-        sections.forEach(section -> graph.setEdgeWeight(
-                graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance())
-        );
-
-        return new DijkstraShortestPath<>(graph);
+    public int getFare(int age) {
+        int fare = new DistanceFareStrategy().calculate(distance) + visitLines.getMaxExtraFare();
+        AgePolicy agePolicy = AgePolicy.fromAge(age);
+        return agePolicy.getDiscountedFare(fare);
     }
 }

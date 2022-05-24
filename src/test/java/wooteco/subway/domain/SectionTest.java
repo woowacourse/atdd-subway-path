@@ -11,7 +11,7 @@ public class SectionTest {
 
     @DisplayName("상행역과 하행역이 같은 경우 에러를 반환한다.")
     @Test
-    void validateUpAndDownAReDiffernt() {
+    void validateUpAndDownAreDifferent() {
         Station station = new Station(1L, "강남역");
         assertThatThrownBy(() -> new Section(station, station, 10)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("구간의 상행역과 하행역은 달라야합니다.");

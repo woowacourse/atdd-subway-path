@@ -27,4 +27,19 @@ public class BodyCreator {
         body.put("name", name);
         return body;
     }
+
+    static void createStation(String stationName) {
+        RequestFrame.post(
+                BodyCreator.makeStationBodyForPost(stationName),
+                "/stations"
+        );
+    }
+
+    static Map<String, String> makeBodyForPost(String upStationId, String downStationId, String distance) {
+        Map<String, String> body = new HashMap<>();
+        body.put("upStationId", upStationId);
+        body.put("downStationId", downStationId);
+        body.put("distance", distance);
+        return body;
+    }
 }

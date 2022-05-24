@@ -30,14 +30,8 @@ public class LineTest {
     @DisplayName("Line의 name은 크기가 255보다 클 수 없다.")
     @Test
     void validateNameSize() {
-        String name = "a";
-
-        for (int i = 0; i < 255; i++) {
-            name += "a";
-        }
-
         String color = "green";
-        String finalName = name;
+        String finalName = "a".repeat(256);
         int extraFare = 900;
 
         assertThatThrownBy(() -> new Line(finalName, color, extraFare)).isInstanceOf(IllegalArgumentException.class)
@@ -69,14 +63,8 @@ public class LineTest {
     @DisplayName("Line의 color는 크기가 20보다 클 수 없다.")
     @Test
     void validateColorSize() {
-        String color = "a";
-
-        for (int i = 0; i < 20; i++) {
-            color += "a";
-        }
-
         String name = "2호선";
-        String finalColor = color;
+        String finalColor = "a".repeat(21);
         int extraFare = 900;
 
         assertThatThrownBy(() -> new Line(name, finalColor, extraFare)).isInstanceOf(IllegalArgumentException.class)

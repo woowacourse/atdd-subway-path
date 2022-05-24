@@ -1,6 +1,9 @@
 package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static wooteco.subway.acceptance.BodyCreator.createStation;
+import static wooteco.subway.acceptance.BodyCreator.makeBodyForPost;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -33,6 +36,28 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
+    @DisplayName("구간 저장 시 요청 객체의 요청 정보를 누락(공백, null)하면 에러를 응답한다.")
+    @Test
+    void saveSectionMissingParam() {
+        createStation("강남역");
+        createStation("선릉역");
+
+        ExtractableResponse<Response> createLineResponse = RequestFrame.post(
+                BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
+                "/lines"
+        );
+
+        ExtractableResponse<Response> response = RequestFrame.post(
+                makeBodyForPost("", "", ""),
+                "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections"
+        );
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(response.body().asString()).contains("upStationId", "downStationId", "distance")
+        );
+    }
+
     @DisplayName("등록되지 않은 id의 자하철 노선에 등록 요청한다.(404에러)")
     @Test
     void saveSection_withNotExistLineId() {
@@ -51,6 +76,29 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         );
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
+    @DisplayName("거리가 1이상이 아닌 경우 자하철 노선 등록을 할 수 없다.(400에러)")
+    @Test
+    void saveSectionWithWrongDistance() {
+        createStation("강남역");
+        createStation("선릉역");
+        createStation("잠실역");
+
+        RequestFrame.post(
+                BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
+                "/lines"
+        );
+
+        ExtractableResponse<Response> response = RequestFrame.post(
+                makeBodyForPost("2", "3", "-1"),
+                "/lines/" + 1 + "/sections"
+        );
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(response.body().asString()).contains("구간 사이의 거리는 양수여야합니다.")
+        );
     }
 
     @DisplayName("상행역, 하행역이 이미 노선에 있는 구간을 등록 요청한다.(400에러)")
@@ -176,20 +224,5 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections?stationId=3");
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
-    }
-
-    private void createStation(String stationName) {
-        RequestFrame.post(
-                BodyCreator.makeStationBodyForPost(stationName),
-                "/stations"
-        );
-    }
-
-    private Map<String, String> makeBodyForPost(String upStationId, String downStationId, String distance) {
-        Map<String, String> body = new HashMap<>();
-        body.put("upStationId", upStationId);
-        body.put("downStationId", downStationId);
-        body.put("distance", distance);
-        return body;
     }
 }
