@@ -40,6 +40,15 @@ public class PathTest {
         assertThat(path.getStations()).hasSize(3);
     }
 
+    @DisplayName("출발역과 도착역 중 하나라도 입력되지 않으면 예외가 발생한다.")
+    @Test
+    void from_null() {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> Path.from(shortestPath, null, 선릉))
+                .withMessageContaining("모두 필수");
+
+    }
+
     @DisplayName("출발역과 도착역이 같으면 예외가 발생한다.")
     @Test
     void from_same_source_target() {

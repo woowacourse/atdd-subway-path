@@ -28,6 +28,17 @@ public class Path {
     }
 
     private static void checkStations(Station source, Station target) {
+        checkNull(source, target);
+        checkEquals(source, target);
+    }
+
+    private static void checkNull(Station source, Station target) {
+        if (Objects.isNull(source) || Objects.isNull(target)) {
+            throw new IllegalArgumentException("출발역과 도착역은 모두 필수입니다.");
+        }
+    }
+
+    private static void checkEquals(Station source, Station target) {
         if (Objects.equals(source, target)) {
             throw new IllegalArgumentException("출발역과 도착역이 같아 경로를 찾을 수 없습니다.");
         }
