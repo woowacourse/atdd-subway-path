@@ -1,8 +1,11 @@
 package wooteco.subway.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,6 +67,23 @@ class LineDaoTest {
         Line line = lineDao.findById(lineId);
 
         assertThat(line).isNotNull();
+    }
+
+    @DisplayName("id 리스트로 지하철 노선 전체를 조회한다.")
+    @Test
+    void findByIds() {
+        Line line2 = new Line("다른분당선", "bg-red-700", 0);
+        List<Long> ids = new ArrayList<>();
+        ids.add(lineDao.save(LINE));
+        ids.add(lineDao.save(line2));
+
+        List<Line> lines = lineDao.findByIds(ids);
+
+        assertAll(
+                () -> assertThat(lines.stream().map(Line::getId).collect(Collectors.toList())).hasSameElementsAs(ids),
+                () -> assertThat(lines.stream().map(Line::getName).collect(Collectors.toList()))
+                        .contains("신분당선", "다른분당선")
+        );
     }
 
     @DisplayName("지하철 노선을 수정한다.")
