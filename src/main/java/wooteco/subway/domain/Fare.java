@@ -11,14 +11,14 @@ public class Fare {
 
     private final int value;
 
+    private Fare(int value) {
+        this.value = value;
+    }
+
     public static Fare from(int distance, int extraFare, int age) {
         int discountFare = DiscountPolicy
             .getDiscountValue(calculateFareByDistance(distance) + extraFare, age);
         return new Fare(discountFare);
-    }
-
-    private Fare(int value) {
-        this.value = value;
     }
 
     private static int calculateFareByDistance(int distance) {
