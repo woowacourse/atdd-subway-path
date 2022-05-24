@@ -70,10 +70,10 @@ public class Section {
         return this.distance - section.distance;
     }
 
-    public boolean isSameValue(final Section section) {
-        return this.getUpStation().equals(section.getUpStation())
-                && this.getDownStation().equals(section.getDownStation())
-                && this.distance == section.getDistance();
+    public boolean isSameValue(final Station upStation, final Station downStation, final int distance) {
+        return this.getUpStation().equals(upStation)
+                && this.getDownStation().equals(downStation)
+                && this.distance == distance;
     }
 
     @Override

@@ -123,9 +123,9 @@ public class Sections {
                 .findAny();
     }
 
-    private Optional<Section> findUpSection(final Section other) {
+    private Optional<Section> findUpSection(final Section section) {
         return value.stream()
-                .filter(it -> it.getUpStation().equals(other.getUpStation()))
+                .filter(it -> it.getUpStation().equals(section.getUpStation()))
                 .findAny();
     }
 
@@ -163,8 +163,8 @@ public class Sections {
 
     public Section findConnectedSection(final Station source, final Station target, final int distance) {
         return value.stream()
-                .filter(section -> section.isSameValue(new Section(source, target, distance))
-                        || section.isSameValue(new Section(target, source, distance)))
+                .filter(section -> section.isSameValue(source, target, distance)
+                        || section.isSameValue(target, source, distance))
                 .min(Comparator.comparingInt(o -> o.getLine().getExtraFare()))
                 .orElseThrow(() -> new IllegalArgumentException("구간이 존재하지 않습니다."));
     }
