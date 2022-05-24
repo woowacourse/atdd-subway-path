@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Repository
 public class JdbcSectionDao implements SectionDao {
 
-    private static final RowMapper<Section> sectionRowMapper = (resultSet, rowNum) -> new Section(
+    private static final RowMapper<Section> SECTION_ROW_MAPPER = (resultSet, rowNum) -> new Section(
             resultSet.getLong("id"),
             resultSet.getLong("line_id"),
             resultSet.getLong("up_station_id"),
@@ -50,7 +50,7 @@ public class JdbcSectionDao implements SectionDao {
     public Optional<Section> findById(Long id) {
         final String sql = "select * from SECTION where id = ?";
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, sectionRowMapper, id));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, SECTION_ROW_MAPPER, id));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -59,20 +59,20 @@ public class JdbcSectionDao implements SectionDao {
     @Override
     public List<Section> findByLineId(Long lineId) {
         final String sql = "select * from SECTION where line_id = ?";
-        return jdbcTemplate.query(sql, sectionRowMapper, lineId);
+        return jdbcTemplate.query(sql, SECTION_ROW_MAPPER, lineId);
     }
 
     @Override
     public List<Section> findAll() {
         final String sql = "select * from SECTION";
-        return jdbcTemplate.query(sql, sectionRowMapper);
+        return jdbcTemplate.query(sql, SECTION_ROW_MAPPER);
     }
 
     @Override
     public Optional<Section> findByStationId(Long stationId) {
         final String sql = "select * from SECTION where (up_station_id = ? or down_station_id = ?)";
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, sectionRowMapper,
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, SECTION_ROW_MAPPER,
                     stationId, stationId));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -84,7 +84,7 @@ public class JdbcSectionDao implements SectionDao {
         final String sql = "select * from SECTION where (line_id = ? and up_station_id = ?) or" +
                 " (line_id = ? and down_station_id = ?)";
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, sectionRowMapper,
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, SECTION_ROW_MAPPER,
                     lineId, section.getUpStationId(), lineId, section.getDownStationId()));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -95,7 +95,7 @@ public class JdbcSectionDao implements SectionDao {
     public Optional<Section> findByUpStationId(Long lineId, Long upStationId) {
         final String sql = "select * from SECTION where line_id = ? and up_station_id = ?";
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, sectionRowMapper, lineId, upStationId));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, SECTION_ROW_MAPPER, lineId, upStationId));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -105,7 +105,7 @@ public class JdbcSectionDao implements SectionDao {
     public Optional<Section> findByDownStationId(Long lineId, Long downStationId) {
         final String sql = "select * from SECTION where line_id = ? and down_station_id = ?";
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, sectionRowMapper, lineId, downStationId));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, SECTION_ROW_MAPPER, lineId, downStationId));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }

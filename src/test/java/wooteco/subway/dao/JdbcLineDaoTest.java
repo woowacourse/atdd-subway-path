@@ -9,7 +9,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.domain.Line;
 import wooteco.subway.dto.LineRequest;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @JdbcTest
 public class JdbcLineDaoTest {
@@ -60,6 +63,26 @@ public class JdbcLineDaoTest {
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 노선이 존재하지 않습니다."));
 
         assertThat(actual.getName()).isEqualTo(expected.getName());
+    }
+
+    @Test
+    @DisplayName("지하철 특정 노선들을 조회한다.")
+    void findLines() {
+        final Line line1 = new Line("다른분당선", "bg-blue-600");
+        final long line1Id = lineDao.save(
+                new LineRequest("다른분당선", "bg-blue-600", 2L, 3L, 40)
+        );
+        final Line line2 = new Line("또다른분당선", "bg-gray-600");
+        final long line2Id = lineDao.save(
+                new LineRequest("또다른분당선", "bg-gray-600", 1L, 3L, 20)
+        );
+
+        final List<Line> actual = lineDao.findByIds(List.of(line1Id, line2Id));
+
+        assertAll(
+                () -> assertThat(line1.getName()).isEqualTo("다른분당선"),
+                () -> assertThat(line2.getName()).isEqualTo("또다른분당선")
+        );
     }
 
     @Test

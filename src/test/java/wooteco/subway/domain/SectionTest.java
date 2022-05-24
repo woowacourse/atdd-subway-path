@@ -22,7 +22,7 @@ public class SectionTest {
     @Test
     @DisplayName("거리가 0 미만일 경우 예외를 발생시킨다.")
     void validateDistance() {
-        assertThatThrownBy(()->new Section(1L, 3L, 0))
+        assertThatThrownBy(() -> new Section(1L, 3L, 0))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("구간 거리는 0 이하일 수 없습니다.");
     }

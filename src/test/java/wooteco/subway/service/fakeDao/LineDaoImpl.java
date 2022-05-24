@@ -22,7 +22,7 @@ public class LineDaoImpl implements LineDao {
 
     @Override
     public Long save(LineRequest lineRequest) {
-        final Line line = new Line(lineRequest.getName(), lineRequest.getColor());
+        final Line line = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         Line persistLine = createNewObject(line);
         if (hasLine(persistLine.getName())) {
             throw new IllegalArgumentException("같은 이름의 노선이 존재합니다.");
@@ -36,6 +36,16 @@ public class LineDaoImpl implements LineDao {
         return lines.stream()
                 .filter(line -> Objects.equals(line.getId(), id))
                 .findFirst();
+    }
+
+    @Override
+    public List<Line> findByIds(List<Long> ids) {
+        final List<Line> lines = new ArrayList<>();
+        for (Long id : ids) {
+            lines.add(findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("해당하는 노선이 존재하지 않습니다.")));
+        }
+        return lines;
     }
 
     @Override

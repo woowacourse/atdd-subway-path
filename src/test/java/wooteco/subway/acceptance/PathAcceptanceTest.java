@@ -6,6 +6,8 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.dto.LineRequest;
@@ -30,10 +32,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private final LineRequest 이호선 =
             new LineRequest("2호선", "bg-green-600",
-                    1L, 3L, 103, 900);
+                    1L, 3L, 103, 500);
     private final LineRequest 팔호선 =
             new LineRequest("8호선", "bg-red-600",
-                    1L, 4L, 10, 900);
+                    1L, 4L, 10, 700);
     private final LineRequest 구호선 =
             new LineRequest("9호선", "bg-gray-600",
                     4L, 3L, 3, 900);
@@ -60,36 +62,39 @@ public class PathAcceptanceTest extends AcceptanceTest {
         createSectionResponse(3L, 석촌고분_삼전);
     }
 
-    @Test
-    @DisplayName("10km 이하의 최단경로를 찾는다.")
-    void findShortestPath10KM() {
-        ExtractableResponse<Response> response = createPathResponse(4L, 6L, 10);
+    @ParameterizedTest
+    @DisplayName("10km 이하의 최단경로 정보를 나이에 따른 할증을 고려하여 찾는다.")
+    @CsvSource(value = {"5, 2150", "6, 1250", "12, 1250", "13, 1790", "18, 1790", "19, 2150"})
+    void findShortestPath10KM(int age, int expectedFare) {
+        ExtractableResponse<Response> response = createPathResponse(4L, 6L, age);
 
-        checkByValidPath(response, 2, 1250, 석촌.getName(), 석촌고분.getName(), 삼전.getName());
+        checkByValidPath(response, 2, expectedFare, 석촌.getName(), 석촌고분.getName(), 삼전.getName());
     }
 
-    @Test
-    @DisplayName("50km 이하의 최단경로를 찾는다.")
+    @ParameterizedTest
+    @DisplayName("50km 이하의 최단경로 정보를 나이에 따른 할증을 고려하여 찾는다.")
+    @CsvSource(value = {"5, 2550", "6, 1450", "12, 1450", "13, 2110", "18, 2110", "19, 2550"})
     void findShortestPath50KM() {
-        ExtractableResponse<Response> response = createPathResponse(1L, 2L, 10);
+        ExtractableResponse<Response> response = createPathResponse(1L, 2L, 19);
 
-        checkByValidPath(response, 50, 2050, 잠실.getName(), 잠실새내.getName());
+        checkByValidPath(response, 50, 2550, 잠실.getName(), 잠실새내.getName());
     }
 
-    @Test
-    @DisplayName("50km 초과의 최단경로를 찾는다.")
+    @ParameterizedTest
+    @DisplayName("50km 초과의 최단경로 정보를 나이에 따른 할증을 고려하여 찾는다.")
+    @CsvSource(value = {"5, 2650", "6, 1500", "12, 1500", "13, 2190", "18, 2190", "19, 2650"})
     void findShortestPathGreaterThan50KM() {
-        ExtractableResponse<Response> response = createPathResponse(2L, 3L, 10);
+        ExtractableResponse<Response> response = createPathResponse(2L, 3L, 19);
 
-        checkByValidPath(response, 53, 2150, 잠실새내.getName(), 종합운동장.getName());
+        checkByValidPath(response, 53, 2650, 잠실새내.getName(), 종합운동장.getName());
     }
 
     @Test
-    @DisplayName("여러 노선의 환승을 고려하여 최단경로를 찾는다.")
+    @DisplayName("여러 노선의 환승을 고려하여 최단경로 정보를 찾는다.")
     void findShortestPathWhenMultiLines() {
-        ExtractableResponse<Response> response = createPathResponse(1L, 3L, 10);
+        ExtractableResponse<Response> response = createPathResponse(1L, 3L, 19);
 
-        checkByValidPath(response, 13, 1350,
+        checkByValidPath(response, 13, 2250,
                 잠실.getName(), 석촌.getName(), 석촌고분.getName(), 삼전.getName(), 종합운동장.getName());
     }
 
