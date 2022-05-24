@@ -1,5 +1,7 @@
 package wooteco.subway.domain.path;
 
+import static java.util.stream.Collectors.*;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,9 +13,9 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import wooteco.subway.domain.Station;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.section.Section;
-import wooteco.subway.domain.Station;
 
 public class SubwayShortestPath {
 
@@ -22,15 +24,20 @@ public class SubwayShortestPath {
 	public SubwayShortestPath(List<Line> lines) {
 		values = new HashMap<>();
 		for (Line line : lines) {
-			line.getSections()
-				.forEach(section -> values.put(section, line));
+			addSection(line);
+		}
+	}
+
+	private void addSection(Line line) {
+		for (Section section : line.getSections()) {
+			values.put(section, line);
 		}
 	}
 
 	public PathInfo find(Station source, Station target) {
 		GraphPath<Station, SectionEdge> path = new DijkstraShortestPath<>(initGraph(values.keySet()))
 			.getPath(source, target);
-		return new PathInfo(path.getVertexList(), (int) path.getWeight(), getMaxExtraFare(path));
+		return new PathInfo(path.getVertexList(), (int)path.getWeight(), getMaxExtraFare(path));
 	}
 
 	private Graph<Station, SectionEdge> initGraph(Set<Section> sections) {
