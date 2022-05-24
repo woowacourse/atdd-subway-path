@@ -88,9 +88,9 @@ public class LineService {
         return lineRepository.deleteById(id);
     }
 
-    public boolean updateById(Long id, LineServiceRequest lineServiceRequest) {
+    public void updateById(Long id, LineServiceRequest lineServiceRequest) {
         Line line = new Line(id, lineServiceRequest.getName(), lineServiceRequest.getColor(), lineServiceRequest.getExtraFare());
-        return lineRepository.updateById(line);
+        lineRepository.updateById(line);
     }
 
     public LineResponse findById(Long id) {
