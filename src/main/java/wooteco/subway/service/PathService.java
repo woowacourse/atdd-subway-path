@@ -43,11 +43,10 @@ public class PathService {
     }
 
     public PathResponse searchPaths(PathRequest pathRequest) {
-        Path path = getPath(pathFindStrategy, pathRequest);
-        int fare = 0;
-        for (PricingStrategy strategy : pricingStrategies) {
-            fare += getFare(strategy, pathRequest, path);
-        }
+        Path path = getPath(pathFindStrategy, pathRequest.getSource(), pathRequest.getTarget());
+        int fare = pricingStrategies.stream()
+                .mapToInt(it -> getFare(it, path))
+                .sum();
         int discountFare = applyFare(discountStrategy, pathRequest.getAge(), fare);
 
         return new PathResponse(
@@ -62,16 +61,16 @@ public class PathService {
         return discountStrategy.discount(specification);
     }
 
-    private int getFare(PricingStrategy pricingStrategy, PathRequest pathRequest, Path path) {
+    private int getFare(PricingStrategy pricingStrategy, Path path) {
         FareCacluateSpecification fareCacluateSpecification = new FareCacluateSpecification(path.getSectionsInPath(), lineDao.findAll());
         return pricingStrategy.calculateFee(fareCacluateSpecification);
     }
 
-    private Path getPath(PathFindStrategy pathFindStrategy, PathRequest pathRequest) {
+    private Path getPath(PathFindStrategy pathFindStrategy, Long sourceId, Long targetId) {
         List<Section> sections = sectionDao.findAll();
         List<Station> stations = stationDao.findAll();
-        Station from = findById(stations, pathRequest.getSource());
-        Station to = findById(stations, pathRequest.getTarget());
+        Station from = findById(stations, sourceId);
+        Station to = findById(stations, targetId);
 
         PathFindSpecification pathFindSpecification = new PathFindSpecification(from, to, stations, sections);
         return pathFindStrategy.findPath(pathFindSpecification);
