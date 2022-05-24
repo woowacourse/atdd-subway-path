@@ -1,9 +1,5 @@
 package wooteco.subway.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,10 +10,14 @@ import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.dao.jdbc.JdbcLineDao;
 import wooteco.subway.dao.jdbc.JdbcSectionDao;
 import wooteco.subway.dao.jdbc.JdbcStationDao;
+import wooteco.subway.service.dto.line.LineRequestDto;
 import wooteco.subway.service.dto.path.PathRequestDto;
 import wooteco.subway.service.dto.path.PathResponse;
-import wooteco.subway.service.dto.line.LineRequestDto;
 import wooteco.subway.service.dto.section.SectionRequestDto;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @JdbcTest
 @Sql(scripts = {"classpath:schema.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -38,7 +38,7 @@ class PathServiceTest {
                 new SectionService(new JdbcSectionDao(jdbcTemplate)));
         stationService = new StationService(new JdbcStationDao(jdbcTemplate));
         sectionService = new SectionService(new JdbcSectionDao(jdbcTemplate));
-        pathService = new PathService(stationService, sectionService);
+        pathService = new PathService(lineService, stationService, sectionService);
         stationService.createStation("에덴");
         stationService.createStation("제로");
         stationService.createStation("서초");

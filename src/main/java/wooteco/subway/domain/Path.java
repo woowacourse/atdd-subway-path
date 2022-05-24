@@ -1,15 +1,17 @@
 package wooteco.subway.domain;
 
-import java.util.List;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import java.util.List;
+
 public class Path {
 
     private final List<Long> shortestPath;
     private final int totalDistance;
+    private final Sections sections;
 
     public Path(Long source, Long target, List<Long> stationIds, Sections sections) {
         validateExistStationId(source, target, stationIds);
@@ -19,6 +21,7 @@ public class Path {
         validateExistPath(path);
         this.shortestPath = path.getVertexList();
         this.totalDistance = (int) path.getWeight();
+        this.sections = sections;
     }
 
     private void validateExistPath(GraphPath<Long, DefaultWeightedEdge> path) {
@@ -62,5 +65,9 @@ public class Path {
 
     public int getTotalDistance() {
         return totalDistance;
+    }
+
+    public List<Section> getShortestSections() {
+        return sections.getShortestSections(shortestPath);
     }
 }

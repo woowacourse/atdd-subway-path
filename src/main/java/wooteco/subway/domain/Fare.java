@@ -14,6 +14,10 @@ public class Fare {
         this.fare = BASIC_FARE;
     }
 
+    public Fare(int extraFare) {
+        this.fare = BASIC_FARE + extraFare;
+    }
+
     public int calculateFare(int distance) {
         if (distance <= FIRST_RESTRICTION_DISTANCE) {
             return fare;

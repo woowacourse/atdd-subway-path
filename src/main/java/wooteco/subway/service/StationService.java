@@ -37,6 +37,10 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
+    public List<Station> findAll() {
+        return stationDao.findAll();
+    }
+
     public Station findById(Long id) {
         return stationDao.findById(id);
     }
@@ -51,9 +55,5 @@ public class StationService {
         if (!stationDao.existById(id)) {
             throw new NoSuchElementException("[ERROR] 존재하지 않는 역 입니다.");
         }
-    }
-
-    public List<Station> findAll() {
-        return stationDao.findAll();
     }
 }

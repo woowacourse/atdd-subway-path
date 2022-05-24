@@ -70,7 +70,7 @@ public class LineService {
     }
 
     private void addStations(Long upStationId, Sections sections, List<StationResponse> stations) {
-        if (sections.hasUpStationId(upStationId)){
+        if (sections.hasUpStationId(upStationId)) {
             Section section = sections.getSectionByUpStationId(upStationId);
             Station station = stationService.findById(upStationId);
             stations.add(new StationResponse(station));
@@ -130,5 +130,9 @@ public class LineService {
                 .ifPresent(s -> {
                     throw new NoSuchElementException("[ERROR] 이미 존재하는 색상입니다.");
                 });
+    }
+
+    public int getExtraFareById(Long id){
+        return lineDao.findById(id).getExtraFare();
     }
 }

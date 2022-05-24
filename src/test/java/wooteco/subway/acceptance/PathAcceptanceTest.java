@@ -37,26 +37,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         createPostSectionResponse(2L, 봉천_낙성대);
     }
 
-    @DisplayName("경로를 구한다.")
-    @Test
-    void createPath() {
-        // given
-        // when
-        ExtractableResponse<Response> response = createGetPathResponse(new PathRequest(1L, 4L, 15));
-        PathResponse 경로응답 = response.body().jsonPath().getObject(".", PathResponse.class);
-        List<String> 실제경로 = 경로응답.getStations().stream()
-                .map(StationResponse::getName)
-                .collect(Collectors.toList());
-        // then
-        assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(실제경로).containsExactly("낙성대", "사당", "방배", "서초"),
-                () -> assertThat(경로응답.getDistance()).isEqualTo(40),
-                () -> assertThat(경로응답.getFare()).isEqualTo(1850)
-        );
-    }
-
-
     @Test
     @DisplayName("중복된 경로가 있다면 가중치가 낮은 거리가 선택된다")
     void FindPathWithDuplicatedNodes() {
@@ -73,7 +53,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(실제경로).containsExactly("낙성대", "사당", "방배", "서초"),
                 () -> assertThat(경로응답.getDistance()).isEqualTo(35),
-                () -> assertThat(경로응답.getFare()).isEqualTo(1750)
+                () -> assertThat(경로응답.getFare()).isEqualTo(1850)
         );
     }
 
