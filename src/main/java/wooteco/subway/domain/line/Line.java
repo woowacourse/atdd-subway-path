@@ -9,11 +9,11 @@ public class Line {
     private final String color;
     private final int extraFare;
 
-    public Line(String name, String color, int extraFare) {
+    public Line(final String name, final String color, final int extraFare) {
         this(0L, name, color, extraFare);
     }
 
-    public Line(Long id, String name, String color, int extraFare) {
+    public Line(final Long id, final String name, final String color, final int extraFare) {
         validatePositiveExtraFare(extraFare);
         this.id = id;
         this.name = name;

@@ -7,11 +7,11 @@ public class Station {
     private final Long id;
     private final String name;
 
-    public Station(String name) {
+    public Station(final String name) {
         this(0L, name);
     }
 
-    public Station(Long id, String name) {
+    public Station(final Long id, final String name) {
         this.id = id;
         this.name = name;
     }

@@ -22,7 +22,7 @@ public enum FareByDistance {
     private final Predicate<Double> predicate;
     private final Function<Double, Integer> function;
 
-    FareByDistance(Predicate<Double> predicate, Function<Double, Integer> function) {
+    FareByDistance(final Predicate<Double> predicate, final Function<Double, Integer> function) {
         this.predicate = predicate;
         this.function = function;
     }

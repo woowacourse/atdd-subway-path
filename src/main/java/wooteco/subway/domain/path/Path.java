@@ -9,7 +9,7 @@ public class Path {
     private final double distance;
     private final int fare;
 
-    public Path(List<Station> stations, double distance, int fare) {
+    public Path(final List<Station> stations, final double distance, final int fare) {
         this.stations = stations;
         this.distance = distance;
         this.fare = fare;

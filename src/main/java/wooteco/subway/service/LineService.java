@@ -7,10 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.Station;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.secion.Section;
 import wooteco.subway.domain.secion.Sections;
-import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.StationResponse;
@@ -64,6 +64,7 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public int updateLine(final Long id, final LineRequest lineRequest) {
         validateDuplicate(lineRequest);
         Line line = lineDao.findById(id);
@@ -85,6 +86,7 @@ public class LineService {
         return LineResponse.of(line, getStationsFromSection(line.getId()));
     }
 
+    @Transactional
     public int deleteLine(final Long id) {
         Line line = lineDao.findById(id);
         return lineDao.delete(line.getId());

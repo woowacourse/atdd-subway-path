@@ -17,7 +17,7 @@ public class StationJdbcDao implements StationDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public StationJdbcDao(JdbcTemplate jdbcTemplate) {
+    public StationJdbcDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

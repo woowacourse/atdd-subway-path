@@ -15,7 +15,7 @@ public enum FareByAge {
     private final Predicate<Integer> predicate;
     private final Function<Integer, Integer> function;
 
-    FareByAge(Predicate<Integer> predicate, Function<Integer, Integer> function) {
+    FareByAge(final Predicate<Integer> predicate, final Function<Integer, Integer> function) {
         this.predicate = predicate;
         this.function = function;
     }

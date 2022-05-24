@@ -7,7 +7,7 @@ public class ShortestPathEdge extends DefaultWeightedEdge {
     private final Long lineId;
     private final int distance;
 
-    public ShortestPathEdge(Long lineId, int distance) {
+    public ShortestPathEdge(final Long lineId, final int distance) {
         this.lineId = lineId;
         this.distance = distance;
     }

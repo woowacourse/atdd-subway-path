@@ -12,11 +12,12 @@ public class Section {
     private Station downStation;
     private int distance;
 
-    public Section(Long lineId, Station upStation, Station downStation, int distance) {
+    public Section(final Long lineId, final Station upStation, final Station downStation, final int distance) {
         this(0L, lineId, upStation, downStation, distance);
     }
 
-    public Section(Long id, Long lineId, Station upStation, Station downStation, int distance) {
+    public Section(final Long id, final Long lineId, final Station upStation, final Station downStation,
+                   final int distance) {
         validatePositiveDistance(distance);
         this.id = id;
         this.lineId = lineId;
@@ -25,7 +26,7 @@ public class Section {
         this.distance = distance;
     }
 
-    private void validatePositiveDistance(int distance) {
+    private void validatePositiveDistance(final int distance) {
         if (distance <= 0) {
             throw new PositiveDigitException("구간의 길이가 양수가 아닙니다.");
         }
