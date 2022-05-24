@@ -10,10 +10,6 @@ public class Section {
     private final Long downStationId;
     private final int distance;
 
-    public Section(Long lineId, Long upStationId, Long downStationId, int distance) {
-        this(null, lineId, upStationId, downStationId, distance);
-    }
-
     public Section(Long id, Long lineId, Long upStationId, Long downStationId, int distance) {
         validateSameStation(upStationId, downStationId);
         validateDistance(distance);
@@ -34,6 +30,10 @@ public class Section {
         if (distance <= 0) {
             throw new SubwayException("구간의 길이는 양수여야 합니다.");
         }
+    }
+
+    public Section(Long lineId, Long upStationId, Long downStationId, int distance) {
+        this(null, lineId, upStationId, downStationId, distance);
     }
 
     public Section getUpdatedSectionForSameDownStation(Section newSection) {
