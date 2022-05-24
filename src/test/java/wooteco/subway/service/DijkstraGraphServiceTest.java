@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest
 @Transactional
-public class PathServiceTest {
+public class DijkstraGraphServiceTest {
 
     @Autowired
     private LineDao lineDao;

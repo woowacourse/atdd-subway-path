@@ -8,23 +8,23 @@ import org.jgrapht.graph.WeightedMultigraph;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Path {
+public class DijkstraGraph implements Graph {
 
     private final Sections sections;
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath;
 
-    private Path(final Sections sections, final WeightedMultigraph<Station, DefaultWeightedEdge> graph, final DijkstraShortestPath<Station, DefaultWeightedEdge> path) {
+    private DijkstraGraph(final Sections sections, final WeightedMultigraph<Station, DefaultWeightedEdge> graph, final DijkstraShortestPath<Station, DefaultWeightedEdge> path) {
         this.sections = sections;
         this.graph = graph;
         this.shortestPath = path;
     }
 
-    public static Path of(final Sections sections) {
+    public static DijkstraGraph of(final Sections sections) {
         final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         addVertexes(graph, sections);
         addEdges(graph, sections);
-        return new Path(sections, graph, new DijkstraShortestPath<>(graph));
+        return new DijkstraGraph(sections, graph, new DijkstraShortestPath<>(graph));
     }
 
     private static void addVertexes(final WeightedMultigraph<Station, DefaultWeightedEdge> graph, final Sections sections) {
@@ -39,6 +39,7 @@ public class Path {
         }
     }
 
+    @Override
     public ShortestPath getShortestPath(final Station source, final Station target) {
         validateVertexesExist(source, target);
         final GraphPath<Station, DefaultWeightedEdge> path = getPath(source, target);

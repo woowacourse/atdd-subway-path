@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("경로 관련 기능")
-public class PathAcceptanceTest extends AcceptanceTest {
+public class DijkstraGraphAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void setup() {
