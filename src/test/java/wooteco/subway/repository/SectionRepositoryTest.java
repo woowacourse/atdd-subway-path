@@ -22,13 +22,13 @@ class SectionRepositoryTest extends DatabaseUsageTest {
     @Autowired
     private SectionDao sectionDao;
 
-    private final Station station1 = new Station(1L, "강남역");
-    private final Station station2 = new Station(2L, "잠실역");
-    private final Station station3 = new Station(3L, "선릉역");
-    private final StationEntity stationEntity1 = new StationEntity(1L, "강남역");
-    private final StationEntity stationEntity2 = new StationEntity(2L, "잠실역");
-    private final StationEntity stationEntity3 = new StationEntity(3L, "선릉역");
-    private final StationEntity stationEntity4 = new StationEntity(4L, "청계산입구역");
+    private static final Station STATION1 = new Station(1L, "강남역");
+    private static final Station STATION2 = new Station(2L, "잠실역");
+    private static final Station STATION3 = new Station(3L, "선릉역");
+    private static final StationEntity STATION_ENTITY1 = new StationEntity(1L, "강남역");
+    private static final StationEntity STATION_ENTITY2 = new StationEntity(2L, "잠실역");
+    private static final StationEntity STATION_ENTITY3 = new StationEntity(3L, "선릉역");
+    private static final StationEntity STATION_ENTITY4 = new StationEntity(4L, "청계산입구역");
 
     @BeforeEach
     void setup() {
@@ -43,9 +43,9 @@ class SectionRepositoryTest extends DatabaseUsageTest {
 
         List<Section> actual = repository.findAllSections();
         List<Section> expected = List.of(
-                new Section(1L, station1, station2, 10),
-                new Section(1L, station2, station3, 15),
-                new Section(2L, station1, station3, 5));
+                new Section(1L, STATION1, STATION2, 10),
+                new Section(1L, STATION2, STATION3, 15),
+                new Section(2L, STATION1, STATION3, 5));
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -58,8 +58,8 @@ class SectionRepositoryTest extends DatabaseUsageTest {
 
         List<Section> actual = repository.findAllSectionsByLineId(1L);
         List<Section> expected = List.of(
-                new Section(1L, station1, station2, 10),
-                new Section(1L, station2, station3, 15));
+                new Section(1L, STATION1, STATION2, 10),
+                new Section(1L, STATION2, STATION3, 15));
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -72,8 +72,8 @@ class SectionRepositoryTest extends DatabaseUsageTest {
 
         List<Section> actual = repository.findAllSectionsByStationId(1L);
         List<Section> expected = List.of(
-                new Section(1L, station1, station2, 10),
-                new Section(2L, station1, station3, 5));
+                new Section(1L, STATION1, STATION2, 10),
+                new Section(2L, STATION1, STATION3, 5));
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -81,14 +81,14 @@ class SectionRepositoryTest extends DatabaseUsageTest {
     @Test
     void saveSections_메서드는_구간들을_저장() {
         List<Section> sections = List.of(
-                new Section(station1, station2, 10),
-                new Section(station2, station3, 5));
+                new Section(STATION1, STATION2, 10),
+                new Section(STATION2, STATION3, 5));
         repository.saveSections(1L, sections);
 
         List<SectionEntity> actual = sectionDao.findAll();
         List<SectionEntity> expected = List.of(
-                new SectionEntity(1L, stationEntity1, stationEntity2, 10),
-                new SectionEntity(1L, stationEntity2, stationEntity3, 5));
+                new SectionEntity(1L, STATION_ENTITY1, STATION_ENTITY2, 10),
+                new SectionEntity(1L, STATION_ENTITY2, STATION_ENTITY3, 5));
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -99,14 +99,14 @@ class SectionRepositoryTest extends DatabaseUsageTest {
         databaseFixtureUtils.saveSection(1L, 2L, 3L, 15);
         databaseFixtureUtils.saveSection(1L, 3L, 4L, 5);
         databaseFixtureUtils.saveSection(2L, 1L, 3L, 5);
-        List<Section> sections = List.of(new Section(station1, station2, 10),
-                new Section(station2, station3, 15));
+        List<Section> sections = List.of(new Section(STATION1, STATION2, 10),
+                new Section(STATION2, STATION3, 15));
 
         repository.deleteSections(1L, sections);
         List<SectionEntity> actual = sectionDao.findAll();
         List<SectionEntity> expected = List.of(
-                new SectionEntity(1L, stationEntity3, stationEntity4, 5),
-                new SectionEntity(2L, stationEntity1, stationEntity3, 5));
+                new SectionEntity(1L, STATION_ENTITY3, STATION_ENTITY4, 5),
+                new SectionEntity(2L, STATION_ENTITY1, STATION_ENTITY3, 5));
 
         assertThat(actual).isEqualTo(expected);
     }

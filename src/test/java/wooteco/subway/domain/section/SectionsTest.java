@@ -7,8 +7,6 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.section.Section;
-import wooteco.subway.domain.section.Sections;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.exception.NotFoundException;
 
@@ -27,11 +25,11 @@ class SectionsTest {
 
         @Test
         void 인자로_들어오는_구간들의_순서와_무관하게_언제나_동일한_순서로_구간들을_정렬하여_인스턴스_생성() {
-            Section section1 = new Section(STATION1, STATION3, 10);
-            Section section2 = new Section(STATION3, STATION4, 10);
-            Section section3 = new Section(STATION4, STATION5, 10);
-            List<Section> sectionsInRandomOrder1 = List.of(section2, section3, section1);
-            List<Section> sectionsInRandomOrder2 = List.of(section1, section3, section2);
+            Section section1To3 = new Section(STATION1, STATION3, 10);
+            Section section3To4 = new Section(STATION3, STATION4, 10);
+            Section section4To5 = new Section(STATION4, STATION5, 10);
+            List<Section> sectionsInRandomOrder1 = List.of(section3To4, section4To5, section1To3);
+            List<Section> sectionsInRandomOrder2 = List.of(section1To3, section4To5, section3To4);
 
             Sections actual = new Sections(sectionsInRandomOrder1);
             Sections expected = new Sections(sectionsInRandomOrder2);
@@ -47,9 +45,9 @@ class SectionsTest {
 
         @Test
         void 연결되지_않은_구간들의_리스트가_들어오면_예외발생() {
-            Section section1 = new Section(STATION1, STATION2, 10);
-            Section section2 = new Section(STATION3, STATION4, 10);
-            List<Section> disConnectedSections = List.of(section1, section2);
+            Section section1To2 = new Section(STATION1, STATION2, 10);
+            Section section3To4 = new Section(STATION3, STATION4, 10);
+            List<Section> disConnectedSections = List.of(section1To2, section3To4);
 
             assertThatThrownBy(() -> new Sections(disConnectedSections))
                     .isInstanceOf(IllegalArgumentException.class);
@@ -63,9 +61,9 @@ class SectionsTest {
         @Test
         void 해당_구간을_상행_종점의_끝에_연결할_수_있는_경우_참_반환() {
             Section validNewUpperEndSection = new Section(STATION1, STATION2, 10);
-            Section section1 = new Section(STATION2, STATION3, 10);
-            Section section2 = new Section(STATION3, STATION4, 10);
-            Sections sections = new Sections(List.of(section1, section2));
+            Section section2To3 = new Section(STATION2, STATION3, 10);
+            Section section3To4 = new Section(STATION3, STATION4, 10);
+            Sections sections = new Sections(List.of(section2To3, section3To4));
 
             boolean actual = sections.isNewEndSection(validNewUpperEndSection);
 
@@ -74,10 +72,10 @@ class SectionsTest {
 
         @Test
         void 해당_구간을_하행_종점의_끝에_연결할_수_있는_경우_참_반환() {
-            Section section1 = new Section(STATION1, STATION2, 10);
-            Section section2 = new Section(STATION2, STATION3, 10);
+            Section section1To2 = new Section(STATION1, STATION2, 10);
+            Section section2To3 = new Section(STATION2, STATION3, 10);
             Section validNewLowerEndSection = new Section(STATION3, STATION4, 10);
-            Sections sections = new Sections(List.of(section1, section2));
+            Sections sections = new Sections(List.of(section1To2, section2To3));
 
             boolean actual = sections.isNewEndSection(validNewLowerEndSection);
 
@@ -85,13 +83,13 @@ class SectionsTest {
         }
 
         @Test
-        void 노선의_긑에_등록할_수_없는_구간인_경우_거짓_반환() {
-            Section section1 = new Section(STATION1, STATION3, 10);
-            Section section2 = new Section(STATION3, STATION5, 10);
-            Sections sections = new Sections(List.of(section1, section2));
-            Section inBetweenSection = new Section(STATION2, STATION3, 5);
+        void 노선의_끝에_등록할_수_없는_구간인_경우_거짓_반환() {
+            Section section1To3 = new Section(STATION1, STATION3, 10);
+            Section section3To5 = new Section(STATION3, STATION5, 10);
+            Sections sections = new Sections(List.of(section1To3, section3To5));
+            Section section2To3 = new Section(STATION2, STATION3, 5);
 
-            boolean actual = sections.isNewEndSection(inBetweenSection);
+            boolean actual = sections.isNewEndSection(section2To3);
 
             assertThat(actual).isFalse();
         }
@@ -103,13 +101,13 @@ class SectionsTest {
 
         @Test
         void 특정_지하철이_등록된_상행_노선이_존재하면_조회하여_반환() {
-            Section section1 = new Section(STATION1, STATION2, 10);
-            Section section2 = new Section(STATION2, STATION3, 10);
-            Sections sections = new Sections(List.of(section1, section2));
+            Section section1To2 = new Section(STATION1, STATION2, 10);
+            Section section2To3 = new Section(STATION2, STATION3, 10);
+            Sections sections = new Sections(List.of(section1To2, section2To3));
 
             Section actual = sections.findUpperSectionOfStation(STATION2);
 
-            assertThat(actual).isEqualTo(section1);
+            assertThat(actual).isEqualTo(section1To2);
         }
 
         @Test
@@ -128,13 +126,13 @@ class SectionsTest {
 
         @Test
         void 특정_지하철이_등록된_하행_노선이_존재하면_조회하여_반환() {
-            Section section1 = new Section(STATION1, STATION2, 10);
-            Section section2 = new Section(STATION2, STATION3, 10);
-            Sections sections = new Sections(List.of(section1, section2));
+            Section section1To2 = new Section(STATION1, STATION2, 10);
+            Section section2To3 = new Section(STATION2, STATION3, 10);
+            Sections sections = new Sections(List.of(section1To2, section2To3));
 
             Section actual = sections.findLowerSectionOfStation(STATION2);
 
-            assertThat(actual).isEqualTo(section2);
+            assertThat(actual).isEqualTo(section2To3);
         }
 
         @Test
@@ -223,14 +221,14 @@ class SectionsTest {
 
     @Test
     void toSortedList_메서드는_상행종점부터_하행종점까지_정렬된_구간들의_리스트를_반환() {
-        Section section1 = new Section(STATION1, STATION3, 10);
-        Section section2 = new Section(STATION3, STATION4, 10);
-        Section section3 = new Section(STATION4, STATION5, 10);
-        List<Section> sectionsInRandomOrder = List.of(section3, section1, section2);
+        Section section1To3 = new Section(STATION1, STATION3, 10);
+        Section section3To4 = new Section(STATION3, STATION4, 10);
+        Section section4To5 = new Section(STATION4, STATION5, 10);
+        List<Section> sectionsInRandomOrder = List.of(section4To5, section1To3, section3To4);
         Sections sections = new Sections(sectionsInRandomOrder);
 
         List<Section> actual = sections.toSortedList();
-        List<Section> expected = List.of(section1, section2, section3);
+        List<Section> expected = List.of(section1To3, section3To4, section4To5);
 
         assertThat(actual).isEqualTo(expected);
     }

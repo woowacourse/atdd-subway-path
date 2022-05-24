@@ -7,7 +7,6 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -74,10 +73,10 @@ class SectionTest {
 
         @Test
         void 인접한_구간인_경우_두_구간의_거리합을_반환() {
-            Section section1 = new Section(STATION1, STATION2, 10);
-            Section section2 = new Section(STATION2, STATION3, 5);
+            Section section1To2 = new Section(STATION1, STATION2, 10);
+            Section section2To3 = new Section(STATION2, STATION3, 5);
 
-            int actual = section1.toConnectedDistance(section2);
+            int actual = section1To2.toConnectedDistance(section2To3);
             int expected = 10 + 5;
 
             assertThat(actual).isEqualTo(expected);
@@ -85,10 +84,10 @@ class SectionTest {
 
         @Test
         void 두_구간이_인접할_수_없는_경우_예외발생() {
-            Section section1 = new Section(STATION1, STATION2, 10);
-            Section section2 = new Section(STATION3, STATION4, 5);
+            Section section1To2 = new Section(STATION1, STATION2, 10);
+            Section section3To4 = new Section(STATION3, STATION4, 5);
 
-            assertThatThrownBy(() -> section1.toConnectedDistance(section2))
+            assertThatThrownBy(() -> section1To2.toConnectedDistance(section3To4))
                     .isInstanceOf(IllegalArgumentException.class);
         }
     }
@@ -99,10 +98,10 @@ class SectionTest {
 
         @Test
         void 상행역_혹은_하행역을_공유하는_구간인_경우_현재_구간에서의_거리_차이를_반환() {
-            Section section1 = new Section(STATION1, STATION3, 10);
-            Section section2 = new Section(STATION2, STATION3, 2);
+            Section section1To3 = new Section(STATION1, STATION3, 10);
+            Section section2To3 = new Section(STATION2, STATION3, 2);
 
-            int actual = section1.toRemainderDistance(section2);
+            int actual = section1To3.toRemainderDistance(section2To3);
             int expected = 10 - 2;
 
             assertThat(actual).isEqualTo(expected);
@@ -110,28 +109,28 @@ class SectionTest {
 
         @Test
         void 두_구간이_겹쳐질_수_없는_경우_예외발생() {
-            Section section1 = new Section(STATION1, STATION2, 10);
-            Section section2 = new Section(STATION3, STATION4, 5);
+            Section section1To2 = new Section(STATION1, STATION2, 10);
+            Section section3To4 = new Section(STATION3, STATION4, 5);
 
-            assertThatThrownBy(() -> section1.toRemainderDistance(section2))
+            assertThatThrownBy(() -> section1To2.toRemainderDistance(section3To4))
                     .isInstanceOf(IllegalArgumentException.class);
         }
 
         @Test
         void 두_구간의_거리가_동일한_경우_예외발생() {
-            Section section1 = new Section(STATION1, STATION3, 10);
-            Section section2 = new Section(STATION2, STATION3, 10);
+            Section section1To3 = new Section(STATION1, STATION3, 10);
+            Section section2To3 = new Section(STATION2, STATION3, 10);
 
-            assertThatThrownBy(() -> section1.toRemainderDistance(section2))
+            assertThatThrownBy(() -> section1To3.toRemainderDistance(section2To3))
                     .isInstanceOf(IllegalArgumentException.class);
         }
 
         @Test
         void 현재_구간보다_더_긴_구간을_대입한_경우_예외발생() {
-            Section section1 = new Section(STATION1, STATION3, 10);
-            Section section2 = new Section(STATION2, STATION3, 15);
+            Section section1To3 = new Section(STATION1, STATION3, 10);
+            Section section2To3 = new Section(STATION2, STATION3, 15);
 
-            assertThatThrownBy(() -> section1.toRemainderDistance(section2))
+            assertThatThrownBy(() -> section1To3.toRemainderDistance(section2To3))
                     .isInstanceOf(IllegalArgumentException.class);
         }
     }
@@ -142,27 +141,27 @@ class SectionTest {
 
         @Test
         void 동일한_노선_id_값이_들어온_경우_참_반환() {
-            Section section1 = new Section(1L, STATION1, STATION3, 10);
+            Section section = new Section(1L, STATION1, STATION3, 10);
 
-            boolean actual = section1.isRegisteredAtLine(1L);
+            boolean actual = section.isRegisteredAtLine(1L);
 
             assertThat(actual).isTrue();
         }
 
         @Test
         void 다른_노선_id_값이_들어온_경우_거짓_반환() {
-            Section section1 = new Section(1L, STATION1, STATION3, 10);
+            Section section = new Section(1L, STATION1, STATION3, 10);
 
-            boolean actual = section1.isRegisteredAtLine(999L);
+            boolean actual = section.isRegisteredAtLine(999L);
 
             assertThat(actual).isFalse();
         }
 
         @Test
         void 해당_노선의_id가_null인_경우_예외는_발생하지_않으며_거짓_반환() {
-            Section section1 = new Section(null, STATION1, STATION3, 10);
+            Section section = new Section(null, STATION1, STATION3, 10);
 
-            boolean actual = section1.isRegisteredAtLine(1L);
+            boolean actual = section.isRegisteredAtLine(1L);
 
             assertThat(actual).isFalse();
         }

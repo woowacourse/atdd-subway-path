@@ -37,9 +37,9 @@ class SubwayMapTest {
         @Test
         void 노선_정보에_해당되지_않는_구간이_존재하는_경우_예외_발생() {
             List<Line> lines = List.of(LINE1);
-            Section LINE1_SECTION = new Section(1L, STATION1, STATION2, 10);
-            Section LINE2_SECTION = new Section(2L, STATION1, STATION2, 10);
-            List<Section> lineSections = List.of(LINE1_SECTION, LINE2_SECTION);
+            Section line1Section = new Section(1L, STATION1, STATION2, 10);
+            Section line2Section = new Section(2L, STATION1, STATION2, 10);
+            List<Section> lineSections = List.of(line1Section, line2Section);
 
             assertThatThrownBy(() -> SubwayMap.of(lines, lineSections))
                     .isInstanceOf(RuntimeException.class);
@@ -48,8 +48,8 @@ class SubwayMapTest {
         @Test
         void 노선_정보들_중_등록된_구간이_전혀_존재하지_않는_경우_예외_발생() {
             List<Line> lines = List.of(LINE1, LINE2);
-            Section LINE1_SECTION = new Section(1L, STATION1, STATION2, 10);
-            List<Section> lineSections = List.of(LINE1_SECTION);
+            Section line1Section = new Section(1L, STATION1, STATION2, 10);
+            List<Section> lineSections = List.of(line1Section);
 
             assertThatThrownBy(() -> SubwayMap.of(lines, lineSections))
                     .isInstanceOf(RuntimeException.class);
@@ -59,18 +59,18 @@ class SubwayMapTest {
     @Test
     void toSortedLines_메서드는_노선의_id_순서대로_정렬된_노선들을_반환() {
         List<Line> lineInfos = List.of(LINE1, LINE2, LINE3);
-        Section LINE1_SECTION1 = new Section(1L, STATION1, STATION2, 10);
-        Section LINE1_SECTION2 = new Section(1L, STATION2, STATION3, 30);
-        Section LINE2_SECTION = new Section(2L, STATION1, STATION2, 10);
-        Section LINE3_SECTION = new Section(3L, STATION2, STATION3, 30);
-        List<Section> lineSections = List.of(LINE2_SECTION, LINE1_SECTION1, LINE1_SECTION2, LINE3_SECTION);
+        Section line1Section1To2 = new Section(1L, STATION1, STATION2, 10);
+        Section line1Section2To3 = new Section(1L, STATION2, STATION3, 30);
+        Section line2Section1To2 = new Section(2L, STATION1, STATION2, 10);
+        Section line3Section = new Section(3L, STATION2, STATION3, 30);
+        List<Section> lineSections = List.of(line2Section1To2, line1Section1To2, line1Section2To3, line3Section);
 
         SubwayMap subwayMap = SubwayMap.of(lineInfos, lineSections);
         List<LineMap> actual = subwayMap.toSortedLines();
         List<LineMap> expected = List.of(
-                new LineMap(LINE1, new Sections(List.of(LINE1_SECTION1, LINE1_SECTION2))),
-                new LineMap(LINE2, new Sections(List.of(LINE2_SECTION))),
-                new LineMap(LINE3, new Sections(List.of(LINE3_SECTION))));
+                new LineMap(LINE1, new Sections(List.of(line1Section1To2, line1Section2To3))),
+                new LineMap(LINE2, new Sections(List.of(line2Section1To2))),
+                new LineMap(LINE3, new Sections(List.of(line3Section))));
 
         assertThat(actual).isEqualTo(expected);
     }
