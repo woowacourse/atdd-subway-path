@@ -36,18 +36,18 @@ public class PathService {
     private PathsResponse createPathsResponse(final Station source, final Station target) {
         SubwayGraph subwayGraph = initSubwayGraph();
         Paths paths = subwayGraph.createPathsResult(source, target);
-
-        List<Line> lines = findLinesByIds(paths.getLineIds());
-
-        FareCalculator fareCalculator = new FareCalculator(paths.getDistance());
-        fareCalculator.calculateFare(lines);
-
-        return PathsResponse.of(paths);
+        return PathsResponse.of(paths, calculateFare(paths));
     }
 
     private SubwayGraph initSubwayGraph() {
         Sections sections = new Sections(sectionDao.findAll());
         return new SubwayGraph(sections);
+    }
+
+    private int calculateFare(final Paths paths) {
+        FareCalculator fareCalculator = new FareCalculator(paths.getDistance());
+        List<Line> lines = findLinesByIds(paths.getLineIds());
+        return fareCalculator.calculateFare(lines);
     }
 
     private List<Line> findLinesByIds(final List<Long> lineIds) {
