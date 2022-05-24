@@ -87,7 +87,7 @@ class PathServiceTest {
                 () -> assertThat(pathResponse.getDistance())
                         .isEqualTo(9),
                 () -> assertThat(pathResponse.getFare())
-                        .isEqualTo(1250)
+                        .isEqualTo(600)
         );
     }
 

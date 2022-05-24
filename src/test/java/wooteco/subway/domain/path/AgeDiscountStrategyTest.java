@@ -11,7 +11,7 @@ import wooteco.subway.exception.DataNotExistException;
 
 class AgeDiscountStrategyTest {
 
-    @DisplayName("나이에 맞는 enum을 가져온다.")
+    @DisplayName("나이에 맞는 AgeDiscountStrategy를 가져온다.")
     @ParameterizedTest
     @CsvSource(value = {"0:BABY", "4:BABY", "5:CHILD", "12:CHILD", "13:YOUTH", "18:YOUTH", "19:ADULT"}, delimiter = ':')
     void getAgeDiscountStrategyTest(int age, AgeDiscountStrategy expected) {

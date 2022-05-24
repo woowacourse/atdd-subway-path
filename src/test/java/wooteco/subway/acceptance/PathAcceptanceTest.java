@@ -68,7 +68,7 @@ class PathAcceptanceTest extends AcceptanceTest {
                         stationId5.intValue(),
                         stationId4.intValue()))
                 .body("distance", equalTo(9))
-                .body("fare", equalTo(725));
+                .body("fare", equalTo(550));
     }
 
     @DisplayName("존재하지 않는 지하철 경로를 조회한다.")
