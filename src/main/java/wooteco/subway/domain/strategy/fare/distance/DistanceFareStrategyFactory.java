@@ -1,17 +1,17 @@
-package wooteco.subway.domain.strategy.fare.basic;
+package wooteco.subway.domain.strategy.fare.distance;
 
 
 import java.util.Arrays;
 import java.util.function.Predicate;
 
 public enum DistanceFareStrategyFactory {
-    BASIC(DistanceFareStrategyFactory::isBasic, new BasicDistanceFareStrategy()),
-    INTERMEDIATE(DistanceFareStrategyFactory::isIntermediate, new IntermediateDistanceFareStrategy()),
-    ADVANCED(DistanceFareStrategyFactory::isAdvanced, new AdvancedDistanceFareStrategy());
+    FIRST(DistanceFareStrategyFactory::isFirst, new FirstDistanceFareStrategy()),
+    SECOND(DistanceFareStrategyFactory::isSecond, new SecondDistanceFareStrategy()),
+    THIRD(DistanceFareStrategyFactory::isAdvanced, new ThirdDistanceFareStrategy());
 
-    private static final int BASIC_DISTANCE_MINIMUM = 0;
-    private static final int BASIC_DISTANCE_MAXIMUM = 10;
-    private static final int INTERMEDIATE_DISTANCE_MAXIMUM = 50;
+    private static final int FIRST_DISTANCE_MINIMUM = 0;
+    private static final int FIRST_DISTANCE_MAXIMUM = 10;
+    private static final int SECOND_DISTANCE_MAXIMUM = 50;
 
     private final Predicate<Integer> predicate;
     private final DistanceFareStrategy fareDistanceStrategy;
@@ -21,16 +21,16 @@ public enum DistanceFareStrategyFactory {
         this.fareDistanceStrategy = fareDistanceStrategy;
     }
 
-    private static boolean isBasic(Integer distance) {
-        return distance >= BASIC_DISTANCE_MINIMUM && distance <= BASIC_DISTANCE_MAXIMUM;
+    private static boolean isFirst(Integer distance) {
+        return FIRST_DISTANCE_MINIMUM <= distance && distance <= FIRST_DISTANCE_MAXIMUM;
     }
 
-    private static boolean isIntermediate(Integer distance) {
-        return distance > BASIC_DISTANCE_MAXIMUM && distance <= INTERMEDIATE_DISTANCE_MAXIMUM;
+    private static boolean isSecond(Integer distance) {
+        return FIRST_DISTANCE_MAXIMUM < distance && distance <= SECOND_DISTANCE_MAXIMUM;
     }
 
     private static boolean isAdvanced(Integer distance) {
-        return distance > INTERMEDIATE_DISTANCE_MAXIMUM;
+        return distance > SECOND_DISTANCE_MAXIMUM;
     }
 
     public static DistanceFareStrategy getDistanceFareStrategy(int distance) {

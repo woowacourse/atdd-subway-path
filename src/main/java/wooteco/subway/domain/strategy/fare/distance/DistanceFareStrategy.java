@@ -1,4 +1,4 @@
-package wooteco.subway.domain.strategy.fare.basic;
+package wooteco.subway.domain.strategy.fare.distance;
 
 public interface DistanceFareStrategy {
 

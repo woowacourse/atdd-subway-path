@@ -1,8 +1,8 @@
 package wooteco.subway.domain.strategy.fare;
 
 import java.util.List;
-import wooteco.subway.domain.strategy.fare.basic.DistanceFareStrategy;
-import wooteco.subway.domain.strategy.fare.basic.DistanceFareStrategyFactory;
+import wooteco.subway.domain.strategy.fare.distance.DistanceFareStrategy;
+import wooteco.subway.domain.strategy.fare.distance.DistanceFareStrategyFactory;
 import wooteco.subway.domain.strategy.fare.discount.DiscountStrategy;
 import wooteco.subway.domain.strategy.fare.discount.DiscountStrategyFactory;
 

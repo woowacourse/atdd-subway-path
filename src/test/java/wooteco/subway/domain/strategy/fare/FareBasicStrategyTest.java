@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.strategy.fare.basic.DistanceFareStrategy;
-import wooteco.subway.domain.strategy.fare.basic.DistanceFareStrategyFactory;
+import wooteco.subway.domain.strategy.fare.distance.DistanceFareStrategy;
+import wooteco.subway.domain.strategy.fare.distance.DistanceFareStrategyFactory;
 
 class FareBasicStrategyTest {
 
