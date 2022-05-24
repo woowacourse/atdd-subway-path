@@ -1,8 +1,8 @@
 package wooteco.subway.dto.response;
 
 import lombok.*;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.station.Station;
 
 import java.util.List;
 

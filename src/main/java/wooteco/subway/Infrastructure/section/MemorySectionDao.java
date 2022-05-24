@@ -1,6 +1,6 @@
 package wooteco.subway.Infrastructure.section;
 
-import wooteco.subway.domain.Section;
+import wooteco.subway.domain.section.Section;
 
 import java.util.ArrayList;
 import java.util.List;

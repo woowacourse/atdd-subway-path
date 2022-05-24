@@ -3,7 +3,7 @@ package wooteco.subway.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.Infrastructure.station.StationDao;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.exception.constant.DuplicateException;
 import wooteco.subway.exception.constant.NotExistException;
 import wooteco.subway.exception.constant.NotExistException.Which;

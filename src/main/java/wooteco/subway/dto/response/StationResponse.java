@@ -1,7 +1,7 @@
 package wooteco.subway.dto.response;
 
 import lombok.*;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.station.Station;
 
 @Getter
 @ToString

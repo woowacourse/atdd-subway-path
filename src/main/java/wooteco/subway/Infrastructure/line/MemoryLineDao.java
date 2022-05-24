@@ -1,7 +1,6 @@
 package wooteco.subway.Infrastructure.line;
 
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.line.Line;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;

@@ -1,7 +1,6 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.section;
 
 import lombok.AllArgsConstructor;
-import wooteco.subway.domain.constant.TerminalStation;
 import wooteco.subway.exception.constant.SectionNotDeleteException;
 import wooteco.subway.exception.constant.SectionNotRegisterException;
 

@@ -1,4 +1,4 @@
-package wooteco.subway.domain.constant;
+package wooteco.subway.domain.section;
 
 public enum TerminalStation {
     UP,

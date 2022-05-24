@@ -1,8 +1,9 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Sections;
 
 import java.util.List;
 import java.util.Set;
@@ -10,7 +11,7 @@ import java.util.Set;
 public class PathFinder {
 
     private Sections sections;
-    private DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath;
+    private DijkstraShortestPath<Long, SectionWeightedEdge> dijkstraShortestPath;
 
     public PathFinder(Sections sections) {
         this.sections = sections;
@@ -25,27 +26,32 @@ public class PathFinder {
         return (int) dijkstraShortestPath.getPathWeight(from, to);
     }
 
-    private DijkstraShortestPath<Long, DefaultWeightedEdge> initDijkstraShortestPath() {
-        WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    public List<SectionWeightedEdge> findEdges(Long from, Long to) {
+        return dijkstraShortestPath.getPath(from, to).getEdgeList();
+    }
+
+    private DijkstraShortestPath<Long, SectionWeightedEdge> initDijkstraShortestPath() {
+        WeightedMultigraph<Long, SectionWeightedEdge> graph = new WeightedMultigraph<>(SectionWeightedEdge.class);
         Set<Long> stationIds = sections.distinctStationIds();
         fillVertexes(graph, stationIds);
         fillEdges(graph);
         return new DijkstraShortestPath<>(graph);
     }
 
-    private void fillVertexes(WeightedMultigraph<Long, DefaultWeightedEdge> graph, Set<Long> stationIds) {
+    private void fillVertexes(WeightedMultigraph<Long, SectionWeightedEdge> graph, Set<Long> stationIds) {
         for (Long stationId : stationIds) {
             graph.addVertex(stationId);
         }
     }
 
-    private void fillEdges(WeightedMultigraph<Long, DefaultWeightedEdge> graph) {
+    private void fillEdges(WeightedMultigraph<Long, SectionWeightedEdge> graph) {
         for (Section section : sections.values()) {
             Long upStationId = section.getUpStationId();
             Long downStationId = section.getDownStationId();
 
-            DefaultWeightedEdge edge = graph.addEdge(upStationId, downStationId);
-            graph.setEdgeWeight(edge, section.getDistance());
+            SectionWeightedEdge sectionWeightedEdge =
+                    new SectionWeightedEdge(section.getLineId(), section.getDistance());
+            graph.addEdge(upStationId, downStationId, sectionWeightedEdge);
         }
     }
 }

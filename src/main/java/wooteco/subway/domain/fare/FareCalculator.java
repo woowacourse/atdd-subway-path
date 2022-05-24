@@ -1,8 +1,6 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.fare;
 
 import org.springframework.stereotype.Component;
-import wooteco.subway.domain.constant.AgeFarePolicy;
-import wooteco.subway.domain.constant.DistanceFarePolicy;
 
 import java.util.Arrays;
 

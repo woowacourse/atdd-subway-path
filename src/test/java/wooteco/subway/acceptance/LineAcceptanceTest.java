@@ -13,11 +13,10 @@ import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.Infrastructure.line.DbLineDao;
 import wooteco.subway.Infrastructure.section.DbSectionDao;
 import wooteco.subway.Infrastructure.station.DbStationDao;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.request.LineRequest;
 import wooteco.subway.dto.response.LineResponse;
-import wooteco.subway.utils.FixtureUtils;
 
 import java.util.HashMap;
 import java.util.List;

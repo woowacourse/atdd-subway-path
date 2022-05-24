@@ -5,13 +5,19 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.Infrastructure.line.LineDao;
 import wooteco.subway.Infrastructure.section.SectionDao;
 import wooteco.subway.Infrastructure.station.StationDao;
-import wooteco.subway.domain.*;
+import wooteco.subway.domain.fare.FareCalculator;
+import wooteco.subway.domain.path.PathFinder;
+import wooteco.subway.domain.line.Lines;
+import wooteco.subway.domain.path.SectionWeightedEdge;
+import wooteco.subway.domain.section.Sections;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.exception.constant.NotExistException;
 import wooteco.subway.exception.constant.NotExistException.Which;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,18 +34,24 @@ public class PathService {
         PathFinder pathFinder = new PathFinder(sections);
         List<Long> path = pathFinder.findPath(from, to);
         int distance = pathFinder.findDistance(from, to);
-        int fare = getFare(age, sections, distance);
+        List<Long> lineIds = getLineList(pathFinder, from, to);
+        int fare = getFare(age, distance, lineIds);
         List<Station> stations = stationDao.findByIdIn(path);
 
         return new PathResponse(stations, distance, fare);
     }
 
-    private int getFare(Integer age, Sections sections, int distance) {
-        Set<Long> lineIds = sections.distinctLineIds();
+    private List<Long> getLineList(PathFinder pathFinder, Long from, Long to) {
+        List<SectionWeightedEdge> edges = pathFinder.findEdges(from, to);
+        return edges.stream()
+                .map(edge -> edge.getLineId())
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    private int getFare(Integer age, int distance, Collection<Long> lineIds) {
         Lines lines = new Lines(lineDao.findByIdIn(lineIds));
         int maxExtraFare = lines.maxExtraFare();
-        int fare = fareCalculator.calculateFare(distance, age) + maxExtraFare;
-        return fare;
+        return fareCalculator.calculateFare(distance, age) + maxExtraFare;
     }
 
     private void validateExistStations(Long from, Long to) {

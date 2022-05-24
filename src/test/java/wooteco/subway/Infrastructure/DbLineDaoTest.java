@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.Infrastructure.line.DbLineDao;
-import wooteco.subway.domain.Line;
+import wooteco.subway.domain.line.Line;
 
 import java.util.List;
 

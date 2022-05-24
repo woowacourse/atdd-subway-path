@@ -1,10 +1,11 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.fare;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import wooteco.subway.domain.fare.FareCalculator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

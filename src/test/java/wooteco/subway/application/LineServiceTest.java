@@ -9,7 +9,7 @@ import wooteco.subway.Infrastructure.line.LineDao;
 import wooteco.subway.Infrastructure.line.MemoryLineDao;
 import wooteco.subway.Infrastructure.section.MemorySectionDao;
 import wooteco.subway.Infrastructure.section.SectionDao;
-import wooteco.subway.domain.Line;
+import wooteco.subway.domain.line.Line;
 import wooteco.subway.exception.constant.BlankArgumentException;
 import wooteco.subway.exception.constant.DuplicateException;
 import wooteco.subway.exception.constant.NotExistException;

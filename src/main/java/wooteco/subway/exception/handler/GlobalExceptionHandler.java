@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     private ErrorResult handleException(Exception exception) {
-        return new ErrorResult(BAD_REQUEST, "오류가 발생했습니다.");
+        return new ErrorResult(INTERNAL_SERVER_ERROR, "오류가 발생했습니다.");
     }
 
     /**

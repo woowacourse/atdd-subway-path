@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.station;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

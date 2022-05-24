@@ -8,10 +8,10 @@ import wooteco.subway.Infrastructure.section.MemorySectionDao;
 import wooteco.subway.Infrastructure.section.SectionDao;
 import wooteco.subway.Infrastructure.station.MemoryStationDao;
 import wooteco.subway.Infrastructure.station.StationDao;
-import wooteco.subway.domain.FareCalculator;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.fare.FareCalculator;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.response.PathResponse;
 
 import java.util.List;

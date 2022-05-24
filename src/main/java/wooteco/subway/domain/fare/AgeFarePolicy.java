@@ -1,4 +1,4 @@
-package wooteco.subway.domain.constant;
+package wooteco.subway.domain.fare;
 
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;

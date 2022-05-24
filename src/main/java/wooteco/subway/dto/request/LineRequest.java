@@ -1,8 +1,8 @@
 package wooteco.subway.dto.request;
 
 import lombok.*;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.section.Section;
 
 @Getter
 @Setter

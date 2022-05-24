@@ -2,10 +2,9 @@ package wooteco.subway.ui;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.application.SectionService;
-import wooteco.subway.domain.Section;
+import wooteco.subway.domain.section.Section;
 import wooteco.subway.dto.request.SectionRequest;
 
 @RequestMapping("/lines/{lineId}/sections")

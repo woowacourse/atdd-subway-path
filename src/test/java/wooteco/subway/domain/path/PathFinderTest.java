@@ -1,15 +1,14 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Sections;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.setPrintAssertionsDescription;
 
 class PathFinderTest {
 

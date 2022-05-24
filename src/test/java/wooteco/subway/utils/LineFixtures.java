@@ -2,10 +2,8 @@ package wooteco.subway.utils;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import wooteco.subway.domain.Line;
+import wooteco.subway.domain.line.Line;
 import wooteco.subway.dto.request.LineRequest;
-
-import java.util.function.Supplier;
 
 import static wooteco.subway.utils.FixtureUtils.*;
 

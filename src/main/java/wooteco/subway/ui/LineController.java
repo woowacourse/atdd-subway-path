@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import wooteco.subway.application.LineService;
 import wooteco.subway.application.SectionService;
 import wooteco.subway.application.StationService;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.request.LineRequest;
 import wooteco.subway.dto.response.LineResponse;
 

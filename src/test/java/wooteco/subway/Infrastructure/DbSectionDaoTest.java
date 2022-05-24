@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import wooteco.subway.Infrastructure.section.DbSectionDao;
-import wooteco.subway.domain.Section;
+import wooteco.subway.domain.section.Section;
 
 import javax.sql.DataSource;
 import java.util.List;
