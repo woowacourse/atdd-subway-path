@@ -3,27 +3,29 @@ package wooteco.subway.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import java.util.List;
-import java.util.Optional;
 
 @SpringBootTest
 @Transactional
 class SectionServiceTest {
 
     @Autowired
-    private SectionService sectionService;
+    private LineService lineService;
 
     @Autowired
     private LineDao lineDao;
@@ -55,7 +57,7 @@ class SectionServiceTest {
     void addNotBranchedSection() {
         final Station newStation = stationDao.save(new Station("마장역"));
         final Section section = new Section(downStation, newStation, 10, savedLine.getId());
-        final Section savedSection = sectionService.addSection(savedLine.getId(), section);
+        final Section savedSection = lineService.addSection(savedLine.getId(), section);
 
         assertThat(savedSection).usingRecursiveComparison()
                 .ignoringFields("id")
@@ -67,7 +69,7 @@ class SectionServiceTest {
     void addBranchedSection() {
         final Station newStation = stationDao.save(new Station("마장역"));
         final Section newSection = new Section(newStation, downStation, 9, savedLine.getId());
-        final Section savedSection = sectionService.addSection(savedLine.getId(), newSection);
+        final Section savedSection = lineService.addSection(savedLine.getId(), newSection);
 
         final Optional<Section> foundSection = sectionDao.findAllByLineId(savedLine.getId())
                 .stream()
@@ -91,7 +93,7 @@ class SectionServiceTest {
         final Station newStation = stationDao.save(new Station("마장역"));
         sectionDao.save(new Section(downStation, newStation, 10, savedLine.getId()));
 
-        sectionService.delete(savedLine.getId(), downStation.getId());
+        lineService.delete(savedLine.getId(), downStation.getId());
 
         final List<Section> list = sectionDao.findAllByLineId(savedLine.getId());
         // 아차산 - 마장

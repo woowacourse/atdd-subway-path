@@ -17,18 +17,15 @@ public class PathService {
 
     private final StationService stationService;
     private final LineService lineService;
-    private final SectionService sectionService;
     private final ShortestPathStrategy pathStrategy;
 
     public PathService(
         final StationService stationService,
         final LineService lineService,
-        final SectionService sectionService,
         final ShortestPathStrategy pathStrategy
     ) {
         this.stationService = stationService;
         this.lineService = lineService;
-        this.sectionService = sectionService;
         this.pathStrategy = pathStrategy;
     }
 
@@ -36,7 +33,7 @@ public class PathService {
         validateDuplicatedSourceAndTarget(pathRequest.getSource(), pathRequest.getTarget());
         final Station source = stationService.findStationById(pathRequest.getSource());
         final Station target = stationService.findStationById(pathRequest.getTarget());
-        final Sections sections = new Sections(sectionService.findAllSections());
+        final Sections sections = new Sections(lineService.findAllSections());
 
         final Path path = pathStrategy.findPath(source, target, sections);
         final int max = lineService.findAllByIds(path.getLineIds())

@@ -6,8 +6,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.dao.LineDao;
+import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.Station;
 import wooteco.subway.exception.DataNotFoundException;
 import wooteco.subway.exception.DuplicateNameException;
 
@@ -15,12 +18,12 @@ import wooteco.subway.exception.DuplicateNameException;
 public class LineService {
 
     private final LineDao lineDao;
-    private final SectionService sectionService;
+    private final SectionDao sectionDao;
     private final StationService stationService;
 
-    public LineService(final LineDao lineDao, final SectionService sectionService, final StationService stationService) {
+    public LineService(final LineDao lineDao, final SectionDao sectionDao, final StationService stationService) {
         this.lineDao = lineDao;
-        this.sectionService = sectionService;
+        this.sectionDao = sectionDao;
         this.stationService = stationService;
     }
 
@@ -35,7 +38,7 @@ public class LineService {
             section.getDistance(),
             savedLine.getId()
         );
-        sectionService.saveInitialSection(sectionToSave);
+        sectionDao.save(sectionToSave);
         return savedLine;
     }
 
@@ -88,5 +91,41 @@ public class LineService {
     private void validateStationsNames(final Section section) {
         stationService.findStationById(section.getUpStation().getId());
         stationService.findStationById(section.getDownStation().getId());
+    }
+
+    @Transactional
+    public Section addSection(final long lineId, final Section requestSection) {
+        final Station upStation = stationService.findStationById(requestSection.getUpStation().getId());
+        final Station downStation = stationService.findStationById(requestSection.getDownStation().getId());
+        findLineById(lineId);
+
+        Section section = new Section(upStation, downStation, requestSection.getDistance(), lineId);
+        final Sections sections = new Sections(sectionDao.findAllByLineId(lineId));
+        sections.add(section);
+
+        sectionDao.deleteByLineId(lineId);
+        sectionDao.saveAll(sections.getSections());
+
+        return section;
+    }
+
+    @Transactional
+    public void delete(final Long lineId, final Long stationId) {
+        final Sections sections = new Sections(sectionDao.findAllByLineId(lineId));
+        sections.remove(stationId);
+        sectionDao.deleteByLineId(lineId);
+        sectionDao.saveAll(sections.getSections());
+    }
+
+    @Transactional(readOnly = true)
+    public List<Station> findStationsByLine(final long lineId) {
+        final List<Section> lineSections = sectionDao.findAllByLineId(lineId);
+        final Sections sections = new Sections(lineSections);
+        return sections.extractStations();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Section> findAllSections() {
+        return sectionDao.findAll();
     }
 }

@@ -23,18 +23,15 @@ import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.service.LineService;
-import wooteco.subway.service.SectionService;
 
 @RestController
 @RequestMapping("/lines")
 public class LineController {
 
     private final LineService lineService;
-    private final SectionService sectionService;
 
-    public LineController(final LineService lineService, final SectionService sectionService) {
+    public LineController(final LineService lineService) {
         this.lineService = lineService;
-        this.sectionService = sectionService;
     }
 
     @PostMapping
@@ -84,15 +81,15 @@ public class LineController {
 
     @PostMapping("/{id}/sections")
     public void addSection(@PathVariable final Long id, @RequestBody @Valid final SectionRequest sectionRequest) {
-        sectionService.addSection(id, SectionRequest.toEntity(sectionRequest));
+        lineService.addSection(id, SectionRequest.toEntity(sectionRequest));
     }
 
     @DeleteMapping("/{id}/sections")
     public void deleteSection(@PathVariable final Long id, @RequestParam final Long stationId) {
-        sectionService.delete(id, stationId);
+        lineService.delete(id, stationId);
     }
 
     private List<Station> findStationsByLine(final Line line) {
-        return sectionService.findStationsByLine(line.getId());
+        return lineService.findStationsByLine(line.getId());
     }
 }
