@@ -18,7 +18,7 @@ class PathTest {
     void 요금을_계산한다(int distance, int fare) {
         Station 강남역 = new Station(1L, "강남역");
         Station 선릉역 = new Station(2L, "선릉역");
-        Line 신분당선 = new Line(1L, "신분당선", "red");
+        Line 신분당선 = new Line(1L, "신분당선", "red", 0);
         신분당선.addSection(new Section(1L, 강남역, 선릉역, distance));
 
         Path path = Path.of(List.of(신분당선), 강남역, 선릉역);
@@ -33,8 +33,8 @@ class PathTest {
         Station 선릉역 = new Station(2L, "선릉역");
         Station 잠실역 = new Station(3L, "잠실역");
         Station 신촌역 = new Station(4L, "신촌역");
-        Line 신분당선 = new Line(1L, "신분당선", "red");
-        Line 분당선 = new Line(2L, "분당선", "blue");
+        Line 신분당선 = new Line(1L, "신분당선", "red", 0);
+        Line 분당선 = new Line(2L, "분당선", "blue", 0);
         신분당선.addSection(new Section(1L, 강남역, 선릉역, 10));
         분당선.addSection(new Section(2L, 신촌역, 잠실역, 10));
 

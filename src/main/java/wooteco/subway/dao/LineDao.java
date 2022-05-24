@@ -30,6 +30,7 @@ public class LineDao {
         final String sql = "SELECT line.id    AS line_id,\n"
                 + "       line.name  AS line_name,\n"
                 + "       line.color AS line_color,\n"
+                + "       line.extra_fare  AS line_extra_fare,\n"
                 + "       section.id       AS section_id,\n"
                 + "       section.distance AS section_distance,\n"
                 + "       us.id     AS up_station_id,\n"
@@ -61,6 +62,7 @@ public class LineDao {
                 (Long) result.get(0).get("line_id"),
                 (String) result.get(0).get("line_name"),
                 (String) result.get(0).get("line_color"),
+                (int) result.get(0).get("line_extra_fare"),
                 new Sections(sections));
     }
 
@@ -96,6 +98,7 @@ public class LineDao {
         final String sql = "SELECT line.ID          AS line_id,\n"
                 + "       line.name        AS line_name,\n"
                 + "       line.color       AS line_color,\n"
+                + "       line.extra_fare    AS line_extra_fare,\n"
                 + "       section.ID       AS section_id,\n"
                 + "       section.DISTANCE AS section_distance,\n"
                 + "       us.ID           AS up_station_id,\n"
@@ -115,12 +118,12 @@ public class LineDao {
     }
 
     public Line save(Line line) {
-        final String sql = "INSERT INTO line(name, color) VALUES(:name, :color)";
+        final String sql = "INSERT INTO line(name, color, extra_fare) VALUES(:name, :color, :extraFare)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         SqlParameterSource paramSource = new BeanPropertySqlParameterSource(line);
 
         jdbcTemplate.update(sql, paramSource, keyHolder, new String[]{"ID"});
-        return new Line(keyHolder.getKey().longValue(), line.getName(), line.getColor());
+        return new Line(keyHolder.getKey().longValue(), line.getName(), line.getColor(), line.getExtraFare());
     }
 
     public void update(Line line) {

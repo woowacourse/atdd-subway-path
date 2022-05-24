@@ -8,23 +8,26 @@ public class Line {
     private final Long id;
     private final String name;
     private final String color;
+    private final int extraFare;
     private Sections sections = new Sections();
 
-    public Line(Long id, String name, String color, Sections sections) {
+    public Line(Long id, String name, String color, int extraFare, Sections sections) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
         this.sections = sections;
     }
 
-    public Line(Long id, String name, String color) {
+    public Line(Long id, String name, String color, int extraFare) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
     }
 
-    public Line(String name, String color) {
-        this(null, name, color);
+    public Line(String name, String color, int extraFare) {
+        this(null, name, color, extraFare);
     }
 
     public void addSection(Section section) {
@@ -46,6 +49,10 @@ public class Line {
 
     public String getName() {
         return name;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     public String getColor() {
@@ -70,20 +77,21 @@ public class Line {
         }
         Line line = (Line) o;
         return Objects.equals(name, line.name)
-            && Objects.equals(color, line.color);
+                && Objects.equals(color, line.color)
+                && Objects.equals(extraFare, line.extraFare);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, color);
+        return Objects.hash(name, color, extraFare);
     }
 
     @Override
     public String toString() {
         return "Line{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", color='" + color + '\'' +
-            '}';
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                '}';
     }
 }
