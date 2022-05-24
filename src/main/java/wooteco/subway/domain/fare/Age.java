@@ -13,14 +13,14 @@ public enum Age {
     ;
 
     private final Predicate<Integer> judgeAge;
-    private final AgeStrategy ageStrategy;
+    private final AgeFareStrategy ageStrategy;
 
-    Age(Predicate<Integer> judgeAge, AgeStrategy ageStrategy) {
+    Age(Predicate<Integer> judgeAge, AgeFareStrategy ageFareStrategy) {
         this.judgeAge = judgeAge;
-        this.ageStrategy = ageStrategy;
+        this.ageStrategy = ageFareStrategy;
     }
 
-    public static AgeStrategy from(int age) {
+    public static AgeFareStrategy from(int age) {
         return Arrays.stream(Age.values())
                 .filter(agejudge -> agejudge.judgeAge.test(age))
                 .findFirst()

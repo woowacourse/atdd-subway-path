@@ -1,15 +1,15 @@
 package wooteco.subway.domain.fare;
 
-import wooteco.subway.domain.fare.strategy.AgeStrategy;
+import wooteco.subway.domain.fare.strategy.AgeFareStrategy;
 
 public class FareCalculator {
-    private final AgeStrategy ageStrategy;
+    private final AgeFareStrategy ageFareStrategy;
 
-    public FareCalculator(AgeStrategy ageStrategy) {
-        this.ageStrategy = ageStrategy;
+    public FareCalculator(AgeFareStrategy ageFareStrategy) {
+        this.ageFareStrategy = ageFareStrategy;
     }
 
     public double calculateAgeFare(int currentFare) {
-        return ageStrategy.calculate(currentFare);
+        return ageFareStrategy.calculate(currentFare);
     }
 }

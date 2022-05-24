@@ -1,6 +1,6 @@
 package wooteco.subway.domain.fare.strategy;
 
-public class ChildFare implements AgeStrategy {
+public class ChildFare implements AgeFareStrategy {
 
     @Override
     public double calculate(int currentFare) {
