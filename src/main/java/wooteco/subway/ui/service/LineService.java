@@ -47,16 +47,19 @@ public class LineService {
         return LineResponse.from(createdLine, fare);
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findAll() {
         final List<Line> lines = lineDao.findAll();
         return lines.stream()
-                .map(LineResponse::from)
+                .map(line -> LineResponse.from(line, lineDao.findFareById(line.getId())))
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public LineResponse findById(Long id) {
         final Line line = lineDao.findById(id);
-        return LineResponse.from(line);
+        final Fare fare = lineDao.findFareById(id);
+        return LineResponse.from(line, fare);
     }
 
     public void modify(Long id, LineRequest lineRequest) {

@@ -113,7 +113,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // then
         Assertions.assertAll(
                 () -> foundResponse.assertStatus(HttpStatus.OK),
-                () -> assertThat(foundLineResponse.getId()).isEqualTo(createdLineResponse.getId())
+                () -> assertThat(foundLineResponse.getId()).isEqualTo(createdLineResponse.getId()),
+                () -> assertThat(foundLineResponse.getExtraFare()).isEqualTo(createdLineResponse.getExtraFare())
         );
     }
 

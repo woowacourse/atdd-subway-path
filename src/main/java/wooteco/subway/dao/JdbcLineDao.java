@@ -70,6 +70,17 @@ public class JdbcLineDao implements LineDao {
         }
     }
 
+    @Override
+    public Fare findFareById(Long id) {
+        final String sql = "SELECT extra_fare FROM line WHERE id = ?";
+        try {
+            Integer extraFare = jdbcTemplate.queryForObject(sql, Integer.class, id);
+            return new Fare(extraFare);
+        } catch (EmptyResultDataAccessException e) {
+            throw new IllegalStateException("조회하고자 하는 노선이 존재하지 않습니다.");
+        }
+    }
+
     private Line mapToLine(ResultSet resultSet, int rowNum) throws SQLException {
         return new Line(
                 resultSet.getLong("id"),

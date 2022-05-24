@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 
 import org.springframework.context.annotation.Import;
+import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Line;
 
 @JdbcTest
@@ -95,6 +96,17 @@ class LineDaoTest {
         linDao.save(LINE_신분당선, FARE_1000);
         // then
         assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> linDao.findById(2L));
+    }
+
+    @Test
+    @DisplayName("ID 값으로 노선의 추가 요금을 조회한다")
+    public void findFareById() {
+        // given
+        final Line saved = linDao.save(LINE_신분당선, FARE_1000);
+        // when
+        final Fare found = linDao.findFareById(saved.getId());
+        // then
+        assertThat(found.getValue()).isEqualTo(1000);
     }
 
     @Test

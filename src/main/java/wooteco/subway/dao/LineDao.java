@@ -11,6 +11,8 @@ public interface LineDao {
 
     Line findById(Long id);
 
+    Fare findFareById(Long id);
+
     int update(Line line);
 
     int delete(Long id);
