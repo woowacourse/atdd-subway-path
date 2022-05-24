@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -57,6 +58,12 @@ public class LineDao {
     public List<Line> findAll() {
         final String sql = "SELECT id, name, color, extraFare FROM LINE";
         return namedParameterJdbcTemplate.query(sql, LineDao::rowMapper);
+    }
+
+    public List<Line> findAllByIds(final List<Long> ids) {
+        final MapSqlParameterSource params = new MapSqlParameterSource("ids", ids);
+        final String sql = "SELECT id, name, color, extraFare FROM LINE WHERE id in (:ids)";
+        return namedParameterJdbcTemplate.query(sql, params, LineDao::rowMapper);
     }
 
     public void update(final Long id, final Line line) {

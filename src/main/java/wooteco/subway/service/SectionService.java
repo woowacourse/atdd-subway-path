@@ -24,6 +24,11 @@ public class SectionService {
     }
 
     @Transactional
+    public Section saveInitialSection(final Section section) {
+        return sectionDao.save(section);
+    }
+
+    @Transactional
     public Section addSection(final long lineId, final Section requestSection) {
         final Station upStation = stationService.findStationById(requestSection.getUpStation().getId());
         final Station downStation = stationService.findStationById(requestSection.getDownStation().getId());
@@ -52,5 +57,10 @@ public class SectionService {
         final List<Section> lineSections = sectionDao.findAllByLineId(lineId);
         final Sections sections = new Sections(lineSections);
         return sections.extractStations();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Section> findAllSections() {
+        return sectionDao.findAll();
     }
 }

@@ -6,11 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.dao.LineDao;
-import wooteco.subway.dao.SectionDao;
-import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
 import wooteco.subway.exception.DataNotFoundException;
 import wooteco.subway.exception.DuplicateNameException;
 
@@ -18,13 +15,13 @@ import wooteco.subway.exception.DuplicateNameException;
 public class LineService {
 
     private final LineDao lineDao;
-    private final SectionDao sectionDao;
-    private final StationDao stationDao;
+    private final SectionService sectionService;
+    private final StationService stationService;
 
-    public LineService(final LineDao lineDao, final SectionDao sectionDao, final StationDao stationDao) {
+    public LineService(final LineDao lineDao, final SectionService sectionService, final StationService stationService) {
         this.lineDao = lineDao;
-        this.sectionDao = sectionDao;
-        this.stationDao = stationDao;
+        this.sectionService = sectionService;
+        this.stationService = stationService;
     }
 
     @Transactional
@@ -33,12 +30,12 @@ public class LineService {
         validateStationsNames(section);
         final Line savedLine = lineDao.save(line);
         final Section sectionToSave = new Section(
-                section.getUpStation(),
-                section.getDownStation(),
-                section.getDistance(),
-                savedLine.getId()
+            section.getUpStation(),
+            section.getDownStation(),
+            section.getDistance(),
+            savedLine.getId()
         );
-        sectionDao.save(sectionToSave);
+        sectionService.saveInitialSection(sectionToSave);
         return savedLine;
     }
 
@@ -48,9 +45,14 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
+    public List<Line> findAllByIds(final List<Long> ids) {
+        return lineDao.findAllByIds(ids);
+    }
+
+    @Transactional(readOnly = true)
     public Line findLineById(final Long id) {
         return lineDao.findById(id)
-                .orElseThrow(() -> new DataNotFoundException("존재하지 않는 노선 ID입니다."));
+            .orElseThrow(() -> new DataNotFoundException("존재하지 않는 노선 ID입니다."));
     }
 
     @Transactional
@@ -84,9 +86,7 @@ public class LineService {
     }
 
     private void validateStationsNames(final Section section) {
-        final Station upStation = stationDao.findById(section.getUpStation().getId())
-                .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철 역입니다."));
-        final Station downStation = stationDao.findById(section.getDownStation().getId())
-                .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철 역입니다."));
+        stationService.findStationById(section.getUpStation().getId());
+        stationService.findStationById(section.getDownStation().getId());
     }
 }

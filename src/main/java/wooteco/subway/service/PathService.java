@@ -1,57 +1,49 @@
 package wooteco.subway.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 
-import wooteco.subway.dao.LineDao;
-import wooteco.subway.dao.SectionDao;
-import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.fare.Fare;
+import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.strategy.DijkstraStrategy;
+import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.strategy.ShortestPathStrategy;
 import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
-import wooteco.subway.exception.DataNotFoundException;
 import wooteco.subway.exception.DuplicatedSourceAndTargetException;
 
 @Service
 public class PathService {
 
-    private final StationDao stationDao;
-    private final LineDao lineDao;
-    private final SectionDao sectionDao;
+    private final StationService stationService;
+    private final LineService lineService;
+    private final SectionService sectionService;
+    private final ShortestPathStrategy pathStrategy;
 
-    public PathService(final StationDao stationDao, final LineDao lineDao, final SectionDao sectionDao) {
-        this.stationDao = stationDao;
-        this.lineDao = lineDao;
-        this.sectionDao = sectionDao;
+    public PathService(
+        final StationService stationService,
+        final LineService lineService,
+        final SectionService sectionService,
+        final ShortestPathStrategy pathStrategy
+    ) {
+        this.stationService = stationService;
+        this.lineService = lineService;
+        this.sectionService = sectionService;
+        this.pathStrategy = pathStrategy;
     }
 
     public PathResponse createPath(final PathRequest pathRequest) {
         validateDuplicatedSourceAndTarget(pathRequest.getSource(), pathRequest.getTarget());
-        final Station source = stationDao.findById(pathRequest.getSource())
-                .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철역 ID입니다."));
-        final Station target = stationDao.findById(pathRequest.getTarget())
-            .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철역 ID입니다."));
-        final Sections sections = new Sections(sectionDao.findAll());
+        final Station source = stationService.findStationById(pathRequest.getSource());
+        final Station target = stationService.findStationById(pathRequest.getTarget());
+        final Sections sections = new Sections(sectionService.findAllSections());
 
-        final ShortestPathStrategy strategy = new DijkstraStrategy();
-        final Path path = strategy.findPath(source, target, sections);
-
-        List<Integer> extraFares = new ArrayList<>();
-        for (Long lineId : path.getLineIds()) {
-            lineDao.findById(lineId)
-                .ifPresent(line -> extraFares.add(line.getExtraFare()));
-        }
-        int max = extraFares.stream()
+        final Path path = pathStrategy.findPath(source, target, sections);
+        final int max = lineService.findAllByIds(path.getLineIds())
+            .stream()
+            .map(Line::getExtraFare)
             .max(Integer::compareTo)
             .orElseThrow();
-
         final Fare fare = Fare.from(path.getDistance(), max, pathRequest.getAge());
 
         return PathResponse.from(path, fare);
