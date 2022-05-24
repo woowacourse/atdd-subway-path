@@ -1,9 +1,6 @@
 package wooteco.subway.domain;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -12,57 +9,46 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class Path {
 
-    private final GraphPath graphPath;
+    private final DijkstraShortestPath dijkstraShortestPath;
 
-    private Path(GraphPath graphPath) {
-        this.graphPath = graphPath;
-    }
-
-    public static Path of(List<Section> sections, Long departureId, Long arrivalId) {
+    public Path(Sections sections) {
         WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
         addStationVertex(graph, sections);
         addSectionEdge(graph, sections);
-        GraphPath graphPath = findShortestPath(departureId, arrivalId, graph);
-        return new Path(graphPath);
+        this.dijkstraShortestPath = new DijkstraShortestPath(graph);
     }
 
-    private static void addStationVertex(WeightedMultigraph<String, DefaultWeightedEdge> graph,
-                                         List<Section> sections) {
-        for (Long stationId : getAllStationIds(sections)) {
+    private void addStationVertex(WeightedMultigraph<String, DefaultWeightedEdge> graph, Sections sections) {
+        for (Long stationId : sections.getAllStationIds()) {
             graph.addVertex(String.valueOf(stationId));
         }
     }
 
-    private static List<Long> getAllStationIds(List<Section> sections) {
-        Set<Long> stationIds = new HashSet<>();
-
-        for (Section section : sections) {
-            stationIds.add(section.getUpStationId());
-            stationIds.add(section.getDownStationId());
-        }
-
-        return new ArrayList<>(stationIds);
-    }
-
-    private static void addSectionEdge(WeightedMultigraph<String, DefaultWeightedEdge> graph, List<Section> sections) {
-        for (Section section : sections) {
-            String upStationId = String.valueOf(section.getUpStationId());
-            String downStationId = String.valueOf(section.getDownStationId());
-            int distance = section.getDistance();
+    private void addSectionEdge(WeightedMultigraph<String, DefaultWeightedEdge> graph, Sections sections) {
+        for (List<Number> sectionInfo : sections.getSectionInfos()) {
+            String upStationId = String.valueOf(sectionInfo.get(0));
+            String downStationId = String.valueOf(sectionInfo.get(1));
+            int distance = (int) sectionInfo.get(2);
             graph.setEdgeWeight(graph.addEdge(upStationId, downStationId), distance);
         }
     }
 
-    private static GraphPath findShortestPath(Long departureId, Long arrivalId,
-                                              WeightedMultigraph<String, DefaultWeightedEdge> graph) {
-        GraphPath path = getGraphPath(departureId, arrivalId, graph);
-        validateConnection(path);
-        return path;
+    public List<Long> getShortestPathStationIds(Long departureId, Long arrivalId) {
+        GraphPath graphPath = getGraphPath(departureId, arrivalId);
+        validateConnection(graphPath);
+        List<String> stationIds = graphPath.getVertexList();
+        return stationIds.stream()
+                .map(Long::valueOf)
+                .collect(Collectors.toList());
     }
 
-    private static GraphPath getGraphPath(Long departureId, Long arrivalId,
-                                          WeightedMultigraph<String, DefaultWeightedEdge> graph) {
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+    public int getShortestPathDistance(Long departureId, Long arrivalId) {
+        GraphPath graphPath = getGraphPath(departureId, arrivalId);
+        validateConnection(graphPath);
+        return (int) graphPath.getWeight();
+    }
+
+    private GraphPath getGraphPath(Long departureId, Long arrivalId) {
         try {
             return dijkstraShortestPath.getPath(String.valueOf(departureId), String.valueOf(arrivalId));
         } catch (IllegalArgumentException e) {
@@ -70,20 +56,9 @@ public class Path {
         }
     }
 
-    private static void validateConnection(GraphPath path) {
-        if (path == null) {
+    private void validateConnection(GraphPath graphPath) {
+        if (graphPath == null) {
             throw new IllegalArgumentException("연결되지 않은 구간입니다.");
         }
-    }
-
-    public List<Long> getShortestPathStationIds() {
-        List<String> stationIds = graphPath.getVertexList();
-        return stationIds.stream()
-                .map(Long::valueOf)
-                .collect(Collectors.toList());
-    }
-
-    public int getShortestPathDistance() {
-        return (int) graphPath.getWeight();
     }
 }

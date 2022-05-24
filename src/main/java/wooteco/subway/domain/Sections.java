@@ -1,8 +1,10 @@
 package wooteco.subway.domain;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.dao.EmptyResultDataAccessException;
 
@@ -87,6 +89,36 @@ public class Sections {
 
     public int size() {
         return sections.size();
+    }
+
+    public List<Long> getAllStationIds() {
+        Set<Long> stationIds = new HashSet<>();
+
+        for (Section section : sections) {
+            stationIds.add(section.getUpStationId());
+            stationIds.add(section.getDownStationId());
+        }
+
+        return new ArrayList<>(stationIds);
+    }
+
+    public List<List<Number>> getSectionInfos() {
+        List<List<Number>> sectionInfos = new ArrayList<>();
+
+        for (Section section : sections) {
+            sectionInfos.add(List.of(
+                    section.getUpStationId(),
+                    section.getDownStationId(),
+                    section.getDistance()));
+        }
+
+        return sectionInfos;
+    }
+
+    public List<Long> getAllLindIds() {
+        return sections.stream()
+                .map(Section::getLineId)
+                .collect(Collectors.toList());
     }
 
     public List<Section> getSections() {
