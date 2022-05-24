@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import wooteco.subway.domain.Station;
 import wooteco.subway.ui.dto.ExceptionResponse;
 import wooteco.subway.ui.dto.LineResponse;
-import wooteco.subway.ui.dto.SectionRequest;
 import wooteco.subway.ui.dto.StationRequest;
 import wooteco.subway.ui.dto.StationResponse;
 
@@ -38,8 +37,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         Long lineId = getCreatedLineId(station1.getId(), station3.getId());
 
         // when
-        SectionRequest sectionRequest = new SectionRequest(station1.getId(), station2.getId(), 5);
-        ExtractableResponse<Response> response = createSection(lineId, sectionRequest);
+        ExtractableResponse<Response> response = createSection(lineId, station1.getId(), station2.getId(), 5);
 
         // then
         assertSectionConnection(station1, station2, station3, lineId, response);
@@ -52,8 +50,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         Long lineId = getCreatedLineId(station1.getId(), station3.getId());
 
         // when
-        SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 5);
-        ExtractableResponse<Response> response = createSection(lineId, sectionRequest);
+        ExtractableResponse<Response> response = createSection(lineId, station2.getId(), station3.getId(), 5);
 
         // then
         assertSectionConnection(station1, station2, station3, lineId, response);
@@ -66,8 +63,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         Long lineId = getCreatedLineId(station2.getId(), station3.getId());
 
         // when
-        SectionRequest sectionRequest = new SectionRequest(station1.getId(), station2.getId(), 10);
-        ExtractableResponse<Response> response = createSection(lineId, sectionRequest);
+        ExtractableResponse<Response> response = createSection(lineId, station1.getId(), station2.getId(), 10);
 
         // then
         assertSectionConnection(station1, station2, station3, lineId, response);
@@ -80,8 +76,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         Long lineId = getCreatedLineId(station1.getId(), station2.getId());
 
         // when
-        SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
-        ExtractableResponse<Response> response = createSection(lineId, sectionRequest);
+        ExtractableResponse<Response> response = createSection(lineId, station2.getId(), station3.getId(), 10);
 
         // then
         assertSectionConnection(station1, station2, station3, lineId, response);
@@ -94,8 +89,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         Long lineId = getCreatedLineId(station1.getId(), station3.getId());
 
         // when
-        SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
-        ExtractableResponse<Response> response = createSection(lineId, sectionRequest);
+        ExtractableResponse<Response> response = createSection(lineId, station2.getId(), station3.getId(), 10);
 
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
@@ -114,8 +108,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         Long lineId = getCreatedLineId(station1.getId(), station3.getId());
 
         // when
-        SectionRequest sectionRequest = new SectionRequest(station2.getId(), station4.getId(), 10);
-        ExtractableResponse<Response> response = createSection(lineId, sectionRequest);
+        ExtractableResponse<Response> response = createSection(lineId, station2.getId(), station4.getId(), 10);
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         // then
@@ -133,8 +126,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         Long lineId = getCreatedLineId(station1.getId(), station2.getId());
 
         // when
-        SectionRequest sectionRequest = new SectionRequest(station1.getId(), station2.getId(), 10);
-        ExtractableResponse<Response> response = createSection(lineId, sectionRequest);
+        ExtractableResponse<Response> response = createSection(lineId, station1.getId(), station2.getId(), 10);
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         // then
@@ -152,8 +144,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         Long lineId = getCreatedLineId(station1.getId(), station2.getId());
 
         // when
-        SectionRequest sectionRequest = new SectionRequest(station1.getId(), station1.getId(), 10);
-        ExtractableResponse<Response> response = createSection(lineId, sectionRequest);
+        ExtractableResponse<Response> response = createSection(lineId, station1.getId(), station1.getId(), 10);
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         // then
@@ -171,8 +162,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         Long lineId = getCreatedLineId(station1.getId(), station2.getId());
 
         // when
-        SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 0);
-        ExtractableResponse<Response> response = createSection(lineId, sectionRequest);
+        ExtractableResponse<Response> response = createSection(lineId, station2.getId(), station3.getId(), 0);
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         // then
@@ -188,8 +178,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
     void deleteUpperSection() {
         // given
         Long lineId = getCreatedLineId(station1.getId(), station2.getId());
-        SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
-        createSection(lineId, sectionRequest);
+        createSection(lineId, station2.getId(), station3.getId(), 10);
 
         // when
         ExtractableResponse<Response> response = deleteSection(station1, lineId);
@@ -212,8 +201,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
     void deleteMiddleSection() {
         // given
         Long lineId = getCreatedLineId(station1.getId(), station2.getId());
-        SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
-        createSection(lineId, sectionRequest);
+        createSection(lineId, station2.getId(), station3.getId(), 10);
 
         // when
         ExtractableResponse<Response> response = deleteSection(station2, lineId);
@@ -237,9 +225,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
     void deleteLowerSection() {
         // given
         Long lineId = getCreatedLineId(station1.getId(), station2.getId());
-
-        SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
-        createSection(lineId, sectionRequest);
+        createSection(lineId, station2.getId(), station3.getId(), 10);
 
         // when
         ExtractableResponse<Response> response = deleteSection(station3, lineId);
@@ -281,8 +267,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         // given
         StationResponse station4 = createStation(new StationRequest("성수역")).as(StationResponse.class);
         Long lineId = getCreatedLineId(station1.getId(), station2.getId());
-        SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
-        createSection(lineId, sectionRequest);
+        createSection(lineId, station2.getId(), station3.getId(), 10);
 
         // when
         ExtractableResponse<Response> response = deleteSection(station4, lineId);

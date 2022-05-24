@@ -12,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
-import wooteco.subway.ui.dto.SectionRequest;
 import wooteco.subway.ui.dto.StationRequest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -67,9 +66,13 @@ public class AcceptanceTest extends DBTest {
                 .extract();
     }
 
-    ExtractableResponse<Response> createSection(long lineId, SectionRequest sectionRequest) {
+    ExtractableResponse<Response> createSection(long lineId, Long upStationId, Long downStationId, Integer distance) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("upStationId", upStationId);
+        params.put("downStationId", downStationId);
+        params.put("distance", distance);
         return RestAssured.given().log().all()
-                .body(sectionRequest)
+                .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/lines/" + lineId + "/sections")

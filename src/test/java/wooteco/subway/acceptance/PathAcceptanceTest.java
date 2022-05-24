@@ -19,7 +19,6 @@ import org.springframework.http.MediaType;
 import wooteco.subway.ui.dto.ExceptionResponse;
 import wooteco.subway.ui.dto.LineResponse;
 import wooteco.subway.ui.dto.PathResponse;
-import wooteco.subway.ui.dto.SectionRequest;
 import wooteco.subway.ui.dto.StationRequest;
 import wooteco.subway.ui.dto.StationResponse;
 
@@ -44,7 +43,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         lineId = createLine("2호선", "green", stationId1, stationId2, 2, 200)
                 .as(LineResponse.class)
                 .getId();
-        createSection(lineId, new SectionRequest(stationId2, stationId3, 4));
+        createSection(lineId, stationId2, stationId3, 4);
     }
 
     @DisplayName("최단 경로의 지하철 역들과 거리, 운임 비용을 응답한다.")
