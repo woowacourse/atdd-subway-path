@@ -29,7 +29,7 @@ public class PathService {
         final PathCalculator pathCalculator = new PathCalculator(sections);
         final List<Long> stationIds = pathCalculator.findShortestPath(sourceId, targetId);
         final double distance = pathCalculator.findShortestDistance(sourceId, targetId);
-        final double fare = (new Fare()).calculate(distance);
+        final double fare = Fare.calculate(distance);
 
         return PathResponse.from(convertStation(stationIds), distance, fare);
     }
