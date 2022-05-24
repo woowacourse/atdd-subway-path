@@ -5,7 +5,7 @@ public class Fare {
     public Fare() {
     }
 
-    public int calculateFare(int distance, FareStrategy fareStrategy) {
-        return fareStrategy.calculate(distance);
+    public int calculateFare(int distance, int extraFare, FareStrategy fareStrategy) {
+        return extraFare + fareStrategy.calculate(distance);
     }
 }

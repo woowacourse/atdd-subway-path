@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.request.StationRequest;
 import wooteco.subway.dto.response.StationResponse;
-import wooteco.subway.exception.NotFoundStationException;
+import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.service.fakeDao.StationDaoImpl;
 
 public class StationServiceTest {
@@ -45,7 +45,7 @@ public class StationServiceTest {
         final Long invalidStationId = stationResponse.getId() + 1L;
 
         assertThatThrownBy(() -> stationService.deleteStation(invalidStationId))
-                .isInstanceOf(NotFoundStationException.class)
+                .isInstanceOf(NotFoundException.class)
                 .hasMessage("해당하는 역이 존재하지 않습니다.");
     }
 }

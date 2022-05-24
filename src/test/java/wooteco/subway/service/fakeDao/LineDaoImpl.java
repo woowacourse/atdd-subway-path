@@ -8,7 +8,7 @@ import java.util.Optional;
 import org.springframework.util.ReflectionUtils;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.domain.Line;
-import wooteco.subway.exception.NotFoundLineException;
+import wooteco.subway.exception.NotFoundException;
 
 public class LineDaoImpl implements LineDao {
 
@@ -52,7 +52,7 @@ public class LineDaoImpl implements LineDao {
     @Override
     public void updateById(Long id, String name, String color) {
         Line line = findById(id).
-                orElseThrow(() -> new NotFoundLineException("해당하는 노선이 존재하지 않습니다."));
+                orElseThrow(() -> new NotFoundException("해당하는 노선이 존재하지 않습니다."));
         line.setName(name);
         line.setColor(color);
     }

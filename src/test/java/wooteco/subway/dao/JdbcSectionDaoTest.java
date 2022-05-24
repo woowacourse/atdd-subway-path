@@ -29,7 +29,7 @@ public class JdbcSectionDaoTest {
         sectionDao = new JdbcSectionDao(jdbcTemplate, lineDao, stationDao);
         createTables();
 
-        final Line savedLine = lineDao.save(new Line("분당선", "bg-red-600"));
+        final Line savedLine = lineDao.save(new Line("분당선", "bg-red-600", 900));
         final Station savedStation1 = stationDao.save(new Station("지하철역이름"));
         final Station savedStation2 = stationDao.save(new Station("새로운지하철역이름"));
         final Section section = new Section(savedLine, savedStation1, savedStation2, 10);
@@ -51,7 +51,7 @@ public class JdbcSectionDaoTest {
     @DisplayName("지하철 구간을 삭제한다.")
     void delete() {
         // given
-        final Line savedLine = lineDao.save(new Line("신분당선", "bg-blue-600"));
+        final Line savedLine = lineDao.save(new Line("신분당선", "bg-blue-600", 900));
         final Station savedStation1 = stationDao.save(new Station("지하철역"));
         final Station savedStation2 = stationDao.save(new Station("새로운지하철역"));
         final Section savedSection = sectionDao.save(
@@ -73,6 +73,7 @@ public class JdbcSectionDaoTest {
                 + "    id BIGINT AUTO_INCREMENT NOT NULL,\n"
                 + "    name VARCHAR(255) NOT NULL UNIQUE,\n"
                 + "    color VARCHAR(20) NOT NULL,\n"
+                + "    extraFare INT,\n"
                 + "    PRIMARY KEY(id)\n"
                 + ");");
 

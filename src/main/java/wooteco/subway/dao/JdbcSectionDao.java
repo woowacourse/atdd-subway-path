@@ -12,8 +12,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Section;
 import wooteco.subway.entity.SectionEntity;
-import wooteco.subway.exception.NotFoundLineException;
-import wooteco.subway.exception.NotFoundStationException;
+import wooteco.subway.exception.NotFoundException;
 
 @Repository
 public class JdbcSectionDao implements SectionDao {
@@ -71,11 +70,11 @@ public class JdbcSectionDao implements SectionDao {
             SectionEntity sectionEntity = jdbcTemplate.queryForObject(sql, sectionRowMapper, id);
             return new Section(sectionEntity.getId(),
                     lineDao.findById(sectionEntity.getLineId()).
-                            orElseThrow(() -> new NotFoundLineException(NOT_FOUND_LINE_ERROR_MESSAGE)),
+                            orElseThrow(() -> new NotFoundException(NOT_FOUND_LINE_ERROR_MESSAGE)),
                     stationDao.findById(sectionEntity.getUpStationId()).
-                            orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE)),
+                            orElseThrow(() -> new NotFoundException(NOT_FOUND_STATION_ERROR_MESSAGE)),
                     stationDao.findById(sectionEntity.getDownStationId()).
-                            orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE)),
+                            orElseThrow(() -> new NotFoundException(NOT_FOUND_STATION_ERROR_MESSAGE)),
                     sectionEntity.getDistance());
         } catch (EmptyResultDataAccessException e) {
             return null;
@@ -91,11 +90,11 @@ public class JdbcSectionDao implements SectionDao {
             for (SectionEntity entity : sectionEntity) {
                 sections.add(new Section(entity.getId(),
                         lineDao.findById(entity.getLineId()).
-                                orElseThrow(() -> new NotFoundLineException(NOT_FOUND_LINE_ERROR_MESSAGE)),
+                                orElseThrow(() -> new NotFoundException(NOT_FOUND_LINE_ERROR_MESSAGE)),
                         stationDao.findById(entity.getUpStationId()).
-                                orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE)),
+                                orElseThrow(() -> new NotFoundException(NOT_FOUND_STATION_ERROR_MESSAGE)),
                         stationDao.findById(entity.getDownStationId()).
-                                orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE)),
+                                orElseThrow(() -> new NotFoundException(NOT_FOUND_STATION_ERROR_MESSAGE)),
                         entity.getDistance()));
             }
 
@@ -124,11 +123,11 @@ public class JdbcSectionDao implements SectionDao {
                     upStationId);
             return new Section(sectionEntity.getId(),
                     lineDao.findById(sectionEntity.getLineId()).
-                            orElseThrow(() -> new NotFoundLineException(NOT_FOUND_LINE_ERROR_MESSAGE)),
+                            orElseThrow(() -> new NotFoundException(NOT_FOUND_LINE_ERROR_MESSAGE)),
                     stationDao.findById(sectionEntity.getUpStationId()).
-                            orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE)),
+                            orElseThrow(() -> new NotFoundException(NOT_FOUND_STATION_ERROR_MESSAGE)),
                     stationDao.findById(sectionEntity.getDownStationId()).
-                            orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE)),
+                            orElseThrow(() -> new NotFoundException(NOT_FOUND_STATION_ERROR_MESSAGE)),
                     sectionEntity.getDistance());
         } catch (EmptyResultDataAccessException e) {
             return null;
@@ -143,11 +142,11 @@ public class JdbcSectionDao implements SectionDao {
                     downStationId);
             return new Section(sectionEntity.getId(),
                     lineDao.findById(sectionEntity.getLineId()).
-                            orElseThrow(() -> new NotFoundLineException(NOT_FOUND_LINE_ERROR_MESSAGE)),
+                            orElseThrow(() -> new NotFoundException(NOT_FOUND_LINE_ERROR_MESSAGE)),
                     stationDao.findById(sectionEntity.getUpStationId()).
-                            orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE)),
+                            orElseThrow(() -> new NotFoundException(NOT_FOUND_STATION_ERROR_MESSAGE)),
                     stationDao.findById(sectionEntity.getDownStationId()).
-                            orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE)),
+                            orElseThrow(() -> new NotFoundException(NOT_FOUND_STATION_ERROR_MESSAGE)),
                     sectionEntity.getDistance());
         } catch (EmptyResultDataAccessException e) {
             return null;
@@ -162,11 +161,11 @@ public class JdbcSectionDao implements SectionDao {
         for (SectionEntity sectionEntity : sectionEntities) {
             sections.add(new Section(sectionEntity.getId(),
                     lineDao.findById(sectionEntity.getLineId()).
-                            orElseThrow(() -> new NotFoundLineException(NOT_FOUND_LINE_ERROR_MESSAGE)),
+                            orElseThrow(() -> new NotFoundException(NOT_FOUND_LINE_ERROR_MESSAGE)),
                     stationDao.findById(sectionEntity.getUpStationId()).
-                            orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE)),
+                            orElseThrow(() -> new NotFoundException(NOT_FOUND_STATION_ERROR_MESSAGE)),
                     stationDao.findById(sectionEntity.getDownStationId()).
-                            orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE)),
+                            orElseThrow(() -> new NotFoundException(NOT_FOUND_STATION_ERROR_MESSAGE)),
                     sectionEntity.getDistance()));
         }
         return sections;

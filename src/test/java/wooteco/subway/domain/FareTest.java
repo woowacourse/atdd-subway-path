@@ -12,19 +12,19 @@ class FareTest {
     void calculateIfDistanceIsUnderTen() {
         int distance = 9;
         Fare fare = new Fare();
-        int expected = fare.calculateFare(distance, new BasicFareStrategy());
+        int expected = fare.calculateFare(distance, 0, new BasicFareStrategy());
 
         assertThat(expected).isEqualTo(1250);
     }
 
     @Test
-    @DisplayName("10km일 경우 1350을 부과한다.")
+    @DisplayName("10km일 경우 1250을 부과한다.")
     void calculateIfDistanceIsTen() {
         int distance = 10;
         Fare fare = new Fare();
-        int expected = fare.calculateFare(distance, new BasicFareStrategy());
+        int expected = fare.calculateFare(distance, 0, new BasicFareStrategy());
 
-        assertThat(expected).isEqualTo(1350);
+        assertThat(expected).isEqualTo(1250);
     }
 
     @Test
@@ -32,7 +32,7 @@ class FareTest {
     void calculateIfDistanceIsEleven() {
         int distance = 11;
         Fare fare = new Fare();
-        int expected = fare.calculateFare(distance, new BasicFareStrategy());
+        int expected = fare.calculateFare(distance, 0, new BasicFareStrategy());
 
         assertThat(expected).isEqualTo(1350);
     }
@@ -42,7 +42,7 @@ class FareTest {
     void calculateIfDistanceIsFifteen() {
         int distance = 15;
         Fare fare = new Fare();
-        int expected = fare.calculateFare(distance, new BasicFareStrategy());
+        int expected = fare.calculateFare(distance, 0, new BasicFareStrategy());
 
         assertThat(expected).isEqualTo(1350);
     }
@@ -52,7 +52,7 @@ class FareTest {
     void calculateIfDistanceIsSixteen() {
         int distance = 16;
         Fare fare = new Fare();
-        int expected = fare.calculateFare(distance, new BasicFareStrategy());
+        int expected = fare.calculateFare(distance, 0, new BasicFareStrategy());
 
         assertThat(expected).isEqualTo(1450);
     }
@@ -62,7 +62,7 @@ class FareTest {
     void calculateIfDistanceIsTwentyOne() {
         int distance = 21;
         Fare fare = new Fare();
-        int expected = fare.calculateFare(distance, new BasicFareStrategy());
+        int expected = fare.calculateFare(distance, 0, new BasicFareStrategy());
 
         assertThat(expected).isEqualTo(1550);
     }
@@ -72,7 +72,7 @@ class FareTest {
     void calculateIfDistanceIsFortyNine() {
         int distance = 49;
         Fare fare = new Fare();
-        int expected = fare.calculateFare(distance, new BasicFareStrategy());
+        int expected = fare.calculateFare(distance, 0, new BasicFareStrategy());
 
         assertThat(expected).isEqualTo(2050);
     }
@@ -82,7 +82,7 @@ class FareTest {
     void calculateIfDistanceIsFifty() {
         int distance = 50;
         Fare fare = new Fare();
-        int expected = fare.calculateFare(distance, new BasicFareStrategy());
+        int expected = fare.calculateFare(distance, 0, new BasicFareStrategy());
 
         assertThat(expected).isEqualTo(2050);
     }
@@ -92,7 +92,7 @@ class FareTest {
     void calculateIfDistanceIsFiftyEight() {
         int distance = 58;
         Fare fare = new Fare();
-        int expected = fare.calculateFare(distance, new BasicFareStrategy());
+        int expected = fare.calculateFare(distance, 0, new BasicFareStrategy());
 
         assertThat(expected).isEqualTo(2150);
     }
@@ -102,7 +102,7 @@ class FareTest {
     void calculateIfDistanceIsFiftyNine() {
         int distance = 59;
         Fare fare = new Fare();
-        int expected = fare.calculateFare(distance, new BasicFareStrategy());
+        int expected = fare.calculateFare(distance, 0, new BasicFareStrategy());
 
         assertThat(expected).isEqualTo(2250);
     }

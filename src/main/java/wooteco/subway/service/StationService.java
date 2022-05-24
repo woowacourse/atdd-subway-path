@@ -8,7 +8,7 @@ import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.request.StationRequest;
 import wooteco.subway.dto.response.StationResponse;
-import wooteco.subway.exception.NotFoundStationException;
+import wooteco.subway.exception.NotFoundException;
 
 @Transactional
 @Service
@@ -43,7 +43,7 @@ public class StationService {
     @Transactional(readOnly = true)
     public StationResponse findStation(Long id) {
         final Station station = stationDao.findById(id)
-                .orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE));
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_STATION_ERROR_MESSAGE));
         return new StationResponse(station.getId(), station.getName());
     }
 
@@ -54,9 +54,9 @@ public class StationService {
 
     private void checkNotFoundStation(Long id) {
         final Station station = stationDao.findById(id)
-                .orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE));
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_STATION_ERROR_MESSAGE));
         if (station == null) {
-            throw new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE);
+            throw new NotFoundException(NOT_FOUND_STATION_ERROR_MESSAGE);
         }
     }
 }

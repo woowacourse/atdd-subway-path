@@ -15,9 +15,8 @@ import wooteco.subway.domain.Station;
 import wooteco.subway.dto.request.LineRequest;
 import wooteco.subway.dto.request.SectionRequest;
 import wooteco.subway.dto.response.LineResponse;
-import wooteco.subway.exception.DuplicateLineException;
-import wooteco.subway.exception.NotFoundLineException;
-import wooteco.subway.exception.NotFoundStationException;
+import wooteco.subway.exception.DuplicatedException;
+import wooteco.subway.exception.NotFoundException;
 
 @Transactional
 @Service
@@ -43,11 +42,11 @@ public class LineService {
 
     public LineResponse saveLine(LineRequest lineRequest) {
         checkDuplicateLine(lineRequest);
-        final Line line = new Line(lineRequest.getName(), lineRequest.getColor());
+        final Line line = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         final Station upStation = stationDao.findById(lineRequest.getUpStationId()).
-                orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE));
+                orElseThrow(() -> new NotFoundException(NOT_FOUND_STATION_ERROR_MESSAGE));
         final Station downStation = stationDao.findById(lineRequest.getDownStationId()).
-                orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE));
+                orElseThrow(() -> new NotFoundException(NOT_FOUND_STATION_ERROR_MESSAGE));
 
         final Line savedLine = lineDao.save(line);
         final Section section = new Section(savedLine, upStation, downStation,
@@ -73,7 +72,7 @@ public class LineService {
     @Transactional(readOnly = true)
     public LineResponse findLine(Long id) {
         final Line line = lineDao.findById(id).
-                orElseThrow(() -> new NotFoundLineException(NOT_FOUND_LINE_ERROR_MESSAGE));
+                orElseThrow(() -> new NotFoundException(NOT_FOUND_LINE_ERROR_MESSAGE));
         final Sections sections = getSections(line);
 
         return LineResponse.of(line, sections.getStations());
@@ -91,13 +90,13 @@ public class LineService {
 
     public void saveSection(Long lineId, SectionRequest sectionRequest) {
         final Line line = lineDao.findById(lineId).
-                orElseThrow(() -> new NotFoundLineException(NOT_FOUND_LINE_ERROR_MESSAGE));
+                orElseThrow(() -> new NotFoundException(NOT_FOUND_LINE_ERROR_MESSAGE));
         final Sections sections = getSections(line);
 
         final Station upStation = stationDao.findById(sectionRequest.getUpStationId()).
-                orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE));
+                orElseThrow(() -> new NotFoundException(NOT_FOUND_STATION_ERROR_MESSAGE));
         final Station downStation = stationDao.findById(sectionRequest.getDownStationId()).
-                orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE));
+                orElseThrow(() -> new NotFoundException(NOT_FOUND_STATION_ERROR_MESSAGE));
         final int distance = sectionRequest.getDistance();
         Section newSection = new Section(line, upStation, downStation, distance);
 
@@ -113,9 +112,9 @@ public class LineService {
 
     public void deleteSection(Long lineId, Long stationId) {
         final Line line = lineDao.findById(lineId).
-                orElseThrow(() -> new NotFoundLineException(NOT_FOUND_LINE_ERROR_MESSAGE));
+                orElseThrow(() -> new NotFoundException(NOT_FOUND_LINE_ERROR_MESSAGE));
         final Station station = stationDao.findById(stationId).
-                orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE));
+                orElseThrow(() -> new NotFoundException(NOT_FOUND_STATION_ERROR_MESSAGE));
         final Sections sections = getSections(line);
         checkOnlyOneSection(sections);
         checkNotContainStation(sections, station);
@@ -147,12 +146,12 @@ public class LineService {
 
     private void checkNotFoundLine(Long id) {
         lineDao.findById(id).
-                orElseThrow(() -> new NotFoundLineException(NOT_FOUND_LINE_ERROR_MESSAGE));
+                orElseThrow(() -> new NotFoundException(NOT_FOUND_LINE_ERROR_MESSAGE));
     }
 
     private void checkDuplicateLine(LineRequest lineRequest) {
         if (lineDao.hasLine(lineRequest.getName())) {
-            throw new DuplicateLineException(DUPLICATE_LINE_ERROR_MESSAGE);
+            throw new DuplicatedException(DUPLICATE_LINE_ERROR_MESSAGE);
         }
     }
 
@@ -163,14 +162,14 @@ public class LineService {
 
     private void checkNotContainStation(Sections sections, Station station) {
         if (!sections.hasStation(station)) {
-            throw new NotFoundStationException(NOT_FOUND_STATION_DELETE_ERROR_MESSAGE);
+            throw new NotFoundException(NOT_FOUND_STATION_DELETE_ERROR_MESSAGE);
         }
     }
 
     private void checkSectionHasNotAnyStation(Sections sections, Station upStation,
             Station downStation) {
         if (!sections.hasStation(upStation) && !sections.hasStation(downStation)) {
-            throw new NotFoundStationException(SECTION_HAS_NOT_ANY_STATION_ERROR_MESSAGE);
+            throw new NotFoundException(SECTION_HAS_NOT_ANY_STATION_ERROR_MESSAGE);
         }
     }
 

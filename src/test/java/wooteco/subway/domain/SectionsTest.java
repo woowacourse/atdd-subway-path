@@ -12,7 +12,7 @@ class SectionsTest {
     @Test
     @DisplayName("sections 가 정렬되었는지 확인한다.")
     void sort() {
-        Line 일호선 = new Line("1호선", "bg-blue-200");
+        Line 일호선 = new Line("1호선", "bg-blue-200", 900);
         Station 성수 = new Station(1L, "성수");
         Station 건대입구 = new Station(2L, "건대입구");
         Station 구의 = new Station(3L, "구의");

@@ -9,10 +9,11 @@ import wooteco.subway.domain.BasicFareStrategy;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
+import wooteco.subway.domain.ShortestPathEdge;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.request.PathRequest;
 import wooteco.subway.dto.response.PathResponse;
-import wooteco.subway.exception.NotFoundStationException;
+import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.utils.Jgrapht;
 
 @Service
@@ -30,19 +31,20 @@ public class PathService {
 
     public PathResponse createShortestPath(PathRequest pathRequest) {
         Station source = stationDao.findById(pathRequest.getSource())
-                .orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE));
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_STATION_ERROR_MESSAGE));
         Station target = stationDao.findById(pathRequest.getTarget())
-                .orElseThrow(() -> new NotFoundStationException(NOT_FOUND_STATION_ERROR_MESSAGE));
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_STATION_ERROR_MESSAGE));
 
         List<Section> sections = sectionDao.findAll();
-        DijkstraShortestPath shortestPath = Jgrapht.initSectionGraph(sections);
+        DijkstraShortestPath<Station, ShortestPathEdge> shortestPath = Jgrapht.initSectionGraph(sections);
         List<Station> stations = Jgrapht.createShortestPath(shortestPath, source, target);
         int distance = Jgrapht.calculateDistance(shortestPath, source, target);
+        int extraFare = Jgrapht.calculateExtraFare(shortestPath, source, target);
 
         Path path = new Path(stations, distance);
         Fare fare = new Fare();
 
-        return new PathResponse(path, fare.calculateFare(distance, new BasicFareStrategy()));
+        return new PathResponse(path, fare.calculateFare(distance, extraFare, new BasicFareStrategy()));
     }
 
 }

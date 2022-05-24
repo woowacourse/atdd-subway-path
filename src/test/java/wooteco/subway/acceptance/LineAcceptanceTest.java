@@ -27,25 +27,25 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private final String lineName = "신분당선";
     private final String lineColor = "bg-red-600";
     private final int distance = 10;
+    private final int extraFare = 900;
 
     @DisplayName("지하철노선을 생성한다.")
     @Test
     void create() {
         // given
         ExtractableResponse<Response> createStation1 = createData("/stations", new Station("지하철역"));
-        ExtractableResponse<Response> createStation2 = createData("/stations",
-                new Station("새로운지하철역"));
+        ExtractableResponse<Response> createStation2 = createData("/stations", new Station("새로운지하철역"));
         final LineRequest lineRequest = new LineRequest(lineName, lineColor,
-                getLocationId(createStation1), getLocationId(createStation2), distance);
+                getLocationId(createStation1), getLocationId(createStation2), distance, extraFare);
 
         // when
         ExtractableResponse<Response> createResponse = createData("/lines", lineRequest);
 
         // then
         checkProperResponseStatus(createResponse, HttpStatus.CREATED);
-        Line line = new Line(getLocationId(createResponse), lineName, lineColor);
+        Line line = new Line(getLocationId(createResponse), lineName, lineColor, extraFare);
         checkProperData("/lines/" + getLocationId(createResponse),
-                new Line(lineName, lineColor),
+                new Line(lineName, lineColor, extraFare),
                 new Station(getLocationId(createStation1), "지하철역"),
                 new Station(getLocationId(createStation2), "새로운지하철역"));
     }
@@ -54,14 +54,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLineWithDuplicateName() {
         // given
-        final Line line = new Line(lineName, lineColor);
-        createData("/lines", line);
+        ExtractableResponse<Response> createStation1 = createData("/stations", new Station("지하철역"));
+        ExtractableResponse<Response> createStation2 = createData("/stations", new Station("새로운지하철역"));
+        final LineRequest lineRequest = new LineRequest(lineName, lineColor,
+                getLocationId(createStation1), getLocationId(createStation2), distance, extraFare);
+        createData("/lines", lineRequest);
 
         // when
-        ExtractableResponse<Response> createResponse = createData("/lines", line);
+        ExtractableResponse<Response> createResponse = createData("/lines", lineRequest);
 
         // then
-        checkProperResponseStatus(createResponse, HttpStatus.NOT_FOUND);
+        checkProperResponseStatus(createResponse, HttpStatus.BAD_REQUEST);
     }
 
     @DisplayName("지하철노선 목록을 조회한다.")
@@ -72,13 +75,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createStation2 = createData("/stations",
                 new Station("새로운지하철역"));
         final LineRequest lineRequest1 = new LineRequest(lineName, lineColor,
-                getLocationId(createStation1), getLocationId(createStation2), distance);
+                getLocationId(createStation1), getLocationId(createStation2), distance, extraFare);
         ExtractableResponse<Response> createResponse1 = createData("/lines", lineRequest1);
 
         ExtractableResponse<Response> createStation3 = createData("/stations",
                 new Station("또다른지하철역"));
         final LineRequest lineRequest2 = new LineRequest("분당선", "bg-green-600",
-                getLocationId(createStation1), getLocationId(createStation3), distance);
+                getLocationId(createStation1), getLocationId(createStation3), distance, extraFare);
         ExtractableResponse<Response> createResponse2 = createData("/lines", lineRequest2);
 
         // when
@@ -99,7 +102,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createStation2 = createData("/stations",
                 new Station("새로운지하철역"));
         final LineRequest lineRequest = new LineRequest(lineName, lineColor,
-                getLocationId(createStation1), getLocationId(createStation2), distance);
+                getLocationId(createStation1), getLocationId(createStation2), distance, extraFare);
         ExtractableResponse<Response> createResponse = createData("/lines", lineRequest);
 
         // when
@@ -118,7 +121,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createStation2 = createData("/stations",
                 new Station("새로운지하철역"));
         final LineRequest lineRequest = new LineRequest(lineName, lineColor,
-                getLocationId(createStation1), getLocationId(createStation2), distance);
+                getLocationId(createStation1), getLocationId(createStation2), distance, extraFare);
         ExtractableResponse<Response> createResponse = createData("/lines", lineRequest);
 
         // when
@@ -131,7 +134,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // then
         checkProperResponseStatus(modifyResponse, HttpStatus.OK);
         checkProperData("/lines/" + getLocationId(createResponse),
-                new Line(newName, newColor),
+                new Line(newName, newColor, extraFare),
                 new Station(getLocationId(createStation1), "지하철역"),
                 new Station(getLocationId(createStation2), "새로운지하철역"));
     }
@@ -144,7 +147,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createStation2 = createData("/stations",
                 new Station("새로운지하철역"));
         final LineRequest lineRequest = new LineRequest(lineName, lineColor,
-                getLocationId(createStation1), getLocationId(createStation2), distance);
+                getLocationId(createStation1), getLocationId(createStation2), distance, extraFare);
         ExtractableResponse<Response> createResponse = createData("/lines", lineRequest);
 
         // when
@@ -161,6 +164,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .body("id", equalTo(Integer.parseInt(url.split("/")[2])))
                 .body("name", equalTo(line.getName()))
                 .body("color", equalTo(line.getColor()))
+                .body("extraFare", equalTo(line.getExtraFare()))
                 .body("stations[0].id", equalTo(upStation.getId().intValue()))
                 .body("stations[0].name", equalTo(upStation.getName()))
                 .body("stations[1].id", equalTo(downStation.getId().intValue()))
