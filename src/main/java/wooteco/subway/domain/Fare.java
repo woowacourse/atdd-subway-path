@@ -35,11 +35,11 @@ public enum Fare {
                 .orElse(0);
     }
 
-    private static int calculateByArea(final double distance) {
+    private static int calculateByArea(final int distance) {
         return AREA_0.defaultFare + calculateMoreFare(distance, AREA_1) + calculateMoreFare(distance, AREA_2);
     }
 
-    private static int calculateMoreFare(final double distance, final Fare fare) {
+    private static int calculateMoreFare(final int distance, final Fare fare) {
         if (distance <= fare.overLimitOfDistance) {
             return fare.defaultFare;
         }
@@ -47,7 +47,7 @@ public enum Fare {
         return portion * fare.additionalFare;
     }
 
-    private static double calculateDistance(final double distance, final Fare fare) {
+    private static int calculateDistance(final int distance, final Fare fare) {
         if (distance >= fare.underLimitOfDistance) {
             return fare.underLimitOfDistance - fare.overLimitOfDistance;
         }
