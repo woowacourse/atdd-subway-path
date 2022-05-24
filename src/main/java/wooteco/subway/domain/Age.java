@@ -1,6 +1,6 @@
-package wooteco.subway;
+package wooteco.subway.domain;
 
-import static wooteco.subway.Age.Constant.*;
+import static wooteco.subway.domain.Age.Constant.*;
 
 import java.util.Arrays;
 import java.util.function.Predicate;

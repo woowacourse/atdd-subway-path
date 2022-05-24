@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.Age;
+import wooteco.subway.domain.Age;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;

@@ -1,7 +1,5 @@
 package wooteco.subway.domain;
 
-import wooteco.subway.Age;
-
 public class Fare {
 
     private static final int BASIC_FARE = 1250;
