@@ -55,7 +55,7 @@ public class Fare {
     }
 
     private int calculateDiscountedFare(int fare, int discountRate) {
-        return ((fare - DEDUCTED_FEE) * discountRate) / 100 + DEDUCTED_FEE;
+        return ((fare - DEDUCTED_FEE) * discountRate) / 100;
     }
 
     private boolean isChildren(int age) {

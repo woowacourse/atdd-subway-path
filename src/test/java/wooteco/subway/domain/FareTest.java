@@ -31,7 +31,7 @@ public class FareTest {
         int result = fare.calculateFare();
 
         // then
-        assertThat(result).isEqualTo(800);
+        assertThat(result).isEqualTo(450);
     }
 
     @Test
@@ -44,7 +44,7 @@ public class FareTest {
         int result = fare.calculateFare();
 
         // then
-        assertThat(result).isEqualTo(1070);
+        assertThat(result).isEqualTo(720);
     }
 
     @Test
