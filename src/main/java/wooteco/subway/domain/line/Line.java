@@ -37,6 +37,14 @@ public class Line {
         this(null, name, color, extraFare, null);
     }
 
+    public void addSection(Section section) {
+        sections.addSection(section);
+    }
+
+    public void deleteStation(Station station) {
+        sections.deleteStation(station);
+    }
+
     public Long getId() {
         return id;
     }
@@ -51,14 +59,6 @@ public class Line {
 
     public Fare getExtraFare() {
         return extraFare;
-    }
-
-    public void addSection(Section section) {
-        sections.addSection(section);
-    }
-
-    public void deleteStation(Station station) {
-        sections.deleteStation(station);
     }
 
     public Sections getSections() {

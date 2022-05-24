@@ -6,6 +6,7 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.fare.Age;
 import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.path.pathfinder.DijkstraShortestPathFinder;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.PathResponse;
@@ -13,6 +14,8 @@ import wooteco.subway.exception.NotFoundStationException;
 
 @Service
 public class PathService {
+
+    private static final DijkstraShortestPathFinder PATH_FINDER = new DijkstraShortestPathFinder();
 
     private final SectionDao sectionDao;
     private final StationDao stationDao;
@@ -23,12 +26,13 @@ public class PathService {
     }
 
     public PathResponse getPath(Long sourceStationId, Long targetStationId, Integer ageValue) {
-        List<Section> sections = sectionDao.findAll();
+        List<Section> allSections = sectionDao.findAll();
 
         Station departure = stationDao.findById(sourceStationId).orElseThrow(NotFoundStationException::new);
         Station arrival = stationDao.findById(targetStationId).orElseThrow(NotFoundStationException::new);
         Age age = new Age(ageValue);
 
-        return new PathResponse(new Path(sections, departure, arrival, age));
+        Path path = PATH_FINDER.getPath(allSections, departure, arrival);
+        return PathResponse.of(path, path.getFare(age));
     }
 }
