@@ -58,8 +58,8 @@ public class Section {
         return upStationId == id;
     }
 
-    public int subtractDistance(int distance) {
-        return this.distance - distance;
+    public int getLineExtraFare() {
+        return line.getExtraFare();
     }
 
     @Override

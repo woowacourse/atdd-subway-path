@@ -5,6 +5,7 @@ import static wooteco.subway.service.ServiceTestFixture.deleteAllLine;
 import static wooteco.subway.service.ServiceTestFixture.deleteAllStation;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
@@ -55,7 +56,36 @@ class PathServiceTest {
     }
 
     @Test
-    void findShortestPath() {
+    @DisplayName("출발역과 도착역 Id를 입력한 후, 최단 경로를 조회한다.")
+    void findShortestPath1() {
+        // given
+        Long savedId1 = stationRepository.save(new Station("교대역"));
+        Long savedId2 = stationRepository.save(new Station("강남역"));
+        Long savedId3 = stationRepository.save(new Station("역삼역"));
+
+        Line line = new Line("2호선", "green", 0);
+        Long savedLineId = lineRepository.save(line);
+        Line insertLine = new Line(savedLineId, line.getName(), line.getColor(), line.getExtraFare());
+
+        Section section1 = new Section(insertLine, savedId1, savedId2, 3);
+        Section section2 = new Section(insertLine, savedId2, savedId3, 4);
+
+        sectionRepository.save(section1);
+        sectionRepository.save(section2);
+        PathServiceRequest pathServiceRequest = new PathServiceRequest(savedId1, savedId3, 20);
+
+        // when
+        PathResponse result = pathService.findShortestPath(pathServiceRequest);
+
+        // then
+        assertThat(result.getStations().size()).isEqualTo(3);
+        assertThat(result.getFare()).isEqualTo(1250);
+        assertThat(result.getDistance()).isEqualTo(7);
+    }
+
+    @Test
+    @DisplayName("출발역과 도착역 Id를 입력한 후, 최단 경로를 조회한다.")
+    void findShortestPath2() {
         // given
         Long savedId1 = stationRepository.save(new Station("교대역"));
         Long savedId2 = stationRepository.save(new Station("강남역"));

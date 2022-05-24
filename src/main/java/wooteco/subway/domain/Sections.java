@@ -66,7 +66,6 @@ public class Sections {
     }
 
     private List<Section> updateUpStationSection(Section section) {
-        // 1-2-3 > 1-2-4-3 -> 2-3제거 , 2-4추가 4-3추가
         Section sectionByUpStation = findSectionByDownStationId(section.getDownStationId());
         int distance = sectionByUpStation.getDistance() - section.getDistance();
         Section updateSection = new Section(sectionByUpStation.getLine(),
@@ -176,5 +175,12 @@ public class Sections {
 
     public List<Section> getSections() {
         return Collections.unmodifiableList(sections);
+    }
+
+    public int findChargePrice() {
+        return sections.stream()
+            .mapToInt(Section::getLineExtraFare)
+            .max()
+            .orElseThrow(() -> new IllegalArgumentException("Line 추가 요금 금액을 찾을 수 없습니다."));
     }
 }

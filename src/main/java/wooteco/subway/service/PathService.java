@@ -3,6 +3,7 @@ package wooteco.subway.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import wooteco.subway.domain.ClientFare;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.ShortestPath;
@@ -26,20 +27,15 @@ public class PathService {
     }
 
     public PathResponse findShortestPath(PathServiceRequest pathRequest) {
-        ShortestPath shortestPath = getShortestPath();
+        Sections sections = new Sections(sectionRepository.findAll());
+        ShortestPath shortestPath =  new ShortestPath(sections);
 
         List<StationResponse> stations = getShortestPathStations(pathRequest, shortestPath);
-        Fare fare = new Fare();
         int shortestDistance = shortestPath.findShortestDistance(pathRequest.getSource(),
             pathRequest.getTarget());
-        int fee = fare.calculate(shortestDistance);
+        ClientFare clientFare = new ClientFare(pathRequest.getAge(), sections, shortestDistance);
 
-        return new PathResponse(stations, shortestDistance, fee);
-    }
-
-    private ShortestPath getShortestPath() {
-        Sections sections = new Sections(sectionRepository.findAll());
-        return new ShortestPath(sections);
+        return new PathResponse(stations, shortestDistance, clientFare.calculateFare());
     }
 
     private List<StationResponse> getShortestPathStations(PathServiceRequest pathRequest, ShortestPath shortestPath) {
