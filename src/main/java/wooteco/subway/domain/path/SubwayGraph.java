@@ -11,7 +11,7 @@ import wooteco.subway.domain.element.Line;
 import wooteco.subway.domain.element.Section;
 import wooteco.subway.domain.element.Station;
 
-public class SubwayGraph {
+public class SubwayGraph implements Graph {
 
     private final DijkstraShortestPath<Station, LineWeightEdge> path;
 
@@ -31,6 +31,7 @@ public class SubwayGraph {
         return new DijkstraShortestPath<>(graph);
     }
 
+    @Override
     public List<Station> getShortestRoute(Station source, Station target) {
         GraphPath<Station, LineWeightEdge> result = path.getPath(source, target);
         validateRoute(result);
@@ -43,10 +44,12 @@ public class SubwayGraph {
         }
     }
 
+    @Override
     public int getShortestDistance(Station source, Station target) {
         return (int) path.getPath(source, target).getWeight();
     }
 
+    @Override
     public List<Line> getLines(Station source, Station target) {
         Set<Line> lines = new HashSet<>();
         for (LineWeightEdge edge : path.getPath(source, target).getEdgeList()) {

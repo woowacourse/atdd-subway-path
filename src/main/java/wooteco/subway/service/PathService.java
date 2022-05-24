@@ -7,8 +7,8 @@ import wooteco.subway.domain.element.Station;
 import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.fare.PolicyFactory;
 import wooteco.subway.domain.fare.policy.FarePolicy;
+import wooteco.subway.domain.path.GraphFactory;
 import wooteco.subway.domain.path.Path;
-import wooteco.subway.domain.path.SubwayGraph;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
 import wooteco.subway.service.dto.request.PathsRequest;
@@ -27,10 +27,10 @@ public class PathService {
     }
 
     public PathResponse showPaths(PathsRequest pathsRequest) {
-        SubwayGraph graph = new SubwayGraph(sectionRepository.findAll());
-        Station source = stationRepository.findById(pathsRequest.getSource());
-        Station target = stationRepository.findById(pathsRequest.getTarget());
-        return toPathResponse(Path.create(graph, source, target), pathsRequest.getAge());
+        Path path = Path.create(GraphFactory.getGraph(sectionRepository.findAll()),
+                stationRepository.findById(pathsRequest.getSource()),
+                stationRepository.findById(pathsRequest.getTarget()));
+        return toPathResponse(path, pathsRequest.getAge());
     }
 
     private PathResponse toPathResponse(Path path, int age) {

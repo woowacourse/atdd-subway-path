@@ -15,7 +15,7 @@ public class Path {
         this.lines = lines;
     }
 
-    public static Path create(SubwayGraph graph, Station source, Station target) {
+    public static Path create(Graph graph, Station source, Station target) {
         return new Path(graph.getShortestRoute(source, target),
                 graph.getShortestDistance(source, target),
                 graph.getLines(source, target)
