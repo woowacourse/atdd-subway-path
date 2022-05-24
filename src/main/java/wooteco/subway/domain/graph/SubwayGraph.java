@@ -31,8 +31,8 @@ public class SubwayGraph {
         for (Section section : sections.getSections()) {
             Station upStation = section.getUpStation();
             Station downStation = section.getDownStation();
-            subwayGraph.addEdge(upStation, downStation,
-                    new ShortestPathEdge(section.getLineId(), section.getDistance()));
+            ShortestPathEdge edge = new ShortestPathEdge(section.getLineId(), section.getDistance());
+            subwayGraph.addEdge(upStation, downStation, edge);
         }
     }
 
