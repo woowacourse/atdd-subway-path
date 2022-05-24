@@ -2,9 +2,9 @@ package wooteco.subway.domain.strategy.fare;
 
 import java.util.List;
 import wooteco.subway.domain.strategy.fare.discount.DiscountManager;
+import wooteco.subway.domain.strategy.fare.discount.DiscountManagerFactory;
 import wooteco.subway.domain.strategy.fare.distance.DistanceFareManager;
 import wooteco.subway.domain.strategy.fare.distance.DistanceFareManagerFactory;
-import wooteco.subway.domain.strategy.fare.discount.DiscountManagerFactory;
 
 public class FarePolicyImpl extends FarePolicy {
 

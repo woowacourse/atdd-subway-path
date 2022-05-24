@@ -16,6 +16,6 @@ public class SecondDistanceFareStrategy implements DistanceFareStrategy {
 
     @Override
     public boolean isUsable(int distance) {
-        return FIRST_INTERVAL_MAX_DISTANCE < distance && distance <= SECOND_INTERVAL_MAX_DISTANCE;
+        return FIRST_INTERVAL_MAX_DISTANCE < distance;
     }
 }

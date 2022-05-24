@@ -12,6 +12,6 @@ public class FirstDistanceFareStrategy implements DistanceFareStrategy {
     }
 
     public boolean isUsable(int distance) {
-        return FIRST_INTERVAL_DISTANCE_MINIMUM <= distance && distance <= FIRST_INTERVAL_DISTANCE_MAXIMUM;
+        return FIRST_INTERVAL_DISTANCE_MINIMUM <= distance;
     }
 }
