@@ -12,9 +12,34 @@ public class Path {
     private final int distance;
 
     public Path(List<Station> stations, List<Line> lines, int distance) {
+        validate(stations, lines, distance);
         this.stations = stations;
         this.lines = lines;
         this.distance = distance;
+    }
+
+    private void validate(List<Station> stations, List<Line> lines, int distance) {
+        validateStations(stations);
+        validateLines(lines);
+        validateDistance(distance);
+    }
+
+    private void validateStations(List<Station> stations) {
+        if (stations == null || stations.stream().anyMatch(Objects::isNull)) {
+            throw new IllegalArgumentException("지나간 역들은 null일 수 없습니다.");
+        }
+    }
+
+    private void validateLines(List<Line> lines) {
+        if (lines == null || lines.stream().anyMatch(Objects::isNull)) {
+            throw new IllegalArgumentException("지나간 노선들은 null일 수 없습니다.");
+        }
+    }
+
+    private void validateDistance(int distance) {
+        if (distance <= 0) {
+            throw new IllegalArgumentException("경로 거리는 1보다 작을 수 없습니다.");
+        }
     }
 
     public int getMostExpensiveExtraFare() {
