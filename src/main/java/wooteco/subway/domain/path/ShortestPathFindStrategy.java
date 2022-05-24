@@ -1,8 +1,8 @@
 package wooteco.subway.domain.path;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 import wooteco.subway.domain.Sections;
@@ -13,16 +13,20 @@ import wooteco.subway.exception.NotFoundStationException;
 public class ShortestPathFindStrategy implements PathFindStrategy {
 
     @Override
-    public List<Long> findPath(final Sections sections, final long sourceId, final long targetId) {
-        final WeightedMultigraph<Long, DefaultWeightedEdge> graph = getSubwayGraph(sections);
+    public FindPathResult findPath(final Sections sections, final long sourceId, final long targetId) {
+        final WeightedMultigraph<Long, SubwayPathEdge> graph = getSubwayGraph(sections);
 
-        final DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        final DijkstraShortestPath<Long, SubwayPathEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
-        return findShortestPath(sourceId, targetId, dijkstraShortestPath);
+        final List<Long> stationIds = findShortestPath(sourceId, targetId, dijkstraShortestPath);
+        final List<Long> usedLineIds = findUsedLineIds(sourceId, targetId, dijkstraShortestPath);
+        final int totalDistance = findTotalDistance(sourceId, targetId, dijkstraShortestPath);
+
+        return new FindPathResult(stationIds, usedLineIds, totalDistance);
     }
 
-    private static List<Long> findShortestPath(final long sourceId, final long targetId,
-                                               final DijkstraShortestPath<Long, DefaultWeightedEdge> shortestPath) {
+    private List<Long> findShortestPath(final long sourceId, final long targetId,
+                                               final DijkstraShortestPath<Long, SubwayPathEdge> shortestPath) {
 
         try {
             return shortestPath.getPath(sourceId, targetId).getVertexList();
@@ -34,19 +38,38 @@ public class ShortestPathFindStrategy implements PathFindStrategy {
         }
     }
 
-    private static WeightedMultigraph<Long, DefaultWeightedEdge> getSubwayGraph(final Sections sections) {
-        final WeightedMultigraph<Long, DefaultWeightedEdge> graph
-                = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-
+    private static WeightedMultigraph<Long, SubwayPathEdge> getSubwayGraph(final Sections sections) {
+        final WeightedMultigraph<Long, SubwayPathEdge> graph
+                = new WeightedMultigraph<>(SubwayPathEdge.class);
         final List<Long> stationIds = sections.getStationIds();
         stationIds.forEach(graph::addVertex);
 
         sections.getSections().forEach(
-                section -> graph.setEdgeWeight(
-                        graph.addEdge(section.getUpStationId(), section.getDownStationId()),
-                        section.getDistance()
+                section -> graph.addEdge(
+                        section.getUpStationId(),
+                        section.getDownStationId(),
+                        new SubwayPathEdge(section.getLineId(), section.getDistance())
                 )
         );
         return graph;
+    }
+
+    private List<Long> findUsedLineIds(final long sourceId, final long targetId,
+                                       final DijkstraShortestPath<Long, SubwayPathEdge> shortestPath) {
+        return shortestPath.getPath(sourceId, targetId)
+                .getEdgeList()
+                .stream()
+                .map(SubwayPathEdge::getLineId)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    private int findTotalDistance(final long sourceId, final long targetId,
+                                  final DijkstraShortestPath<Long, SubwayPathEdge> shortestPath) {
+        return shortestPath.getPath(sourceId, targetId)
+                .getEdgeList()
+                .stream()
+                .mapToInt(SubwayPathEdge::getDistance)
+                .sum();
     }
 }

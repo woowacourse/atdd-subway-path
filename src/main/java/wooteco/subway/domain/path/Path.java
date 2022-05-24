@@ -13,20 +13,22 @@ import wooteco.subway.exception.NotFoundStationException;
 
 public class Path {
 
-    private final LinkedList<Section> path;
+    private final List<Long> shortestStationIds;
+    private final List<Long> usedLineIds;
+    private final int totalDistance;
 
 
-    private Path(final LinkedList<Section> path) {
-        this.path = path;
+    private Path(final List<Long> shortestStationIds, final List<Long> usedLineIds, final int totalDistance) {
+        this.shortestStationIds = shortestStationIds;
+        this.usedLineIds = usedLineIds;
+        this.totalDistance = totalDistance;
     }
 
     public static Path of(final Sections sections, final long sourceId, final long targetId,
                           final PathFindStrategy pathFindStrategy) {
         validateMovement(sourceId, targetId);
-        final List<Long> shortestPath = pathFindStrategy.findPath(sections, sourceId, targetId);
-
-        final LinkedList<Section> path = toSections(sections, shortestPath);
-        return new Path(path);
+        final FindPathResult pathResult = pathFindStrategy.findPath(sections, sourceId, targetId);
+        return new Path(pathResult.getStationIds(), pathResult.getUsedLineIds(), pathResult.getTotalDistance());
     }
 
     private static void validateMovement(final long sourceId, final long targetId) {
@@ -35,32 +37,15 @@ public class Path {
         }
     }
 
-    private static LinkedList<Section> toSections(final Sections sections, final List<Long> shortestPath) {
-        final LinkedList<Section> path = new LinkedList<>();
+    public List<Long> getStationIds() {
+        return Collections.unmodifiableList(shortestStationIds);
+    }
 
-        for (int i = 0; i < shortestPath.size() - 1; i++) {
-            path.add(sections.findSection(shortestPath.get(i), shortestPath.get(i + 1)));
-        }
-        return path;
+    public List<Long> getUsedLineIds() {
+        return Collections.unmodifiableList(usedLineIds);
     }
 
     public int getTotalDistance() {
-        return path.stream()
-                .mapToInt(Section::getDistance)
-                .sum();
-    }
-
-    public List<Long> getStationIds(long sourceId, final long targetId) {
-        final List<Long> stationIds = new LinkedList<>();
-        for (Section section : path) {
-            stationIds.add(sourceId);
-            sourceId = section.getOppositeStation(sourceId);
-        }
-        stationIds.add(targetId);
-        return stationIds;
-    }
-
-    public List<Section> getSections() {
-        return Collections.unmodifiableList(path);
+        return totalDistance;
     }
 }

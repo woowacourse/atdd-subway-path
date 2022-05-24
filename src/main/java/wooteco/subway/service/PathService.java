@@ -44,7 +44,7 @@ public class PathService {
         final Path shortestPath = createPath(pathRequest);
         final Fare fare = calculateFare(pathRequest, shortestPath);
 
-        final List<Long> stationIds = shortestPath.getStationIds(pathRequest.getSource(), pathRequest.getTarget());
+        final List<Long> stationIds = shortestPath.getStationIds();
         final List<StationResponse> stations = stationService.findByStationIds(stationIds);
         return new PathResponse(stations, shortestPath.getTotalDistance(), fare.getValue());
     }
@@ -60,7 +60,7 @@ public class PathService {
     }
 
     private Fare calculateFare(final PathRequest pathRequest, final Path shortestPath) {
-        final int maxExtraFare = getMaxExtraFare(shortestPath.getSections());
+        final int maxExtraFare = getMaxExtraFare(shortestPath.getUsedLineIds());
         return Fare.of(
                 shortestPath.getTotalDistance(),
                 maxExtraFare,
@@ -69,11 +69,7 @@ public class PathService {
         );
     }
 
-    private int getMaxExtraFare(final List<Section> sections) {
-        final List<Long> lineIds = sections.stream()
-                .map(Section::getLineId)
-                .collect(Collectors.toList());
-
+    private int getMaxExtraFare(final List<Long> lineIds) {
         final List<Line> allLines = lineDao.findAll();
         return allLines.stream()
                 .filter(line -> lineIds.contains(line.getId()))
