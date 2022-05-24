@@ -15,24 +15,27 @@ import wooteco.subway.dto.request.UpdateLineRequest;
 import wooteco.subway.dto.response.LineResponse;
 import wooteco.subway.exception.ExceptionType;
 import wooteco.subway.exception.NotFoundException;
+import wooteco.subway.repository.LineRepository;
+import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
-import wooteco.subway.repository.SubwayRepository;
 
 @Service
 public class LineService {
 
     private static final String DUPLICATE_LINE_NAME_EXCEPTION_MESSAGE = "중복되는 이름의 지하철 노선이 존재합니다.";
 
-    private final SubwayRepository subwayRepository;
+    private final LineRepository lineRepository;
+    private final SectionRepository sectionRepository;
     private final StationRepository stationRepository;
 
-    public LineService(SubwayRepository subwayRepository, StationRepository stationRepository) {
-        this.subwayRepository = subwayRepository;
+    public LineService(LineRepository lineRepository, SectionRepository sectionRepository, StationRepository stationRepository) {
+        this.lineRepository = lineRepository;
+        this.sectionRepository = sectionRepository;
         this.stationRepository = stationRepository;
     }
 
     public List<LineResponse> findAll() {
-        return Lines.of(subwayRepository.findAllLines(), subwayRepository.findAllSections())
+        return Lines.of(lineRepository.findAllLines(), sectionRepository.findAllSections())
                 .toSortedList()
                 .stream()
                 .map(LineResponse::of)
@@ -40,8 +43,8 @@ public class LineService {
     }
 
     public LineResponse find(Long id) {
-        LineInfo lineInfo = subwayRepository.findExistingLine(id);
-        Sections sections = new Sections(subwayRepository.findAllSectionsByLineId(id));
+        LineInfo lineInfo = lineRepository.findExistingLine(id);
+        Sections sections = new Sections(sectionRepository.findAllSectionsByLineId(id));
         return LineResponse.of(new Line(lineInfo, sections));
     }
 
@@ -53,7 +56,7 @@ public class LineService {
         Section newSection = new Section(upStation, downStation, lineRequest.getDistance());
 
         LineInfo newLine = new LineInfo(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
-        return LineResponse.of(subwayRepository.saveLine(newLine, newSection));
+        return LineResponse.of(lineRepository.saveLine(newLine, newSection));
     }
 
     @Transactional
@@ -61,24 +64,24 @@ public class LineService {
         String name = lineRequest.getName();
         validateExistingLine(id);
         validateUniqueLineName(name);
-        subwayRepository.updateLine(new LineInfo(id, name, lineRequest.getColor(), lineRequest.getExtraFare()));
+        lineRepository.updateLine(new LineInfo(id, name, lineRequest.getColor(), lineRequest.getExtraFare()));
     }
 
     @Transactional
     public void delete(Long id) {
-        LineInfo line = subwayRepository.findExistingLine(id);
-        subwayRepository.deleteLine(line);
+        LineInfo line = lineRepository.findExistingLine(id);
+        lineRepository.deleteLine(line);
     }
 
     private void validateExistingLine(Long id) {
-        boolean isExistingLine = subwayRepository.checkExistingLine(id);
+        boolean isExistingLine = lineRepository.checkExistingLine(id);
         if (!isExistingLine) {
             throw new NotFoundException(ExceptionType.LINE_NOT_FOUND);
         }
     }
 
     private void validateUniqueLineName(String name) {
-        boolean isDuplicateName = subwayRepository.checkExistingLineName(name);
+        boolean isDuplicateName = lineRepository.checkExistingLineName(name);
         if (isDuplicateName) {
             throw new IllegalArgumentException(DUPLICATE_LINE_NAME_EXCEPTION_MESSAGE);
         }

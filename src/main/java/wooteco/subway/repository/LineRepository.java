@@ -33,7 +33,8 @@ public class LineRepository {
     }
 
     public List<LineInfo> findAllLinesByIds(List<Long> ids) {
-        return lineDao.findAllByIds(ids).stream()
+        return lineDao.findAllByIds(ids)
+                .stream()
                 .map(LineEntity::toDomain)
                 .collect(Collectors.toList());
     }

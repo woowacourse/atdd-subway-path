@@ -9,22 +9,22 @@ import wooteco.subway.domain.section.SectionsManager;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.request.CreateSectionRequest;
 import wooteco.subway.repository.StationRepository;
-import wooteco.subway.repository.SubwayRepository;
+import wooteco.subway.repository.SectionRepository;
 
 @Service
 public class SectionService {
 
-    private final SubwayRepository subwayRepository;
+    private final SectionRepository sectionRepository;
     private final StationRepository stationRepository;
 
-    public SectionService(SubwayRepository subwayRepository, StationRepository stationRepository) {
-        this.subwayRepository = subwayRepository;
+    public SectionService(SectionRepository sectionRepository, StationRepository stationRepository) {
+        this.sectionRepository = sectionRepository;
         this.stationRepository = stationRepository;
     }
 
     @Transactional
     public void save(Long lineId, CreateSectionRequest request) {
-        SectionsManager sectionsManager = new SectionsManager(subwayRepository.findAllSectionsByLineId(lineId));
+        SectionsManager sectionsManager = new SectionsManager(sectionRepository.findAllSectionsByLineId(lineId));
         Station upStation = stationRepository.findExistingStation(request.getUpStationId());
         Station downStation = stationRepository.findExistingStation(request.getDownStationId());
         Section newSection = new Section(upStation, downStation, request.getDistance());
@@ -35,7 +35,7 @@ public class SectionService {
 
     @Transactional
     public void delete(Long lineId, Long stationId) {
-        SectionsManager sectionsManager = new SectionsManager(subwayRepository.findAllSectionsByLineId(lineId));
+        SectionsManager sectionsManager = new SectionsManager(sectionRepository.findAllSectionsByLineId(lineId));
         Sections updatedSections = sectionsManager.delete(stationRepository.findExistingStation(stationId));
 
         updateSectionChanges(sectionsManager, updatedSections, lineId);
@@ -43,7 +43,7 @@ public class SectionService {
 
     private void updateSectionChanges(SectionsManager oldSectionsManager, Sections updatedSections, Long lineId) {
         SectionsCompareResult compareResult = oldSectionsManager.compareDifference(updatedSections);
-        subwayRepository.deleteSections(lineId, compareResult.getOldSections());
-        subwayRepository.saveSections(lineId, compareResult.getNewSections());
+        sectionRepository.deleteSections(lineId, compareResult.getOldSections());
+        sectionRepository.saveSections(lineId, compareResult.getNewSections());
     }
 }

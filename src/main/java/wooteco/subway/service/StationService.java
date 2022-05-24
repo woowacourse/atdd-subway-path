@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.request.StationRequest;
 import wooteco.subway.dto.response.StationResponse;
+import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
-import wooteco.subway.repository.SubwayRepository;
 
 @Service
 public class StationService {
@@ -17,11 +17,11 @@ public class StationService {
     private static final String NAME_NOT_ALLOWED_EXCEPTION_MESSAGE = "해당 이름의 지하철역을 생성할 수 없습니다.";
     private static final String REGISTERED_STATION_EXCEPTION_MESSAGE = "노선에 등록된 역은 제거할 수 없습니다.";
 
-    private final SubwayRepository subwayRepository;
+    private final SectionRepository sectionRepository;
     private final StationRepository stationRepository;
 
-    public StationService(SubwayRepository subwayRepository, StationRepository stationRepository) {
-        this.subwayRepository = subwayRepository;
+    public StationService(SectionRepository sectionRepository, StationRepository stationRepository) {
+        this.sectionRepository = sectionRepository;
         this.stationRepository = stationRepository;
     }
 
@@ -57,7 +57,7 @@ public class StationService {
     }
 
     private void validateUnRegisteredStation(Long id) {
-        boolean isUnRegistered = subwayRepository.findAllSectionsByStationId(id).isEmpty();
+        boolean isUnRegistered = sectionRepository.findAllSectionsByStationId(id).isEmpty();
         if (!isUnRegistered) {
             throw new IllegalArgumentException(REGISTERED_STATION_EXCEPTION_MESSAGE);
         }
