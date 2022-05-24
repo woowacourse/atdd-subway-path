@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,15 +14,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.line.LineRequest;
+import wooteco.subway.dto.section.SectionCreationRequest;
 import wooteco.subway.exception.line.DuplicateLineException;
 import wooteco.subway.exception.line.NoSuchLineException;
-import wooteco.subway.exception.section.NoSuchSectionException;
 
 class LineServiceTest extends ServiceTest {
 
@@ -32,6 +32,9 @@ class LineServiceTest extends ServiceTest {
 
     @InjectMocks
     private LineService lineService;
+
+    @Mock
+    private SectionService sectionService;
 
     private Station upStation;
     private Station downStation;
@@ -52,12 +55,9 @@ class LineServiceTest extends ServiceTest {
         given(lineDao.insert(any(Line.class)))
                 .willReturn(Optional.of(expected));
 
-        given(stationDao.findById(any(Long.class)))
-                .willReturn(Optional.of(upStation))
-                .willReturn(Optional.of(downStation));
-
-        given(sectionDao.insert(any(Section.class)))
-                .willReturn(any(Long.class));
+        final Section section = new Section(1L, expected, upStation, downStation, new Distance(10));
+        given(sectionService.insert(any(SectionCreationRequest.class)))
+                .willReturn(section);
 
         // when
         final Line actual = lineService.create(request);
@@ -93,24 +93,23 @@ class LineServiceTest extends ServiceTest {
     @DisplayName("모든 노선을 조회한다.")
     void FindAll() {
         // given
+        final Line line1 = new Line(1L, LINE_NAME, LINE_COLOR);
+        final Sections sectionsOfLine1 = new Sections(List.of(
+                new Section(line1, upStation, downStation, new Distance(10))
+        ));
+
+        final Line line2 = new Line(2L, "5호선", "bg-blue-600");
+        final Station upStation2 = new Station(3L, "왕십리역");
+        final Station downStation2 = new Station(4L, "답십리역");
+        final Sections sectionsOfLine2 = new Sections(List.of(
+                new Section(line2, upStation2, downStation2, new Distance(10))
+        ));
         final List<Line> expected = List.of(
-                new Line(1L, LINE_NAME, LINE_COLOR),
-                new Line(2L, "5호선", "bg-blue-600")
+                line1.addSections(sectionsOfLine1),
+                line2.addSections(sectionsOfLine2)
         );
         given(lineDao.findAll())
                 .willReturn(expected);
-
-        final List<Station> expectedStations1 = List.of(
-                upStation,
-                downStation
-        );
-        final List<Station> expectedStations2 = List.of(
-                new Station(3L, "왕십리역"),
-                new Station(4L, "답십리역")
-        );
-        given(stationDao.findAllByLineId(any(Long.class)))
-                .willReturn(expectedStations1)
-                .willReturn(expectedStations2);
 
         // when
         final List<Line> actual = lineService.findAll();
@@ -144,15 +143,12 @@ class LineServiceTest extends ServiceTest {
         // given
         final long id = 1L;
         final Line expected = new Line(id, LINE_NAME, LINE_COLOR);
-
-        given(lineDao.findById(any(Long.class)))
-                .willReturn(Optional.of(expected));
-
         final Sections sections = new Sections(List.of(
                 new Section(1L, expected, upStation, downStation, new Distance(10))
         ));
-        given(sectionDao.findAllByLineId(any(Long.class)))
-                .willReturn(sections);
+
+        given(lineDao.findById(any(Long.class)))
+                .willReturn(Optional.of(expected.addSections(sections)));
 
         // when
         final Line actual = lineService.findById(id);
@@ -181,23 +177,6 @@ class LineServiceTest extends ServiceTest {
         // when
         assertThatThrownBy(() -> lineService.findById(id))
                 .isInstanceOf(NoSuchLineException.class);
-    }
-
-    @Test
-    @DisplayName("노선에 해당하는 역이 존재하지 않으면 예외를 던진다.")
-    void FindById_EmptyStations_ExceptionThrown() {
-        // given
-        final Line line = new Line(1L, LINE_NAME, LINE_COLOR);
-        given(lineDao.findById(any(Long.class)))
-                .willReturn(Optional.of(line));
-
-        given(sectionDao.findAllByLineId(any(Long.class)))
-                .willReturn(new Sections(Collections.emptyList()));
-
-        // then
-        final Long lineId = line.getId();
-        assertThatThrownBy(() -> lineService.findById(lineId))
-                .isInstanceOf(NoSuchSectionException.class);
     }
 
     @Test
