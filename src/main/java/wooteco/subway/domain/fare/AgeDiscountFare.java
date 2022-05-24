@@ -1,38 +1,60 @@
 package wooteco.subway.domain.fare;
 
+import java.util.Arrays;
+
 public class AgeDiscountFare extends Decorator {
 
-    private static final int BABY_CHILD_AGE_THRESHOLD = 6;
-    private static final double CHILD_DISCOUNT_RATIO = 0.5;
-    private static final int CHILD_ADOLESCENT_THRESHOLD = 13;
-    private static final double ADOLESCENT_DISCOUNT_RATIO = 0.2;
-    private static final int ADOLESCENT_ADULT_THRESHOLD = 19;
-    private static final int ELDERLY_AGE_THRESHOLD = 65;
-    private static final int AGE_BASIC_DISCOUNT_AMOUNT = 350;
+    private static final int BASIC_DISCOUNT_AMOUNT = 350;
 
-    private final int age;
+    private final Age age;
 
     public AgeDiscountFare(Fare delegate, int age) {
         super(delegate);
-        this.age = age;
+        this.age = Age.of(age);
     }
 
     @Override
     public int calculate() {
         int fare = super.delegate();
-        if (age < BABY_CHILD_AGE_THRESHOLD || age >= ELDERLY_AGE_THRESHOLD) {
-            return 0;
-        }
-        if (age < CHILD_ADOLESCENT_THRESHOLD) {
-            return calculateChileFare(fare, CHILD_DISCOUNT_RATIO);
-        }
-        if (age < ADOLESCENT_ADULT_THRESHOLD) {
-            return calculateChileFare(fare, ADOLESCENT_DISCOUNT_RATIO);
-        }
-        return fare;
+        return age.applyDiscount(fare);
     }
 
-    private int calculateChileFare(int fare, double discountRatio) {
-        return (int) ((fare - AGE_BASIC_DISCOUNT_AMOUNT) * (1 - discountRatio));
+    private enum Age {
+
+        BABY(0, 6, 0, 1.00),
+        CHILD(6, 13, BASIC_DISCOUNT_AMOUNT, 0.50),
+        ADOLESCENT(13, 19, BASIC_DISCOUNT_AMOUNT, 0.20),
+        ADULT(19, 65, 0, 0.00),
+        ELDERLY(65, 150, 0, 1.00),
+        ;
+
+        static final String INVALID_AGE_RANGE_EXCEPTION = "0과 150 사이의 연령만 입력가능합니다.";
+
+        final int startInclusive;
+        final int endExclusive;
+        final int discountAmount;
+        final double discountRatio;
+
+        Age(int startInclusive, int endExclusive, int discountAmount, double discountRatio) {
+            this.startInclusive = startInclusive;
+            this.endExclusive = endExclusive;
+            this.discountAmount = discountAmount;
+            this.discountRatio = discountRatio;
+        }
+
+        static Age of(int value) {
+            return Arrays.stream(values())
+                    .filter(age -> age.isAgeOf(value))
+                    .findAny()
+                    .orElseThrow(() -> new IllegalArgumentException(INVALID_AGE_RANGE_EXCEPTION));
+        }
+
+        boolean isAgeOf(int value) {
+            return value >= startInclusive && value < endExclusive;
+        }
+
+        int applyDiscount(int fare) {
+            return (int) ((fare - discountAmount) * (1 - discountRatio));
+        }
     }
 }
