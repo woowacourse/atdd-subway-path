@@ -8,7 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.service.dto.PathResponse;
+import wooteco.subway.domain.Fare;
+import wooteco.subway.domain.Path;
 
 @SpringBootTest
 @Transactional
@@ -23,11 +24,16 @@ public class PathServiceTest {
     @DisplayName("경로 조회한다")
     void getPath() {
         // given
-        PathResponse pathResponse = pathService.getPath(3L, 1L, 20);
+        Path path = pathService.getPath(3L, 1L);
 
         // then
-        assertThat(pathResponse.getStations()).hasSize(3);
-        assertThat(pathResponse.getDistance()).isEqualTo(10);
-        assertThat(pathResponse.getFare()).isEqualTo(1450L);
+        assertThat(path.getStations()).hasSize(3);
+        assertThat(path.getDistance()).isEqualTo(10);
+    }
+
+    void getFare() {
+        Fare fare = pathService.getFare(3L, 1L, 20);
+
+        assertThat(fare.getValue()).isEqualTo(1450L);
     }
 }

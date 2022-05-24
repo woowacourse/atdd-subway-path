@@ -8,10 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.domain.Station;
 import wooteco.subway.repository.dao.StationDao;
 import wooteco.subway.repository.entity.StationEntity;
 import wooteco.subway.service.dto.StationRequest;
-import wooteco.subway.service.dto.StationResponse;
 
 @SpringBootTest
 @Transactional
@@ -30,7 +30,7 @@ class StationServiceTest {
         StationRequest request = new StationRequest("강남역");
 
         // when
-        StationResponse response = stationService.create(request);
+        Station response = stationService.create(request);
 
         // then
         assertThat(response.getName()).isEqualTo(request.getName());
@@ -44,10 +44,10 @@ class StationServiceTest {
         stationDao.save(new StationEntity(null, "왕십리역"));
 
         // when
-        List<StationResponse> stationResponses = stationService.findAll();
+        List<Station> stations = stationService.findAll();
 
         // then
-        assertThat(stationResponses).hasSize(2);
+        assertThat(stations).hasSize(2);
     }
 
     @Test

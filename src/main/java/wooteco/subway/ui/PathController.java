@@ -3,6 +3,8 @@ package wooteco.subway.ui;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import wooteco.subway.domain.Fare;
+import wooteco.subway.domain.Path;
 import wooteco.subway.service.PathService;
 import wooteco.subway.service.dto.PathResponse;
 
@@ -17,6 +19,8 @@ public class PathController {
 
     @GetMapping("/paths")
     public PathResponse getPath(@RequestParam Long source, @RequestParam Long target, @RequestParam Integer age) {
-        return pathService.getPath(source, target, age);
+        Path path = pathService.getPath(source, target);
+        Fare fare = pathService.getFare(source, target, age);
+        return PathResponse.of(path, fare);
     }
 }
