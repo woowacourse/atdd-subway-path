@@ -19,7 +19,7 @@ public class PathService {
         this.stationDao = stationDao;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public PathResponse getPath(final PathRequest pathRequest) {
         final Path path = Path.of(new Sections(sectionDao.findAll()));
         final ShortestPath shortestPath = path.getShortestPath(getStationById(pathRequest.getSource()),
