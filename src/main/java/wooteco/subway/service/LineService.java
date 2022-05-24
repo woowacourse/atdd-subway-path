@@ -48,7 +48,7 @@ public class LineService {
     }
 
     public List<Line> findByIds(Set<Long> ids) {
-        for (Long id: ids) {
+        for (Long id : ids) {
             validateExistLine(id);
         }
         return lineDao.findByIds(ids);
