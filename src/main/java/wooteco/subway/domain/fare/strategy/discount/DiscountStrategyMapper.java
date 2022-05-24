@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 public enum DiscountStrategyMapper {
 
     DEFAULT_STRATEGY(DiscountStrategyMapper::isDefault, DefaultDiscountStrategy.getInstance()),
+    BABY_STRATEGY(DiscountStrategyMapper::isBaby, BabyDiscountStrategy.getInstance()),
     CHILD_STRATEGY(DiscountStrategyMapper::isChild, ChildDiscountStrategy.getInstance()),
     TEENAGER_STRATEGY(DiscountStrategyMapper::isTeenager, TeenagerDiscountStrategy.getInstance()),
     ;
@@ -24,7 +25,11 @@ public enum DiscountStrategyMapper {
     }
 
     private static boolean isDefault(final Integer age) {
-        return age < CHILD_AGE_LOWER_BOUND || TEENAGER_AGE_UPPER_BOUND < age;
+        return TEENAGER_AGE_UPPER_BOUND < age;
+    }
+
+    private static boolean isBaby(final Integer age) {
+        return age < CHILD_AGE_LOWER_BOUND;
     }
 
     private static boolean isChild(final Integer age) {
