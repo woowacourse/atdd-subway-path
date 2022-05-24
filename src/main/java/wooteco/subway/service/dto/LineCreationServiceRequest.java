@@ -1,6 +1,7 @@
-package wooteco.subway.ui.dto;
+package wooteco.subway.service.dto;
 
-public class LineRequest {
+public class LineCreationServiceRequest {
+
     private String name;
     private String color;
     private Long upStationId;
@@ -8,16 +9,20 @@ public class LineRequest {
     private int distance;
     private int extraFare;
 
-    public LineRequest() {
-    }
-
-    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance, int extraFare) {
+    public LineCreationServiceRequest(final String name, final String color, final Long upStationId,
+                                      final Long downStationId,
+                                      final int distance,
+                                      final int extraFare) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
         this.extraFare = extraFare;
+    }
+
+    public LineCreationServiceRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
+        this(name, color, upStationId, downStationId, distance, 0);
     }
 
     public String getName() {
@@ -42,10 +47,5 @@ public class LineRequest {
 
     public int getExtraFare() {
         return extraFare;
-    }
-
-    public wooteco.subway.service.dto.LineServiceRequest toServiceRequest() {
-        return new wooteco.subway.service.dto
-                .LineServiceRequest(name, color, upStationId, downStationId, distance, extraFare);
     }
 }

@@ -3,6 +3,8 @@ package wooteco.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
-import wooteco.subway.ui.dto.LineRequest;
 import wooteco.subway.ui.dto.SectionRequest;
 import wooteco.subway.ui.dto.StationRequest;
 
@@ -48,9 +49,17 @@ public class AcceptanceTest extends DBTest {
                 .extract();
     }
 
-    ExtractableResponse<Response> createLine(LineRequest lineRequest) {
+    ExtractableResponse<Response> createLine(String name, String color, Long upStationId,
+                                             Long downStationId, Integer distance, Integer extraFare) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", name);
+        params.put("color", color);
+        params.put("upStationId", upStationId);
+        params.put("downStationId", downStationId);
+        params.put("distance", distance);
+        params.put("extraFare", extraFare);
         return RestAssured.given().log().all()
-                .body(lineRequest)
+                .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/lines")

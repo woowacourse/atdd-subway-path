@@ -15,7 +15,7 @@ import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.DijkstraPath;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.service.dto.LineServiceRequest;
+import wooteco.subway.service.dto.LineCreationServiceRequest;
 import wooteco.subway.service.dto.LineServiceResponse;
 import wooteco.subway.service.dto.PathServiceRequest;
 import wooteco.subway.service.dto.PathServiceResponse;
@@ -51,7 +51,7 @@ class PathServiceTest extends DBTest {
         station3 = stationDao.save(new Station("수서역"));
         station4 = stationDao.save(new Station("가락시장역"));
         station5 = stationDao.save(new Station("천호역"));
-        line = lineService.save(new LineServiceRequest(
+        line = lineService.save(new LineCreationServiceRequest(
                 "2호선", "green", station1.getId(), station2.getId(), 2, 200));
         sectionDao.save(new Section(line.getId(), station2.getId(), station3.getId(), 3));
     }
@@ -59,7 +59,7 @@ class PathServiceTest extends DBTest {
     @DisplayName("최단 경로의 경유역들과 거리, 운임비용을 반환한다.")
     @Test
     void findShortestPath() {
-        LineServiceRequest secondLineRequest = new LineServiceRequest(
+        LineCreationServiceRequest secondLineRequest = new LineCreationServiceRequest(
                 "3호선", "orange", station2.getId(), station4.getId(), 4, 300);
         lineService.save(secondLineRequest);
         PathServiceRequest pathServiceRequest = new PathServiceRequest(station1.getId(), station4.getId(), 10);
@@ -75,7 +75,7 @@ class PathServiceTest extends DBTest {
     @DisplayName("구간에 등록되지 않은 지하철역으로 최단 경로 조회시 예외가 발생한다.")
     @Test
     void findShortestPath_exceptionNotSavedInSection() {
-        final LineServiceRequest secondLineRequest = new LineServiceRequest(
+        final LineCreationServiceRequest secondLineRequest = new LineCreationServiceRequest(
                 "3호선", "orange", station2.getId(), station4.getId(), 4, 300);
         lineService.save(secondLineRequest);
         PathServiceRequest pathServiceRequest = new PathServiceRequest(station1.getId(), station5.getId(), 10);
@@ -88,7 +88,7 @@ class PathServiceTest extends DBTest {
     @DisplayName("연결되지 않은 구간의 최단 경로 조회시 예외가 발생한다.")
     @Test
     void findShortestPath_exceptionInvalidPath() {
-        LineServiceRequest secondLineRequest = new LineServiceRequest(
+        LineCreationServiceRequest secondLineRequest = new LineCreationServiceRequest(
                 "3호선", "orange", station5.getId(), station4.getId(), 4, 300);
         lineService.save(secondLineRequest);
         PathServiceRequest pathServiceRequest = new PathServiceRequest(station1.getId(), station5.getId(), 10);

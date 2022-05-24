@@ -9,7 +9,8 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.service.dto.LineServiceRequest;
+import wooteco.subway.service.dto.LineCreationServiceRequest;
+import wooteco.subway.service.dto.LineModificationServiceRequest;
 import wooteco.subway.service.dto.LineServiceResponse;
 
 @Service
@@ -26,14 +27,14 @@ public class LineService {
     }
 
     @Transactional
-    public LineServiceResponse save(LineServiceRequest lineServiceRequest) {
-        Line newLine = new Line(lineServiceRequest.getName(),
-                lineServiceRequest.getColor(), lineServiceRequest.getExtraFare());
+    public LineServiceResponse save(LineCreationServiceRequest lineCreationServiceRequest) {
+        Line newLine = new Line(lineCreationServiceRequest.getName(),
+                lineCreationServiceRequest.getColor(), lineCreationServiceRequest.getExtraFare());
         Line savedLine = lineDao.save(newLine);
-        Station upStation = stationService.findById(lineServiceRequest.getUpStationId());
-        Station downStation = stationService.findById(lineServiceRequest.getDownStationId());
+        Station upStation = stationService.findById(lineCreationServiceRequest.getUpStationId());
+        Station downStation = stationService.findById(lineCreationServiceRequest.getDownStationId());
         Section section = new Section(savedLine.getId(), upStation.getId(), downStation.getId(),
-                lineServiceRequest.getDistance());
+                lineCreationServiceRequest.getDistance());
         sectionService.save(section);
         return new LineServiceResponse(savedLine, List.of(upStation, downStation));
     }
@@ -58,9 +59,9 @@ public class LineService {
     }
 
     @Transactional
-    public void update(Long id, LineServiceRequest lineServiceRequest) {
-        Line updatingLine = new Line(lineServiceRequest.getName(),
-                lineServiceRequest.getColor(), lineServiceRequest.getExtraFare());
+    public void update(Long id, LineModificationServiceRequest lineModificationServiceRequest) {
+        Line updatingLine = new Line(lineModificationServiceRequest.getName(),
+                lineModificationServiceRequest.getColor(), lineModificationServiceRequest.getExtraFare());
         lineDao.updateById(id, updatingLine);
     }
 

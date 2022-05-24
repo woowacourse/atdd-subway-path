@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.ui.dto.ExceptionResponse;
-import wooteco.subway.ui.dto.LineRequest;
 import wooteco.subway.ui.dto.LineResponse;
 import wooteco.subway.ui.dto.PathResponse;
 import wooteco.subway.ui.dto.SectionRequest;
@@ -38,8 +37,7 @@ class PathAcceptanceTest extends AcceptanceTest {
                 .getId();
         stationId4 = createStation(new StationRequest("천호역")).as(StationResponse.class)
                 .getId();
-        lineId = createLine(
-                new LineRequest("2호선", "green", stationId1, stationId2, 2, 200))
+        lineId = createLine("2호선", "green", stationId1, stationId2, 2, 200)
                 .as(LineResponse.class)
                 .getId();
         createSection(lineId, new SectionRequest(stationId2, stationId3, 4));
@@ -49,7 +47,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortestPath() {
         // given
-        createLine(new LineRequest("3호선", "orange", stationId2, stationId4, 2, 500));
+        createLine("3호선", "orange", stationId2, stationId4, 2, 500);
 
         // when
         ExtractableResponse<Response> response = findShortestPath(stationId1, stationId4, 5);
@@ -77,7 +75,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         // given
         Long stationId5 = createStation(new StationRequest("가락시장역")).as(StationResponse.class)
                 .getId();
-        createLine(new LineRequest("3호선", "orange", stationId2, stationId4, 2, 500));
+        createLine("3호선", "orange", stationId2, stationId4, 2, 500);
 
         // when
         ExtractableResponse<Response> response = findShortestPath(stationId1, stationId5, 5);
@@ -86,7 +84,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(exceptionResponse.getMessage()).isEqualTo("구간에 등록 되지 않은 역입니다.")
+                () -> assertThat(exceptionResponse.getErrorMessage()).isEqualTo("구간에 등록 되지 않은 역입니다.")
         );
     }
 
@@ -96,7 +94,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         // given
         Long stationId5 = createStation(new StationRequest("가락시장역")).as(StationResponse.class)
                 .getId();
-        createLine(new LineRequest("3호선", "orange", stationId4, stationId5, 2, 500));
+        createLine("3호선", "orange", stationId4, stationId5, 2, 500);
 
         // when
         ExtractableResponse<Response> response = findShortestPath(stationId1, stationId5, 5);
@@ -105,7 +103,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         //then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(exceptionResponse.getMessage()).isEqualTo("연결되지 않은 구간입니다.")
+                () -> assertThat(exceptionResponse.getErrorMessage()).isEqualTo("연결되지 않은 구간입니다.")
         );
     }
 

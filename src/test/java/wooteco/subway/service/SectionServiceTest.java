@@ -13,7 +13,7 @@ import wooteco.subway.acceptance.DBTest;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
-import wooteco.subway.service.dto.LineServiceRequest;
+import wooteco.subway.service.dto.LineCreationServiceRequest;
 import wooteco.subway.service.dto.LineServiceResponse;
 import wooteco.subway.service.dto.SectionServiceRequest;
 
@@ -44,7 +44,7 @@ class SectionServiceTest extends DBTest {
         firstStation = stationDao.save(new Station("강남역"));
         secondStation = stationDao.save(new Station("잠실역"));
         thirdStation = stationDao.save(new Station("선릉역"));
-        lineServiceResponse = lineService.save(new LineServiceRequest(
+        lineServiceResponse = lineService.save(new LineCreationServiceRequest(
                 "2호선", "green", firstStation.getId(), secondStation.getId(), 10, 200));
     }
 
