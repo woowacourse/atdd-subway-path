@@ -28,8 +28,16 @@ public class Distance {
         return new Distance(value - other.value);
     }
 
-    public boolean isLessThanOrEqualTo(Distance other) {
-        return value <= other.value;
+    public boolean isGreaterThanOrEqualTo(int distance) {
+        return value >= distance;
+    }
+
+    public boolean isLessThanOrEqualTo(int distance) {
+        return value <= distance;
+    }
+
+    public boolean isBetween(int smallDistance, int largeDistance) {
+        return smallDistance <= value && value <= largeDistance;
     }
 
     public int getValue() {

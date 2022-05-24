@@ -55,7 +55,7 @@ public class Section {
     }
 
     public boolean isDistanceLessThanOrEqualTo(Section other) {
-        return distance.isLessThanOrEqualTo(other.distance);
+        return distance.isLessThanOrEqualTo(other.distance.getValue());
     }
 
     public boolean hasSameStation(Section other) {

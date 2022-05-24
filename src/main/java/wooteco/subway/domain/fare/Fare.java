@@ -6,14 +6,6 @@ import wooteco.subway.exception.NegativeFareException;
 
 public class Fare {
 
-    public static final int DEFAULT_FARE = 1250;
-    public static final int OVER_FARE_AT_50 = 800;
-    public static final int OVER_FARE_AMOUNT_PER_UNIT_DISTANCE = 100;
-    public static final int NO_OVER_FARE_DISTANCE = 10;
-    public static final int FIRST_OVER_FARE_DISTANCE = 50;
-    public static final int FIRST_OVER_FARE_UNIT_DISTANCE = 5;
-    public static final int SECOND_OVER_FARE_UNIT_DISTANCE = 8;
-
     private final int value;
 
     public Fare(int value) {
@@ -22,27 +14,12 @@ public class Fare {
     }
 
     public static Fare of(Distance distance, Age age, Fare extraFare) {
-        Fare fareFromDistance = new Fare(DEFAULT_FARE + calculateOverFare(distance.getValue()));
-        Fare extraFareAdded = fareFromDistance.add(extraFare);
-        return extraFareAdded.discountWithAge(age);
-    }
+        FareByDistancePolicy fareByDistancePolicy = FareByDistancePolicy.from(distance);
+        DiscountPolicy discountPolicy = DiscountPolicy.from(age);
 
-    private static int calculateOverFare(int distance) {
-        if (distance <= NO_OVER_FARE_DISTANCE) {
-            return 0;
-        }
-
-        if (distance <= FIRST_OVER_FARE_DISTANCE) {
-            return calculateOverFareWithDistanceUnit(distance - NO_OVER_FARE_DISTANCE, FIRST_OVER_FARE_UNIT_DISTANCE);
-        }
-
-        return OVER_FARE_AT_50 + calculateOverFareWithDistanceUnit(distance - FIRST_OVER_FARE_DISTANCE,
-                SECOND_OVER_FARE_UNIT_DISTANCE);
-    }
-
-    private static int calculateOverFareWithDistanceUnit(int distance, int unitDistance) {
-        int numberOfImposition = (distance - 1) / unitDistance + 1;
-        return numberOfImposition * OVER_FARE_AMOUNT_PER_UNIT_DISTANCE;
+        Fare fareByDistance = fareByDistancePolicy.calculate(distance);
+        Fare addedExtraFare = fareByDistance.add(extraFare);
+        return discountPolicy.discount(addedExtraFare);
     }
 
     private void validatePositiveFare(int fare) {
