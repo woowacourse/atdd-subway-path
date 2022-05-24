@@ -17,7 +17,6 @@ public class Fare {
         this.discountStrategy = discountStrategy;
     }
 
-
     public int calculateFare(int distance, int extraFare) {
         int fare = BASIC_FARE + fareStrategy.calculate(distance);
         return discountStrategy.calculate(fare + extraFare);
