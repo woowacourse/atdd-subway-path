@@ -14,6 +14,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import wooteco.subway.dto.LineRequest;
+import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.StationResponse;
@@ -59,9 +60,10 @@ class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
 
         // then
-        final List<StationResponse> stations = response.jsonPath().getList("stations", StationResponse.class);
-        final double distance = response.jsonPath().getInt("distance");
-        final int fare = response.jsonPath().getInt("fare");
+        final PathResponse pathResponse = response.as(PathResponse.class);
+        final List<StationResponse> stations = pathResponse.getStations();
+        final double distance = pathResponse.getDistance();
+        final int fare = pathResponse.getFare();
 
         assertAll(
                 () -> assertThat(stations).usingRecursiveComparison()
