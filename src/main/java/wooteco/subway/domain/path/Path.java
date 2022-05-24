@@ -1,4 +1,6 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
+
+import wooteco.subway.domain.Station;
 
 import java.util.LinkedList;
 import java.util.List;

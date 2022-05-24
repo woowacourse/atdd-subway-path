@@ -1,7 +1,9 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Station;
 import wooteco.subway.domain.fare.AgeDecorator;
 import wooteco.subway.domain.fare.BaseFare;
 import wooteco.subway.domain.fare.DistanceDecorator;

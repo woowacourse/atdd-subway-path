@@ -1,4 +1,6 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
+
+import wooteco.subway.domain.Station;
 
 public class PathAdapter implements Shortest {
     private final ShortestPath shortestPath;
