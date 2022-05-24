@@ -2,8 +2,6 @@ package wooteco.subway.domain.property;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import wooteco.subway.exception.InvalidRequestException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -14,39 +12,40 @@ public class AgeTest {
     @DisplayName("나이를 입력하지 않은 경우 예외 발생")
     void throwsExceptionWithEmptyAge() {
         assertThatExceptionOfType(InvalidRequestException.class)
-                .isThrownBy(() -> new Age(null))
+                .isThrownBy(() -> Age.from(null))
                 .withMessageContaining("나이는 필수 입력값입니다.");
     }
 
     @Test
-    @DisplayName("1 이상의 나이를 입력하지 않은 경우 예외 발생")
+    @DisplayName("0 이상의 나이를 입력하지 않은 경우 예외 발생")
     void throwsExceptionWithNotPositive() {
         assertThatExceptionOfType(InvalidRequestException.class)
-                .isThrownBy(() -> new Age(0))
+                .isThrownBy(() -> Age.from(-1))
                 .withMessageContaining("나이는 0 이하가 될 수 없습니다.");
     }
 
-    @ParameterizedTest
-    @CsvSource({"12,false", "13,true", "18,true", "10,false"})
-    @DisplayName("청소년 여부 반환")
-    void isTeenager(int inputAge, boolean expected) {
-        Age age = new Age(inputAge);
-        assertThat(age.isTeenager()).isEqualTo(expected);
+    @Test
+    @DisplayName("영유아라면 전액할인")
+    void baby() {
+        assertThat(Age.from(3).calculateDiscountFare(1000)).isEqualTo(1000);
     }
 
-    @ParameterizedTest
-    @CsvSource({"5,false", "6,true", "12,true", "13,false"})
-    @DisplayName("어린이 여부 반환")
-    void isChildren(int inputAge, boolean expected) {
-        Age age = new Age(inputAge);
-        assertThat(age.isChildren()).isEqualTo(expected);
+    @Test
+    @DisplayName("어린이라면 350원을 공제한 금액의 50% 할인")
+    void child() {
+        assertThat(Age.from(10).calculateDiscountFare(1000)).isEqualTo(325);
     }
 
-    @ParameterizedTest
-    @CsvSource({"6,false", "5,true"})
-    @DisplayName("영유아 여부 반환")
-    void isBaby(int inputAge, boolean expected) {
-        Age age = new Age(inputAge);
-        assertThat(age.isBaby()).isEqualTo(expected);
+    @Test
+    @DisplayName("청소년이라면 350원을 공제한 금액의 20% 할인")
+    void teenager() {
+        assertThat(Age.from(15).calculateDiscountFare(1000)).isEqualTo(130);
     }
+
+    @Test
+    @DisplayName("성인이라면 할인없음")
+    void adult() {
+        assertThat(Age.from(20).calculateDiscountFare(1000)).isEqualTo(0);
+    }
+
 }

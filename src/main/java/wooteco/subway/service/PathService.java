@@ -43,6 +43,6 @@ public class PathService {
         final LineSeries lineSeries = new LineSeries(lines);
         final int extraFare = lineSeries.findMaxExtraFare(path.findUsedLineId());
 
-        return FareCalculator.calculate(distance, new Age(age), extraFare);
+        return FareCalculator.calculate(distance, Age.from(age), extraFare);
     }
 }
