@@ -1,11 +1,10 @@
-package wooteco.subway.domain.strategy;
+package wooteco.subway.domain.strategy.discount;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import wooteco.subway.domain.strategy.discount.AdolescentDiscountStrategy;
 
 class AdolescentDiscountStrategyTest {
 

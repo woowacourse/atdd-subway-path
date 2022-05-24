@@ -4,15 +4,17 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 import wooteco.subway.domain.strategy.discount.AdolescentDiscountStrategy;
 import wooteco.subway.domain.strategy.discount.DiscountStrategy;
+import wooteco.subway.domain.strategy.discount.FreeDiscountStrategy;
 import wooteco.subway.domain.strategy.discount.KidDiscountStrategy;
 import wooteco.subway.domain.strategy.discount.NonDiscountStrategy;
 
 public enum DiscountRole {
 
-    BABY(age -> age < 6, new NonDiscountStrategy()),
+    BABY(age -> age < 6, new FreeDiscountStrategy()),
     KID(age -> age >= 6 && age < 13, new KidDiscountStrategy()),
     ADOLESCENT(age -> age >= 13 && age < 19, new AdolescentDiscountStrategy()),
-    ADULT(age -> age > 19, new NonDiscountStrategy());
+    ADULT(age -> age > 19 && age < 65, new NonDiscountStrategy()),
+    SENIOR(age -> age >= 65, new FreeDiscountStrategy());
 
     private Predicate<Integer> predicate;
     private DiscountStrategy strategy;
