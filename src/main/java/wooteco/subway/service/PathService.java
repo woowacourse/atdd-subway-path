@@ -3,6 +3,7 @@ package wooteco.subway.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import wooteco.subway.controller.dto.PathRequest;
 import wooteco.subway.dao.repository.LineRepository;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.path.Fare;
@@ -22,12 +23,12 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathResponse findPath(Long sourceStationId, Long targetStationId, int age) {
-        Station source = getStation(sourceStationId);
-        Station target = getStation(targetStationId);
+    public PathResponse findPath(PathRequest request) {
+        Station source = getStation(request.getSource());
+        Station target = getStation(request.getTarget());
         Path path = new Path(lineRepository.findAll(), source, target);
         int distance = path.getDistance();
-        int fare = Fare.of(distance, path.getExtraFare(), age).calculate();
+        int fare = Fare.of(distance, path.getExtraFare(), request.getAge()).calculate();
         return PathResponse.of(path, fare);
     }
 

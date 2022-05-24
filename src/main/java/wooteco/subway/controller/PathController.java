@@ -22,6 +22,6 @@ public class PathController {
     @GetMapping("/paths")
     public ResponseEntity<PathResponse> findPath(@Valid PathRequest pathRequest) {
         return ResponseEntity.ok().body(
-            pathService.findPath(pathRequest.getSource(), pathRequest.getTarget(), pathRequest.getAge()));
+            pathService.findPath(pathRequest));
     }
 }
