@@ -20,7 +20,6 @@ import org.springframework.http.MediaType;
 import wooteco.subway.ui.dto.ExceptionResponse;
 import wooteco.subway.ui.dto.LineResponse;
 import wooteco.subway.ui.dto.PathResponse;
-import wooteco.subway.ui.dto.StationRequest;
 import wooteco.subway.ui.dto.StationResponse;
 
 class PathAcceptanceTest extends AcceptanceTest {
@@ -35,13 +34,13 @@ class PathAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void createLine() {
-        stationId1 = createStation(new StationRequest("강남역")).as(StationResponse.class)
+        stationId1 = createStation("강남역").as(StationResponse.class)
                 .getId();
-        stationId2 = createStation(new StationRequest("선릉역")).as(StationResponse.class)
+        stationId2 = createStation("선릉역").as(StationResponse.class)
                 .getId();
-        stationId3 = createStation(new StationRequest("수서역")).as(StationResponse.class)
+        stationId3 = createStation("수서역").as(StationResponse.class)
                 .getId();
-        stationId4 = createStation(new StationRequest("천호역")).as(StationResponse.class)
+        stationId4 = createStation("천호역").as(StationResponse.class)
                 .getId();
         lineId = createLine("2호선", "green", stationId1, stationId2, 2, 200)
                 .as(LineResponse.class)
@@ -79,7 +78,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortestPath_badRequestByNotSavedInSection() {
         // given
-        Long stationId5 = createStation(new StationRequest("가락시장역")).as(StationResponse.class)
+        Long stationId5 = createStation("가락시장역").as(StationResponse.class)
                 .getId();
         createLine("3호선", "orange", stationId2, stationId4, 2, 500);
 
@@ -98,7 +97,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortestPath_badRequestByUnconnectedPath() {
         // given
-        Long stationId5 = createStation(new StationRequest("가락시장역")).as(StationResponse.class)
+        Long stationId5 = createStation("가락시장역").as(StationResponse.class)
                 .getId();
         createLine("3호선", "orange", stationId4, stationId5, 2, 500);
 

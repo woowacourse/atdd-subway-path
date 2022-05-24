@@ -21,7 +21,6 @@ import org.springframework.http.MediaType;
 import wooteco.subway.domain.Station;
 import wooteco.subway.ui.dto.ExceptionResponse;
 import wooteco.subway.ui.dto.LineResponse;
-import wooteco.subway.ui.dto.StationRequest;
 import wooteco.subway.ui.dto.StationResponse;
 
 @DisplayName("지하철 노선 관련 기능")
@@ -36,8 +35,8 @@ class LineAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void setUpLineAcceptanceTest() {
-        station1 = createStation(new StationRequest("강남역")).as(StationResponse.class);
-        station2 = createStation(new StationRequest("역삼역")).as(StationResponse.class);
+        station1 = createStation("강남역").as(StationResponse.class);
+        station2 = createStation("역삼역").as(StationResponse.class);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -100,8 +99,8 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getAllLines() {
         /// given
-        Station station3 = createStation(new StationRequest("교대역")).as(Station.class);
-        Station station4 = createStation(new StationRequest("수서역")).as(Station.class);
+        Station station3 = createStation("교대역").as(Station.class);
+        Station station4 = createStation("수서역").as(Station.class);
 
         createLine(LINE_NAME, LINE_COLOR, station1.getId(), station2.getId(), LINE_DISTANCE, LINE_EXTRA_FARE);
         createLine("3호선", "orange", station3.getId(), station4.getId(), 10, 300);

@@ -18,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import wooteco.subway.domain.Station;
 import wooteco.subway.ui.dto.ExceptionResponse;
 import wooteco.subway.ui.dto.LineResponse;
-import wooteco.subway.ui.dto.StationRequest;
 import wooteco.subway.ui.dto.StationResponse;
 
 class SectionAcceptanceTest extends AcceptanceTest {
@@ -29,9 +28,9 @@ class SectionAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void createStation() {
-        station1 = createStation(new StationRequest("강남역")).as(StationResponse.class);
-        station2 = createStation(new StationRequest("역삼역")).as(StationResponse.class);
-        station3 = createStation(new StationRequest("잠실역")).as(StationResponse.class);
+        station1 = createStation("강남역").as(StationResponse.class);
+        station2 = createStation("역삼역").as(StationResponse.class);
+        station3 = createStation("잠실역").as(StationResponse.class);
     }
 
     @DisplayName("상행 종점이 같은 구간을 추가한다.")
@@ -108,7 +107,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void createNotMatchingSection() {
         // given
-        Station station4 = createStation(new StationRequest("성수역")).as(Station.class);
+        Station station4 = createStation("성수역").as(Station.class);
         Long lineId = getCreatedLineId(station1.getId(), station3.getId());
 
         // when
@@ -251,7 +250,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteNotExistingSection() {
         // given
-        StationResponse station4 = createStation(new StationRequest("성수역")).as(StationResponse.class);
+        StationResponse station4 = createStation("성수역").as(StationResponse.class);
         Long lineId = getCreatedLineId(station1.getId(), station2.getId());
         createSection(lineId, station2.getId(), station3.getId(), 10);
 
