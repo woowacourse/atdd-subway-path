@@ -1,7 +1,6 @@
 package wooteco.subway.domain.path.cost;
 
 import java.util.Arrays;
-import org.springframework.dao.DuplicateKeyException;
 
 public enum AgeSection {
 
@@ -21,11 +20,19 @@ public enum AgeSection {
         this.discountRatio = discountRatio;
     }
 
+    private boolean isContained(int age) {
+        return lowerBound <= age && age <= upperBound;
+    }
+
+    private int calculateFareByAge(int fare) {
+        return Math.max(0, (int) ((fare - discountValue) * discountRatio));
+    }
+
     public static int calculateByAge(int fare, int age) {
         AgeSection ageSection = Arrays.stream(AgeSection.values())
-                .filter(eachAge -> eachAge.lowerBound <= age && age <= eachAge.upperBound)
+                .filter(eachAge -> eachAge.isContained(age))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
-        return (int) ((fare - ageSection.discountValue) * ageSection.discountRatio);
+        return ageSection.calculateFareByAge(fare);
     }
 }
