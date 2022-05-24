@@ -11,6 +11,7 @@ import wooteco.subway.dto.station.StationRequest;
 import wooteco.subway.dto.station.StationResponse;
 import wooteco.subway.exception.IllegalInputException;
 import wooteco.subway.exception.station.DuplicateStationException;
+import wooteco.subway.exception.station.NoSuchStationException;
 
 @Service
 @Transactional
@@ -32,8 +33,23 @@ public class StationService {
     }
 
     @Transactional(readOnly = true)
+    public StationResponse findById(final Long id) {
+        final Station station = stationDao.findById(id)
+                .orElseThrow(NoSuchStationException::new);
+        return StationResponse.from(station);
+    }
+
+    @Transactional(readOnly = true)
     public List<StationResponse> findAll() {
         return stationDao.findAll()
+                .stream()
+                .map(StationResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<StationResponse> findAllByLineId(final Long lineId) {
+        return stationDao.findAllByLineId(lineId)
                 .stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
