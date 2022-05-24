@@ -1,5 +1,7 @@
 package wooteco.subway.domain;
 
+import java.util.Comparator;
+import java.util.List;
 import wooteco.subway.exception.CalculatePathsException;
 
 public class FareCalculator {
@@ -25,14 +27,23 @@ public class FareCalculator {
         }
     }
 
-    public int calculateFare() {
+    public int calculateFare(final List<Line> lines) {
+        int extraFare = findExtraFareToCharged(lines);
         if (distance > SECOND_EXTRA_FARE_DISTANCE) {
-            return BASIC_FARE + MAX_FIRST_EXTRA_FARE + addSecondExtraFare(distance - SECOND_EXTRA_FARE_DISTANCE);
+            return BASIC_FARE + MAX_FIRST_EXTRA_FARE + addSecondExtraFare(distance - SECOND_EXTRA_FARE_DISTANCE)
+                    + extraFare;
         }
         if (distance > FIRST_EXTRA_FARE_DISTANCE) {
-            return BASIC_FARE + addFirstExtraFare(distance - FIRST_EXTRA_FARE_DISTANCE);
+            return BASIC_FARE + addFirstExtraFare(distance - FIRST_EXTRA_FARE_DISTANCE) + extraFare;
         }
-        return BASIC_FARE;
+        return BASIC_FARE + extraFare;
+    }
+
+    private int findExtraFareToCharged(final List<Line> lines) {
+        return lines.stream()
+                .max(Comparator.comparing(Line::getExtraFare))
+                .orElseThrow(() -> new IllegalArgumentException("d"))
+                .getExtraFare();
     }
 
     private int addSecondExtraFare(final double distance) {

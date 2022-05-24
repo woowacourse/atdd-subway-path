@@ -12,6 +12,10 @@ public class SubwayPathEdge extends DefaultWeightedEdge {
         this.distance = distance;
     }
 
+    public Long getLineId() {
+        return lineId;
+    }
+
     @Override
     protected double getWeight() {
         return distance;

@@ -1,10 +1,11 @@
 package wooteco.subway.domain.subwaygraph;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
-import wooteco.subway.domain.FareCalculator;
+import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Paths;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
@@ -37,9 +38,9 @@ public class SubwayGraph {
     public Paths createPathsResult(final Station source, final Station target) {
         GraphPath<Station, SubwayPathEdge> subwayGraphResult = createSubwayGraphResult(source, target);
         List<Station> stations = subwayGraphResult.getVertexList();
+        List<Long> lineIds = getLineIds(subwayGraphResult);
         double distance = subwayGraphResult.getWeight();
-        int fare = createFare(distance);
-        return new Paths(stations, distance, fare);
+        return new Paths(stations, lineIds, distance);
     }
 
     private GraphPath<Station, SubwayPathEdge> createSubwayGraphResult(Station source, Station target) {
@@ -51,8 +52,9 @@ public class SubwayGraph {
         }
     }
 
-    private int createFare(final double distance) {
-        FareCalculator fareCalculator = new FareCalculator(distance);
-        return fareCalculator.calculateFare();
+    private List<Long> getLineIds(GraphPath<Station, SubwayPathEdge> subwayGraphResult) {
+        return subwayGraphResult.getEdgeList().stream()
+                .map(SubwayPathEdge::getLineId)
+                .collect(Collectors.toList());
     }
 }
