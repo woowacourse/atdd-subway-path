@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Test;
 
 class SectionsTest {
 
-    @DisplayName("구간 목록에 포함된 모든 역 id를 반환한다.")
+    @DisplayName("한 Line으로 이루어진 구간 목록에 포함된 모든 역 id를 반환한다.")
     @Test
-    void getStationIds() {
+    void getSortedStationIdsInSingleLine() {
         Section section1 = new Section(1L, 1L, 2L, 10);
         Section section2 = new Section(2L, 2L, 3L, 10);
         Section section3 = new Section(3L, 3L, 4L, 10);
