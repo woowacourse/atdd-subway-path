@@ -5,11 +5,11 @@ import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
 
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Name;
@@ -23,6 +23,12 @@ class PathServiceTest extends ServiceTest {
 
     @InjectMocks
     private PathService pathService;
+
+    @Mock
+    private LineService lineService;
+
+    @Mock
+    private StationService stationService;
 
     @ParameterizedTest
     @DisplayName("출발역과 도착역의 최단 경로에 대한 정보를 조회한다.")
@@ -67,16 +73,16 @@ class PathServiceTest extends ServiceTest {
                 orangeSectionB
         )));
 
-        given(stationDao.findById(any(Long.class)))
-                .willReturn(Optional.of(gangnam))
-                .willReturn(Optional.of(seoulForest));
+        given(stationService.findById(any(Long.class)))
+                .willReturn(gangnam)
+                .willReturn(seoulForest);
 
         final List<Line> lines = List.of(
                 greenLine,
                 yellowLine,
                 orangeLine
         );
-        given(lineDao.findAll())
+        given(lineService.findAll())
                 .willReturn(lines);
 
         final List<Station> expectedStations = List.of(
