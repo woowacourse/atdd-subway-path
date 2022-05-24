@@ -7,7 +7,8 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
-import wooteco.subway.domain.AgeDiscountPolicy;
+import wooteco.subway.domain.discount.DiscountCondition;
+import wooteco.subway.domain.discount.DiscountPolicy;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Path;
@@ -23,11 +24,14 @@ public class PathService {
     private final SectionDao sectionDao;
     private final LineDao lineDao;
     private final StationService stationService;
+    private final List<DiscountPolicy> discountPolicies;
 
-    public PathService(final SectionDao sectionDao, final LineDao lineDao, final StationService stationService) {
+    public PathService(final SectionDao sectionDao, final LineDao lineDao,
+                       final StationService stationService, final List<DiscountPolicy> discountPolicies) {
         this.sectionDao = sectionDao;
         this.lineDao = lineDao;
         this.stationService = stationService;
+        this.discountPolicies = discountPolicies;
     }
 
     @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
@@ -53,8 +57,12 @@ public class PathService {
 
     private Fare calculateFare(final PathRequest pathRequest, final Path shortestPath) {
         final int maxExtraFare = getMaxExtraFare(shortestPath.getSections());
-        final AgeDiscountPolicy ageDiscountPolicy = AgeDiscountPolicy.createByAge(pathRequest.getAge());
-        return Fare.of(shortestPath.getTotalDistance(), maxExtraFare, List.of(ageDiscountPolicy));
+        return Fare.of(
+                shortestPath.getTotalDistance(),
+                maxExtraFare,
+                discountPolicies,
+                new DiscountCondition(pathRequest.getAge(), shortestPath.getTotalDistance())
+        );
     }
 
     private int getMaxExtraFare(final List<Section> sections) {

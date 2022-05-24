@@ -1,6 +1,8 @@
 package wooteco.subway.domain;
 
 import java.util.List;
+import wooteco.subway.domain.discount.DiscountCondition;
+import wooteco.subway.domain.discount.DiscountPolicy;
 
 public class Fare {
 
@@ -17,24 +19,35 @@ public class Fare {
         this.value = value;
     }
 
-    public static Fare of(final int distance, final int lineExtraFare, final List<DiscountPolicy> discountPolicies) {
+    public static Fare of(final int distance, final int lineExtraFare, final List<DiscountPolicy> discountPolicies, final DiscountCondition discountCondition) {
         if (distance <= STANDARD_DISTANCE) {
-            return new Fare(applyDiscounts(discountPolicies, STANDARD_FARE + lineExtraFare));
+            return new Fare(applyDiscounts(discountPolicies, discountCondition, STANDARD_FARE + lineExtraFare));
         }
         if (distance <= FIRST_OVER_FARE_DISTANCE) {
-            return new Fare(applyDiscounts(discountPolicies, STANDARD_FARE + lineExtraFare)
+            return new Fare(applyDiscounts(discountPolicies, discountCondition, STANDARD_FARE + lineExtraFare)
                     + calculateOverFare(distance - STANDARD_DISTANCE, FIRST_OVER_DISTANCE_UNIT));
         }
-        return new Fare(applyDiscounts(discountPolicies, STANDARD_FARE + lineExtraFare)
+        return new Fare(applyDiscounts(discountPolicies, discountCondition, STANDARD_FARE + lineExtraFare)
                 + calculateOverFare(FIRST_OVER_FARE_DISTANCE - STANDARD_DISTANCE, FIRST_OVER_DISTANCE_UNIT)
                 + calculateOverFare(distance - FIRST_OVER_FARE_DISTANCE, SECOND_OVER_DISTANCE_UNIT));
     }
 
-    private static int applyDiscounts(final List<DiscountPolicy> discountPolicies, int money) {
+    private static int applyDiscounts(final List<DiscountPolicy> discountPolicies,
+                                      final DiscountCondition discountCondition,
+                                      int money) {
         for (DiscountPolicy discountPolicy : discountPolicies) {
-            money = discountPolicy.applyDiscount(money);
+            money = acceptDiscount(discountCondition, discountPolicy, money);
         }
 
+        return money;
+    }
+
+    private static int acceptDiscount(final DiscountCondition discountCondition,
+                                      final DiscountPolicy discountPolicy,
+                                      int money) {
+        if (discountPolicy.accept(discountCondition)) {
+            money = discountPolicy.applyDiscount(money);
+        }
         return money;
     }
 
