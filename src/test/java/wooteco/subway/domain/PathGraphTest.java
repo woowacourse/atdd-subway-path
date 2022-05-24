@@ -32,7 +32,7 @@ class PathGraphTest {
 
             List<Line> lines = List.of(line1, line2);
             PathGraph pathGraph = new PathGraph(lines);
-            Path expected = new Path(List.of(강남역, 양재역, 양재시민의숲역), 6);
+            Path expected = new Path(List.of(강남역, 양재역, 양재시민의숲역), List.of(900, 1000), 6);
 
             assertThat(pathGraph.findShortestPath(강남역, 양재시민의숲역)).isEqualTo(expected);
         }

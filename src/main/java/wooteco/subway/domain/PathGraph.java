@@ -1,18 +1,18 @@
 package wooteco.subway.domain;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.exception.PathNotFoundException;
 
 public class PathGraph {
 
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
+    private final WeightedMultigraph<Station, ExtraFareSubwayEdge> graph;
 
     public PathGraph(List<Line> lines) {
-        graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        graph = new WeightedMultigraph<>(ExtraFareSubwayEdge.class);
         initGraph(lines);
     }
 
@@ -31,8 +31,9 @@ public class PathGraph {
 
     private void initEdge(Line line) {
         for (Section section : line.getSections().getSections()) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()),
-                section.getDistance());
+            ExtraFareSubwayEdge edge = new ExtraFareSubwayEdge(line.getExtraFare());
+            graph.addEdge(section.getUpStation(), section.getDownStation(), edge);
+            graph.setEdgeWeight(edge, section.getDistance());
         }
     }
 
@@ -53,13 +54,16 @@ public class PathGraph {
     }
 
     private Path findPath(Station source, Station target) {
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath
+        DijkstraShortestPath<Station, ExtraFareSubwayEdge> dijkstraShortestPath
             = new DijkstraShortestPath<>(graph);
-        GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
+        GraphPath<Station, ExtraFareSubwayEdge> path = dijkstraShortestPath.getPath(source, target);
         if (path == null) {
             throw throwNotFoundPath(source, target);
         }
-        return new Path(path.getVertexList(), (int) path.getWeight());
+        List<Integer> extraFares = path.getEdgeList().stream()
+            .map(ExtraFareSubwayEdge::getExtraFare)
+            .collect(Collectors.toList());
+        return new Path(path.getVertexList(), extraFares, (int) path.getWeight());
     }
 
     private PathNotFoundException throwNotFoundPath(Station source, Station target) {

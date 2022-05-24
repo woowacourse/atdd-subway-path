@@ -10,12 +10,12 @@ import org.junit.jupiter.params.provider.CsvSource;
 class PathTest {
 
     @ParameterizedTest(name = "거리가 {0}일 때, 요금이 {1}원이다.")
-    @CsvSource(value = {"10,1250", "11,1350", "50,2050", "51, 2150", "90,2550"})
+    @CsvSource(value = {"10,2250", "11,2350", "50,3050", "51, 3150", "90,3550"})
     void 요금을_계산한다(int distance, int fare) {
         Station 강남역 = new Station("강남역");
         Station 선릉역 = new Station("선릉역");
 
-        Path path = new Path(List.of(강남역, 선릉역), distance);
+        Path path = new Path(List.of(강남역, 선릉역), List.of(1000), distance);
 
         assertThat(path.calculateFare()).isEqualTo(fare);
     }
