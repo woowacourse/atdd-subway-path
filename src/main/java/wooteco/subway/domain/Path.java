@@ -15,13 +15,6 @@ public class Path {
     private Lines lines;
     private DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath;
 
-    public Path(List<Station> stations, List<Section> sections) {
-        WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        setVertex(stations, graph);
-        setEdgeWeight(sections, graph);
-        dijkstraShortestPath = new DijkstraShortestPath(graph);
-    }
-
     public Path(Stations stations, Sections sections, Lines lines) {
         this.stations = stations;
         this.sections = sections;
