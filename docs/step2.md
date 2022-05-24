@@ -14,8 +14,14 @@
 
 ## 구현할 기능 목록
 - [ ] Line에 추가 요금 컬럼 추가
-- [ ] Section에 Line에 대한 정보 추가
-- [ ] PathCalculator에서 최단 거리 경로를 Sections로 반환
-- [ ] Sections는 총 거리와 거쳐가는 노선들을 알려준다.
-- [ ] LinePolicy는 노선들 중 가장 비싼 추가 요금을 알려준다.
+  - [ ] 지하철 노선 등록 request, response body에 extraFare 추가
+  - [ ] 지하철 노선 목록 request, response body에 extraFare 추가
+  - [ ] 지하철 노선 조회 request, response body에 extraFare 추가
+  - [ ] 지하철 노선 수정 request body에 extraFare 추가
+- [x] PathCalculator에서 최단 거리 경로를 반환
 - [ ] agePolicy는 나이에 대한 요금 정책을 적용한다.
+
+## 리팩토링 목표 설정
+- 각 테스트 메서드 별 테스트 픽스쳐를 분리하여 구현한다.
+- 값 객체는 포장한다.
+- 인수 테스트를 작성하고 프로덕트 코드를 구현한다.(TDD)
