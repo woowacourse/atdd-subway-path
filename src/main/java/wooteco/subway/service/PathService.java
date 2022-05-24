@@ -5,8 +5,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.BasicFareStrategy;
-import wooteco.subway.domain.Fare;
+import wooteco.subway.domain.fare.FareCalculator;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.ShortestPathEdge;
@@ -42,9 +41,9 @@ public class PathService {
         int extraFare = Jgrapht.calculateExtraFare(shortestPath, source, target);
 
         Path path = new Path(stations, distance);
-        Fare fare = new Fare();
+        FareCalculator fareCalculator = new FareCalculator();
 
-        return new PathResponse(path, fare.calculateFare(distance, extraFare, new BasicFareStrategy()));
+        return new PathResponse(path, fareCalculator.calculateFare(distance, extraFare, pathRequest.getAge()));
     }
 
 }

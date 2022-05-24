@@ -8,8 +8,7 @@ import java.util.List;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.BasicFareStrategy;
-import wooteco.subway.domain.Fare;
+import wooteco.subway.domain.fare.FareCalculator;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
@@ -154,8 +153,8 @@ class JgraphtTest {
         List<Station> shortestPath = Jgrapht.createShortestPath(dijkstraShortestPath, 성수역, 홍대);
         int distance = Jgrapht.calculateDistance(dijkstraShortestPath, 성수역, 홍대);
         int extraFare = Jgrapht.calculateExtraFare(dijkstraShortestPath, 성수역, 홍대);
-        Fare fare = new Fare();
-        int actual = fare.calculateFare(distance, extraFare, new BasicFareStrategy());
+        FareCalculator fareCalculator = new FareCalculator();
+        int actual = fareCalculator.calculateFare(distance, extraFare, 20);
 
         assertThat(actual).isEqualTo(2550);
     }
@@ -181,8 +180,8 @@ class JgraphtTest {
         List<Station> shortestPath = Jgrapht.createShortestPath(dijkstraShortestPath, 성수역, 홍대);
         int distance = Jgrapht.calculateDistance(dijkstraShortestPath, 성수역, 홍대);
         int extraFare = Jgrapht.calculateExtraFare(dijkstraShortestPath, 성수역, 홍대);
-        Fare fare = new Fare();
-        int actual = fare.calculateFare(distance, extraFare, new BasicFareStrategy());
+        FareCalculator fareCalculator = new FareCalculator();
+        int actual = fareCalculator.calculateFare(distance, extraFare, 20);
 
         assertThat(actual).isEqualTo(2550);
     }
