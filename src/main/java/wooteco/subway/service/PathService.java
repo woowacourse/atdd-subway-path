@@ -31,11 +31,8 @@ public class PathService {
         Path path = pathFinder.getShortestPath(getStationById(sourceId), getStationById(targetId),
                 new Sections(sectionDao.findAll()));
 
-        FareCalculator fareCalculator = new FareCalculator(new DefaultFareStrategy(),
-                AgeDiscount.findAgeDiscount(age));
-
-        return PathResponse.from(
-                path,
+        FareCalculator fareCalculator = new FareCalculator(new DefaultFareStrategy(), AgeDiscount.findAgeDiscount(age));
+        return PathResponse.from(path,
                 fareCalculator.calculate(path.getDistance(), path.getMaxExtraFare(lineDao.findAll())));
     }
 
