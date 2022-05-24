@@ -1,15 +1,20 @@
 package wooteco.subway.domain.path;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import org.jgrapht.graph.DefaultWeightedEdge;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.utils.ConcreteWeightedEdge;
 
-@RequiredArgsConstructor
-public class SectionWeightedEdge extends DefaultWeightedEdge {
+public class SectionWeightedEdge extends ConcreteWeightedEdge<Long> {
 
     @Getter
     private final Long lineId;
     private final Integer distance;
+
+    public SectionWeightedEdge(Section section) {
+        super(section.getUpStationId(), section.getDownStationId());
+        this.lineId = section.getLineId();
+        this.distance = section.getDistance();
+    }
 
     @Override
     protected double getWeight() {

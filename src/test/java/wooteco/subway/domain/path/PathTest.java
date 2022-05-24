@@ -3,16 +3,20 @@ package wooteco.subway.domain.path;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.fare.PathAlgorithm;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
+import wooteco.subway.utils.JgraphtPathAlgorithm;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class PathFinderTest {
+class PathTest {
 
-    private PathFinder pathFinder;
+    private Path pathFinder;
 
     @BeforeEach
     void setUp() {
@@ -28,7 +32,17 @@ class PathFinderTest {
                 new Section(4L, 6L, 5, 노선_2),
                 new Section(2L, 4L, 6, 노선_3)
         );
-        pathFinder = new PathFinder(new Sections(sections));
+        pathFinder = getPathFinder(new Sections(sections));
+    }
+
+    private Path getPathFinder(Sections sections) {
+        Set<Long> stationIds = sections.distinctStationIds();
+        List<SectionWeightedEdge> sectionWeightedEdges = sections.values().stream().
+                map(SectionWeightedEdge::new)
+                .collect(Collectors.toUnmodifiableList());
+        PathAlgorithm<Long, SectionWeightedEdge> jgraphtPathAlgorithm = new JgraphtPathAlgorithm<>(SectionWeightedEdge.class, stationIds, sectionWeightedEdges);
+        Path pathFinder = new Path(jgraphtPathAlgorithm);
+        return pathFinder;
     }
 
     @DisplayName("환승이 없는 경로를 구한다")
