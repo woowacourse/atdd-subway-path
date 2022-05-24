@@ -307,7 +307,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("삭제하려는 구간이 노선에 존재하지 않으면 404을 반환한다.")
+    @DisplayName("삭제하려는 역이 노선의 구간에 존재하지 않으면 404을 반환한다.")
     void DeleteSection_NotIncludedStation_BadRequest() {
         // given
         final long lineId = createAndGetId(new LineRequest(
@@ -326,6 +326,6 @@ class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         response.statusCode(HttpStatus.NOT_FOUND.value())
-                .body(MESSAGE, equalTo("구간이 존재하지 않습니다."));
+                .body(MESSAGE, equalTo("존재하지 않는 역입니다."));
     }
 }

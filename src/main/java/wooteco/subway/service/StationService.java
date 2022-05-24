@@ -1,6 +1,7 @@
 package wooteco.subway.service;
 
 import java.util.List;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.StationDao;
@@ -17,7 +18,7 @@ public class StationService {
     private final StationDao stationDao;
     private final SectionService sectionService;
 
-    public StationService(final StationDao stationDao, final SectionService sectionService) {
+    public StationService(final StationDao stationDao, @Lazy final SectionService sectionService) {
         this.stationDao = stationDao;
         this.sectionService = sectionService;
     }
