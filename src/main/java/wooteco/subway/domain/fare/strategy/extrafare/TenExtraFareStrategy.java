@@ -18,7 +18,7 @@ public final class TenExtraFareStrategy extends ExtraFareStrategy {
     }
 
     @Override
-    public boolean isMatch(final int distance) {
+    boolean isMatch(final int distance) {
         return MIN_DISTANCE < distance && distance <= MAX_DISTANCE;
     }
 

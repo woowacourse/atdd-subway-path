@@ -13,7 +13,7 @@ public final class SeniorDiscountStrategy extends DiscountStrategy {
     }
 
     @Override
-    public boolean isMatch(final int age) {
+    boolean isMatch(final int age) {
         return MIN_AGE <= age;
     }
 

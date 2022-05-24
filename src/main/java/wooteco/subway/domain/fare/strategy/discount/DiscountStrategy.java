@@ -5,7 +5,7 @@ public abstract class DiscountStrategy {
     protected static final int FREE = 0;
     private static final int DEFAULT_DISCOUNT_AMOUNT = 350;
 
-    public abstract boolean isMatch(final int age);
+    abstract boolean isMatch(final int age);
 
     public abstract int apply(final int fare);
 

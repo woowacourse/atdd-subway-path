@@ -14,7 +14,7 @@ public final class BabyDiscountStrategy extends DiscountStrategy {
     }
 
     @Override
-    public boolean isMatch(final int age) {
+    boolean isMatch(final int age) {
         return MIN_AGE <= age && age <= MAX_AGE;
     }
 
