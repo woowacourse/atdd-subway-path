@@ -68,8 +68,25 @@ public class PathControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("경로 조회에 실패한다.")
-    void find_exception() throws Exception {
+    @DisplayName("출발역과 도착역이 같은 경우, 경로 조회에 실패한다.")
+    void find_sameStations() throws Exception {
+        // given
+        final Long stationId1 = createStation(HYEHWA);
+        final Long stationId2 = createStation(SUNGSHIN);
+        createLine(LINE_2, SKY_BLUE, stationId1, stationId2, 10, 0);
+
+        // when
+        final ResultActions response = mockMvc.perform(
+                        get("/paths?source=" + stationId1 + "&target=" + stationId1 + "&age=" + 26))
+                .andDo(print());
+
+        // then
+        response.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("연결되지 않은 경로를 조회할 경우, 경로 조회에 실패한다.")
+    void find_noPath() throws Exception {
         // given
         final Long stationId1 = createStation(HYEHWA);
         final Long stationId2 = createStation(SUNGSHIN);

@@ -86,9 +86,25 @@ public class PathServiceTest {
     }
 
     @Test
+    @DisplayName("출발역과 도착역이 같은 경우, 예외를 발생시킨다.")
+    void findPath_sameStations() {
+        assertThatThrownBy(() -> pathService.find(up.getId(), up.getId(), 20))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     @DisplayName("경로를 조회할 수 없는 경우, 예외를 발생시킨다.")
     void findPath_noPath() {
-        assertThatThrownBy(() -> pathService.find(up.getId(), up.getId(), 20))
+        // given
+        final Long stationId1 = stationRepository.save(new Station("첫번째역"));
+        final Long stationId2 = stationRepository.save(new Station("두번째역"));
+        final Station station1 = stationRepository.findById(stationId1);
+        final Station station2 = stationRepository.findById(stationId2);
+        final Long lineId = lineRepository.save(new Line("엘리역", "bg-yellow-600", 1_000));
+        sectionRepository.save(lineId, new Section(station1, station2, 10));
+
+        // when & then
+        assertThatThrownBy(() -> pathService.find(up.getId(), station1.getId(), 20))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
