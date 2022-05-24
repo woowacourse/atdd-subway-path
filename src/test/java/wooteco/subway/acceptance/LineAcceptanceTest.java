@@ -11,11 +11,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import wooteco.subway.domain.Line;
+import wooteco.subway.repository.LineRepository;
 import wooteco.subway.service.dto.response.LineResponse;
 
 @DisplayName("노선 관련 기능")
 @SuppressWarnings({"InnerClassMayBeStatic", "NonAsciiCharacters"})
 public class LineAcceptanceTest extends AcceptanceTest {
+
+
+    @Autowired
+    private LineRepository lineRepository;
 
     @Nested
     @DisplayName("노선 생성 API는")
@@ -67,6 +74,31 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 assertThat(response.statusCode()).isEqualTo(400);
                 assertThat(response.body().jsonPath().getString("message"))
                         .isEqualTo("이름과 색깔은 공백일 수 없습니다.");
+            }
+        }
+
+        @Nested
+        @DisplayName("등록할 노선 정보에 거리를 음수로 입력한 경우")
+        class Context_Input_Save_Line_Invalid_Distance {
+
+            private Map<Object, Object> 노선_저장_파라미터;
+
+            @BeforeEach
+            void setUp() {
+                long 잠실 = 역_저장("잠실");
+                long 강남 = 역_저장("강남");
+                노선_저장_파라미터 = 노선_저장_파라미터("신분당선", "bg-red-600", 잠실, 강남, -1, 1000);
+            }
+
+            @Test
+            @DisplayName("노선을 저장하고 저장된 노선을 응답한다.")
+            void it_returns_save() {
+                ExtractableResponse<Response> response = 노선_저장_응답(노선_저장_파라미터);
+
+                assertThat(response.statusCode()).isEqualTo(400);
+                assertThat(response.body().jsonPath().getString("name")).isNull();
+                assertThat(response.body().jsonPath().getString("color")).isNull();
+                assertThat(response.body().jsonPath().getString("extraFare")).isNull();
             }
         }
     }

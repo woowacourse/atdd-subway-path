@@ -3,6 +3,7 @@ package wooteco.subway.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
@@ -34,6 +35,7 @@ public class LineService {
         this.sectionRepository = sectionRepository;
     }
 
+    @Transactional
     public LineResponse create(LineRequest lineRequest) {
         validateDuplicateNameOrColor(lineRequest.getName(), lineRequest.getColor());
         Line line = new Line(lineRequest.getName(), lineRequest.getColor(),
@@ -42,9 +44,8 @@ public class LineService {
         Station downStation = getStation(lineRequest.getDownStationId());
 
         Line savedLine = lineRepository.save(line);
-        sectionRepository
-                .save(new Section(savedLine, upStation, downStation, lineRequest.getDistance()));
-
+        Section section = new Section(savedLine, upStation, downStation, lineRequest.getDistance());
+        sectionRepository.save(section);
         return toLineResponse(savedLine, List.of(upStation, downStation));
     }
 
