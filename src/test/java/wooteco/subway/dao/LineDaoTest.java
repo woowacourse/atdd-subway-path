@@ -32,14 +32,15 @@ class LineDaoTest {
 
     @Test
     void findAll_메서드는_모든_데이터를_조회한다() {
-        LineFixtures.setUp(jdbcTemplate, new Line("분당선", "노란색"), new Line("신분당선", "빨간색"),
-            new Line("2호선", "초록색"));
+        LineFixtures.setUp(jdbcTemplate, new Line("분당선", "노란색", 900),
+            new Line("신분당선", "빨간색", 1000),
+            new Line("2호선", "초록색", 1100));
         List<Line> actual = dao.findAll();
 
         List<Line> expected = List.of(
-            new Line(1L, "분당선", "노란색"),
-            new Line(2L, "신분당선", "빨간색"),
-            new Line(3L, "2호선", "초록색")
+            new Line(1L, "분당선", "노란색", 900),
+            new Line(2L, "신분당선", "빨간색", 1000),
+            new Line(3L, "2호선", "초록색", 1100)
         );
 
         assertThat(actual).isEqualTo(expected);
@@ -47,26 +48,26 @@ class LineDaoTest {
 
     @Test
     void findById는_단건의_데이터를_조회한다() {
-        LineFixtures.setUp(jdbcTemplate, new Line("분당선", "노란색"));
+        LineFixtures.setUp(jdbcTemplate, new Line("분당선", "노란색", 900));
         Line actual = dao.findById(1L);
-        Line excepted = new Line(1L, "분당선", "노란색");
+        Line excepted = new Line(1L, "분당선", "노란색", 900);
 
         assertThat(actual).isEqualTo(excepted);
     }
 
     @Test
     void save_메서드는_데이터를_저장한다() {
-        Line actual = dao.save(new Line("8호선", "분홍색"));
+        Line actual = dao.save(new Line("8호선", "분홍색", 1200));
 
-        Line expected = new Line(1L, "8호선", "분홍색");
+        Line expected = new Line(1L, "8호선", "분홍색", 1200);
 
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     void update_메서드는_데이터를_수정한다() {
-        LineFixtures.setUp(jdbcTemplate, new Line("분당선", "노란색"));
-        dao.update(new Line(1L, "8호선", "노란색"));
+        LineFixtures.setUp(jdbcTemplate, new Line("분당선", "노란색", 900));
+        dao.update(new Line(1L, "8호선", "노란색", 1000));
 
         String actual = jdbcTemplate.queryForObject("SELECT name FROM line WHERE id = 1",
             new EmptySqlParameterSource(), String.class);
@@ -77,21 +78,21 @@ class LineDaoTest {
 
     @Test
     void existById_메서드는_해당_id로_존재_하는지_확인() {
-        dao.save(new Line("3호선", "주황색"));
+        dao.save(new Line("3호선", "주황색", 1500));
 
         assertThat(dao.existById(1L)).isTrue();
     }
 
     @Test
     void existById_메서드는_해당_Name으로_존재_하는지_확인() {
-        dao.save(new Line("3호선", "주황색"));
+        dao.save(new Line("3호선", "주황색", 1500));
 
         assertThat(dao.existByName("3호선")).isTrue();
     }
 
     @Test
     void delete_메서드는_데이터를_삭제한다() {
-        LineFixtures.setUp(jdbcTemplate, new Line("분당선", "노란색"));
+        LineFixtures.setUp(jdbcTemplate, new Line("분당선", "노란색", 2000));
         dao.deleteById(1L);
 
         assertThat(dao.existById(1L)).isFalse();

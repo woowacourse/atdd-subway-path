@@ -33,17 +33,21 @@ public class Station {
             return false;
         }
         Station station = (Station) o;
-        return Objects.equals(name, station.name);
+        return Objects.equals(getId(), station.getId()) && Objects.equals(getName(),
+            station.getName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(getId(), getName());
     }
 
     @Override
     public String toString() {
-        return "Station{" + "id=" + id + ", name='" + name + '\'' + '}';
+        return "Station{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            '}';
     }
 }
 

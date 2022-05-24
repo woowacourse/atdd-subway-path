@@ -64,8 +64,8 @@ class SectionDaoTest {
             new Section(1L, new Station(1L, "복정역"), new Station(2L, "가천대역"), 10),
             new Section(2L, new Station(2L, "가천대역"), new Station(3L, "태평역"), 4)
         ));
-        Line line = new Line(1L, "분당선", "노란색", sections);
-
+        Line line = new Line(1L, "분당선", "노란색", 900, sections);
+        
         dao.saveSections(line);
 
         assertThatCode(() -> dao.saveSections(line)).doesNotThrowAnyException();

@@ -8,16 +8,18 @@ public class LineResponse {
     private Long id;
     private String name;
     private String color;
+    private int extraFare;
     private List<StationResponse> stations;
 
     public LineResponse() {
     }
 
-    public LineResponse(Long id, String name, String color,
+    public LineResponse(Long id, String name, String color, int extraFare,
         List<StationResponse> stations) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
         this.stations = stations;
     }
 
@@ -33,6 +35,10 @@ public class LineResponse {
         return color;
     }
 
+    public int getExtraFare() {
+        return extraFare;
+    }
+
     public List<StationResponse> getStations() {
         return stations;
     }
@@ -46,22 +52,13 @@ public class LineResponse {
             return false;
         }
         LineResponse that = (LineResponse) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name)
-            && Objects.equals(color, that.color);
+        return getExtraFare() == that.getExtraFare() && Objects.equals(getId(), that.getId())
+            && Objects.equals(getName(), that.getName()) && Objects.equals(
+            getColor(), that.getColor()) && Objects.equals(getStations(), that.getStations());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, color);
-    }
-
-    @Override
-    public String toString() {
-        return "LineResponse{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", color='" + color + '\'' +
-            ", stations=" + stations +
-            '}';
+        return Objects.hash(getId(), getName(), getColor(), getExtraFare(), getStations());
     }
 }

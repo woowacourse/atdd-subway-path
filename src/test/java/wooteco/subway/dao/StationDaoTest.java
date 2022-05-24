@@ -77,7 +77,7 @@ class StationDaoTest {
     void findById_메서드는_해당_id로_해당_데이터를_조회한다() {
         StationFixtures.setUp(jdbcTemplate, "테스트 역");
 
-        Station expected = new Station("테스트 역");
+        Station expected = new Station(1L, "테스트 역");
 
         assertThat(dao.findById(1L)).isEqualTo(expected);
     }

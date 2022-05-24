@@ -28,7 +28,7 @@ import wooteco.subway.exception.NotFoundException;
 class LineServiceTest {
 
     private static final LineResponse LINE_RESPONSE1 = new LineResponse(
-        1L, "분당선", "노란색", List.of(
+        1L, "분당선", "노란색", 900,  List.of(
         new StationResponse(1L, "복정역"),
         new StationResponse(2L, "가천대역"),
         new StationResponse(3L, "태평역")
@@ -43,10 +43,10 @@ class LineServiceTest {
 
         @Test
         void 중복되지_않는_이름인_경우_성공() {
-            LineRequest lineRequest = new LineRequest("5호선", "보라색", 1L, 2L, 10);
+            LineRequest lineRequest = new LineRequest("5호선", "보라색", 1100, 1L, 2L, 10);
 
             LineResponse actual = lineService.save(lineRequest);
-            LineResponse expected = new LineResponse(4L, "5호선", "보라색", List.of(
+            LineResponse expected = new LineResponse(4L, "5호선", "보라색", 1100, List.of(
                 new StationResponse(1L, "복정역"),
                 new StationResponse(2L, "가천대역")
             ));
@@ -56,7 +56,7 @@ class LineServiceTest {
 
         @Test
         void 중복되는_이름인_경우_예외발생() {
-            LineRequest lineRequest = new LineRequest("2호선", "초록색", 1L, 2L, 10);
+            LineRequest lineRequest = new LineRequest("2호선", "초록색", 1200,  1L, 2L, 10);
 
             assertThatThrownBy(() -> lineService.save(lineRequest))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -64,7 +64,7 @@ class LineServiceTest {
 
         @Test
         void 존재하지_않는_상행역을_입력한_경우_예외발생() {
-            LineRequest lineRequest = new LineRequest("3호선", "주황색", 9L, 2L, 10);
+            LineRequest lineRequest = new LineRequest("3호선", "주황색", 1100,  9L, 2L, 10);
 
             assertThatThrownBy(() -> lineService.save(lineRequest))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -72,7 +72,7 @@ class LineServiceTest {
 
         @Test
         void 존재하지_않는_하행역_입력한_경우_예외발생() {
-            LineRequest lineRequest = new LineRequest("3호선", "주황색", 2L, 9L, 10);
+            LineRequest lineRequest = new LineRequest("3호선", "주황색",1200, 2L, 9L, 10);
 
             assertThatThrownBy(() -> lineService.save(lineRequest))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -82,13 +82,13 @@ class LineServiceTest {
     @Test
     void findAll_메서드는_모든_데이터를_조회한다() {
         LineResponse lineResponse2 = new LineResponse(
-            2L, "2호선", "초록색", List.of(
+            2L, "2호선", "초록색", 1000, List.of(
             new StationResponse(4L, "잠실역"),
             new StationResponse(5L, "잠실나루역"),
             new StationResponse(6L, "강변역")
         ));
         LineResponse lineResponse3 = new LineResponse(
-            3L, "3호선", "주황색", List.of(
+            3L, "3호선", "주황색", 1100, List.of(
             new StationResponse(1L, "복정역"),
             new StationResponse(3L, "태평역")
         ));
@@ -124,20 +124,19 @@ class LineServiceTest {
 
         @Test
         void 유효한_입력값인_경우_성공() {
-            LineBasicRequest lineRequest = new LineBasicRequest("5호선", "보라색");
+            LineBasicRequest lineRequest = new LineBasicRequest("5호선", "보라색", 1000);
 
             lineService.update(1L, lineRequest);
 
             LineResponse actual = lineService.findById(1L);
-            assertAll(() -> {
-                assertThat(actual.getName()).isEqualTo("5호선");
-                assertThat(actual.getColor()).isEqualTo("보라색");
-            });
+            assertThat(actual)
+                .extracting("name", "color", "extraFare")
+                .containsExactly("5호선", "보라색", 1000);
         }
 
         @Test
         void 중복되는_이름으로_수정하려는_경우_예외발생() {
-            LineBasicRequest lineRequest = new LineBasicRequest("2호선", "보라색");
+            LineBasicRequest lineRequest = new LineBasicRequest("2호선", "보라색", 1000);
 
             assertThatThrownBy(() -> lineService.update(1L, lineRequest))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -145,7 +144,7 @@ class LineServiceTest {
 
         @Test
         void 존재하지_않는_노선을_수정하려는_경우_예외발생() {
-            LineBasicRequest lineRequest = new LineBasicRequest("1호선", "보라색");
+            LineBasicRequest lineRequest = new LineBasicRequest("1호선", "보라색", 1200);
 
             assertThatThrownBy(() -> lineService.update(9999L, lineRequest))
                 .isInstanceOf(IllegalArgumentException.class);

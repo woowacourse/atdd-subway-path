@@ -25,8 +25,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
             postStation(makeStationJson("강남역"));
             postStation(makeStationJson("양재역"));
             postStation(makeStationJson("양재시민의숲역"));
-            postLine(makeLineJson("1호선", "파란색", 1L, 3L, 8));
-            postLine(makeLineJson("2호선", "초록색", 1L, 2L, 3));
+            postLine(makeLineJson("1호선", "파란색", 1000, 1L, 3L, 8));
+            postLine(makeLineJson("2호선", "초록색", 1100,  1L, 2L, 3));
             post(makeSectionJson(2L, 3L, 3), "/lines/2/sections");
 
             ExtractableResponse<Response> response = get(
@@ -63,7 +63,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
             postStation(makeStationJson("강남역"));
             postStation(makeStationJson("양재역"));
             postStation(makeStationJson("양재시민의숲역"));
-            postLine(makeLineJson("1호선", "파란색", 1L, 3L, 8));
+            postLine(makeLineJson("1호선", "파란색", 1100, 1L, 3L, 8));
 
             ExtractableResponse<Response> response = get("/paths?source=2&target=3&age=15");
 

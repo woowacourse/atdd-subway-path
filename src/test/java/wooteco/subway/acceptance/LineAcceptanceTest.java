@@ -18,6 +18,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.StationResponse;
 
@@ -39,13 +40,13 @@ class LineAcceptanceTest extends AcceptanceTest {
             postStation(makeStationJson("강남역"));
             postStation(makeStationJson("양재역"));
 
-            HashMap<String, Object> lineParams = makeLineJson("신분당선", "빨간색", 1L, 2L, 10);
+            HashMap<String, Object> lineParams = makeLineJson("신분당선", "빨간색", 900, 1L, 2L, 10);
             ExtractableResponse<Response> response = SimpleRestAssured.post(lineParams, "/lines");
 
             LineResponse actual = response.jsonPath().getObject(".", LineResponse.class);
             List<StationResponse> stations = List.of(new StationResponse(1L, "강남역"),
                 new StationResponse(2L, "양재역"));
-            LineResponse expected = new LineResponse(1L, "신분당선", "빨간색", stations);
+            LineResponse expected = new LineResponse(1L, "신분당선", "빨간색", 900, stations);
             assertAll(() -> {
                 assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
                 assertThat(response.header("Location")).isNotBlank();
@@ -55,7 +56,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         @Test
         void 이미_존재하는_노선명_입력시_400_BAD_REQUEST() {
-            HashMap<String, Object> params = makeLineJson("신분당선", "빨간색", 1L, 2L, 10);
+            HashMap<String, Object> params = makeLineJson("신분당선", "빨간색", 900, 1L, 2L, 10);
             SimpleRestAssured.post(params, "/lines");
 
             ExtractableResponse<Response> response = SimpleRestAssured.post(params, "/lines");
@@ -66,7 +67,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         @Test
         void 존재하지_않는_하행_종점_입력시_400_BAD_REQUEST() {
             postStation(makeStationJson("강남역"));
-            HashMap<String, Object> params = makeLineJson("신분당선", "빨간색", 1L, 2L, 5);
+            HashMap<String, Object> params = makeLineJson("신분당선", "빨간색", 900, 1L, 2L, 5);
 
             ExtractableResponse<Response> response = SimpleRestAssured.post(params, "/lines");
 
@@ -76,7 +77,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         @Test
         void 존재하지_않는_상행_종점_입력시_400_BAD_REQUEST() {
             postStation(makeStationJson("강남역"));
-            HashMap<String, Object> params = makeLineJson("신분당선", "빨간색", 2L, 1L, 5);
+            HashMap<String, Object> params = makeLineJson("신분당선", "빨간색", 900, 2L, 1L, 5);
 
             ExtractableResponse<Response> response = SimpleRestAssured.post(params, "/lines");
 
@@ -92,8 +93,8 @@ class LineAcceptanceTest extends AcceptanceTest {
         postStation(makeStationJson("가천대역"));
         postStation(makeStationJson("태평역"));
 
-        HashMap<String, Object> lineParams1 = makeLineJson("신분당선", "빨간색", 1L, 2L, 10);
-        HashMap<String, Object> lineParams2 = makeLineJson("분당선", "노란색", 3L, 4L, 10);
+        HashMap<String, Object> lineParams1 = makeLineJson("신분당선", "빨간색", 900, 1L, 2L, 10);
+        HashMap<String, Object> lineParams2 = makeLineJson("분당선", "노란색", 1000, 3L, 4L, 10);
         postLine(lineParams1);
         postLine(lineParams2);
 
@@ -102,8 +103,10 @@ class LineAcceptanceTest extends AcceptanceTest {
         List<LineResponse> responseBody = response.jsonPath()
             .getList(".", LineResponse.class);
         List<LineResponse> expected = List.of(
-            new LineResponse(1L, "신분당선", "빨간색", List.of(STATION_RESPONSE_1, STATION_RESPONSE_2)),
-            new LineResponse(2L, "분당선", "노란색", List.of(STATION_RESPONSE_3, STATION_RESPONSE_4))
+            new LineResponse(1L, "신분당선", "빨간색", 900,
+                List.of(STATION_RESPONSE_1, STATION_RESPONSE_2)),
+            new LineResponse(2L, "분당선", "노란색", 1000,
+                List.of(STATION_RESPONSE_3, STATION_RESPONSE_4))
         );
 
         assertAll(() -> {
@@ -121,12 +124,12 @@ class LineAcceptanceTest extends AcceptanceTest {
         void 성공시_200_OK() {
             postStation(makeStationJson("강남역"));
             postStation(makeStationJson("양재역"));
-            postLine(makeLineJson("신분당선", "빨간색", 1L, 2L, 10));
+            postLine(makeLineJson("신분당선", "빨간색", 900, 1L, 2L, 10));
 
             ExtractableResponse<Response> response = SimpleRestAssured.get("/lines/1");
 
             LineResponse actual = response.jsonPath().getObject(".", LineResponse.class);
-            LineResponse expected = new LineResponse(1L, "신분당선", "빨간색",
+            LineResponse expected = new LineResponse(1L, "신분당선", "빨간색", 900,
                 List.of(STATION_RESPONSE_1, STATION_RESPONSE_2));
             assertAll(() -> {
                 assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -150,7 +153,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         void 성공시_200_OK() {
             postStation(makeStationJson("강남역"));
             postStation(makeStationJson("양재역"));
-            postLine(makeLineJson("신분당선", "빨간색", 1L, 2L, 10));
+            postLine(makeLineJson("신분당선", "빨간색", 900, 1L, 2L, 10));
             HashMap<String, String> params = makeLineUpdateJson("NEW 분당선", "빨간색");
 
             ExtractableResponse<Response> response = SimpleRestAssured.put(params, "/lines/1");
@@ -171,8 +174,8 @@ class LineAcceptanceTest extends AcceptanceTest {
         void 이미_존재하는_지하철_노선_이름으로_수정시_400_BAD_REQUEST() {
             postStation(makeStationJson("강남역"));
             postStation(makeStationJson("양재역"));
-            postLine(makeLineJson("신분당선", "빨간색", 1L, 2L, 10));
-            postLine(makeLineJson("NEW 분당선", "빨간색", 1L, 2L, 10));
+            postLine(makeLineJson("신분당선", "빨간색", 900, 1L, 2L, 10));
+            postLine(makeLineJson("NEW 분당선", "빨간색", 900, 1L, 2L, 10));
             Map<String, String> params = makeLineUpdateJson("NEW 분당선", "빨간색");
 
             ExtractableResponse<Response> response = SimpleRestAssured.put(params, "/lines/1");
@@ -189,7 +192,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         void 성공시_204_NO_CONTENT() {
             postStation(makeStationJson("강남역"));
             postStation(makeStationJson("양재역"));
-            postLine(makeLineJson("신분당선", "빨간색", 1L, 2L, 10));
+            postLine(makeLineJson("신분당선", "빨간색", 900, 1L, 2L, 10));
 
             ExtractableResponse<Response> response = SimpleRestAssured.delete("/lines/1");
 
@@ -213,7 +216,7 @@ class LineAcceptanceTest extends AcceptanceTest {
             postStation(makeStationJson("강남역"));
             postStation(makeStationJson("양재역"));
             postStation(makeStationJson("양재시민의숲역"));
-            postLine(makeLineJson("신분당선", "빨간색", 1L, 2L, 10));
+            postLine(makeLineJson("신분당선", "빨간색", 900, 1L, 2L, 10));
 
             HashMap<String, Object> sectionParams = makeSectionJson(2L, 3L, 4);
 
@@ -227,7 +230,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         void 존재하지_않는_지하철역을_입력할_경우_BAD_REQUEST() {
             postStation(makeStationJson("강남역"));
             postStation(makeStationJson("양재역"));
-            postLine(makeLineJson("신분당선", "빨간색", 1L, 2L, 10));
+            postLine(makeLineJson("신분당선", "빨간색", 900, 1L, 2L, 10));
 
             HashMap<String, Object> sectionParams = makeSectionJson(2L, 3L, 4);
             ExtractableResponse<Response> response = SimpleRestAssured.post(sectionParams,
@@ -240,7 +243,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         void 상행역_하행역_둘다_노선에_등록된_경우_BAD_REQUEST() {
             postStation(makeStationJson("강남역"));
             postStation(makeStationJson("양재역"));
-            postLine(makeLineJson("신분당선", "빨간색", 1L, 2L, 10));
+            postLine(makeLineJson("신분당선", "빨간색", 900, 1L, 2L, 10));
 
             HashMap<String, Object> sectionParams = makeSectionJson(1L, 2L, 5);
 
@@ -254,7 +257,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         void 상행역_하행역_둘다_노선에_등록되지_않은_경우_BAD_REQUEST() {
             postStation(makeStationJson("강남역"));
             postStation(makeStationJson("양재역"));
-            postLine(makeLineJson("신분당선", "빨간색", 1L, 2L, 10));
+            postLine(makeLineJson("신분당선", "빨간색", 900, 1L, 2L, 10));
 
             HashMap<String, Object> params = makeSectionJson(3L, 4L, 5);
             ExtractableResponse<Response> response = SimpleRestAssured.post(params,
@@ -268,7 +271,7 @@ class LineAcceptanceTest extends AcceptanceTest {
             postStation(makeStationJson("강남역"));
             postStation(makeStationJson("양재역"));
             postStation(makeStationJson("양재시민의숲"));
-            postLine(makeLineJson("신분당선", "빨간색", 1L, 3L, 5));
+            postLine(makeLineJson("신분당선", "빨간색", 900, 1L, 3L, 5));
 
             HashMap<String, Object> params = makeSectionJson(1L, 2L, 7);
             ExtractableResponse<Response> response = SimpleRestAssured.post(params,
@@ -282,7 +285,7 @@ class LineAcceptanceTest extends AcceptanceTest {
             postStation(makeStationJson("강남역"));
             postStation(makeStationJson("양재역"));
             postStation(makeStationJson("양재시민의숲"));
-            postLine(makeLineJson("신분당선", "빨간색", 1L, 3L, 5));
+            postLine(makeLineJson("신분당선", "빨간색", 900, 1L, 3L, 5));
 
             HashMap<String, Object> params = makeSectionJson(1L, 2L, 5);
             ExtractableResponse<Response> response = SimpleRestAssured.post(params,
@@ -301,7 +304,7 @@ class LineAcceptanceTest extends AcceptanceTest {
             postStation(makeStationJson("강남역"));
             postStation(makeStationJson("양재역"));
             postStation(makeStationJson("양재시민의숲"));
-            postLine(makeLineJson("신분당선", "빨간색", 1L, 3L, 10));
+            postLine(makeLineJson("신분당선", "빨간색", 900, 1L, 3L, 10));
             SimpleRestAssured.post(makeSectionJson(1L, 2L, 5), "/lines/1/sections");
 
             ExtractableResponse<Response> response = SimpleRestAssured.delete(
@@ -322,7 +325,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         void 노선에_등록되어_있지_않은_지하철역일_경우_BAD_REQUEST() {
             postStation(makeStationJson("강남역"));
             postStation(makeStationJson("양재역"));
-            postLine(makeLineJson("신분당선", "빨간색", 1L, 2L, 10));
+            postLine(makeLineJson("신분당선", "빨간색", 900, 1L, 2L, 10));
 
             ExtractableResponse<Response> response = SimpleRestAssured.delete(
                 "/lines/1/sections?stationId=" + 3);
@@ -334,7 +337,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         void 노선에_구간이_마지막_하나일_경우_제거하면_BAD_REQEUST() {
             postStation(makeStationJson("강남역"));
             postStation(makeStationJson("양재역"));
-            postLine(makeLineJson("신분당선", "빨간색", 1L, 2L, 10));
+            postLine(makeLineJson("신분당선", "빨간색", 900, 1L, 2L, 10));
             SimpleRestAssured.delete("/lines/1/sections?stationId=" + 1);
 
             ExtractableResponse<Response> response = SimpleRestAssured.delete(
