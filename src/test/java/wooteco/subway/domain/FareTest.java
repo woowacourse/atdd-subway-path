@@ -6,8 +6,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-class PathTest {
+class FareTest {
 
+    // 3 2 3 3
     @ParameterizedTest
     @CsvSource(value = {
             "9, 300, 5, 0",
@@ -17,7 +18,7 @@ class PathTest {
             "59, 300, 19, 2550"
     })
     @DisplayName("지하철 요금 계산")
-    void calcFare(int distance, int extraFare, Long age, int fare) {
+    void calculateFare(int distance, int extraFare, Long age, int fare) {
         assertThat(new Fare(distance, extraFare, age).calculateFare()).isEqualTo(fare);
     }
 }
