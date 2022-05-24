@@ -1,6 +1,8 @@
 package wooteco.subway.domain.fare;
 
 import java.util.Objects;
+import wooteco.subway.domain.fare.policy.DiscountPolicy;
+import wooteco.subway.domain.fare.policy.FareByDistancePolicy;
 import wooteco.subway.domain.section.Distance;
 import wooteco.subway.exception.NegativeFareException;
 

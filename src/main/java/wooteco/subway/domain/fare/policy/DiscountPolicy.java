@@ -1,8 +1,10 @@
-package wooteco.subway.domain.fare;
+package wooteco.subway.domain.fare.policy;
 
 import java.util.Arrays;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
+import wooteco.subway.domain.fare.Age;
+import wooteco.subway.domain.fare.Fare;
 
 public enum DiscountPolicy {
     BABY_OR_SENIOR(Age::isBabyOrSenior, DiscountPolicy::discountForBabyOrSenior),

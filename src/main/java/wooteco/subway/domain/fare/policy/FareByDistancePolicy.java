@@ -1,8 +1,9 @@
-package wooteco.subway.domain.fare;
+package wooteco.subway.domain.fare.policy;
 
 import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.section.Distance;
 
 public enum FareByDistancePolicy {
