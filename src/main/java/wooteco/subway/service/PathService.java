@@ -13,6 +13,7 @@ import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.subwaygraph.SubwayGraph;
 import wooteco.subway.dto.PathsResponse;
+import wooteco.subway.exception.requestvalue.AgeValueException;
 
 @Service
 public class PathService {
@@ -28,12 +29,19 @@ public class PathService {
     }
 
     public PathsResponse createPaths(final Long sourceStationId, final Long targetStationId, final int age) {
+        validateAgeOverThanZero(age);
         Station source = stationDao.findById(sourceStationId);
         Station target = stationDao.findById(targetStationId);
-        return createPathsResponse(source, target);
+        return createPathsResponse(source, target, age);
     }
 
-    private PathsResponse createPathsResponse(final Station source, final Station target) {
+    private void validateAgeOverThanZero(final int age) {
+        if (age <= 0) {
+            throw new AgeValueException("승객의 연령은 한살 이상이여야 합니다.");
+        }
+    }
+
+    private PathsResponse createPathsResponse(final Station source, final Station target, final int age) {
         SubwayGraph subwayGraph = initSubwayGraph();
         Paths paths = subwayGraph.createPathsResult(source, target);
         return PathsResponse.of(paths, calculateFare(paths));

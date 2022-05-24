@@ -12,7 +12,7 @@ import wooteco.subway.dao.FakeSectionDao;
 import wooteco.subway.dao.FakeStationDao;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
-import wooteco.subway.exception.ExtraFareException;
+import wooteco.subway.exception.requestvalue.RequestValueException;
 import wooteco.subway.exception.datanotfound.LineNotFoundException;
 import wooteco.subway.exception.datanotfound.StationNotFoundException;
 import wooteco.subway.exception.duplicatename.LineDuplicateException;
@@ -153,7 +153,7 @@ class LineServiceTest {
         LineRequest line = new LineRequest("11호선", "red", 1L, 2L, 10, -1);
 
         assertThatThrownBy(() -> lineService.save(line))
-                .isInstanceOf(ExtraFareException.class)
+                .isInstanceOf(RequestValueException.class)
                 .hasMessage("추가요금은 0과 같거나 양수이어야 합니다.");
     }
 }
