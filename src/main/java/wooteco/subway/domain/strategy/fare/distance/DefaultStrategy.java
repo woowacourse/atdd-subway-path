@@ -1,6 +1,6 @@
 package wooteco.subway.domain.strategy.fare.distance;
 
-import static wooteco.subway.domain.strategy.fare.FarePolicy.BASIC_FARE;
+import static wooteco.subway.domain.strategy.fare.distance.FareDistanceConstant.BASIC_FARE;
 
 public class DefaultStrategy implements FareDistanceStrategy {
 

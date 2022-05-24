@@ -1,11 +1,10 @@
 package wooteco.subway.domain.strategy.fare.distance;
 
-
-import static wooteco.subway.domain.strategy.fare.FarePolicy.ADDITIONAL_FARE;
-import static wooteco.subway.domain.strategy.fare.FarePolicy.BASIC_DISTANCE;
-import static wooteco.subway.domain.strategy.fare.FarePolicy.BASIC_FARE;
-import static wooteco.subway.domain.strategy.fare.FarePolicy.STEP_ONE_CHARGE_DISTANCE;
-import static wooteco.subway.domain.strategy.fare.FarePolicy.STEP_ONE_DISTANCE;
+import static wooteco.subway.domain.strategy.fare.distance.FareDistanceConstant.ADDITIONAL_FARE;
+import static wooteco.subway.domain.strategy.fare.distance.FareDistanceConstant.BASIC_DISTANCE;
+import static wooteco.subway.domain.strategy.fare.distance.FareDistanceConstant.BASIC_FARE;
+import static wooteco.subway.domain.strategy.fare.distance.FareDistanceConstant.STEP_ONE_CHARGE_DISTANCE;
+import static wooteco.subway.domain.strategy.fare.distance.FareDistanceConstant.STEP_ONE_DISTANCE;
 
 public class Over10KmStrategy implements FareDistanceStrategy {
 

@@ -1,6 +1,6 @@
 package wooteco.subway.domain.strategy.fare.age;
 
-import static wooteco.subway.domain.strategy.fare.FarePolicy.DEDUCT_FARE;
+import static wooteco.subway.domain.strategy.fare.age.FareDiscountAgeConstant.DEDUCT_FARE;
 
 public class TeenAgeStrategy implements FareDiscountAgeStrategy {
 
