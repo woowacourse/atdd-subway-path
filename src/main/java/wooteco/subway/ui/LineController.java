@@ -44,19 +44,19 @@ public class LineController {
         return lineService.getAll();
     }
 
-    @GetMapping("/{lineId}")
-    public LineResponse getLineById(@PathVariable final Long lineId) {
-        return lineService.getById(lineId);
+    @GetMapping("/{id}")
+    public LineResponse getLineById(@PathVariable final Long id) {
+        return lineService.getById(id);
     }
 
-    @PutMapping("/{lineId}")
-    public void updateLine(@PathVariable final Long lineId, @RequestBody @Valid final LineRequest lineRequest) {
-        lineService.modify(lineId, lineRequest);
+    @PutMapping("/{id}")
+    public void updateLine(@PathVariable final Long id, @RequestBody @Valid final LineRequest lineRequest) {
+        lineService.modify(id, lineRequest);
     }
 
-    @DeleteMapping("/{lineId}")
-    public ResponseEntity<Void> deleteLine(@PathVariable final Long lineId) {
-        lineService.remove(lineId);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteLine(@PathVariable final Long id) {
+        lineService.remove(id);
         return ResponseEntity.noContent().build();
     }
 
