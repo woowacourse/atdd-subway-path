@@ -8,6 +8,13 @@ public class Kilometer {
 
     private Kilometer(int value) {
         this.value = value;
+        validateNegativeNumber();
+    }
+
+    private void validateNegativeNumber() {
+        if (value < 0) {
+            throw new IllegalArgumentException("거리는 양수여야 합니다.");
+        }
     }
 
     public static Kilometer from(int value) {

@@ -43,7 +43,7 @@ public class LineRequest {
         return distance;
     }
 
-    public Integer getExtraFare() {
+    public int getExtraFare() {
         return extraFare;
     }
 }
