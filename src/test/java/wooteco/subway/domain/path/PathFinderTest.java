@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class PathTest {
+class PathFinderTest {
 
-    private Path pathFinder;
+    private PathFinder pathFinder;
 
     @BeforeEach
     void setUp() {
@@ -35,13 +35,13 @@ class PathTest {
         pathFinder = getPathFinder(new Sections(sections));
     }
 
-    private Path getPathFinder(Sections sections) {
+    private PathFinder getPathFinder(Sections sections) {
         Set<Long> stationIds = sections.distinctStationIds();
         List<SectionWeightedEdge> sectionWeightedEdges = sections.values().stream().
                 map(SectionWeightedEdge::new)
                 .collect(Collectors.toUnmodifiableList());
         PathAlgorithm<Long, SectionWeightedEdge> jgraphtPathAlgorithm = new JgraphtPathAlgorithm<>(SectionWeightedEdge.class, stationIds, sectionWeightedEdges);
-        Path pathFinder = new Path(jgraphtPathAlgorithm);
+        PathFinder pathFinder = new PathFinder(jgraphtPathAlgorithm);
         return pathFinder;
     }
 

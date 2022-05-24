@@ -8,7 +8,7 @@ import wooteco.subway.Infrastructure.station.StationDao;
 import wooteco.subway.domain.fare.FareCalculator;
 import wooteco.subway.domain.fare.PathAlgorithm;
 import wooteco.subway.domain.line.Lines;
-import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.path.PathFinder;
 import wooteco.subway.domain.path.SectionWeightedEdge;
 import wooteco.subway.domain.section.Sections;
 import wooteco.subway.domain.station.Station;
@@ -34,7 +34,7 @@ public class PathService {
     public PathResponse findPath(Long from, Long to, Integer age) {
         validateExistStations(from, to);
         Sections sections = new Sections(sectionDao.findAll());
-        Path pathFinder = createPathFinder(sections);
+        PathFinder pathFinder = createPathFinder(sections);
 
         List<Long> path = pathFinder.findPath(from, to);
         int distance = pathFinder.findDistance(from, to);
@@ -45,17 +45,21 @@ public class PathService {
         return new PathResponse(stations, distance, fare);
     }
 
-    private Path createPathFinder(Sections sections) {
+    private PathFinder createPathFinder(Sections sections) {
         Set<Long> stationIds = sections.distinctStationIds();
-        List<SectionWeightedEdge> sectionWeightedEdges = sections.values().stream().
-                map(SectionWeightedEdge::new)
-                .collect(Collectors.toUnmodifiableList());
-        PathAlgorithm<Long, SectionWeightedEdge> jgraphtPathAlgorithm = new JgraphtPathAlgorithm<>(SectionWeightedEdge.class, stationIds, sectionWeightedEdges);
-        Path pathFinder = new Path(jgraphtPathAlgorithm);
-        return pathFinder;
+        List<SectionWeightedEdge> sectionWeightedEdges = getSectionWeightedEdges(sections);
+        PathAlgorithm<Long, SectionWeightedEdge> jgraphtPathAlgorithm =
+                new JgraphtPathAlgorithm<>(SectionWeightedEdge.class, stationIds, sectionWeightedEdges);
+        return new PathFinder<>(jgraphtPathAlgorithm);
     }
 
-    private List<Long> getLineList(Path pathFinder, Long from, Long to) {
+    private List<SectionWeightedEdge> getSectionWeightedEdges(Sections sections) {
+        return sections.values().stream().
+                map(SectionWeightedEdge::new)
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    private List<Long> getLineList(PathFinder pathFinder, Long from, Long to) {
         List<SectionWeightedEdge> edges = pathFinder.findEdges(from, to);
         return edges.stream()
                 .map(edge -> edge.getLineId())
