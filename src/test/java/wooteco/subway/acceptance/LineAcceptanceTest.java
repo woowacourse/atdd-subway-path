@@ -12,7 +12,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import wooteco.subway.domain.Line;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.service.dto.response.LineResponse;
 
