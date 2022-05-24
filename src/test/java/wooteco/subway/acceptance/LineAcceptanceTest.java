@@ -8,7 +8,6 @@ import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,19 +21,16 @@ import wooteco.subway.dto.StationResponse;
 @DisplayName("노선 관련 기능")
 class LineAcceptanceTest extends AcceptanceTest {
 
-    @BeforeEach
-    void setup() {
-        createStation("아차산역");
-        createStation("군자역");
-        createStation("장한평역");
-        createLine("5호선", "bg-purple-600", 1L, 2L, 10);
-    }
-
     @DisplayName("라인을 등록한다.")
     @Test
     void create() {
+        // given
+        createStation("아차산역");
+        createStation("군자역");
+        createStation("장한평역");
+
         // when
-        LineRequest newLineRequest = new LineRequest("6호선", "bg-yellow-600", 2L, 3L, 20);
+        LineRequest newLineRequest = new LineRequest("6호선", "bg-yellow-600", 2L, 3L, 20, 200);
         final ExtractableResponse<Response> response = AcceptanceTestFixture.post("/lines", newLineRequest);
         final List<StationResponse> stations = response.jsonPath().getList("stations", StationResponse.class);
 
@@ -51,6 +47,12 @@ class LineAcceptanceTest extends AcceptanceTest {
     @MethodSource("thrownArguments")
     @ParameterizedTest()
     void thrown_invalidArguments(LineRequest newLineRequest, String message) {
+        // given
+        createStation("아차산역");
+        createStation("군자역");
+        createStation("장한평역");
+        createLine("5호선", "bg-purple-600", 1L, 2L, 10, 0);
+
         final ExtractableResponse<Response> response = AcceptanceTestFixture.post("/lines", newLineRequest);
 
         assertAll(
@@ -74,6 +76,12 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("기존에 존재하는 노선 이름으로 노선을 생성하면 예외를 발생한다.")
     @Test
     void createLineWithDuplicateName() {
+        // given
+        createStation("아차산역");
+        createStation("군자역");
+        createStation("장한평역");
+        createLine("5호선", "bg-purple-600", 1L, 2L, 10, 0);
+
         LineRequest newLineRequest = new LineRequest("5호선", "bg-purple-600", 1L, 2L, 10);
         AcceptanceTestFixture.post("/lines", newLineRequest);
 
@@ -91,7 +99,11 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void findAllLines() {
         // given
-        createLine("신분당선", "rgb-yellow-600", 1L, 2L, 10);
+        createStation("아차산역");
+        createStation("군자역");
+        createStation("장한평역");
+        createLine("5호선", "bg-purple-600", 1L, 2L, 10, 0);
+        createLine("신분당선", "rgb-yellow-600", 1L, 2L, 10, 0);
 
         // when
         final ExtractableResponse<Response> response = AcceptanceTestFixture.get("/lines");
@@ -118,6 +130,12 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("특정 노선을 조회한다.")
     @Test
     void findLine() {
+        // given
+        createStation("아차산역");
+        createStation("군자역");
+        createStation("장한평역");
+        createLine("5호선", "bg-purple-600", 1L, 2L, 10, 0);
+
         // when
         final ExtractableResponse<Response> response = AcceptanceTestFixture.get("/lines/1");
         final List<StationResponse> stations = response.jsonPath().getList("stations", StationResponse.class);
@@ -136,6 +154,12 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("특정 노선을 수정한다.")
     @Test
     void updateLine() {
+        // given
+        createStation("아차산역");
+        createStation("군자역");
+        createStation("장한평역");
+        createLine("5호선", "bg-purple-600", 1L, 2L, 10, 0);
+
         // when
         LineRequest newLineRequest = new LineRequest("6호선", "bg-brown-600");
         final ExtractableResponse<Response> response = AcceptanceTestFixture.put("/lines/1", newLineRequest);
@@ -147,6 +171,12 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("노선을 제거한다.")
     @Test
     void deleteLine() {
+        // given
+        createStation("아차산역");
+        createStation("군자역");
+        createStation("장한평역");
+        createLine("5호선", "bg-purple-600", 1L, 2L, 10, 0);
+
         // when
         final ExtractableResponse<Response> response = AcceptanceTestFixture.delete("/lines/1");
 

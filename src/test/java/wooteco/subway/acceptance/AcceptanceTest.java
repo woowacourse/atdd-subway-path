@@ -31,9 +31,10 @@ abstract public class AcceptanceTest {
         return Long.parseLong(response.header("Location").split("/")[2]);
     }
 
-    protected LineResponse createLine(String name, String color, Long upStationId, Long downStationId, int distance) {
+    protected LineResponse createLine(String name, String color, Long upStationId, Long downStationId, int distance,
+                                      int extraFare) {
         final ExtractableResponse<Response> response = AcceptanceTestFixture.post("/lines",
-                new LineRequest(name, color, upStationId, downStationId, distance));
+                new LineRequest(name, color, upStationId, downStationId, distance, extraFare));
         return response.jsonPath().getObject(".", LineResponse.class);
     }
 

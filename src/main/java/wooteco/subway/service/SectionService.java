@@ -56,7 +56,7 @@ public class SectionService {
     }
 
     @Transactional
-    public void remove(final Long lineId, final Long stationId) {
+    public void remove(final long lineId, final long stationId) {
         final Sections sections = new Sections(sectionDao.findAllByLineId(lineId));
         final List<Section> sectionsToDelete = sections.pop(stationId);
         final Optional<Section> mergedSection = sections.findMergedSection(sectionsToDelete);
