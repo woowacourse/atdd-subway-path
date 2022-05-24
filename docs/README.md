@@ -47,7 +47,7 @@
 
 ### 기능 목록
 
-경로 조회 (**GET** /paths?source={id}&target={id}&age={age} → 200 OK)
+경로 조회 (**GET** /paths?source={id}&target={id}&discountFareCalculator={discountFareCalculator} → 200 OK)
 
 - [X] 최단 경로를 조회한다
     - [X] 모든 노선의 구간에 대해 조회한다
@@ -124,13 +124,13 @@
 
 - 연령별 요금 할인
     - [X] 청소년 요금
-        - 13 <= age < 19
+        - 13 <= discountFareCalculator < 19
         - 350원을 공제한 금액의 20% 할인
     - [X] 어린이 요금
-        - 6 <= age < 13
+        - 6 <= discountFareCalculator < 13
         - 350원을 공제한 금액의 50% 할인
     - [X] 유아 요금
-        - age < 6
+        - discountFareCalculator < 6
         - 0원
 
 ### 도메인 설계

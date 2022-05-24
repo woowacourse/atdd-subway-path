@@ -15,7 +15,7 @@ public class FareTest {
         assertThat(fare.getValue()).isEqualTo(expected);
     }
 
-    @ParameterizedTest(name = "{0}km일 때 요금은 {1}원이다")
+    @ParameterizedTest(name = "{0}km일 때 추가 요금이 {2}원이면 요금은 {1}원이다")
     @CsvSource({"9,1250,100", "12,1350,200", "16,1450,300", "58,2150,400", "15.1,1450,500"})
     void calculateByDistanceAndExtraFare(double distance, int expected, int extraFare) {
         Fare fare = Fare.of(distance, extraFare, 24);
@@ -23,7 +23,7 @@ public class FareTest {
         assertThat(fare.getValue()).isEqualTo(expected + extraFare);
     }
 
-    @ParameterizedTest(name = "{0}km일 때 요금은 {1}원이다")
+    @ParameterizedTest(name = "{0}km일 때 나이가 {2}살이면 요금은 {1}원이다")
     @CsvSource({"9,0,0", "12,850,12", "16,1230,18", "58,2150,20", "15.1,1450,20"})
     void calculateByDistanceAndAge(double distance, int expected, int age) {
         Fare fare = Fare.of(distance, 0, age);
