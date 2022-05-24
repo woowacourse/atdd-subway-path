@@ -50,7 +50,7 @@ class SectionServiceTest extends DBTest {
 
     @DisplayName("상행 종점이 같은 구간을 저장한다.")
     @Test
-    void saveSameUpStation() {
+    void save_sameUpStation() {
         SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(
                 lineServiceResponse.getId(), firstStation.getId(), thirdStation.getId(), 5);
         sectionService.connect(sectionServiceRequest);
@@ -60,7 +60,7 @@ class SectionServiceTest extends DBTest {
 
     @DisplayName("하행 종점이 같은 구간을 저장한다.")
     @Test
-    void saveSameDownStation() {
+    void save_sameDownStation() {
         SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(lineServiceResponse.getId(),
                 thirdStation.getId(), secondStation
                 .getId(), 5);
@@ -71,7 +71,7 @@ class SectionServiceTest extends DBTest {
 
     @DisplayName("상행 종점과 하행 종점이 같은 구간을 저장한다.")
     @Test
-    void saveExtendUp() {
+    void save_extendingForward() {
         SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(
                 lineServiceResponse.getId(), thirdStation.getId(), firstStation.getId(), 10);
         sectionService.connect(sectionServiceRequest);
@@ -81,7 +81,7 @@ class SectionServiceTest extends DBTest {
 
     @DisplayName("하행 종점과 상행 종점이 같은 구간을 저장한다.")
     @Test
-    void saveExtendDown() {
+    void save_extendingBackward() {
         SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(lineServiceResponse.getId(),
                 secondStation
                         .getId(), thirdStation.getId(), 10);
@@ -92,7 +92,7 @@ class SectionServiceTest extends DBTest {
 
     @DisplayName("상행과 하행 종점이 모두 같은 구간을 저장할 경우 예외가 발생한다.")
     @Test
-    void saveSameEndStations() {
+    void save_exception_SameUpStationAndSameDownStation() {
         SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(lineServiceResponse.getId(),
                 firstStation
                         .getId(), secondStation.getId(), 5);
@@ -102,16 +102,16 @@ class SectionServiceTest extends DBTest {
 
     @DisplayName("상행과 하행 종점 모두 존재할 예외가 발생한다.")
     @Test
-    void saveNotExistingSection() {
+    void save_exception_bothExistingStations() {
         SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(lineServiceResponse.getId(),
                 firstStation.getId(), secondStation.getId(), 10);
         assertThatThrownBy(() -> sectionService.connect(sectionServiceRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("상행 종점을 제거한다.")
+    @DisplayName("상행 종점에 해당하는 구간을 제거한다.")
     @Test
-    void deleteUpStation() {
+    void delete_upStation() {
         SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(lineServiceResponse.getId(),
                 secondStation.getId(), thirdStation.getId(), 10);
         sectionService.connect(sectionServiceRequest);
@@ -121,9 +121,9 @@ class SectionServiceTest extends DBTest {
         assertThat(sectionDao.findAllByLineId(lineServiceResponse.getId()).size()).isEqualTo(1);
     }
 
-    @DisplayName("하행 종점을 제거한다.")
+    @DisplayName("하행 종점에 해당 하는 구간을 제거한다.")
     @Test
-    void deleteDownStation() {
+    void delete_downStation() {
         SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(
                 lineServiceResponse.getId(), secondStation.getId(), thirdStation.getId(), 10);
         sectionService.connect(sectionServiceRequest);
@@ -133,9 +133,9 @@ class SectionServiceTest extends DBTest {
         assertThat(sectionDao.findAllByLineId(lineServiceResponse.getId()).size()).isEqualTo(1);
     }
 
-    @DisplayName("중간역을 제거한다.")
+    @DisplayName("중간역에 해당하는 구간을 제거한다.")
     @Test
-    void deleteMiddleStation() {
+    void delete_middleStation() {
         SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(
                 lineServiceResponse.getId(), secondStation.getId(), thirdStation.getId(), 10);
         sectionService.connect(sectionServiceRequest);
@@ -147,7 +147,7 @@ class SectionServiceTest extends DBTest {
 
     @DisplayName("구간이 하나뿐인 노선에서 구간을 제거할 경우 예외가 발생한다.")
     @Test
-    void deleteOnlySection() {
+    void delete_exception_onlySection() {
 
         assertThatThrownBy(() -> sectionService.delete(lineServiceResponse.getId(), secondStation.getId()))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -155,7 +155,7 @@ class SectionServiceTest extends DBTest {
 
     @DisplayName("노선에 존재하지 않는 역을 제거할 경우 예외가 발생한다.")
     @Test
-    void deleteNotExistingStation() {
+    void delete_exception_notExisting() {
         Station fourthStation = stationDao.save(new Station("성수역"));
         SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(
                 lineServiceResponse.getId(), secondStation.getId(), thirdStation.getId(), 10);

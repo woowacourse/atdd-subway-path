@@ -161,9 +161,9 @@ class SectionAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    @DisplayName("상행 종점을 제거한다.")
+    @DisplayName("상행 종점에 해당하는 구간을 제거한다.")
     @Test
-    void deleteSection_upper() {
+    void deleteSection_upStation() {
         // given
         Long lineId = getCreatedLineId(station1.getId(), station2.getId());
         requestToCreateSection(lineId, station2.getId(), station3.getId(), 10);
@@ -184,9 +184,9 @@ class SectionAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    @DisplayName("중간역을 제거한다.")
+    @DisplayName("중간역에 해당하는 구간을 제거한다.")
     @Test
-    void deleteSection_middle() {
+    void deleteSection_middleStation() {
         // given
         Long lineId = getCreatedLineId(station1.getId(), station2.getId());
         requestToCreateSection(lineId, station2.getId(), station3.getId(), 10);
@@ -207,9 +207,9 @@ class SectionAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    @DisplayName("하행 종점을 제거한다.")
+    @DisplayName("하행 종점에 해당하는 구간을 제거한다.")
     @Test
-    void deleteSection_lower() {
+    void deleteSection_downStation() {
         // given
         Long lineId = getCreatedLineId(station1.getId(), station2.getId());
         requestToCreateSection(lineId, station2.getId(), station3.getId(), 10);
