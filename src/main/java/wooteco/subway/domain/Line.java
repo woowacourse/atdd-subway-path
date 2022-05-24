@@ -8,15 +8,11 @@ public class Line {
     private final int extraFare;
 
     public Line(final String name, final String color) {
-        this(null, name, color);
+        this(null, name, color, 0);
     }
 
     public Line(final String name, final String color, final int extraFare) {
         this(null, name, color, extraFare);
-    }
-
-    public Line(final Long id, final String name, final String color) {
-        this(id, name, color, 0);
     }
 
     public Line(final Long id, final String name, final String color, final int extraFare) {
