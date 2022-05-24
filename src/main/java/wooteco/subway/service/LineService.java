@@ -6,14 +6,13 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
-import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
+import wooteco.subway.domain.SectionRepository;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
-import wooteco.subway.dto.SectionDto;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.exception.LineDuplicationException;
 import wooteco.subway.exception.NotExistLineException;
@@ -28,12 +27,12 @@ public class LineService {
     private static final String LINE_NOT_EXIST = "존재하지 않은 지하철 노선입니다.";
 
     private final LineDao lineDao;
-    private final SectionDao sectionDao;
+    private SectionRepository sectionRepository;
     private final StationDao stationDao;
 
-    public LineService(final LineDao lineDao, final SectionDao sectionDao, StationDao stationDao) {
+    public LineService(final LineDao lineDao, final SectionRepository sectionRepository, StationDao stationDao) {
         this.lineDao = lineDao;
-        this.sectionDao = sectionDao;
+        this.sectionRepository = sectionRepository;
         this.stationDao = stationDao;
     }
 
@@ -45,15 +44,10 @@ public class LineService {
                 lineRequest.getExtraFare()
         );
         validateDuplication(line);
-
         final Line newLine = lineDao.save(line);
 
-        sectionDao.save(
-                newLine.getId(),
-                lineRequest.getUpStationId(),
-                lineRequest.getDownStationId(),
-                lineRequest.getDistance()
-        );
+        sectionRepository.saveSection(new Section(newLine, lineRequest.getUpStationId(), lineRequest.getDownStationId(),
+                lineRequest.getDistance()));
 
         List<StationResponse> stationResponses = createStationResponsesByLine(newLine);
 
@@ -74,13 +68,7 @@ public class LineService {
     }
 
     public List<StationResponse> createStationResponsesByLine(Line newLine) {
-        List<SectionDto> sectionDtos = sectionDao.findAllByLineId(newLine.getId());
-
-        List<Section> values = sectionDtos.stream()
-                .map(sectionDto -> new Section(sectionDto.getId(), lineDao.findById(sectionDto.getLineId()).get(),
-                        sectionDto.getUpStationId(), sectionDto.getDownStationId(), sectionDto.getDistance()))
-                .collect(Collectors.toList());
-
+        List<Section> values = sectionRepository.getSectionsByLineId(newLine.getId());
         Sections sections = new Sections(values);
         Set<Long> stationIds = sections.getStations();
         return stationIds.stream()
