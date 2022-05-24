@@ -1,4 +1,4 @@
-package wooteco.subway.domain.path;
+package wooteco.subway.domain.fare;
 
 import org.springframework.stereotype.Component;
 

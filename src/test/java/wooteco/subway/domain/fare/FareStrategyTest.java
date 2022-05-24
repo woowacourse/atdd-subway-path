@@ -1,4 +1,4 @@
-package wooteco.subway.domain.path;
+package wooteco.subway.domain.fare;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.TestFixtures.STANDARD_DISTANCE;

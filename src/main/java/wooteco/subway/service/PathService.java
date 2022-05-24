@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.path.FareStrategy;
+import wooteco.subway.domain.fare.FareStrategy;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.ShortestPathCalculator;
 import wooteco.subway.domain.path.ShortestPathEdge;
