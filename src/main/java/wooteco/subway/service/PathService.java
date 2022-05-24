@@ -1,16 +1,18 @@
 package wooteco.subway.service;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.domain.*;
+import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.Station;
 import wooteco.subway.domain.fare.Fare;
-import wooteco.subway.domain.fare.FareBuilder;
+import wooteco.subway.domain.fare.FareFactory;
 import wooteco.subway.domain.path.Path;
-import wooteco.subway.domain.path.PathBuilder;
+import wooteco.subway.domain.path.PathFactory;
 import wooteco.subway.service.dto.path.PathRequestDto;
 import wooteco.subway.service.dto.path.PathResponse;
 import wooteco.subway.service.dto.station.StationResponse;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,10 +36,10 @@ public class PathService {
     }
 
     private Path makePath(PathRequestDto pathRequestDto) {
-        PathBuilder pathBuilder = new PathBuilder();
+        PathFactory pathFactory = new PathFactory();
         List<Long> stationIds = getStationIds();
         Sections sections = sectionService.findAll();
-        return pathBuilder.makePath(pathRequestDto.getSource(), pathRequestDto.getTarget(), stationIds, sections);
+        return pathFactory.makePath(pathRequestDto.getSource(), pathRequestDto.getTarget(), stationIds, sections);
     }
 
     private List<Long> getStationIds() {
@@ -48,23 +50,25 @@ public class PathService {
     }
 
     private Fare makeFare(PathRequestDto pathRequestDto, Path path) {
-        FareBuilder fareBuilder = new FareBuilder();
-        return fareBuilder.makeFare(path.getTotalDistance(), findMaxExtraFare(path), pathRequestDto.getAge());
+        FareFactory fareFactory = new FareFactory();
+        return fareFactory.makeFare(path.getTotalDistance(), findMaxExtraFare(path), pathRequestDto.getAge());
     }
 
     private int findMaxExtraFare(Path path) {
-        int maxExtraFare = path.getShortestSections().stream()
+        return path.getShortestSections().stream()
                 .mapToInt(section -> lineService.getExtraFareById(section.getLineId()))
                 .max()
                 .orElseThrow(() -> new IllegalArgumentException("추가 요금을 찾을 수 없습니다."));
-        return maxExtraFare;
     }
 
     private List<StationResponse> toStationResponse(Path path) {
-        List<StationResponse> stations = stationService.findAll().stream()
-                .filter(it -> path.getShortestPath().contains(it.getId()))
+        Map<Long, Station> stations = stationService.findAll()
+                .stream()
+                .collect(Collectors.toMap(Station::getId, station -> station));
+
+        return path.getShortestPath().stream()
+                .map(stations::get)
                 .map(StationResponse::new)
                 .collect(Collectors.toList());
-        return stations;
     }
 }

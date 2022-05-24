@@ -1,6 +1,6 @@
 package wooteco.subway.domain.fare;
 
-public class FareBuilder {
+public class FareFactory {
 
     private final int basicFare = 1250;
     private final int firstCheckDistance = 10;

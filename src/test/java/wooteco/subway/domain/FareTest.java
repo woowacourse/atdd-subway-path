@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import wooteco.subway.domain.fare.Fare;
-import wooteco.subway.domain.fare.FareBuilder;
+import wooteco.subway.domain.fare.FareFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,7 +30,7 @@ class FareTest {
     }
 
     private Fare makeFare(int distance, int maxExtraFare, int age) {
-        FareBuilder fareBuilder = new FareBuilder();
-        return fareBuilder.makeFare(distance, maxExtraFare, age);
+        FareFactory fareFactory = new FareFactory();
+        return fareFactory.makeFare(distance, maxExtraFare, age);
     }
 }

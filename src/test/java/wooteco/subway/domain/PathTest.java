@@ -3,7 +3,7 @@ package wooteco.subway.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.path.Path;
-import wooteco.subway.domain.path.PathBuilder;
+import wooteco.subway.domain.path.PathFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,8 +87,8 @@ class PathTest {
     }
 
     private Path makePath(Long source, Long target, List<Long> stationIds, Sections sections) {
-        PathBuilder pathBuilder = new PathBuilder();
-        Path path = pathBuilder.makePath(source, target, stationIds, sections);
+        PathFactory pathFactory = new PathFactory();
+        Path path = pathFactory.makePath(source, target, stationIds, sections);
         return path;
     }
 }

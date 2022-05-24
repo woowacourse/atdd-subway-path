@@ -150,7 +150,7 @@ public class Sections {
             Long upStationId = shortestPath.get(i);
             Long downStationId = shortestPath.get(i + 1);
             List<Section> findSections = sections.stream()
-                    .filter(it -> it.getUpStationId() == upStationId && it.getDownStationId() == downStationId)
+                    .filter(it -> (it.containStationId(upStationId, downStationId)))
                     .collect(Collectors.toList());
             if (findSections.isEmpty()) {
                 continue;
@@ -159,8 +159,7 @@ public class Sections {
                 shortestSections.addAll(findSections);
                 continue;
             }
-            shortestSections.addAll(findSections);
-//            addShortestSections(shortestSections, findSections);
+            addShortestSections(shortestSections, findSections);
         }
         return shortestSections;
     }

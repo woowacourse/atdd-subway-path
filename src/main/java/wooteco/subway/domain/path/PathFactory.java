@@ -9,7 +9,7 @@ import wooteco.subway.domain.Sections;
 
 import java.util.List;
 
-public class PathBuilder {
+public class PathFactory {
 
     public Path makePath(Long source, Long target, List<Long> stationIds, Sections sections) {
         validateExistStationId(source, target, stationIds);
