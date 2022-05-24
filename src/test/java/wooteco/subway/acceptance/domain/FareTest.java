@@ -24,12 +24,12 @@ class FareTest {
     @DisplayName("노선의 추가 요금에 더한 요금이 정확한지 확인한다.")
     @Test
     void calculate_fare_with_line_extra_fare() {
-        // when
+        // given
         final int distance = 10;
         final int expectedFare = 2150;
+        // when
         Fare createdFare = Fare.from(distance, 900, 20);
         int actual = createdFare.getFare();
-
         // then
         assertThat(actual).isEqualTo(expectedFare);
     }
@@ -38,11 +38,25 @@ class FareTest {
     @ParameterizedTest
     @CsvSource(value = {"0,0", "6,450", "13,720", "19,1250", "65,0"})
     void calculate_fare_by_age(int age, int expectedFare) {
-        // when
+        // given
         final int distance = 10;
+        // when
         Fare createdFare = Fare.from(distance, 0, age);
         int actual = createdFare.getFare();
+        // then
+        assertThat(actual).isEqualTo(expectedFare);
+    }
 
+    @DisplayName("노선의 추가요금과 연령별 할인이 적용된 요금이 정확한지 확인한다.")
+    @ParameterizedTest
+    @CsvSource(value = {"0,0","6,900", "13,1440", "19,2150", "65,0"})
+    void calculate_fare_extra_and_age(int age, int expectedFare) {
+        // given
+        final int distance = 10;
+        final int extraFare = 900;
+        // when
+        Fare createdFare = Fare.from(distance, extraFare, age);
+        int actual = createdFare.getFare();
         // then
         assertThat(actual).isEqualTo(expectedFare);
     }
