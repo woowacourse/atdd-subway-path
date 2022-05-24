@@ -1,7 +1,8 @@
 package wooteco.subway.domain;
 
 import org.junit.jupiter.api.*;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Sections;
 
 import java.util.stream.Stream;
 

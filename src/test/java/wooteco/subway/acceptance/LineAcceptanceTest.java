@@ -177,7 +177,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(resultLineIds.contains(id)).isFalse();
     }
 
-    @DisplayName("존재하지 않는 노선을 삭제하는 경우 예외를 발생시킨다.")
+    @DisplayName("존재하지 않는 노선을 삭제하더라도 no-content 응답 코드를 반환한다.")
     @Test
     void deleteLineNotExist() {
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -186,7 +186,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     private ExtractableResponse<Response> createLine(final String name, final String color, final Long upStationId,

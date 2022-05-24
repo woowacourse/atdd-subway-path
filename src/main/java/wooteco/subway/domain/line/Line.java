@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.line;
 
 public class Line {
 
@@ -34,5 +34,13 @@ public class Line {
 
     public int getExtraFare() {
         return extraFare;
+    }
+
+    public boolean isSameId(long id) {
+        return this.id == id;
+    }
+
+    public boolean isSameExtraFare(int extraFare) {
+        return this.extraFare == extraFare;
     }
 }

@@ -2,7 +2,6 @@ package wooteco.subway.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import wooteco.subway.domain.Sections;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.service.SectionService;
 

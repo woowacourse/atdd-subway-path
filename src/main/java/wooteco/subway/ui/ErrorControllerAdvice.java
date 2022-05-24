@@ -1,5 +1,7 @@
 package wooteco.subway.ui;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -8,6 +10,8 @@ import java.util.NoSuchElementException;
 
 @ControllerAdvice
 public class ErrorControllerAdvice {
+
+    private final Logger logger = LoggerFactory.getLogger(ErrorControllerAdvice.class);
 
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<String> illegalStateExceptionHandler(Exception exception) {
@@ -25,7 +29,8 @@ public class ErrorControllerAdvice {
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> runtimeExceptionHandler(Exception exception) {
-        return ResponseEntity.internalServerError().body(exception.getMessage());
+    public ResponseEntity<Void> runtimeExceptionHandler(Exception exception) {
+        logger.error("런타임 에러가 발생했습니다.", exception);
+        return ResponseEntity.internalServerError().build();
     }
 }

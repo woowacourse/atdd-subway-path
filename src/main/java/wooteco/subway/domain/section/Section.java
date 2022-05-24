@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.section;
 
 import java.util.Objects;
 
@@ -71,5 +71,9 @@ public class Section {
 
     public boolean isLongerDistance(Section currentSection) {
         return distance >= currentSection.distance;
+    }
+
+    public boolean isSameDistance(int distance) {
+        return this.distance <= distance;
     }
 }

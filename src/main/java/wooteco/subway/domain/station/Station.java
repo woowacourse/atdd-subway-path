@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.station;
 
 import java.util.Objects;
 
@@ -35,6 +35,10 @@ public class Station {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
+    }
+
+    public boolean isSameId(long id) {
+        return this.id == id;
     }
 }
 
