@@ -7,9 +7,13 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.ui.dto.ExceptionResponse;
@@ -69,9 +73,9 @@ class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    @DisplayName("구간에 등록되지않은 지하철역으로 최단 경로 조회시 badRequest를 응답한다.")
+    @DisplayName("구간에 등록되지 않은 지하철역으로 최단 경로 조회시 badRequest를 응답한다.")
     @Test
-    void findShortestPath_exceptionNotSavedInSection() {
+    void findShortestPath_badRequestByNotSavedInSection() {
         // given
         Long stationId5 = createStation(new StationRequest("가락시장역")).as(StationResponse.class)
                 .getId();
@@ -88,9 +92,24 @@ class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    @DisplayName("유효하지 않은 값들로 최단 경로를 조회하려하면 badRequest를 반환한다.")
+    @ParameterizedTest
+    @MethodSource("provideInvalidPathResource")
+    void findShortestPath_badRequestByInvalidResource(Long departureId, Long arrivalId, Integer age) {
+        // when
+        ExtractableResponse<Response> response = findShortestPath(departureId, arrivalId, age);
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(exceptionResponse.getErrorMessage()).contains("이(가) 유효하지 않습니다.")
+        );
+    }
+
     @DisplayName("연결되지 않은 구간의 최단 경로 조회시 badRequest를 응답한다.")
     @Test
-    void findShortestPath_exceptionInvalidPath() {
+    void findShortestPath_badRequestByUnconnectedPath() {
         // given
         Long stationId5 = createStation(new StationRequest("가락시장역")).as(StationResponse.class)
                 .getId();
@@ -107,12 +126,23 @@ class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private ExtractableResponse<Response> findShortestPath(Long departureId, Long arrivalId, int age) {
+    private ExtractableResponse<Response> findShortestPath(Long departureId, Long arrivalId, Integer age) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .get("/paths?source=" + departureId + "&target=" + arrivalId + "&age=" + age)
                 .then().log().all()
                 .extract();
+    }
+
+    private static Stream<Arguments> provideInvalidPathResource() {
+        return Stream.of(
+                Arguments.of(null, 2L, 15),
+                Arguments.of(0L, 2L, 15),
+                Arguments.of(1L, null, 15),
+                Arguments.of(1L, 0L, 15),
+                Arguments.of(1L, 2L, null),
+                Arguments.of(1L, 2L, 0)
+        );
     }
 }
