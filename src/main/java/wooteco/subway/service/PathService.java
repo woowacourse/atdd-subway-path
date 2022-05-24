@@ -6,7 +6,7 @@ import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Paths;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.SubwayGraph;
+import wooteco.subway.domain.subwaygraph.SubwayGraph;
 import wooteco.subway.dto.PathsResponse;
 
 @Service
