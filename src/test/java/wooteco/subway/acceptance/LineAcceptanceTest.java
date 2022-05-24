@@ -17,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.dto.line.LineResponse;
 
-@DisplayName("노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> responseCreateLine;
@@ -43,7 +42,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return create("/lines", params);
     }
 
-    @DisplayName("새로운 노선 생성한다.")
     @Test
     void createLine() {
         assertAll(
@@ -52,17 +50,15 @@ public class LineAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    @DisplayName("기존에 존재하는 노선 이름으로 생성시 예외가 발생한다.")
     @Test
-    void createLineWithDuplicateName() {
+    void createLineByDuplicateName() {
         var response = insertLine("테스트호선", "테스트색", List.of("테스트3역", "테스트4역"));
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("특정 노선을 조회한다.")
     @Test
-    void showLine() {
+    void findLineById() {
         var response = find("/lines/" + getId(responseCreateLine));
 
         assertAll(
@@ -72,9 +68,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    @DisplayName("노선을 조회한다.")
     @Test
-    void getLines() {
+    void findAllLine() {
         /// given
         var responseCreateLine2 = insertLine("테스트2호선", "테스트2색", List.of("테스트3역", "테스트4역"));
 
@@ -103,7 +98,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
     }
 
-    @DisplayName("노선을 업데이트한다.")
     @Test
     void updateLine() {
         /// given
@@ -145,18 +139,16 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("기존 노선을 삭제한다.")
     @Test
-    void deleteLine() {
+    void deleteLineByLineId() {
         var response = delete("/lines/" + getId(responseCreateLine));
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
 
-    @DisplayName("존재하지 않는 노션을 삭제하려는 경우 400에러 발생")
     @Test
-    void invalidLine() {
+    void deleteByInvalidLineId() {
         /// given
         var invalidId = "-1";
 

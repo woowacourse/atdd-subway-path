@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.NoSuchElementException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
@@ -29,13 +28,11 @@ class StationDaoTest {
     }
 
     @Test
-    @DisplayName("Station 추가")
-    void save() {
+    void createStation() {
         assertThat(station.getName()).isEqualTo("선릉역");
     }
 
     @Test
-    @DisplayName("Station 목록 조회")
     void findAll() {
         var station2 = stationDao.save("잠실역");
 
@@ -47,7 +44,6 @@ class StationDaoTest {
     }
 
     @Test
-    @DisplayName("특정 Station 삭제")
     void deleteById() {
         stationDao.deleteById(station.getId());
         var stations = stationDao.findAll();

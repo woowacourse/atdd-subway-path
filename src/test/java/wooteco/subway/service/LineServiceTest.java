@@ -85,8 +85,7 @@ class LineServiceTest {
     }
 
     @Test
-    @DisplayName("노선 조회")
-    void findLineByLineId() {
+    void findByLineId() {
         //when
         var findLineResponse = lineService.find(lineId);
 
@@ -103,7 +102,6 @@ class LineServiceTest {
     }
 
     @Test
-    @DisplayName("노선 목록 조회")
     void findAll() {
         //given
         var station3Id = insertStation("테스트3역");
@@ -166,7 +164,6 @@ class LineServiceTest {
     }
 
     @Test
-    @DisplayName("노선 삭제")
     void deleteLine() {
         //when
         lineService.deleteById(lineId);

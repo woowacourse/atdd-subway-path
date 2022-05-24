@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.path.SubwayPathFinder;
 
@@ -13,8 +12,7 @@ public class PathFinderTest {
     private static final int CHILDREN_AGE = 12;
 
     @Test
-    @DisplayName("최단 경로 정보 반환")
-    void getGraph() {
+    void getShortestPath() {
         var stations = List.of(
                 new Station(1L, "테스트1역"),
                 new Station(2L, "테스트2역"),

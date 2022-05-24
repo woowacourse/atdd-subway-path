@@ -51,8 +51,7 @@ class StationServiceTest {
     }
 
     @Test
-    @DisplayName("중복된 이름으로 생성시 예외발생")
-    void failCreateStation() {
+    void createByDuplicateName() {
         Assertions.assertThatThrownBy(() -> stationService.create(STATION_NAME))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 이미 존재하는 역 이름 입니다.");
@@ -66,8 +65,7 @@ class StationServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 역 아이디로 삭제시 예외발생")
-    void failDeleteStation() {
+    void createByInvalidId() {
         var invalidStationId = -1L;
 
         Assertions.assertThatThrownBy(() -> stationService.delete(invalidStationId))
@@ -77,7 +75,7 @@ class StationServiceTest {
 
     @Test
     @DisplayName("구간에 등록된 역 제거를 시도할 경우 예외발생")
-    void failDeleteStation2() {
+    void failDeleteStation() {
         var stationId = findStation().getId();
         insertSection(stationId);
 
