@@ -18,9 +18,9 @@ public enum ExtraFareStrategyMapper {
 
     public static ExtraFareStrategy findStrategyBy(final Distance distance) {
         return Arrays.stream(values())
-                .filter(it -> it.strategy.isMatch(distance.getValue()))
+                .map(it -> it.strategy)
+                .filter(it -> it.isMatch(distance.getValue()))
                 .findFirst()
-                .orElseThrow()
-                .strategy;
+                .orElseThrow();
     }
 }

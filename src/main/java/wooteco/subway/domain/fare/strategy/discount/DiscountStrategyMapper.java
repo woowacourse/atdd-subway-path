@@ -19,9 +19,9 @@ public enum DiscountStrategyMapper {
 
     public static DiscountStrategy findStrategyBy(final int age) {
         return Arrays.stream(values())
-                .filter(it -> it.strategy.isMatch(age))
+                .map(it -> it.strategy)
+                .filter(it -> it.isMatch(age))
                 .findFirst()
-                .orElseThrow()
-                .strategy;
+                .orElseThrow();
     }
 }
