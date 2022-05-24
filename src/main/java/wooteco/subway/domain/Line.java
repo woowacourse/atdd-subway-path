@@ -37,8 +37,8 @@ public class Line {
         this(null, name, color, List.of(section), DEFAULT_EXTRAFARE);
     }
 
-    public Line(Long id, String name, String color) {
-        this(id, name, color, new LinkedList<>(), DEFAULT_EXTRAFARE);
+    public Line(Long id, String name, String color, int extraFare) {
+        this(id, name, color, new LinkedList<>(), extraFare);
     }
 
     public void addSection(Section section) {

@@ -68,7 +68,7 @@ public class LineService {
     }
 
     public void modify(Long id, LineRequest lineRequest) {
-        final Line line = new Line(id, lineRequest.getName(), lineRequest.getColor());
+        final Line line = new Line(id, lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         lineDao.update(line);
     }
 

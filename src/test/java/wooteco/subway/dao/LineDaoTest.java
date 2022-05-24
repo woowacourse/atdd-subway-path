@@ -112,7 +112,8 @@ class LineDaoTest {
         // given & when
         final Line saved = linDao.save(new Line(LINE_NAME, LINE_COLOR, section));
         // then
-        assertThat(linDao.update(new Line(saved.getId(), "구분당선", LINE_COLOR))).isEqualTo(1);
+        assertThat(linDao.update(new Line(saved.getId(), "구분당선", LINE_COLOR, saved.getExtraFare())))
+                .isEqualTo(1);
     }
 
     @Test
@@ -121,7 +122,7 @@ class LineDaoTest {
         // given
         linDao.save(new Line(LINE_NAME, LINE_COLOR, section));
         // when
-        Line updateLine = new Line(100L, "사랑이넘치는", "우테코");
+        Line updateLine = new Line(100L, "사랑이넘치는", "우테코", 100);
         // then
         assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(() -> linDao.update(updateLine));

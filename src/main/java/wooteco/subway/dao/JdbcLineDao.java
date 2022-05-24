@@ -97,8 +97,9 @@ public class JdbcLineDao implements LineDao {
 
     @Override
     public int update(Line line) {
-        final String sql = "UPDATE line SET name = ?, color = ? WHERE id = ?";
-        final int updatedCount = jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId());
+        final String sql = "UPDATE line SET name = ?, color = ?, extraFare = ? WHERE id = ?";
+        final int updatedCount = jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getExtraFare(),
+                line.getId());
         validateUpdated(updatedCount, line);
         return updatedCount;
     }

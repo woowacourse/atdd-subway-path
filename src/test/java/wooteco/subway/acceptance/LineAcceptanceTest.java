@@ -51,7 +51,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("입력값이 비어있는 경우 노선을 생성할 수 없다.")
     void createLine_throwsExceptionWithBlankInput() {
         // given
-        Map<String, Object> params = mapParams("신분당선", "");
+        Map<String, Object> params = mapParams("신분당선", "", 100);
         // when
         final SimpleResponse response = SimpleRestAssured.post("/lines", params);
         // then
@@ -65,10 +65,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("기존에 존재하는 노선 이름으로 노선을 생성할 수 없다.")
     void createLine_throwsExceptionWithDuplicatedName() {
         // given
-        Map<String, Object> params1 = mapParams("신분당선", "bg-red-600");
+        Map<String, Object> params1 = mapParams("신분당선", "bg-red-600", 100);
         SimpleRestAssured.post("/lines", params1);
         // when
-        Map<String, Object> params2 = mapParams("신분당선", "bg-red-600");
+        Map<String, Object> params2 = mapParams("신분당선", "bg-red-600", 100);
         final SimpleResponse response = SimpleRestAssured.post("/lines", params2);
         // then
         Assertions.assertAll(
@@ -81,8 +81,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("전체 노선 목록을 조회한다.")
     void getLines() {
         /// given
-        Map<String, Object> params1 = mapParams("신분당선", "bg-red-600");
-        Map<String, Object> params2 = mapParams("경의중앙선", "bg-red-800");
+        Map<String, Object> params1 = mapParams("신분당선", "bg-red-600", 100);
+        Map<String, Object> params2 = mapParams("경의중앙선", "bg-red-800", 100);
 
         SimpleRestAssured.post("/lines", params1);
         SimpleRestAssured.post("/lines", params2);
@@ -100,7 +100,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("ID값으로 노선을 조회한다.")
     void getLine() {
         // given
-        Map<String, Object> params1 = mapParams("신분당선", "bg-red-600");
+        Map<String, Object> params1 = mapParams("신분당선", "bg-red-600", 100);
         SimpleResponse createdResponse = SimpleRestAssured.post("/lines", params1);
         // when
         final String uri = createdResponse.getHeader("Location");
@@ -110,7 +110,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Assertions.assertAll(
                 () -> foundResponse.assertStatus(HttpStatus.OK),
                 () -> assertThat(lineResponse.getName()).isEqualTo("신분당선"),
-                () -> assertThat(lineResponse.getColor()).isEqualTo("bg-red-600")
+                () -> assertThat(lineResponse.getColor()).isEqualTo("bg-red-600"),
+                () -> assertThat(lineResponse.getExtraFare()).isEqualTo(100)
         );
     }
 
@@ -118,7 +119,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않는 ID값으로 노선을 조회할 수 없다.")
     void getLine_throwExceptionWithInvalidId() {
         // given
-        Map<String, Object> params = mapParams("신분당선", "bg-red-600");
+        Map<String, Object> params = mapParams("신분당선", "bg-red-600", 100);
         SimpleRestAssured.post("/lines", params);
         // when
         final SimpleResponse response = SimpleRestAssured.get("/lines/99");
@@ -133,10 +134,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("ID값으로 노선을 수정한다.")
     void modifyLine() {
         // given
-        Map<String, Object> params = mapParams("신분당선", "bg-red-600");
+        Map<String, Object> params = mapParams("신분당선", "bg-red-600", 100);
         SimpleResponse createdResponse = SimpleRestAssured.post("/lines", params);
         // when
-        final Map<String, Object> modificationParam = mapParams("구분당선", "bg-red-800");
+        final Map<String, Object> modificationParam = mapParams("구분당선", "bg-red-800", 200);
         final String uri = createdResponse.getHeader("Location");
         final SimpleResponse modifiedResponse = SimpleRestAssured.put(uri, modificationParam);
         // then
@@ -147,10 +148,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않는 ID값의 노선을 수정할 수 없다.")
     void modifyLine_throwExceptionWithInvalidId() {
         // given
-        Map<String, Object> params = mapParams("신분당선", "bg-red-600");
+        Map<String, Object> params = mapParams("신분당선", "bg-red-600", 100);
         SimpleRestAssured.post("/lines", params);
         // when
-        final Map<String, Object> modificationParam = mapParams("구분당선", "bg-red-600");
+        final Map<String, Object> modificationParam = mapParams("구분당선", "bg-red-600", 100);
         final SimpleResponse response = SimpleRestAssured.put("/lines/99", modificationParam);
         // then
         Assertions.assertAll(
@@ -163,7 +164,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("ID값으로 노선을 제거한다.")
     void deleteLine() {
         // given
-        Map<String, Object> params = mapParams("신분당선", "bg-red-600");
+        Map<String, Object> params = mapParams("신분당선", "bg-red-600", 100);
         SimpleResponse createdResponse = SimpleRestAssured.post("/lines", params);
         // when
         final String uri = createdResponse.getHeader("Location");
@@ -176,7 +177,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않는 ID값의 노선을 제거할 수 없다.")
     void deleteLine_throwExceptionWithInvalidId() {
         // given
-        Map<String, Object> params = mapParams("신분당선", "bg-red-600");
+        Map<String, Object> params = mapParams("신분당선", "bg-red-600", 100);
         SimpleRestAssured.post("/lines", params);
         // when
         final SimpleResponse response = SimpleRestAssured.delete("/lines/99");

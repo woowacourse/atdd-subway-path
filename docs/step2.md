@@ -13,15 +13,15 @@
 - 어린이(6세 이상~13세 미만): 운임에서 350원을 공제한 금액의 50%할인
 
 ## 구현할 기능 목록
-- [ ] Line에 추가 요금 컬럼 추가
-  - [ ] 지하철 노선 등록 request, response body에 extraFare 추가
-  - [ ] 지하철 노선 목록 request, response body에 extraFare 추가
-  - [ ] 지하철 노선 조회 request, response body에 extraFare 추가
-  - [ ] 지하철 노선 수정 request body에 extraFare 추가
+- [x] Line에 추가 요금 컬럼 추가
+  - [x] 지하철 노선 등록 request, response body에 extraFare 추가
+  - [x] 지하철 노선 목록 request, response body에 extraFare 추가
+  - [x] 지하철 노선 조회 request, response body에 extraFare 추가
+  - [x] 지하철 노선 수정 request body에 extraFare 추가
 - [x] PathCalculator에서 최단 거리 경로를 반환
 - [ ] agePolicy는 나이에 대한 요금 정책을 적용한다.
 
 ## 리팩토링 목표 설정
-- 각 테스트 메서드 별 테스트 픽스쳐를 분리하여 구현한다.
-- 값 객체는 포장한다.
-- 인수 테스트를 작성하고 프로덕트 코드를 구현한다.(TDD)
+- [ ] 각 테스트 메서드 별 테스트 픽스쳐를 분리하여 구현한다.
+- [ ] 값 객체는 포장한다.
+- [ ] 인수 테스트를 작성하고 프로덕트 코드를 구현한다.(TDD)
