@@ -29,6 +29,8 @@ public class LineService {
     }
 
     public LineResponse save(final LineRequest lineRequest) {
+        validateStations(lineRequest);
+
         Line newLine = new Line(lineRequest.getName(), lineRequest.getColor(),
             lineRequest.getExtraFare());
         validateCreateRequest(newLine);
@@ -39,6 +41,11 @@ public class LineService {
             lineRequest.getDistance()));
 
         return createLineResponse(lineDao.findById(lineId), getStationsByStationIds(lineId));
+    }
+
+    private void validateStations(LineRequest lineRequest) {
+        stationService.validateExistById(lineRequest.getUpStationId());
+        stationService.validateExistById(lineRequest.getDownStationId());
     }
 
     private void validateCreateRequest(Line line) {
@@ -109,5 +116,9 @@ public class LineService {
 
     public void delete(Long lineId) {
         lineDao.deleteById(lineId);
+    }
+
+    public int getMaxExtraFare(List<Long> lineIds) {
+        return lineDao.findMaxExtraFare(lineIds);
     }
 }

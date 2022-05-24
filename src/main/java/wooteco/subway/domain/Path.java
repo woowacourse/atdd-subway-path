@@ -2,6 +2,7 @@ package wooteco.subway.domain;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -24,7 +25,7 @@ public class Path {
             new DijkstraShortestPath<>(graph);
         List<Long> shortestPath = findShortestPath(sourceId, targetId, dijkstraShortestPath);
 
-        return new Path(mappingSectionsWithVertex(sections, shortestPath));
+        return new Path(rebuildSectionWithVertex(sections, shortestPath));
     }
 
     private static void validateMovement(long sourceId, long targetId) {
@@ -59,8 +60,8 @@ public class Path {
         }
     }
 
-    private static List<Section> mappingSectionsWithVertex(Sections sections,
-                                                           List<Long> shortestPath) {
+    private static List<Section> rebuildSectionWithVertex(Sections sections,
+                                                          List<Long> shortestPath) {
         List<Section> path = new LinkedList<>();
         for (int i = 0; i < shortestPath.size() - 1; i++) {
             path.add(sections.findSection(shortestPath.get(i), shortestPath.get(i + 1)));
@@ -83,5 +84,12 @@ public class Path {
         return path.stream()
             .mapToInt(Section::getDistance)
             .sum();
+    }
+
+    public List<Long> getLineIds() {
+        return path.stream()
+            .map(Section::getLineId)
+            .distinct()
+            .collect(Collectors.toList());
     }
 }

@@ -7,6 +7,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -17,6 +19,8 @@ public class JdbcLineDao implements LineDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertActor;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
     private final RowMapper<Line> lineRowMapper = (resultSet, rowNum) -> new Line(
         resultSet.getLong("id"),
         resultSet.getString("name"),
@@ -24,11 +28,13 @@ public class JdbcLineDao implements LineDao {
         resultSet.getInt("extra_fare")
     );
 
-    public JdbcLineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public JdbcLineDao(JdbcTemplate jdbcTemplate, DataSource dataSource,
+                       NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertActor = new SimpleJdbcInsert(dataSource)
             .withTableName("LINE")
             .usingGeneratedKeyColumns("id");
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
     @Override
@@ -87,5 +93,12 @@ public class JdbcLineDao implements LineDao {
     public boolean existByColorExceptSameId(Long lineId, Line line) {
         String sql = "SELECT EXISTS (SELECT * FROM LINE WHERE color = (?) AND NOT id = (?))";
         return jdbcTemplate.queryForObject(sql, Boolean.class, line.getColor(), lineId);
+    }
+
+    @Override
+    public int findMaxExtraFare(List<Long> lineIds) {
+        SqlParameterSource parameters = new MapSqlParameterSource("ids", lineIds);
+        String sql = "SELECT MAX(extra_fare) FROM LINE WHERE id IN (:ids)";
+        return namedParameterJdbcTemplate.queryForObject(sql, parameters, Integer.class);
     }
 }

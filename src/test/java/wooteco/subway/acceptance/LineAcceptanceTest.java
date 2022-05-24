@@ -49,6 +49,34 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    @DisplayName("20자가 넘는 노선 색깔을 포함한 요청에 에러가 발생한다.")
+    @Test
+    void createLineWithOverLengthColorTest() {
+        // given
+        LineRequest lineRequest = new LineRequest(
+            "신분당선", "k".repeat(21), 1L, 2L, 10, 0);
+
+        // when
+        ExtractableResponse<Response> response = requestHttpPost(lineRequest, "/lines");
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("존재하지 않는 지하철 역을 이용하여 노선을 생성하면 에러가 발생한다.")
+    @Test
+    void createLineWithNotExistStationTest() {
+        // given
+        LineRequest lineRequest = new LineRequest(
+            "신분당선", "green", 1L, 10L, 10, 0);
+
+        // when
+        ExtractableResponse<Response> response = requestHttpPost(lineRequest, "/lines");
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
     @DisplayName("기존에 존재하는 지하철 노선 정보로 지하철 노선을 생성한다.")
     @Test
     void createLineWithDuplicateInfoTest() {

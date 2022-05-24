@@ -22,7 +22,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         // given
         long source = 1L;
         long target = 7L;
-        int age = 10;
+        int age = 20;
 
         // when
         ExtractableResponse<Response> response =

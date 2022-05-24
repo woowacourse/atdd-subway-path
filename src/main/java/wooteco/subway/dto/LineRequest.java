@@ -2,13 +2,15 @@ package wooteco.subway.dto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import org.springframework.lang.NonNull;
+import javax.validation.constraints.Size;
 
 public class LineRequest {
 
     @NotBlank
+    @Size(max = 255)
     private String name;
     @NotBlank
+    @Size(max = 20)
     private String color;
     @NotNull
     private Long upStationId;
