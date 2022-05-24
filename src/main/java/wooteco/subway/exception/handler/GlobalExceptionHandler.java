@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
     private String getErrorMessage(final MethodArgumentNotValidException e) {
         final StringBuilder message = new StringBuilder();
         for (final FieldError error : e.getFieldErrors()) {
-            message.append(error.getDefaultMessage()).append(" ");
+            message.append(error.getDefaultMessage()).append("\n");
         }
         return message.toString();
     }
