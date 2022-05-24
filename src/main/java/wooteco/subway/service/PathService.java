@@ -31,11 +31,13 @@ public class PathService {
         List<Long> stationIds = getStationIds();
         Sections sections = sectionService.findAll();
 
-        Path path = Path.of(pathRequestDto.getSource(), pathRequestDto.getTarget(), stationIds, sections);
-        Fare fare = getDefaultFare(path.getShortestPathSections());
+        PathFinder pathFinder = new PathAdapter(
+                new Path(pathRequestDto.getSource(), pathRequestDto.getTarget(), stationIds, sections));
+        Fare fare = getDefaultFare(pathFinder.getShortestPathSections());
 
         Age age = Age.calculateAge(pathRequestDto.getAge());
-        return new PathResponseDto(toStationResponseDto(path), path.getTotalDistance(), fare.calculateFare(path.getTotalDistance(), age));
+        return new PathResponseDto(toStationResponseDto(pathFinder.getShortestPath()), pathFinder.getTotalDistance(),
+                fare.calculateFare(pathFinder.getTotalDistance(), age));
     }
 
     private Fare getDefaultFare(List<Section> shortestPathSections) {
@@ -52,8 +54,8 @@ public class PathService {
                 .collect(Collectors.toList());
     }
 
-    private List<StationResponseDto> toStationResponseDto(Path path) {
-        return path.getShortestPath().stream()
+    private List<StationResponseDto> toStationResponseDto(List<Long> shortestPath) {
+        return shortestPath.stream()
                 .map(stationService::findById)
                 .map(StationResponseDto::new)
                 .collect(Collectors.toList());

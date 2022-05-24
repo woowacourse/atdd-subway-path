@@ -1,36 +1,20 @@
 package wooteco.subway.domain;
 
 import java.util.List;
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 
 public class Path {
 
-    private final List<Long> shortestPath;
-    private final int totalDistance;
+    private final Long source;
+    private final Long target;
+    private final List<Long> stationIds;
     private final Sections sections;
 
-    private Path(List<Long> shortestPath, int totalDistance, Sections sections) {
-        this.shortestPath = shortestPath;
-        this.totalDistance = totalDistance;
-        this.sections = sections;
-    }
-
-    public static Path of(Long source, Long target, List<Long> stationIds, Sections sections) {
+    public Path(Long source, Long target, List<Long> stationIds, Sections sections) {
         validateExistStationId(source, target, stationIds);
-        WeightedMultigraph<Long, DefaultWeightedEdge> graph = makeGraph(stationIds, sections);
-        DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        GraphPath<Long, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
-        validateExistPath(path);
-        return new Path(path.getVertexList(), (int) path.getWeight(), sections);
-    }
-
-    private static void validateExistPath(GraphPath<Long, DefaultWeightedEdge> path) {
-        if (path == null) {
-            throw new IllegalArgumentException("[ERROR] 경로를 찾을 수 없습니다");
-        }
+        this.source = source;
+        this.target = target;
+        this.stationIds = stationIds;
+        this.sections = sections;
     }
 
     private static void validateExistStationId(Long source, Long target, List<Long> stationIds) {
@@ -43,35 +27,23 @@ public class Path {
         return !(stationIds.contains(source) && stationIds.contains(target));
     }
 
-    private static WeightedMultigraph<Long, DefaultWeightedEdge> makeGraph(List<Long> stationId, Sections sections) {
-        final WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        addVertexes(stationId, graph);
-        addEdges(sections, graph);
-        return graph;
+    public Long getSource() {
+        return source;
     }
 
-    private static void addVertexes(List<Long> stationId, WeightedMultigraph<Long, DefaultWeightedEdge> graph) {
-        for (Long id : stationId) {
-            graph.addVertex(id);
-        }
+    public Long getTarget() {
+        return target;
     }
 
-    private static void addEdges(Sections sections, WeightedMultigraph<Long, DefaultWeightedEdge> graph) {
-        for (Section section : sections.getSections()) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStationId(), section.getDownStationId()),
-                    section.getDistance());
-        }
+    public List<Long> getStationIds() {
+        return stationIds;
     }
 
-    public List<Long> getShortestPath() {
-        return shortestPath;
+    public Sections getSections() {
+        return sections;
     }
 
-    public int getTotalDistance() {
-        return totalDistance;
-    }
-
-    public List<Section> getShortestPathSections() {
+    public List<Section> getShortestPathSections(List<Long> shortestPath) {
         return sections.getSectionsFromShortestPath(shortestPath);
     }
 }
