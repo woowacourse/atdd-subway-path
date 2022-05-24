@@ -7,9 +7,7 @@ import static wooteco.subway.Fixtures.CENTER;
 import static wooteco.subway.Fixtures.DOWN;
 import static wooteco.subway.Fixtures.LEFT;
 import static wooteco.subway.Fixtures.LINE_1;
-import static wooteco.subway.Fixtures.LINE_1_EXTRA_FARE;
 import static wooteco.subway.Fixtures.LINE_2;
-import static wooteco.subway.Fixtures.LINE_2_EXTRA_FARE;
 import static wooteco.subway.Fixtures.RED;
 import static wooteco.subway.Fixtures.RIGHT;
 import static wooteco.subway.Fixtures.UP;
@@ -17,9 +15,6 @@ import static wooteco.subway.Fixtures.UP;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,8 +61,8 @@ public class PathServiceTest {
         right = stationRepository.getById(rightId);
         down = stationRepository.getById(downId);
 
-        final Long line2Id = lineRepository.save(new Line(LINE_1, RED, LINE_1_EXTRA_FARE));
-        final Long line4Id = lineRepository.save(new Line(LINE_2, BLUE, LINE_2_EXTRA_FARE));
+        final Long line2Id = lineRepository.save(new Line(LINE_1, RED, 0));
+        final Long line4Id = lineRepository.save(new Line(LINE_2, BLUE, 0));
 
         sectionRepository.save(line2Id, new Section(up, center, 5));
         sectionRepository.save(line2Id, new Section(center, down, 6));
@@ -84,7 +79,7 @@ public class PathServiceTest {
                 () -> assertThat(pathResponse.getStations()).containsExactly(new StationResponse(up),
                         new StationResponse(center), new StationResponse(down)),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(11),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(1350 + LINE_1_EXTRA_FARE)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1350)
         );
     }
 
@@ -97,31 +92,7 @@ public class PathServiceTest {
                 () -> assertThat(pathResponse.getStations()).containsExactly(new StationResponse(up),
                         new StationResponse(center), new StationResponse(left)),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(25),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(
-                        1550 + LINE_2_EXTRA_FARE)
-        );
-    }
-
-    @Test
-    @DisplayName("노선에 따른 추가 요금을 제대로 부과하는가")
-    void findPath_extraLineFare() {
-        final PathResponse pathResponse = pathService.findPath(new FindPathRequest(right.getId(), down.getId(), 20));
-
-        assertAll(
-                () -> assertThat(pathResponse.getDistance()).isEqualTo(56),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(2150 + LINE_2_EXTRA_FARE)
-        );
-    }
-
-    @ParameterizedTest
-    @CsvSource({"5,2150","6,1150","13,1750","20,2150"})
-    @DisplayName("나이에 따른 추가 요금을 제대로 부과하는가")
-    void findPath_ageDiscount(final int age, final int fare) {
-        final PathResponse pathResponse = pathService.findPath(new FindPathRequest(right.getId(), down.getId(), age));
-
-        assertAll(
-                () -> assertThat(pathResponse.getDistance()).isEqualTo(56),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(fare + LINE_2_EXTRA_FARE)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1550)
         );
     }
 }
