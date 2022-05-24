@@ -1,5 +1,6 @@
 package wooteco.subway.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import wooteco.subway.domain.FareCalculator;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.SectionRepository;
+import wooteco.subway.domain.Station;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
 
@@ -32,9 +34,9 @@ public class PathService {
         List<Long> shortestPath = path.calculateShortestPath(source, target);
         int shortestDistance = path.calculateShortestDistance(source, target);
 
-        List<StationResponse> stationResponses = shortestPath.stream()
-                .map(stationDao::getById)
-                .map(station -> new StationResponse(station.getId(), station.getName()))
+        List<Station> stations = stationDao.getByIds(new ArrayList<>(shortestPath));
+        List<StationResponse> stationResponses = stations.stream()
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
 
         int basicFare = FareCalculator.calculate(shortestDistance);

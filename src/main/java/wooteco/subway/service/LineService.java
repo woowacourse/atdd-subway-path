@@ -1,5 +1,6 @@
 package wooteco.subway.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.SectionRepository;
 import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.StationResponse;
@@ -71,8 +73,9 @@ public class LineService {
         List<Section> values = sectionRepository.getSectionsByLineId(newLine.getId());
         Sections sections = new Sections(values);
         Set<Long> stationIds = sections.getStations();
-        return stationIds.stream()
-                .map(stationDao::getById)
+        List<Station> stations = stationDao.getByIds(new ArrayList<>(stationIds));
+
+        return stations.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
