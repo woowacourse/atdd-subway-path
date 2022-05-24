@@ -11,10 +11,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.domain.discount.implement.DiscountByAge;
-import wooteco.subway.domain.path.implement.MinimumDistanceFindStrategy;
-import wooteco.subway.domain.pricing.implement.DistanceProportionalPricingStrategy;
-import wooteco.subway.domain.pricing.implement.LineAdditionalPricingStrategy;
 import wooteco.subway.service.dto.PathResponse;
 import wooteco.subway.service.dto.StationResponse;
 import wooteco.subway.ui.dto.PathRequest;
@@ -39,8 +35,7 @@ public class PathServiceTest {
     @ParameterizedTest
     @MethodSource("expectedPathResponse")
     void searchPathsTest(Long source, Long target, int age, PathResponse expectedResult) {
-        PathResponse result = pathService.searchPaths(MinimumDistanceFindStrategy.of(), List.of(DistanceProportionalPricingStrategy.of(), new LineAdditionalPricingStrategy()),
-                new DiscountByAge(), new PathRequest(source, target, age));
+        PathResponse result = pathService.searchPaths(new PathRequest(source, target, age));
 
         assertThat(result).isEqualTo(expectedResult);
     }

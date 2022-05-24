@@ -13,7 +13,7 @@ class PricingInThirdSectionTest {
     @ParameterizedTest
     @CsvSource(value = {"8,0", "32,0", "50,0", "58,100", "59,200", "66,200", "67,300"}, delimiter = ',')
     void calculateFee(int distance, int expectFee) {
-        PricingBySection strategy = PricingInThirdSection.of();
+        PricingBySection strategy = new PricingInThirdSection();
         int result = strategy.calculateFee(distance);
         assertThat(result).isEqualTo(expectFee);
     }

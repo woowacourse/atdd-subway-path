@@ -8,18 +8,16 @@ import wooteco.subway.domain.pricing.distancepricing.PricingBySection;
 
 public class DistanceProportionalPricingStrategy implements PricingStrategy {
 
-    private static final DistanceProportionalPricingStrategy STRATEGY = new DistanceProportionalPricingStrategy();
+    private final List<PricingBySection> pricingBySections;
 
-    private DistanceProportionalPricingStrategy() {}
-
-    public static DistanceProportionalPricingStrategy of() {
-        return STRATEGY;
+    public DistanceProportionalPricingStrategy(
+            List<PricingBySection> pricingBySections) {
+        this.pricingBySections = pricingBySections;
     }
 
     @Override
     public int calculateFee(FareCacluateSpecification specification) {
         int distance = calculateDistance(specification.getSections());
-        List<PricingBySection> pricingBySections = PricingBySection.getAllStrategies();
         return pricingBySections.stream()
                 .mapToInt(it -> it.calculateFee(distance))
                 .sum();

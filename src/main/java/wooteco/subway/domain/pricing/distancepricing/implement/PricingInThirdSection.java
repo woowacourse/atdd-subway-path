@@ -9,11 +9,7 @@ public final class PricingInThirdSection extends PricingBySection {
     private static final int UNIT_MONEY = 100;
     private static final PricingInThirdSection STRATEGY = new PricingInThirdSection();
 
-    private PricingInThirdSection() {}
-
-    public static PricingInThirdSection of() {
-        return STRATEGY;
-    }
+    public PricingInThirdSection() {}
 
     @Override
     public int calculateFee(int distance) {
