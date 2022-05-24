@@ -35,10 +35,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Map<String, String> params = mapParams("신분당선", "bg-red-600");
         // when
         final SimpleResponse response = SimpleRestAssured.post("/lines", params);
+        LineResponse lineResponse = response.toObject(LineResponse.class);
         // then
         Assertions.assertAll(
                 () -> response.assertStatus(HttpStatus.CREATED),
-                () -> assertThat(response.getHeader("Location")).isNotBlank()
+                () -> assertThat(response.getHeader("Location")).isNotBlank(),
+                () -> assertThat(lineResponse.getExtraFare()).isEqualTo(1000)
         );
     }
 
@@ -194,7 +196,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 "color", color,
                 "upStationId", "1",
                 "downStationId", "2",
-                "distance", "10"
+                "distance", "10",
+                "extraFare", "1000"
         );
     }
 }

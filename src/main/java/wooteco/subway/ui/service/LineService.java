@@ -3,7 +3,6 @@ package wooteco.subway.ui.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +10,7 @@ import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Distance;
+import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
@@ -40,10 +40,11 @@ public class LineService {
         Section section = new Section(upStation, downStation, distance);
 
         Line line = new Line(name, color, section);
-        Line createdLine = lineDao.save(line);
+        Fare fare = new Fare(lineRequest.getExtraFare());
+        Line createdLine = lineDao.save(line, fare);
         sectionDao.save(section, createdLine.getId());
 
-        return LineResponse.from(createdLine);
+        return LineResponse.from(createdLine, fare);
     }
 
     public List<LineResponse> findAll() {
