@@ -7,12 +7,12 @@ import java.util.stream.Collectors;
 public class Path {
     private final List<Station> stations;
     private final int distance;
-    private final List<CustomEdge> edgeList;
+    private final List<CustomEdge> edges;
 
     private Path(List<Station> stations, int distance, List<CustomEdge> edgeList1) {
         this.stations = stations;
         this.distance = distance;
-        this.edgeList = edgeList1;
+        this.edges = edgeList1;
     }
 
     public static Path of(List<Station> stations, double distance, List<CustomEdge> edgeList) {
@@ -20,7 +20,7 @@ public class Path {
     }
 
     public List<Long> findShortestPathLines() {
-        return edgeList.stream()
+        return edges.stream()
                 .map(CustomEdge::getLineId)
                 .distinct()
                 .collect(Collectors.toList());
