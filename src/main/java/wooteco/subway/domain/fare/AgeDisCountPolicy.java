@@ -1,11 +1,10 @@
 package wooteco.subway.domain.fare;
 
-
 import java.util.Arrays;
-import java.util.function.IntUnaryOperator;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
-public enum AgeDisCountPolicy implements DiscountPolicy{
+public enum AgeDisCountPolicy implements DiscountPolicy {
 
 	ADULT(
 		age -> age >= Constant.MIN_ADULT_AGE,
@@ -13,18 +12,23 @@ public enum AgeDisCountPolicy implements DiscountPolicy{
 	),
 	TEENAGER(
 		age -> age >= Constant.MIN_TEEN_AGE && age < Constant.MIN_ADULT_AGE,
-		fare -> (int)(Constant.DEDUCTED_AMOUNT + (fare - Constant.DEDUCTED_AMOUNT) * Constant.TEEN_DISCOUNT_RATE)
+		fare ->
+			fare.subtract(Constant.DEDUCTED_AMOUNT)
+				.multiple(Constant.TEEN_DISCOUNT_RATE)
+				.sum(Constant.DEDUCTED_AMOUNT)
 	),
 	CHILD(
 		age -> age >= Constant.MIN_CHILD_AGE && age < Constant.MIN_TEEN_AGE,
-		fare -> (int)(Constant.DEDUCTED_AMOUNT + (fare - Constant.DEDUCTED_AMOUNT) * Constant.CHILD_DISCOUNT_RATE)
-	)
-	;
+		fare ->
+			fare.subtract(Constant.DEDUCTED_AMOUNT)
+				.multiple(Constant.CHILD_DISCOUNT_RATE)
+				.sum(Constant.DEDUCTED_AMOUNT)
+	);
 
 	private final Predicate<Integer> ageStandard;
-	private final IntUnaryOperator discountOperator;
+	private final UnaryOperator<Fare> discountOperator;
 
-	AgeDisCountPolicy(Predicate<Integer> standard, IntUnaryOperator operator) {
+	AgeDisCountPolicy(Predicate<Integer> standard, UnaryOperator<Fare> operator) {
 		this.ageStandard = standard;
 		this.discountOperator = operator;
 	}
@@ -37,16 +41,16 @@ public enum AgeDisCountPolicy implements DiscountPolicy{
 	}
 
 	@Override
-	public int apply(int fare) {
+	public Fare apply(Fare fare) {
 		validateFareMinus(fare);
-		if (fare < Constant.DEDUCTED_AMOUNT) {
+		if (fare.isShorterThan(Constant.DEDUCTED_AMOUNT)) {
 			return fare;
 		}
-		return discountOperator.applyAsInt(fare);
+		return discountOperator.apply(fare);
 	}
 
-	private void validateFareMinus(int fare) {
-		if (fare < 0) {
+	private void validateFareMinus(Fare fare) {
+		if (fare.isShorterThan(0)) {
 			throw new IllegalArgumentException("음수는 할인할 수 없습니다.");
 		}
 	}

@@ -14,10 +14,10 @@ class DiscountPolicyTest {
 		DiscountPolicy policy = AgeDisCountPolicy.from(13);
 
 		// when
-		int result = policy.apply(1250);
+		Fare result = policy.apply(new Fare(1250));
 
 		// then
-		assertThat(result).isEqualTo(1070);
+		assertThat(result.getValue()).isEqualTo(1070);
 	}
 
 	@DisplayName("1250원에 어린이 할인을 적용한다.")
@@ -27,10 +27,10 @@ class DiscountPolicyTest {
 		DiscountPolicy policy = AgeDisCountPolicy.from(12);
 
 		// when
-		int result = policy.apply(1250);
+		Fare result = policy.apply(new Fare(1250));
 
 		// then
-		assertThat(result).isEqualTo(800);
+		assertThat(result.getValue()).isEqualTo(800);
 	}
 
 	@DisplayName("성인은 할인이 적용되지 않는다.")
@@ -40,9 +40,9 @@ class DiscountPolicyTest {
 		DiscountPolicy policy = AgeDisCountPolicy.from(19);
 
 		// when
-		int result = policy.apply(1250);
+		Fare result = policy.apply(new Fare(1250));
 
 		// then
-		assertThat(result).isEqualTo(1250);
+		assertThat(result.getValue()).isEqualTo(1250);
 	}
 }

@@ -33,29 +33,4 @@ class FareTest {
 		assertThat(fare.getValue()).isEqualTo(result + 1000);
 	}
 
-	@DisplayName("1250원에 청소년 할인을 적용한다.")
-	@Test
-	void discountTeen() {
-		// given
-		Fare fare = Fare.of(9, 0);
-
-		// when
-		Fare discountedFare = fare.discount(AgeDisCountPolicy.from(15));
-
-		// then
-		assertThat(discountedFare.getValue()).isEqualTo(1070);
-	}
-
-	@DisplayName("1250원에 어린이 할인을 적용한다.")
-	@Test
-	void discountChile() {
-		// given
-		Fare fare = Fare.of(9, 0);
-
-		// when
-		Fare discountedFare = fare.discount(AgeDisCountPolicy.from(12));
-
-		// then
-		assertThat(discountedFare.getValue()).isEqualTo(800);
-	}
 }

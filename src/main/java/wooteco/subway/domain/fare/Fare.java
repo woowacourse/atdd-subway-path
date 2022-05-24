@@ -9,7 +9,7 @@ public class Fare {
 
 	private final int value;
 
-	private Fare(int value) {
+	public Fare(int value) {
 		validateOverZero(value);
 		this.value = value;
 	}
@@ -44,10 +44,23 @@ public class Fare {
 		return 0;
 	}
 
-	public Fare discount(DiscountPolicy discountPolicy) {
-		return new Fare(discountPolicy.apply(value));
+	public Fare sum(int fare) {
+		return new Fare(value + fare);
 	}
+
+	public Fare subtract(int fare) {
+		return new Fare(value - fare);
+	}
+
+	public Fare multiple(double fare) {
+		return new Fare((int) (value * fare));
+	}
+
 	public int getValue() {
 		return value;
+	}
+
+	public boolean isShorterThan(int value) {
+		return this.value < value;
 	}
 }

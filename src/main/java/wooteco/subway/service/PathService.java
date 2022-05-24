@@ -20,8 +20,8 @@ public class PathService {
 	}
 
 	public PathInfo findPath(Station source, Station target, int age) {
-		return new SubwayShortestPath(lineRepository.findAll())
-			.find(source, target)
-			.discountFare(AgeDisCountPolicy.from(age));
+		SubwayShortestPath shortestPath = new SubwayShortestPath(lineRepository.findAll());
+		PathInfo path = shortestPath.find(source, target);
+		return path.discountFare(AgeDisCountPolicy.from(age));
 	}
 }

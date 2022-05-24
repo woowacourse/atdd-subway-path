@@ -34,7 +34,7 @@ public class PathInfo {
 	}
 
 	public PathInfo discountFare(DiscountPolicy discountPolicy) {
-		return new PathInfo(stations, distance, fare.discount(discountPolicy));
+		return new PathInfo(stations, distance, discountPolicy.apply(fare));
 	}
 
 	public List<Station> getStations() {
