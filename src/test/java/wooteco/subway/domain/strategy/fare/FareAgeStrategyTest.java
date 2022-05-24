@@ -18,7 +18,7 @@ class FareAgeStrategyTest {
         InfantStrategy strategy = new InfantStrategy();
 
         // when
-        int discountFare = strategy.discountAge(1350);
+        int discountFare = strategy.calculateDiscount(1350);
 
         // then
         assertThat(discountFare).isEqualTo(1350);
@@ -31,7 +31,7 @@ class FareAgeStrategyTest {
         ChildStrategy strategy = new ChildStrategy();
 
         // when
-        int discountFare = strategy.discountAge(1350);
+        int discountFare = strategy.calculateDiscount(1350);
 
         // then
         assertThat(discountFare).isEqualTo(500);
@@ -44,7 +44,7 @@ class FareAgeStrategyTest {
         TeenAgeStrategy strategy = new TeenAgeStrategy();
 
         // when
-        int discountFare = strategy.discountAge(1350);
+        int discountFare = strategy.calculateDiscount(1350);
 
         // then
         assertThat(discountFare).isEqualTo(200);
@@ -57,7 +57,7 @@ class FareAgeStrategyTest {
         AdultStrategy strategy = new AdultStrategy();
 
         // when
-        int discountFare = strategy.discountAge(1350);
+        int discountFare = strategy.calculateDiscount(1350);
 
         // then
         assertThat(discountFare).isEqualTo(0);

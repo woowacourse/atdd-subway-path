@@ -33,7 +33,7 @@ class FareDistanceStrategyTest {
         int fare = fareStrategy.distanceFare(12);
 
         // then
-        assertThat(fare).isEqualTo(1350);
+        assertThat(fare).isEqualTo(100);
     }
 
     @Test
@@ -46,6 +46,6 @@ class FareDistanceStrategyTest {
         int fare = fareStrategy.distanceFare(58);
 
         // then
-        assertThat(fare).isEqualTo(2150);
+        assertThat(fare).isEqualTo(100);
     }
 }

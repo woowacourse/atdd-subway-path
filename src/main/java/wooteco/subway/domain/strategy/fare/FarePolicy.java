@@ -1,20 +1,20 @@
 package wooteco.subway.domain.strategy.fare;
 
-import wooteco.subway.domain.strategy.fare.age.FareDiscountAgeStrategy;
-import wooteco.subway.domain.strategy.fare.distance.FareDistanceStrategy;
+import wooteco.subway.domain.strategy.fare.age.FareAgeStrategyManager;
+import wooteco.subway.domain.strategy.fare.distance.FareDistanceStrategyManager;
 
 public class FarePolicy {
 
-    private final FareDistanceStrategy fareDistanceStrategy;
-    private final FareDiscountAgeStrategy fareAgeStrategyFactory;
+    private final FareDistanceStrategyManager fareDistanceStrategyManger;
+    private final FareAgeStrategyManager fareAgeStrategyManager;
 
-    public FarePolicy(FareDistanceStrategy fareDistanceStrategy, FareDiscountAgeStrategy fareAgeStrategyFactory) {
-        this.fareDistanceStrategy = fareDistanceStrategy;
-        this.fareAgeStrategyFactory = fareAgeStrategyFactory;
+    public FarePolicy(FareDistanceStrategyManager fareDistanceStrategyManger, FareAgeStrategyManager fareAgeStrategyManager) {
+        this.fareDistanceStrategyManger = fareDistanceStrategyManger;
+        this.fareAgeStrategyManager = fareAgeStrategyManager;
     }
 
-    public int getFare(int distance, int extraFare) {
-        int distanceFare = fareDistanceStrategy.distanceFare(distance) + extraFare;
-        return distanceFare - fareAgeStrategyFactory.discountAge(distanceFare);
+    public int getFare(int age, int distance, int extraFare) {
+        int distanceFare = fareDistanceStrategyManger.calculateDistanceFare(distance) + extraFare;
+        return distanceFare - fareAgeStrategyManager.calculateDiscountAgeFare(age, distanceFare);
     }
 }

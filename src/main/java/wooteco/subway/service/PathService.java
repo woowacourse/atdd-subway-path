@@ -11,7 +11,6 @@ import wooteco.subway.domain.strategy.fare.FarePolicy;
 import wooteco.subway.domain.strategy.fare.age.FareAgeStrategyFactory;
 import wooteco.subway.domain.strategy.fare.distance.FareDistanceStrategyFactory;
 import wooteco.subway.domain.strategy.path.PathFindStrategy;
-
 import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
 
@@ -39,11 +38,11 @@ public class PathService {
         int maxExtraFare = lineDao.findMaxExtraFareByLineId(path.getLines());
 
         FarePolicy farePolicy = new FarePolicy(
-                FareDistanceStrategyFactory.getStrategy(path.getDistance()),
-                FareAgeStrategyFactory.getStrategy(pathRequest.getAge())
+                FareDistanceStrategyFactory.createDistanceStrategy(),
+                FareAgeStrategyFactory.createAgeStrategy()
         );
 
-        int fare = farePolicy.getFare(path.getDistance(), maxExtraFare);
+        int fare = farePolicy.getFare(pathRequest.getAge(), path.getDistance(), maxExtraFare);
 
         return new PathResponse(path, fare);
     }
