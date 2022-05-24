@@ -6,9 +6,20 @@ import wooteco.subway.exception.ClientException;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class DijkstraPathStrategyTest {
+
+    @Test
+    @DisplayName("Path 객체 반환 확인")
+    void calcDistance() {
+        Section section1 = new Section(1L, 1L, 1L, 2L, 10);
+        Section section2 = new Section(2L, 1L, 2L, 3L, 20);
+
+        assertThat(new DijkstraPathStrategy().findPath(List.of(section1, section2), 1L, 3L))
+                .isInstanceOf(Path.class);
+    }
 
     @Test
     @DisplayName("예외 - 가고자 하는 역이 구간에 존재하지 않은 경우")
