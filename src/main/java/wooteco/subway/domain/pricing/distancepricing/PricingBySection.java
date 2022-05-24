@@ -1,6 +1,6 @@
 package wooteco.subway.domain.pricing.distancepricing;
 
-public abstract class PricingBySection {
+public interface PricingBySection {
 
-    public abstract int calculateFee(int distance);
+    int calculateFee(int distance);
 }

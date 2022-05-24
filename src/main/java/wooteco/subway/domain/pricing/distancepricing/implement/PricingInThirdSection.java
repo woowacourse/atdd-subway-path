@@ -2,12 +2,11 @@ package wooteco.subway.domain.pricing.distancepricing.implement;
 
 import wooteco.subway.domain.pricing.distancepricing.PricingBySection;
 
-public final class PricingInThirdSection extends PricingBySection {
+public final class PricingInThirdSection implements PricingBySection {
 
     private static final int UNDER_LIMIT = 50;
     private static final int UNIT_DISTANCE = 8;
     private static final int UNIT_MONEY = 100;
-    private static final PricingInThirdSection STRATEGY = new PricingInThirdSection();
 
     public PricingInThirdSection() {}
 

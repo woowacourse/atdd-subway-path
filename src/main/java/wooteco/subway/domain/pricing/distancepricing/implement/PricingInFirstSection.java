@@ -2,7 +2,7 @@ package wooteco.subway.domain.pricing.distancepricing.implement;
 
 import wooteco.subway.domain.pricing.distancepricing.PricingBySection;
 
-public final class PricingInFirstSection extends PricingBySection {
+public final class PricingInFirstSection implements PricingBySection {
 
     private static final int BASIC_FEE = 1250;
 
