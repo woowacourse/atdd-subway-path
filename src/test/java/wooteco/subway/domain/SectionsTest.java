@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 
 class SectionsTest {
 
+    private PathFinderByJgrapht pathFinder = new PathFinderByJgrapht();
+
     @Test
     @DisplayName("최단 경로를 조회한다.")
     void findShortestPath() {
@@ -17,11 +19,11 @@ class SectionsTest {
         Section section3 = new Section(3L, 2L, 3L, 4L, 20);
         Sections sections = new Sections(List.of(section1, section2, section3));
 
-        Path shortestPath = sections.findShortestPath(1L, 4L);
+        Path shortestPath = sections.findShortestPath(pathFinder, 1L, 4L);
 
         assertAll(
                 () -> assertThat(shortestPath.getStationIds()).containsExactly(1L, 2L, 3L, 4L),
-                () -> assertThat(shortestPath.getLineIds()).containsExactly(1L, 2L),
+                () -> assertThat(shortestPath.getLineIds()).containsExactly(1L, 1L, 2L),
                 () -> assertThat(shortestPath.getDistance()).isEqualTo(50)
         );
     }
@@ -34,7 +36,7 @@ class SectionsTest {
         Section section3 = new Section(3L, 2L, 2L, 3L, 15);
         Sections sections = new Sections(List.of(section1, section2, section3));
 
-        Path shortestPath = sections.findShortestPath(1L, 3L);
+        Path shortestPath = sections.findShortestPath(pathFinder, 1L, 3L);
 
         assertAll(
                 () -> assertThat(shortestPath.getStationIds()).containsExactly(1L, 2L, 3L),

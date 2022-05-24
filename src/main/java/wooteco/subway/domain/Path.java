@@ -1,16 +1,15 @@
 package wooteco.subway.domain;
 
 import java.util.List;
-import java.util.Set;
 import wooteco.subway.exception.ClientException;
 
 public class Path {
 
     private final List<Long> stationIds;
-    private final Set<Long> lineIds;
+    private final List<Long> lineIds;
     private final int distance;
 
-    public Path(final List<Long> stationIds, final Set<Long> lineIds, final int distance) {
+    public Path(final List<Long> stationIds, final List<Long> lineIds, final int distance) {
         validateStationIds(stationIds);
         validateLineIds(lineIds);
         validateDistance(distance);
@@ -25,7 +24,7 @@ public class Path {
         }
     }
 
-    private void validateLineIds(Set<Long> lineIds) {
+    private void validateLineIds(List<Long> lineIds) {
         if (lineIds.size() <= 0) {
             throw new ClientException("[ERROR] 경로가 지나가는 노선이 존재하지 않습니다.");
         }
@@ -41,7 +40,7 @@ public class Path {
         return stationIds;
     }
 
-    public Set<Long> getLineIds() {
+    public List<Long> getLineIds() {
         return lineIds;
     }
 
