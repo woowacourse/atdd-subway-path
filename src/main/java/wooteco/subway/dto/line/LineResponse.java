@@ -37,6 +37,21 @@ public class LineResponse {
         );
     }
 
+    public static LineResponse from(final Line line) {
+        final List<StationResponse> stations = line.getSections()
+                .toStation()
+                .stream()
+                .map(StationResponse::from)
+                .collect(Collectors.toList());
+        return new LineResponse(
+                line.getId(),
+                line.getName(),
+                line.getColor(),
+                line.getExtraFare(),
+                stations
+        );
+    }
+
     public Long getId() {
         return id;
     }

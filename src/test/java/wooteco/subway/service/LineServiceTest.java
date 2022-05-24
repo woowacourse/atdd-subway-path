@@ -21,8 +21,6 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.line.LineRequest;
-import wooteco.subway.dto.line.LineResponse;
-import wooteco.subway.dto.station.StationResponse;
 import wooteco.subway.exception.line.DuplicateLineException;
 import wooteco.subway.exception.line.NoSuchLineException;
 import wooteco.subway.exception.section.NoSuchSectionException;
@@ -62,7 +60,7 @@ class LineServiceTest extends ServiceTest {
                 .willReturn(any(Long.class));
 
         // when
-        final LineResponse actual = lineService.create(request);
+        final Line actual = lineService.create(request);
 
         // then
         assertThat(actual.getName()).isEqualTo(expected.getName());
@@ -71,9 +69,10 @@ class LineServiceTest extends ServiceTest {
         final List<String> expectedStationNames = Stream.of(upStation, downStation)
                 .map(Station::getName)
                 .collect(Collectors.toList());
-        final List<String> actualStationNames = actual.getStations()
+        final List<String> actualStationNames = actual.getSections()
+                .toStation()
                 .stream()
-                .map(StationResponse::getName)
+                .map(Station::getName)
                 .collect(Collectors.toList());
         assertThat(actualStationNames).isEqualTo(expectedStationNames);
     }
@@ -114,25 +113,27 @@ class LineServiceTest extends ServiceTest {
                 .willReturn(expectedStations2);
 
         // when
-        final List<LineResponse> actual = lineService.findAll();
+        final List<Line> actual = lineService.findAll();
 
         // then
         assertThat(actual).hasSameSizeAs(expected);
 
-        final LineResponse actualLine1 = actual.get(0);
+        final Line actualLine1 = actual.get(0);
         assertThat(actualLine1.getName()).isEqualTo(LINE_NAME);
 
-        final List<String> actualStationNames1 = actualLine1.getStations()
+        final List<String> actualStationNames1 = actualLine1.getSections()
+                .toStation()
                 .stream()
-                .map(StationResponse::getName)
+                .map(Station::getName)
                 .collect(Collectors.toList());
         assertThat(actualStationNames1).containsExactly(upStation.getName(), downStation.getName());
 
-        final LineResponse actualLine = actual.get(1);
+        final Line actualLine = actual.get(1);
         assertThat(actualLine.getName()).isEqualTo("5호선");
-        final List<String> actualStationNames2 = actualLine.getStations()
+        final List<String> actualStationNames2 = actualLine.getSections()
+                .toStation()
                 .stream()
-                .map(StationResponse::getName)
+                .map(Station::getName)
                 .collect(Collectors.toList());
         assertThat(actualStationNames2).containsExactly("왕십리역", "답십리역");
     }
@@ -154,15 +155,16 @@ class LineServiceTest extends ServiceTest {
                 .willReturn(sections);
 
         // when
-        final LineResponse actual = lineService.findById(id);
+        final Line actual = lineService.findById(id);
 
         // then
         assertThat(actual.getName()).isEqualTo(expected.getName());
         assertThat(actual.getColor()).isEqualTo(expected.getColor());
 
-        final List<String> actualStationNames = actual.getStations()
+        final List<String> actualStationNames = actual.getSections()
+                .toStation()
                 .stream()
-                .map(StationResponse::getName)
+                .map(Station::getName)
                 .collect(Collectors.toList());
         final List<String> expectedStationNames = List.of(upStation.getName(), downStation.getName());
         assertThat(actualStationNames).isEqualTo(expectedStationNames);

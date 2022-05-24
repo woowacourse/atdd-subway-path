@@ -3,6 +3,7 @@ package wooteco.subway.ui;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Name;
+import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.line.LineRequest;
 import wooteco.subway.dto.line.LineResponse;
@@ -98,7 +101,7 @@ class LineControllerTest extends ControllerTest {
     @DisplayName("모든 노선을 조회한다.")
     void ShowLines() {
         // given
-        final Line purpleLine = new Line("5호선", "purple");
+        final Line purpleLine = new Line(1L, new Name("5호선"), "purple", 0, new Sections(Collections.emptyList()));
         lineDao.insert(purpleLine);
         lineDao.insert(greenLine);
 
