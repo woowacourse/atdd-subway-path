@@ -3,6 +3,7 @@ package wooteco.subway.domain.path;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
+import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
 
 public class Path {
@@ -24,14 +25,23 @@ public class Path {
         }
     }
 
-    public List<Station> getVertexes() {
-        return vertexes;
+    public int getMaxExtraFare(List<Line> lines) {
+        return lines.stream()
+                .filter(line -> findPassedLineIds().contains(line.getId()))
+                .mapToInt(Line::getExtraFare)
+                .distinct()
+                .max()
+                .orElseThrow(() -> new IllegalStateException("가장 비싼 요금을 구할 수 없습니다."));
     }
 
     public List<Long> findPassedLineIds() {
         return edges.stream().map(SectionWeightedEdge::getLineId)
                 .distinct()
                 .collect(Collectors.toList());
+    }
+
+    public List<Station> getVertexes() {
+        return vertexes;
     }
 
     public int getDistance() {

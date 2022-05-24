@@ -1,6 +1,5 @@
 package wooteco.subway.service;
 
-import java.util.List;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
@@ -31,16 +30,13 @@ public class PathService {
         PathFinder pathFinder = new PathFinder();
         Path path = pathFinder.getShortestPath(getStationById(sourceId), getStationById(targetId),
                 new Sections(sectionDao.findAll()));
-        List<Long> passedLineIds = path.findPassedLineIds();
 
         FareCalculator fareCalculator = new FareCalculator(new DefaultFareStrategy(),
                 AgeDiscount.findAgeDiscount(age));
 
-        int maxExtraFare = lineDao.getMaxFareByLineIds(passedLineIds);
-
         return PathResponse.from(
                 path,
-                fareCalculator.calculate(path.getDistance(), maxExtraFare));
+                fareCalculator.calculate(path.getDistance(), path.getMaxExtraFare(lineDao.findAll())));
     }
 
     private Station getStationById(Long id) {
