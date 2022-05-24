@@ -47,13 +47,11 @@ public class SubwayGraph {
     }
 
     private GraphPath<Station, LineWeightedEdge> getShortestPath(Station source, Station target) {
-        GraphPath<Station, LineWeightedEdge> result;
         try {
-            result = subwayMap.getPath(source, target);
+            return subwayMap.getPath(source, target);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("존재하지 않는 역입니다.");
         }
-        return result;
     }
 
     private void validateRoute(GraphPath<Station, LineWeightedEdge> route) {
