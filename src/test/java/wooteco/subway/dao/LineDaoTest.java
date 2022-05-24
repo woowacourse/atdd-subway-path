@@ -30,14 +30,14 @@ class LineDaoTest {
         Long id = lineDao.save(line);
 
         // then
-        assertThat(id).isEqualTo(3L);
+        assertThat(id).isEqualTo(4L);
     }
 
     @DisplayName("노선 이름이 존재하는지 확인")
     @Test
     void existsByName() {
         // given
-        String name = "신분당선";
+        String name = "1호선";
 
         // when
         boolean result = lineDao.existsByName(name);
@@ -75,7 +75,7 @@ class LineDaoTest {
     @Test
     void findById() {
         // given
-        Line expected = new Line(1L, "신분당선", "red", 0);
+        Line expected = new Line(1L, "1호선", "black", 200);
 
         // when
         Optional<Line> line = lineDao.findById(1L);
@@ -94,7 +94,7 @@ class LineDaoTest {
         List<Line> lines = lineDao.findAll();
 
         // then
-        assertThat(lines.size()).isEqualTo(2);
+        assertThat(lines.size()).isEqualTo(3);
     }
 
     @DisplayName("노선 정보 수정")

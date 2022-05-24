@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -38,7 +37,7 @@ class StationDaoTest {
         // given
 
         // when
-        boolean result = stationDao.existsByName("강남역");
+        boolean result = stationDao.existsByName("1");
 
         // then
         assertThat(result).isTrue();
@@ -78,7 +77,7 @@ class StationDaoTest {
         List<Station> stations = stationDao.findAll();
 
         // then
-        assertThat(stations.size()).isEqualTo(2);
+        assertThat(stations.size()).isEqualTo(8);
     }
 
     @DisplayName("역 삭제")
@@ -104,8 +103,11 @@ class StationDaoTest {
 
         // when
         List<Station> stations = stationDao.findByLineId(id);
+        for (Station station : stations) {
+            System.out.println(station.getId());
+        }
 
         // then
-        assertThat(stations.size()).isEqualTo(2);
+        assertThat(stations.size()).isEqualTo(5);
     }
 }
