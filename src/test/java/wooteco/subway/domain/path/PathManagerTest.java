@@ -21,11 +21,11 @@ class PathManagerTest {
     private final Station STATION5 = new Station(5L, "역5");
     private final Station STATION6 = new Station(6L, "역6");
 
-    private final Map<Long, Integer> COSTS = Map.of(1L, 10, 2L, 15, 3L, 10, 4L, 70, 5L, 100, 6L, 30);
-
     @DisplayName("calculateOptimalPath 메서드는 두 지하철역 사이의 최단거리와 그 경로 정보를 계산하여_반환")
     @Nested
     class CalculateOptimalPathTest {
+
+        //Map<Long, Integer> lineExtraFares = Map.of(1L, 10, 2L, 15, 3L, 10, 4L, 70, 5L, 100, 6L, 30);
 
         @Test
         void 인접한_두_역_사이가_최단거리인_경우_해당_경로를_그대로_조회() {
@@ -44,7 +44,13 @@ class PathManagerTest {
                     new Section(3L, STATION2, STATION5, 100),
                     new Section(1L, STATION5, STATION3, 100),
                     new Section(4L, STATION3, STATION6, 100));
-            PathManager pathManager = PathManager.of(GraphGenerator.toAdjacentPath(sections, COSTS));
+
+            Map<Long, Integer> lineExtraFares = Map.of(
+                    1L, 10,
+                    2L, 15,
+                    3L, 10,
+                    4L, 70);
+            PathManager pathManager = PathManager.of(GraphGenerator.toAdjacentPath(sections, lineExtraFares));
 
             Path actual = pathManager.calculateOptimalPath(STATION2, STATION3);
             Path expected = new Path(1, List.of(STATION2, STATION3), 10);
@@ -69,7 +75,13 @@ class PathManagerTest {
                     new Section(3L,STATION2, STATION5, 100),
                     new Section(1L,STATION5, STATION3, 5),
                     new Section(4L,STATION3, STATION6, 6));
-            PathManager pathManager = PathManager.of(GraphGenerator.toAdjacentPath(sections, COSTS));
+
+            Map<Long, Integer> lineExtraFares = Map.of(
+                    1L, 10,
+                    2L, 15,
+                    3L, 10,
+                    4L, 70);
+            PathManager pathManager = PathManager.of(GraphGenerator.toAdjacentPath(sections, lineExtraFares));
 
             Path actual = pathManager.calculateOptimalPath(STATION2, STATION3);
             Path expected = new Path(10, List.of(STATION2, STATION4, STATION5, STATION3), 15);
@@ -88,7 +100,9 @@ class PathManagerTest {
                     new Section(1L,STATION1, STATION2, 10),
                     new Section(1L,STATION2, STATION3, 100),
                     new Section(1L,STATION3, STATION4, 20));
-            PathManager pathManager = PathManager.of(GraphGenerator.toAdjacentPath(sections, COSTS));
+
+            Map<Long, Integer> lineExtraFares = Map.of(1L, 10);
+            PathManager pathManager = PathManager.of(GraphGenerator.toAdjacentPath(sections, lineExtraFares));
 
             assertThatThrownBy(() -> pathManager.calculateOptimalPath(STATION1, nonRegisteredStation))
                     .isInstanceOf(IllegalArgumentException.class);
@@ -102,7 +116,9 @@ class PathManagerTest {
             */
             List<Section> sections = List.of(
                     new Section(1L, STATION1, STATION2, 10));
-            PathManager pathManager = PathManager.of(GraphGenerator.toAdjacentPath(sections, COSTS));
+
+            Map<Long, Integer> lineExtraFares = Map.of(1L, 10);
+            PathManager pathManager = PathManager.of(GraphGenerator.toAdjacentPath(sections, lineExtraFares));
 
             assertThatThrownBy(() -> pathManager.calculateOptimalPath(STATION1, STATION1))
                     .isInstanceOf(IllegalArgumentException.class);
@@ -118,7 +134,11 @@ class PathManagerTest {
             List<Section> sections = List.of(
                     new Section(1L, STATION1, STATION2, 10),
                     new Section(2L,STATION3, STATION4, 20));
-            PathManager pathManager = PathManager.of(GraphGenerator.toAdjacentPath(sections, COSTS));
+
+            Map<Long, Integer> lineExtraFares = Map.of(
+                    1L, 10,
+                    2L, 15);
+            PathManager pathManager = PathManager.of(GraphGenerator.toAdjacentPath(sections, lineExtraFares));
 
             assertThatThrownBy(() -> pathManager.calculateOptimalPath(STATION1, STATION3))
                     .isInstanceOf(IllegalArgumentException.class);
@@ -144,7 +164,15 @@ class PathManagerTest {
                     new Section(3L, STATION5, STATION3, 5),
                     new Section(6L, STATION2, STATION4, 2),
                     new Section(5L, STATION3, STATION6, 6));
-            PathManager pathManager = PathManager.of(GraphGenerator.toAdjacentPath(sections, COSTS));
+
+            Map<Long, Integer> lineExtraFares = Map.of(
+                    1L, 10,
+                    2L, 15,
+                    3L, 10,
+                    4L, 70,
+                    5L, 100,
+                    6L, 30);
+            PathManager pathManager = PathManager.of(GraphGenerator.toAdjacentPath(sections, lineExtraFares));
 
             Path actual = pathManager.calculateOptimalPath(STATION2, STATION3);
             Path expected = new Path(10, List.of(STATION2, STATION4, STATION5, STATION3), 15);
@@ -164,7 +192,11 @@ class PathManagerTest {
                     new Section(1L, STATION2, STATION4, 100),
                     new Section(3L, STATION1, STATION3, 1),
                     new Section(3L, STATION3, STATION4, 1));
-            PathManager pathManager = PathManager.of(GraphGenerator.toAdjacentPath(sections, COSTS));
+
+            Map<Long, Integer> lineExtraFares = Map.of(
+                    1L, 10,
+                    3L, 10);
+            PathManager pathManager = PathManager.of(GraphGenerator.toAdjacentPath(sections, lineExtraFares));
 
             Path actual = pathManager.calculateOptimalPath(STATION1, STATION4);
             Path expected = new Path(2, List.of(STATION1, STATION3, STATION4), 10);
