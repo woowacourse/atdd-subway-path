@@ -2,16 +2,16 @@ package wooteco.subway.ui.dto;
 
 public class ExceptionResponse {
 
-    private String errorMessage;
+    private String message;
 
     public ExceptionResponse() {
     }
 
-    public ExceptionResponse(String errorMessage) {
-        this.errorMessage = errorMessage;
+    public ExceptionResponse(String message) {
+        this.message = message;
     }
 
-    public String getErrorMessage() {
-        return errorMessage;
+    public String getMessage() {
+        return message;
     }
 }

@@ -86,7 +86,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(exceptionResponse.getErrorMessage()).isEqualTo("구간에 등록 되지 않은 역입니다.")
+                () -> assertThat(exceptionResponse.getMessage()).isEqualTo("구간에 등록 되지 않은 역입니다.")
         );
     }
 
@@ -105,7 +105,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         //then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(exceptionResponse.getErrorMessage()).isEqualTo("연결되지 않은 구간입니다.")
+                () -> assertThat(exceptionResponse.getMessage()).isEqualTo("연결되지 않은 구간입니다.")
         );
     }
 

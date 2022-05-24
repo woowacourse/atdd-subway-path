@@ -103,7 +103,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(exceptionResponse.getErrorMessage()).isEqualTo("기존 구간의 길이보다 작아야합니다.")
+                () -> assertThat(exceptionResponse.getMessage()).isEqualTo("기존 구간의 길이보다 작아야합니다.")
         );
     }
 
@@ -122,7 +122,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(exceptionResponse.getErrorMessage())
+                () -> assertThat(exceptionResponse.getMessage())
                         .isEqualTo("상행 종점과 하행 종점 중 하나의 종점만 포함되어야 합니다.")
         );
     }
@@ -141,7 +141,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(exceptionResponse.getErrorMessage())
+                () -> assertThat(exceptionResponse.getMessage())
                         .isEqualTo("상행 종점과 하행 종점 중 하나의 종점만 포함되어야 합니다.")
         );
     }
@@ -160,7 +160,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(exceptionResponse.getErrorMessage())
+                () -> assertThat(exceptionResponse.getMessage())
                         .isEqualTo("상행 종점과 하행 종점 중 하나의 종점만 포함되어야 합니다.")
         );
     }
@@ -179,7 +179,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(exceptionResponse.getErrorMessage())
+                () -> assertThat(exceptionResponse.getMessage())
                         .isEqualTo("역간의 거리는 1 이상이어야 합니다.")
         );
     }
@@ -272,7 +272,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(exceptionResponse.getErrorMessage()).isEqualTo("구간이 하나뿐이라 삭제할 수 없습니다.")
+                () -> assertThat(exceptionResponse.getMessage()).isEqualTo("구간이 하나뿐이라 삭제할 수 없습니다.")
         );
     }
 

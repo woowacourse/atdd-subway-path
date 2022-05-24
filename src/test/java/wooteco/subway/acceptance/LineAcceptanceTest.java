@@ -69,7 +69,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(exceptionResponse.getErrorMessage()).isEqualTo("이름은 중복될 수 없습니다.")
+                () -> assertThat(exceptionResponse.getMessage()).isEqualTo("이름은 중복될 수 없습니다.")
         );
     }
 
