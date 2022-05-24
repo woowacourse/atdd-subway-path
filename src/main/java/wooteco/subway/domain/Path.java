@@ -38,9 +38,18 @@ public class Path {
         return (int) path.orElseThrow(() -> new NoReachableStationException(NO_REACHABLE)).getWeight();
     }
 
-    public List<ShortestPathEdge> getEdges(Long source, Long target) {
-        Optional<GraphPath> path = makeGraphPath(source, target);
-        return path.orElseThrow(() -> new NoReachableStationException(NO_REACHABLE)).getEdgeList();
+    private Optional<GraphPath> makeGraphPath(Long source, Long target) {
+        Optional<GraphPath> path;
+
+        try {
+            DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+            path = Optional.ofNullable(
+                    dijkstraShortestPath.getPath(source, target));
+        } catch (IllegalArgumentException exception) {
+            throw new StationNotFoundException(NOT_EXIST_STATION);
+        }
+
+        return path;
     }
 
     public int calculateExtraFare(Long source, Long target) {
@@ -54,17 +63,8 @@ public class Path {
                 .orElse(0);
     }
 
-    private Optional<GraphPath> makeGraphPath(Long source, Long target) {
-        Optional<GraphPath> path;
-
-        try {
-            DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-            path = Optional.ofNullable(
-                    dijkstraShortestPath.getPath(source, target));
-        } catch (IllegalArgumentException exception) {
-            throw new StationNotFoundException(NOT_EXIST_STATION);
-        }
-
-        return path;
+    private List<ShortestPathEdge> getEdges(Long source, Long target) {
+        Optional<GraphPath> path = makeGraphPath(source, target);
+        return path.orElseThrow(() -> new NoReachableStationException(NO_REACHABLE)).getEdgeList();
     }
 }
