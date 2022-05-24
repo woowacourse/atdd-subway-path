@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.LineUpdateRequest;
 import wooteco.subway.exception.DomainException;
 import wooteco.subway.exception.ExceptionMessage;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.service.dto.LineRequest;
 import wooteco.subway.service.dto.LineResponse;
+import wooteco.subway.service.dto.LineUpdateRequest;
 import wooteco.subway.service.dto.SectionSaveRequest;
 
 @Service

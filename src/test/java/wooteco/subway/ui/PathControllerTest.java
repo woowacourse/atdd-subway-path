@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.dto.PathResponse;
 import wooteco.subway.exception.DomainException;
+import wooteco.subway.service.dto.PathResponse;
 
 @SpringBootTest
 @Transactional

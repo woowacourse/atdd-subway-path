@@ -12,11 +12,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.dto.LineUpdateRequest;
 import wooteco.subway.exception.DomainException;
 import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.service.dto.LineRequest;
 import wooteco.subway.service.dto.LineResponse;
+import wooteco.subway.service.dto.LineUpdateRequest;
 
 @SpringBootTest
 @Sql("classpath:testInit.sql")

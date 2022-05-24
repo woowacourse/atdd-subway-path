@@ -3,8 +3,8 @@ package wooteco.subway.ui;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.subway.dto.PathResponse;
 import wooteco.subway.service.PathService;
+import wooteco.subway.service.dto.PathResponse;
 
 @RestController
 public class PathController {

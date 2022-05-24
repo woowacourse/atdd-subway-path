@@ -8,9 +8,9 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import wooteco.subway.dto.PathResponse;
-import wooteco.subway.dto.StationRequest;
 import wooteco.subway.service.dto.LineRequest;
+import wooteco.subway.service.dto.PathResponse;
+import wooteco.subway.service.dto.StationRequest;
 
 public class PathAcceptanceTest extends AcceptanceTest {
 
