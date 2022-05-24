@@ -1,6 +1,8 @@
 package wooteco.subway.domain.fare.policy.age;
 
-public class BabyDiscountPolicy implements AgeDiscountPolicy {
+import wooteco.subway.domain.fare.policy.FarePolicy;
+
+public class BabyDiscountPolicy implements FarePolicy {
     public BabyDiscountPolicy() {
     }
 

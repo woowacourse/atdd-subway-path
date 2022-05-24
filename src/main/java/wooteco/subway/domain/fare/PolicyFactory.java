@@ -2,7 +2,7 @@ package wooteco.subway.domain.fare;
 
 import java.util.List;
 import wooteco.subway.domain.element.Line;
-import wooteco.subway.domain.fare.policy.age.AgeDiscountPolicy;
+import wooteco.subway.domain.fare.policy.FarePolicy;
 import wooteco.subway.domain.fare.policy.age.AgeDiscountPolicyGenerator;
 import wooteco.subway.domain.fare.policy.distance.DistancePolicy;
 import wooteco.subway.domain.fare.policy.distance.DistancePolicyGenerator;
@@ -13,7 +13,7 @@ public class PolicyFactory {
         return DistancePolicyGenerator.of(distance);
     }
 
-    public static AgeDiscountPolicy createAgeDiscount(int age) {
+    public static FarePolicy createAgeDiscount(int age) {
         return AgeDiscountPolicyGenerator.of(age);
     }
 

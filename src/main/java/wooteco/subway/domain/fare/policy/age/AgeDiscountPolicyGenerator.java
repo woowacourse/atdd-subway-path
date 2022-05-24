@@ -3,6 +3,7 @@ package wooteco.subway.domain.fare.policy.age;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
+import wooteco.subway.domain.fare.policy.FarePolicy;
 
 public enum AgeDiscountPolicyGenerator {
     BABY((age) -> 0 <= age && age <= 5,
@@ -17,14 +18,14 @@ public enum AgeDiscountPolicyGenerator {
     private static final String NO_AGE_DISCOUNT_POLICY_ERROR_MESSAGE = "해당되는 나이 정책이 없습니다.";
 
     private final Predicate<Integer> predicate;
-    private final AgeDiscountPolicy ageDiscountPolicy;
+    private final FarePolicy ageDiscountPolicy;
 
-    AgeDiscountPolicyGenerator(Predicate<Integer> predicate, AgeDiscountPolicy ageDiscountPolicy) {
+    AgeDiscountPolicyGenerator(Predicate<Integer> predicate, FarePolicy ageDiscountPolicy) {
         this.predicate = predicate;
         this.ageDiscountPolicy = ageDiscountPolicy;
     }
 
-    public static AgeDiscountPolicy of(int age) {
+    public static FarePolicy of(int age) {
         return Arrays.stream(AgeDiscountPolicyGenerator.values())
                 .filter(generator -> generator.predicate.test(age))
                 .findFirst()

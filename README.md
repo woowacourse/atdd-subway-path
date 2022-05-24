@@ -1,14 +1,3 @@
-<p align="center">
-    <img width="200px;" src="https://raw.githubusercontent.com/woowacourse/atdd-subway-admin-frontend/master/images/main_logo.png"/>
-</p>
-<p align="center">
-  <a href="https://techcourse.woowahan.com/c/Dr6fhku7" alt="woowacuorse subway">
-    <img alt="Website" src="https://img.shields.io/website?url=https%3A%2F%2Fedu.nextstep.camp%2Fc%2FR89PYi5H">
-  </a>
-  <img alt="GitHub" src="https://img.shields.io/github/license/woowacourse/atdd-subway-subwayGraph">
-</p>
-
-<br>
 
 # 지하철 노선도 미션
 
@@ -188,7 +177,7 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-subwayGraph/blo
 
 ### 2단계-1 피드백
 
-- [ ] AgeDiscountPolicy 인터페이스 제거
+- [x] AgeDiscountPolicy 인터페이스 제거
 - [ ] 새 엔티티의 id를 null 대신 0으로 초기화하는군요. id 필드는 더이상 Long 타입일 필요가 없을까요?
 - [ ] 호출하게되면 sections.isStationIn(station)처럼 호출하게 될 텐데, 코드가 부자연스러워보이네요.
     - [ ] sections.contains(station)처럼 호출할 수 있으면 어떨까요?
