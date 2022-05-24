@@ -16,4 +16,9 @@ public class SectionPath extends DefaultWeightedEdge {
     protected double getWeight() {
         return weight;
     }
+
+    @Override
+    protected Object getTarget() {
+        return super.getTarget();
+    }
 }

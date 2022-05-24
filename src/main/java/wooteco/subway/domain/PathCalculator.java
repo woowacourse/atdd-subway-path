@@ -1,53 +1,55 @@
 package wooteco.subway.domain;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+import java.util.stream.Collectors;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.domain.Fare.Fare;
+import wooteco.subway.domain.distance.Kilometer;
+import wooteco.subway.domain.path.JgraphtPath;
+import wooteco.subway.domain.path.ShortestPath;
 
 public class PathCalculator {
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
-    private PathCalculator(DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath) {
-        this.dijkstraShortestPath = dijkstraShortestPath;
+    public static ShortestPath getShortestPath(List<Line> lines, Station source, Station target) {
+        WeightedMultigraph<Station, JgraphtPath> graph = new WeightedMultigraph<>(JgraphtPath.class);
+        addVertex(graph, lines);
+        addEdge(graph, lines);
+        DijkstraShortestPath<Station, JgraphtPath> algorithms = new DijkstraShortestPath<>(graph);
+        return getShortestPath(algorithms.getPath(source, target));
     }
 
-    public static PathCalculator from(List<Section> sections) {
-        Set<Station> stations = extractStations(sections);
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = getMultiGraph(
-                sections, stations);
-        return new PathCalculator(new DijkstraShortestPath<>(graph));
-    }
-
-    private static Set<Station> extractStations(List<Section> sections) {
-        Set<Station> stations = new HashSet<>();
-        for (Section section : sections) {
-            stations.add(section.getUpStation());
-            stations.add(section.getDownStation());
-        }
-        return stations;
-    }
-
-    private static WeightedMultigraph<Station, DefaultWeightedEdge> getMultiGraph(
-            List<Section> sections, Set<Station> stations) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    private static void addVertex(WeightedMultigraph<Station, JgraphtPath> graph, List<Line> lines) {
+        Set<Station> stations = lines.stream()
+                .flatMap(line -> line.getStations().stream())
+                .collect(Collectors.toSet());
         for (Station station : stations) {
             graph.addVertex(station);
         }
-        for (Section section : sections) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+    }
+
+    private static void addEdge(WeightedMultigraph<Station, JgraphtPath> graph, List<Line> lines) {
+        for (Line line : lines) {
+            addEdge(graph, line.getSections(), line.getExtraFare());
         }
-        return graph;
     }
 
-    public List<Station> calculateShortestPath(Station source, Station target) {
-        return dijkstraShortestPath.getPath(source, target).getVertexList();
+    private static void addEdge(WeightedMultigraph<Station, JgraphtPath> graph, Sections sections, int extraFare) {
+        for (Section section : sections.getSections()) {
+            graph.addEdge(section.getUpStation(), section.getDownStation(),
+                    new JgraphtPath(section.getDistance(), extraFare));
+        }
     }
 
-    public int calculateShortestDistance(Station source, Station target) {
-        return (int) dijkstraShortestPath.getPathWeight(source, target);
+    private static ShortestPath getShortestPath(GraphPath<Station, JgraphtPath> graphPath) {
+        int distance = (int) graphPath.getWeight();
+        int extraFare = graphPath.getEdgeList().stream()
+                .mapToInt(JgraphtPath::getExtraFare)
+                .max()
+                .orElse(0);
+        List<Station> stations1 = graphPath.getVertexList();
+        return new ShortestPath(stations1, Kilometer.from(distance), new Fare(extraFare));
     }
 }

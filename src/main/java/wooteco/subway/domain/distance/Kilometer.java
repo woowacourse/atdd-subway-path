@@ -1,5 +1,7 @@
 package wooteco.subway.domain.distance;
 
+import java.util.Objects;
+
 public class Kilometer {
 
     private final int value;
@@ -26,5 +28,22 @@ public class Kilometer {
 
     public boolean exceedKm(int otherValue) {
         return value > otherValue;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Kilometer kilometer = (Kilometer) o;
+        return value == kilometer.value;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 }

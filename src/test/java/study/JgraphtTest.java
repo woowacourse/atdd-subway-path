@@ -93,7 +93,6 @@ public class JgraphtTest {
 
         DijkstraShortestPath<Station, SectionPath> stationSectionPathDijkstraShortestPath = new DijkstraShortestPath<>(
                 graph);
-
         Assertions.assertThat(stationSectionPathDijkstraShortestPath.getPathWeight(강남역, 잠실역)).isEqualTo(15);
     }
 }
