@@ -25,8 +25,7 @@ public class PathCalculatorTest {
         );
 
         Line line1 = new Line(1L, "2호선", "green", 500, sections1);
-        Line line2 = new Line(1L, "2-1호선", "green", 300, sections2);
-
+        Line line2 = new Line(1L, "3호선", "green", 300, sections2);
 
         PathCalculator pathCalculator = PathCalculator.from(List.of(line1, line2));
         List<Station> stations = pathCalculator.calculateShortestPath(선릉, 강남);
@@ -50,8 +49,7 @@ public class PathCalculatorTest {
         );
 
         Line line1 = new Line(1L, "2호선", "green", 500, sections1);
-        Line line2 = new Line(1L, "2-1호선", "green", 300, sections2);
-
+        Line line2 = new Line(1L, "3호선", "green", 300, sections2);
 
         PathCalculator pathCalculator = PathCalculator.from(List.of(line1, line2));
         double distance = pathCalculator.calculateShortestDistance(선릉, 강남);

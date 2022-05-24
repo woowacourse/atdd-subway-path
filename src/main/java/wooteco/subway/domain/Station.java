@@ -4,22 +4,19 @@ import java.util.Objects;
 
 public class Station {
     private final Long id;
-    private final String name;
-
-    public Station(Long id, String name) {
-        validateNotNull(name, "name");
-        this.id = id;
-        this.name = name;
-    }
-
-    private void validateNotNull(String input, String param) {
-        if (input == null || input.isBlank()) {
-            throw new IllegalArgumentException(String.format("%s은 필수 입력값입니다.", param));
-        }
-    }
+    private final Name name;
 
     public Station(String name) {
-        this(null, name);
+        this(null, new Name(name));
+    }
+
+    public Station(Long id, String name) {
+        this(id, new Name(name));
+    }
+
+    public Station(Long id, Name name) {
+        this.id = id;
+        this.name = name;
     }
 
     public boolean hasSameNameWith(Station otherStation) {
@@ -31,7 +28,7 @@ public class Station {
     }
 
     public String getName() {
-        return name;
+        return name.getValue();
     }
 
     @Override
@@ -42,7 +39,7 @@ public class Station {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Station station = (Station) o;
+        Station station = (Station)o;
         return Objects.equals(id, station.id);
     }
 

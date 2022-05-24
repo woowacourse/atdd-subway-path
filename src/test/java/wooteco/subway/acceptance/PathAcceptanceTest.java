@@ -60,7 +60,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(17),
                 () -> assertThat(pathResponse.getStationResponses()).hasSize(3),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(2350)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1950)
         );
     }
 

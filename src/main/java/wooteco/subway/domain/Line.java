@@ -6,13 +6,13 @@ import java.util.List;
 public class Line {
 
     private final Long id;
-    private final String name;
-    private final String color;
+    private final Name name;
+    private final Color color;
     private final int extraFare;
     private final Sections sections;
 
     public Line(Long id, Line line) {
-        this(id, line.getName(), line.getColor(), line.extraFare, line.getSections());
+        this(id, new Name(line.getName()), new Color(line.getColor()), line.extraFare, line.getSections());
     }
 
     public Line(String name, String color, int extraFare, Section section) {
@@ -24,23 +24,15 @@ public class Line {
     }
 
     public Line(Long id, String name, String color, int extraFare, List<Section> sections) {
-        this(id, name, color, extraFare, new Sections(sections));
+        this(id, new Name(name), new Color(color), extraFare, new Sections(sections));
     }
 
-    public Line(Long id, String name, String color, int extraFare, Sections sections) {
-        validateNotNull(name, "name");
-        validateNotNull(color, "color");
+    public Line(Long id, Name name, Color color, int extraFare, Sections sections) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.extraFare = extraFare;
         this.sections = sections;
-    }
-
-    private void validateNotNull(String input, String param) {
-        if (input == null || input.isBlank()) {
-            throw new IllegalArgumentException(String.format("%s은 필수 입력값입니다.", param));
-        }
     }
 
     public void addSection(Section section) {
@@ -60,11 +52,11 @@ public class Line {
     }
 
     public String getName() {
-        return name;
+        return name.getValue();
     }
 
     public String getColor() {
-        return color;
+        return color.getValue();
     }
 
     public Sections getSections() {
