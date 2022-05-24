@@ -29,7 +29,7 @@ class SectionTest {
         Section newSection = new Section(2L, 1L, 1L, 2L, 5);
 
         // when
-        Section replacedSection = Section.replaced(existSection, newSection);
+        Section replacedSection = Section.getReplacedSection(existSection, newSection);
 
         // then
         assertAll(
@@ -49,7 +49,7 @@ class SectionTest {
         Section section2 = new Section(2L, 1L, 2L, 3L, 5);
 
         // when
-        Section deletedSection = Section.deleted(section1, section2);
+        Section deletedSection = Section.getDeletedSection(section1, section2);
 
         // then
         assertAll(

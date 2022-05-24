@@ -25,7 +25,7 @@ public class Section {
         this(null, null, upStationId, downStationId, distance);
     }
 
-    public static Section replaced(final Section existSection, final Section section) {
+    public static Section getReplacedSection(final Section existSection, final Section section) {
         int newDistance = subtractDistance(existSection, section);
         if (existSection.upStationId.equals(section.upStationId)) {
             return new Section(existSection.sectionId, existSection.lineId,
@@ -35,7 +35,7 @@ public class Section {
                 existSection.upStationId, section.upStationId, newDistance);
     }
 
-    public static Section deleted(final Section sectionIncludedDownStation, final Section sectionIncludedUpStation) {
+    public static Section getDeletedSection(final Section sectionIncludedDownStation, final Section sectionIncludedUpStation) {
         return new Section(
                 sectionIncludedDownStation.sectionId,
                 sectionIncludedDownStation.lineId,
