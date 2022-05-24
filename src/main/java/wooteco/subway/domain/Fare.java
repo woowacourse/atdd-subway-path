@@ -4,6 +4,9 @@ public class Fare {
     private static final int DEFAULT_FARE = 1250;
     private static final int FIRST_OVER_FARE_DISTANCE_THRESHOLD = 10;
     private static final int SECOND_OVER_FARE_DISTANCE_THRESHOLD = 50;
+    private static final int FIRST_OVER_FARE_UNIT = 5;
+    private static final int SECOND_OVER_FARE_UNIT = 8;
+    private static final int INITIAL_OVER_FARE_BY_SECOND_THRESHOLD = 800;
 
     private final int fare;
 
@@ -22,12 +25,12 @@ public class Fare {
         }
 
         if (distance <= SECOND_OVER_FARE_DISTANCE_THRESHOLD) {
-            distance -= 10;
-            return (int) ((Math.ceil((distance - 1) / 5) + 1) * 100);
+            distance -= FIRST_OVER_FARE_DISTANCE_THRESHOLD;
+            return (int) ((Math.ceil((distance - 1) / FIRST_OVER_FARE_UNIT) + 1) * 100);
         }
 
-        distance -= 50;
-        return 800 + (int) ((Math.ceil((distance - 1) / 8) + 1) * 100);
+        distance -= SECOND_OVER_FARE_DISTANCE_THRESHOLD;
+        return INITIAL_OVER_FARE_BY_SECOND_THRESHOLD + (int) ((Math.ceil((distance - 1) / SECOND_OVER_FARE_UNIT) + 1) * 100);
     }
 
     public int getFare() {
