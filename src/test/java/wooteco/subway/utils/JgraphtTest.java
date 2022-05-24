@@ -6,6 +6,9 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import java.util.ArrayList;
 import java.util.List;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.Multigraph;
+import org.jgrapht.graph.WeightedMultigraph;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.fare.FareCalculator;
@@ -15,11 +18,18 @@ import wooteco.subway.domain.Station;
 
 class JgraphtTest {
 
+    private Multigraph<Station, ShortestPathEdge> graph;
+
+    @BeforeEach
+    void setUp() {
+        graph = new WeightedMultigraph<>(ShortestPathEdge.class);
+    }
+
     @Test
     @DisplayName("구간 리스트를 받아 그래프를 생성한다.")
     void create() {
         List<Section> sections = new ArrayList<>();
-        assertThatNoException().isThrownBy(() -> Jgrapht.initSectionGraph(sections));
+        assertThatNoException().isThrownBy(() -> Jgrapht.initSectionGraph(sections, graph));
     }
 
     @Test
@@ -35,7 +45,7 @@ class JgraphtTest {
         sections.add(new Section(line, 역삼역, 선릉역, 10));
         sections.add(new Section(line, 선릉역, 삼성역, 10));
 
-        DijkstraShortestPath dijkstraShortestPath = Jgrapht.initSectionGraph(sections);
+        DijkstraShortestPath dijkstraShortestPath = Jgrapht.initSectionGraph(sections, graph);
         List<Station> shortestPath = Jgrapht.createShortestPath(dijkstraShortestPath, 강남역, 선릉역);
 
         assertThat(shortestPath).containsExactly(강남역, 역삼역, 선릉역);
@@ -52,7 +62,7 @@ class JgraphtTest {
         sections.add(new Section(line, new Station(2L, "역삼역"), new Station(3L, "선릉역"), 10));
         sections.add(new Section(line, new Station(3L, "선릉역"), new Station(4L, "삼성역"), 10));
 
-        DijkstraShortestPath dijkstraShortestPath = Jgrapht.initSectionGraph(sections);
+        DijkstraShortestPath dijkstraShortestPath = Jgrapht.initSectionGraph(sections, graph);
         Jgrapht.createShortestPath(dijkstraShortestPath, upStation, downStation);
 
         assertThat(Jgrapht.calculateDistance(dijkstraShortestPath, upStation, downStation)).isEqualTo(20);
@@ -72,7 +82,7 @@ class JgraphtTest {
         sections.add(new Section(이호선, 성수역, 건대입구, 10));
         sections.add(new Section(구호선, 건대입구, 강남구청, 10));
 
-        DijkstraShortestPath dijkstraShortestPath = Jgrapht.initSectionGraph(sections);
+        DijkstraShortestPath dijkstraShortestPath = Jgrapht.initSectionGraph(sections, graph);
         List<Station> shortestPath = Jgrapht.createShortestPath(dijkstraShortestPath, 성수역, 강남구청);
         int distance = Jgrapht.calculateDistance(dijkstraShortestPath, 성수역, 강남구청);
 
@@ -98,7 +108,7 @@ class JgraphtTest {
         sections.add(new Section(삼호선, 성수역, 서울숲, 5));
         sections.add(new Section(삼호선, 서울숲, 강남구청, 10));
 
-        DijkstraShortestPath dijkstraShortestPath = Jgrapht.initSectionGraph(sections);
+        DijkstraShortestPath dijkstraShortestPath = Jgrapht.initSectionGraph(sections, graph);
         List<Station> shortestPath = Jgrapht.createShortestPath(dijkstraShortestPath, 성수역, 강남구청);
         int distance = Jgrapht.calculateDistance(dijkstraShortestPath, 성수역, 강남구청);
 
@@ -124,7 +134,7 @@ class JgraphtTest {
         sections.add(new Section(구호선, 건대입구, 강남구청, 10));
         sections.add(new Section(삼호선, 강남구청, 홍대, 10));
 
-        DijkstraShortestPath dijkstraShortestPath = Jgrapht.initSectionGraph(sections);
+        DijkstraShortestPath dijkstraShortestPath = Jgrapht.initSectionGraph(sections, graph);
         List<Station> shortestPath = Jgrapht.createShortestPath(dijkstraShortestPath, 성수역, 홍대);
         int distance = Jgrapht.calculateDistance(dijkstraShortestPath, 성수역, 홍대);
 
@@ -149,7 +159,7 @@ class JgraphtTest {
         sections.add(new Section(구호선, 건대입구, 강남구청, 10));
         sections.add(new Section(삼호선, 강남구청, 홍대, 10));
 
-        DijkstraShortestPath dijkstraShortestPath = Jgrapht.initSectionGraph(sections);
+        DijkstraShortestPath dijkstraShortestPath = Jgrapht.initSectionGraph(sections, graph);
         List<Station> shortestPath = Jgrapht.createShortestPath(dijkstraShortestPath, 성수역, 홍대);
         int distance = Jgrapht.calculateDistance(dijkstraShortestPath, 성수역, 홍대);
         int extraFare = Jgrapht.calculateExtraFare(dijkstraShortestPath, 성수역, 홍대);
@@ -176,7 +186,7 @@ class JgraphtTest {
         sections.add(new Section(구호선, 건대입구, 강남구청, 10));
         sections.add(new Section(삼호선, 강남구청, 홍대, 10));
 
-        DijkstraShortestPath dijkstraShortestPath = Jgrapht.initSectionGraph(sections);
+        DijkstraShortestPath dijkstraShortestPath = Jgrapht.initSectionGraph(sections, graph);
         List<Station> shortestPath = Jgrapht.createShortestPath(dijkstraShortestPath, 성수역, 홍대);
         int distance = Jgrapht.calculateDistance(dijkstraShortestPath, 성수역, 홍대);
         int extraFare = Jgrapht.calculateExtraFare(dijkstraShortestPath, 성수역, 홍대);

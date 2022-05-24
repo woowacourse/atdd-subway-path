@@ -2,13 +2,15 @@ package wooteco.subway.service;
 
 import java.util.List;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.Multigraph;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.fare.FareCalculator;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
-import wooteco.subway.domain.ShortestPathEdge;
+import wooteco.subway.utils.ShortestPathEdge;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.request.PathRequest;
 import wooteco.subway.dto.response.PathResponse;
@@ -35,7 +37,8 @@ public class PathService {
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_STATION_ERROR_MESSAGE));
 
         List<Section> sections = sectionDao.findAll();
-        DijkstraShortestPath<Station, ShortestPathEdge> shortestPath = Jgrapht.initSectionGraph(sections);
+        Multigraph<Station, ShortestPathEdge> graph = new WeightedMultigraph<>(ShortestPathEdge.class);
+        DijkstraShortestPath<Station, ShortestPathEdge> shortestPath = Jgrapht.initSectionGraph(sections, graph);
         List<Station> stations = Jgrapht.createShortestPath(shortestPath, source, target);
         int distance = Jgrapht.calculateDistance(shortestPath, source, target);
         int extraFare = Jgrapht.calculateExtraFare(shortestPath, source, target);

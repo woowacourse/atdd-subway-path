@@ -4,17 +4,14 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.WeightedMultigraph;
+import org.jgrapht.graph.Multigraph;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
-import wooteco.subway.domain.ShortestPathEdge;
 import wooteco.subway.domain.Station;
 
 public class Jgrapht {
 
-    public static DijkstraShortestPath initSectionGraph(List<Section> sections) {
-        WeightedMultigraph<Station, ShortestPathEdge> graph
-                = new WeightedMultigraph<>(ShortestPathEdge.class);
+    public static DijkstraShortestPath initSectionGraph(List<Section> sections, Multigraph<Station, ShortestPathEdge> graph) {
         addVertex(sections, graph);
         addEdge(sections, graph);
         return new DijkstraShortestPath<>(graph);
@@ -36,14 +33,14 @@ public class Jgrapht {
                 .orElseGet(() -> 0);
     }
 
-    private static void addVertex(List<Section> sections, WeightedMultigraph<Station, ShortestPathEdge> graph) {
+    private static void addVertex(List<Section> sections, Multigraph<Station, ShortestPathEdge> graph) {
         Set<Station> stations = getStations(sections);
         for (Station station : stations) {
             graph.addVertex(station);
         }
     }
 
-    private static void addEdge(List<Section> sections, WeightedMultigraph<Station, ShortestPathEdge> graph) {
+    private static void addEdge(List<Section> sections, Multigraph<Station, ShortestPathEdge> graph) {
         for (Section section : sections) {
             Line line = section.getLine();
             int distance = section.getDistance();

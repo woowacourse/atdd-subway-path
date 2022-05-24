@@ -76,5 +76,5 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-path/blob/maste
 - [x] Math.ceil 5, 8 int에서 double로 바꾸기
 - [x] Custom exception 합치기 (구체적인것 => 포괄적인것)
 - [x] Exception, RuntimeException 메시지 숨기기
-- [ ] Graph 라이브러리 주입받도록 변경(인터페이스를 선언하고 구현체 주입받기)
+- [x] Graph 라이브러리 주입받도록 변경(인터페이스를 선언하고 구현체 주입받기)
 
