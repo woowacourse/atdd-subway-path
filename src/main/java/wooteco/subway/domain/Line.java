@@ -62,10 +62,6 @@ public class Line {
         return extraFare;
     }
 
-    public void setExtraFare(int extraFare) {
-        this.extraFare = extraFare;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {

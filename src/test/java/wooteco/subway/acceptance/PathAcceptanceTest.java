@@ -53,7 +53,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(실제경로).containsExactly("낙성대", "사당", "방배", "서초"),
                 () -> assertThat(경로응답.getDistance()).isEqualTo(35),
-                () -> assertThat(경로응답.getFare()).isEqualTo(1850)
+                () -> assertThat(경로응답.getFare()).isEqualTo(1750)
         );
     }
 
