@@ -136,10 +136,10 @@ public class LineDaoImpl implements LineDao {
 
     @Override
     public Integer findExtraFareById(Long id) {
-        try{
+        try {
             final String sql = "SELECT extraFare FROM LINE WHERE id = ?";
             return jdbcTemplate.queryForObject(sql, Integer.class, id);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new IllegalArgumentException("해당 라인에 책정된 추가요금이 없습니다. 라인을 다시 저장해주세요.");
         }
     }

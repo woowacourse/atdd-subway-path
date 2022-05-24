@@ -1,8 +1,6 @@
-package wooteco.subway.dto;
+package wooteco.subway.dto.path;
 
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public class PathRequest {

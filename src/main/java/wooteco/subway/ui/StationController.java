@@ -3,8 +3,8 @@ package wooteco.subway.ui;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import wooteco.subway.dto.StationRequest;
-import wooteco.subway.dto.StationResponse;
+import wooteco.subway.dto.section.StationRequest;
+import wooteco.subway.dto.station.StationResponse;
 import wooteco.subway.service.StationService;
 
 import java.net.URI;

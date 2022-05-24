@@ -12,10 +12,10 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.LineRequest;
-import wooteco.subway.dto.LineResponse;
-import wooteco.subway.dto.SectionRequest;
-import wooteco.subway.dto.StationResponse;
+import wooteco.subway.dto.line.LineRequest;
+import wooteco.subway.dto.line.LineResponse;
+import wooteco.subway.dto.section.SectionRequest;
+import wooteco.subway.dto.station.StationResponse;
 import wooteco.subway.exception.EmptyResultException;
 
 import java.util.List;

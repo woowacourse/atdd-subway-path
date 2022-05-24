@@ -1,6 +1,5 @@
 package wooteco.subway.domain.path;
 
-import org.springframework.stereotype.Component;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
 

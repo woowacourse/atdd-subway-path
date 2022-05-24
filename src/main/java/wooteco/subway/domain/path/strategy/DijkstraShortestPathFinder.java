@@ -17,6 +17,18 @@ import java.util.List;
 @Component
 public class DijkstraShortestPathFinder implements PathFinder {
 
+    private static void addVertex(WeightedMultigraph<Station, CustomEdge> graph, List<Station> stations) {
+        for (Station station : stations) {
+            graph.addVertex(station);
+        }
+    }
+
+    private static void addEdge(WeightedMultigraph<Station, CustomEdge> graph, List<Section> sections, Long lineId) {
+        for (Section section : sections) {
+            graph.addEdge(section.getUpStation(), section.getDownStation(), new CustomEdge(lineId, section.getDistance()));
+        }
+    }
+
     @Override
     public Path findShortestPath(Station source, Station target, List<Line> lines) {
         WeightedMultigraph<Station, CustomEdge> graph = new WeightedMultigraph<>(CustomEdge.class);
@@ -37,18 +49,6 @@ public class DijkstraShortestPathFinder implements PathFinder {
 
         for (Line line : lines) {
             addEdge(graph, line.getSections(), line.getId());
-        }
-    }
-
-    private static void addVertex(WeightedMultigraph<Station, CustomEdge> graph, List<Station> stations) {
-        for (Station station : stations) {
-            graph.addVertex(station);
-        }
-    }
-
-    private static void addEdge(WeightedMultigraph<Station, CustomEdge> graph, List<Section> sections, Long lineId) {
-        for (Section section : sections) {
-            graph.addEdge(section.getUpStation(), section.getDownStation(), new CustomEdge(lineId, section.getDistance()));
         }
     }
 

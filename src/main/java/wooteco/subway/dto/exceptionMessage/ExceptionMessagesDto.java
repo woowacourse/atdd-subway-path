@@ -1,4 +1,4 @@
-package wooteco.subway.dto;
+package wooteco.subway.dto.exceptionMessage;
 
 import java.util.List;
 

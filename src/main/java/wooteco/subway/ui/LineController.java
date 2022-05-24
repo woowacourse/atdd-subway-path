@@ -3,9 +3,9 @@ package wooteco.subway.ui;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import wooteco.subway.dto.LineRequest;
-import wooteco.subway.dto.LineResponse;
-import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.dto.line.LineRequest;
+import wooteco.subway.dto.line.LineResponse;
+import wooteco.subway.dto.section.SectionRequest;
 import wooteco.subway.service.LineService;
 
 import java.net.URI;

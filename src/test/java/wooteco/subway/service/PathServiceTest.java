@@ -10,9 +10,9 @@ import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.PathRequest;
-import wooteco.subway.dto.PathResponse;
-import wooteco.subway.dto.StationResponse;
+import wooteco.subway.dto.path.PathRequest;
+import wooteco.subway.dto.path.PathResponse;
+import wooteco.subway.dto.station.StationResponse;
 
 import java.util.List;
 

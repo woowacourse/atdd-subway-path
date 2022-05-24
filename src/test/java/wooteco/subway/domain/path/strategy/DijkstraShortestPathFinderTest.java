@@ -90,7 +90,7 @@ class DijkstraShortestPathFinderTest {
     @Test
     @DisplayName("최단경로 거리의 합이 50km 초과인 경우 경로(1,2,3,8,9), 거리(58)이 반환되어야 한다.")
     void findShortestPath3() {
-        Path path =  pathFinder.findShortestPath(STATION1, STATION9, lines);
+        Path path = pathFinder.findShortestPath(STATION1, STATION9, lines);
 
         assertAll(
                 () -> assertThat(path.getStations())
@@ -102,7 +102,7 @@ class DijkstraShortestPathFinderTest {
     @Test
     @DisplayName("출발역과 도착역이 연결되어있지 않으면 예외를 던져야 한다.")
     void findInvalidPath() {
-        assertThatThrownBy(() ->  pathFinder.findShortestPath(STATION1, STATION10, lines))
+        assertThatThrownBy(() -> pathFinder.findShortestPath(STATION1, STATION10, lines))
                 .hasMessage("출발역과 도착역 사이에 연결된 경로가 없습니다.")
                 .isInstanceOf(EmptyResultException.class);
     }

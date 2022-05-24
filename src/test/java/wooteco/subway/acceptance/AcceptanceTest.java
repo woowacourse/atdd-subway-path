@@ -14,9 +14,9 @@ import wooteco.subway.dao.LineDaoImpl;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.LineRequest;
-import wooteco.subway.dto.SectionRequest;
-import wooteco.subway.dto.StationRequest;
+import wooteco.subway.dto.line.LineRequest;
+import wooteco.subway.dto.section.SectionRequest;
+import wooteco.subway.dto.section.StationRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;

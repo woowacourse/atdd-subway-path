@@ -10,8 +10,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import wooteco.subway.dto.*;
+import wooteco.subway.dto.line.LineRequest;
+import wooteco.subway.dto.path.PathResponse;
+import wooteco.subway.dto.section.SectionRequest;
+import wooteco.subway.dto.section.StationRequest;
+import wooteco.subway.dto.station.StationResponse;
 
 import java.util.*;
 import java.util.stream.Collectors;

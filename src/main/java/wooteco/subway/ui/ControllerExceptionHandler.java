@@ -9,13 +9,12 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import wooteco.subway.dto.ExceptionMessageDto;
-import wooteco.subway.dto.ExceptionMessagesDto;
+import wooteco.subway.dto.exceptionMessage.ExceptionMessageDto;
+import wooteco.subway.dto.exceptionMessage.ExceptionMessagesDto;
 import wooteco.subway.exception.EmptyResultException;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
