@@ -22,7 +22,7 @@ public enum FareByAge {
 
     public static int findFare(final int age, final int fare) {
         return Arrays.stream(values())
-                .filter(value -> value.predicate.test(age))
+                .filter(fareByAge -> fareByAge.predicate.test(age))
                 .findFirst()
                 .orElseThrow(() -> new PositiveDigitException("나이는 음수일 수 없습니다."))
                 .function

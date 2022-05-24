@@ -1,10 +1,8 @@
 package wooteco.subway.domain;
 
-import java.util.List;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
-import wooteco.subway.domain.fare.FareCalculator;
 import wooteco.subway.exception.NotLinkPathException;
 
 public class SubwayGraph {
@@ -35,14 +33,6 @@ public class SubwayGraph {
         }
     }
 
-    public Path findShortestPath(final Station source, final Station target, final int age) {
-        GraphPath<Station, ShortestPathEdge> shortestPath = graphResult(source, target);
-        List<Station> stations = shortestPath.getVertexList();
-        double distance = shortestPath.getWeight();
-        int fare = new FareCalculator(distance).calculateFare(age, 0);
-        return new Path(stations, distance, fare);
-    }
-
     public GraphPath<Station, ShortestPathEdge> graphResult(final Station source, final Station target) {
         DijkstraShortestPath<Station, ShortestPathEdge> pathFinder = new DijkstraShortestPath<>(subwayGraph);
         GraphPath<Station, ShortestPathEdge> path = pathFinder.getPath(source, target);
@@ -50,7 +40,7 @@ public class SubwayGraph {
         return path;
     }
 
-    private void validateSourceToTargetLink(GraphPath<Station, ShortestPathEdge> path) {
+    private void validateSourceToTargetLink(final GraphPath<Station, ShortestPathEdge> path) {
         if (path == null) {
             throw new NotLinkPathException("출발역과 도착역이 연결되어 있지 않습니다.");
         }

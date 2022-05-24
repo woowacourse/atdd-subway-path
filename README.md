@@ -30,4 +30,4 @@
 - [ ] PathService 메서드 분리
 - [ ] 경로 조회 프로세스 책임 분리
 - [ ] 접근 제한자 확인 및 final 선언
-- [ ] Fake 객체를 이용 -> test DB로 이전
+- [x] Fake 객체를 이용 -> test DB로 이전
