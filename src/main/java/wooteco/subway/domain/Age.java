@@ -1,8 +1,8 @@
 package wooteco.subway.domain;
 
 import java.util.Arrays;
-import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 public enum Age {
 
@@ -13,9 +13,9 @@ public enum Age {
     ;
 
     private final Predicate<Integer> ageDiscriminator;
-    private final Function<Integer, Integer> fareCalculator;
+    private final UnaryOperator<Integer> fareCalculator;
 
-    Age(final Predicate<Integer> ageDiscriminator, final Function<Integer, Integer> fareCalculator) {
+    Age(final Predicate<Integer> ageDiscriminator, final UnaryOperator<Integer> fareCalculator) {
         this.ageDiscriminator = ageDiscriminator;
         this.fareCalculator = fareCalculator;
     }
