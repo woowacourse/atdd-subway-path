@@ -1,12 +1,8 @@
 package wooteco.subway.domain.fare;
 
-public class DistanceOverFare extends Decorator {
+import java.util.Arrays;
 
-    private static final int OVER_FARE_DIGIT = 100;
-    private static final int FIRST_OVER_FARE_AREA_THRESHOLD = 10;
-    private static final int FIRST_OVER_FARE_DISTANCE_LIMIT = 5;
-    private static final int SECOND_OVER_FARE_AREA_THRESHOLD = 50;
-    private static final int SECOND_OVER_FARE_DISTANCE_LIMIT = 8;
+public class DistanceOverFare extends Decorator {
 
     private final int distance;
 
@@ -18,30 +14,47 @@ public class DistanceOverFare extends Decorator {
     @Override
     public int calculate() {
         int fare = super.delegate();
-        int firstAreaOverFare = calculateFirstAreaOverFare();
-        int secondAreaOverFare = calculateSecondAreaOverFare();
-        return fare + firstAreaOverFare + secondAreaOverFare;
+        int distanceOverFare = calculateOverFare();
+        return fare + distanceOverFare;
     }
 
-    private int calculateFirstAreaOverFare() {
-        if (distance <= FIRST_OVER_FARE_AREA_THRESHOLD) {
-            return 0;
+    private int calculateOverFare() {
+        return Arrays.stream(DistanceOverFarePolicy.values())
+                .filter(policy -> policy.isApplicableTo(distance))
+                .mapToInt(policy -> policy.toOverFare(distance))
+                .sum();
+    }
+
+    private enum DistanceOverFarePolicy {
+
+        OVER_TEN(10, 50, 5),
+        OVER_FIFTY(50, Integer.MAX_VALUE, 8),
+        ;
+
+        static final int OVER_FARE_AMOUNT = 100;
+
+        final int startExclusive;
+        final int endInclusive;
+        final int limit;
+
+        DistanceOverFarePolicy(int startExclusive, int endInclusive, int limit) {
+            this.startExclusive = startExclusive;
+            this.endInclusive = endInclusive;
+            this.limit = limit;
         }
-        int maxDistance = Math.min(distance, SECOND_OVER_FARE_AREA_THRESHOLD);
-        int overDistance = maxDistance - FIRST_OVER_FARE_AREA_THRESHOLD;
-        return toOverFare(overDistance, FIRST_OVER_FARE_DISTANCE_LIMIT);
-    }
 
-    private int calculateSecondAreaOverFare() {
-        if (distance <= SECOND_OVER_FARE_AREA_THRESHOLD) {
-            return 0;
+        boolean isApplicableTo(int value) {
+            return value > startExclusive;
         }
-        int overDistance = distance - SECOND_OVER_FARE_AREA_THRESHOLD;
-        return toOverFare(overDistance, SECOND_OVER_FARE_DISTANCE_LIMIT);
-    }
 
-    private int toOverFare(int overDistance, int limit) {
-        double overDigit = Math.ceil((overDistance - 1) / limit) + 1;
-        return (int) (overDigit * OVER_FARE_DIGIT);
+        int toOverFare(int distance) {
+            int overDistance = Math.min(distance, endInclusive) - startExclusive;
+            return calculateOverFare(overDistance, limit);
+        }
+
+        int calculateOverFare(int overDistance, int limit) {
+            double overFareDigit = Math.ceil((overDistance - 1) / limit) + 1;
+            return (int) (overFareDigit * OVER_FARE_AMOUNT);
+        }
     }
 }
