@@ -22,4 +22,8 @@ public enum DistanceRange {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("거리는 1 이상의 정수여야 합니다."));
     }
+
+    public int maxDistance() {
+        return maxDistance;
+    }
 }
