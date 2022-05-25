@@ -30,7 +30,7 @@ public enum FareByDistancePolicy {
         return Arrays.stream(values())
                 .filter(it -> it.distanceType.equals(DistanceType.from(distance)))
                 .findFirst()
-                .orElseThrow(() -> new IllegalInputException(""))
+                .orElseThrow(() -> new IllegalInputException("해당하는 거리 타입을 찾을 수 없습니다."))
                 .calculatorFunction.apply(distance);
     }
 
