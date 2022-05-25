@@ -17,8 +17,15 @@ public class Fare {
     }
 
     public static Fare from(final Distance distance, final int extraFare, final int age) {
-        final Fare fareAppliedDistancePolicy = FareByDistancePolicy.apply(distance).add(extraFare);
-        return FareByAgePolicy.from(AgeType.from(age)).applyDiscount(fareAppliedDistancePolicy);
+        return FareByDistancePolicy.apply(distance)
+                .add(extraFare)
+                .applyAgePolicy(age);
+    }
+
+    private Fare applyAgePolicy(final int age) {
+        return FareByAgePolicy.from(AgeType.from(age))
+                .applyDiscount(this);
+
     }
 
     private void validateFareValue(final int value) {
