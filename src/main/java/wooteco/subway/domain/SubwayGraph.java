@@ -6,6 +6,7 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.domain.fare.SubwayFare;
+import wooteco.subway.domain.path.ShortestPath;
 
 public class SubwayGraph {
 
@@ -15,19 +16,12 @@ public class SubwayGraph {
         this.subwayMap = create(new ArrayList<>(sections));
     }
 
-    public List<Station> getShortestRoute(Station source, Station target) {
-        GraphPath<Station, LineWeightedEdge> result = getShortestPath(source, target);
-        validateRoute(result);
-        return result.getVertexList();
-    }
-
-    public int getShortestDistance(Station source, Station target) {
-        GraphPath<Station, LineWeightedEdge> path = this.subwayMap.getPath(source, target);
-        return (int) path.getWeight();
+    public ShortestPath getShortestPath(Station source, Station target) {
+        return new ShortestPath(shortestPath(source, target));
     }
 
     public SubwayFare getFare(Station source, Station target) {
-        return new SubwayFare(subwayMap.getPath(source, target));
+        return new SubwayFare(shortestPath(source, target));
     }
 
     private DijkstraShortestPath<Station, LineWeightedEdge> create(List<Section> sections) {
@@ -46,17 +40,11 @@ public class SubwayGraph {
         return new DijkstraShortestPath<>(subwayMap);
     }
 
-    private GraphPath<Station, LineWeightedEdge> getShortestPath(Station source, Station target) {
+    private GraphPath<Station, LineWeightedEdge> shortestPath(Station source, Station target) {
         try {
             return subwayMap.getPath(source, target);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("존재하지 않는 역입니다.");
-        }
-    }
-
-    private void validateRoute(GraphPath<Station, LineWeightedEdge> route) {
-        if (route == null) {
-            throw new IllegalArgumentException("해당 경로가 존재하지 않습니다.");
         }
     }
 

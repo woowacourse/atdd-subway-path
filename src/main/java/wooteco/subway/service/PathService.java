@@ -8,6 +8,7 @@ import wooteco.subway.domain.Station;
 import wooteco.subway.domain.SubwayGraph;
 import wooteco.subway.domain.fare.SubwayFare;
 import wooteco.subway.domain.fare.vo.Age;
+import wooteco.subway.domain.path.ShortestPath;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
 import wooteco.subway.service.dto.request.PathsRequest;
@@ -37,10 +38,12 @@ public class PathService {
             List<Section> sections, Station source, Station target, Age age
     ) {
         SubwayGraph subwayGraph = new SubwayGraph(sections);
-        List<Station> route = subwayGraph.getShortestRoute(source, target);
-        int distance = subwayGraph.getShortestDistance(source, target);
+        ShortestPath shortestPath = subwayGraph.getShortestPath(source, target);
+
+        List<Station> shortestRoute = shortestPath.getShortestRoute();
+        int distance = shortestPath.getShortestDistance();
         SubwayFare fare = subwayGraph.getFare(source, target);
-        return new PathResponse(toStationResponse(route), distance, fare.calculate(age));
+        return new PathResponse(toStationResponse(shortestRoute), distance, fare.calculate(age));
     }
 
     private List<StationResponse> toStationResponse(List<Station> route) {

@@ -33,6 +33,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import wooteco.subway.domain.fare.SubwayFare;
 import wooteco.subway.domain.fare.vo.Age;
+import wooteco.subway.domain.path.ShortestPath;
 
 public class SubwayGraphTest {
 
@@ -45,9 +46,9 @@ public class SubwayGraphTest {
     void route() {
         SubwayGraph graph = new SubwayGraph(List.of(강남_삼성, 삼성_건대, 건대_성수, 왕십리_합정, 합정_성수, 성수_강남));
 
-        List<Station> route = graph.getShortestRoute(삼성, 성수);
+        ShortestPath shortestPath = graph.getShortestPath(삼성, 성수);
 
-        assertThat(route).containsExactly(삼성, 강남, 성수);
+        assertThat(shortestPath.getShortestRoute()).containsExactly(삼성, 강남, 성수);
     }
 
     /*
@@ -59,9 +60,9 @@ public class SubwayGraphTest {
     void distance() {
         SubwayGraph graph = new SubwayGraph(List.of(강남_삼성, 삼성_건대, 건대_성수, 왕십리_합정, 합정_성수, 성수_강남));
 
-        int distance = graph.getShortestDistance(삼성, 성수);
+        ShortestPath shortestPath = graph.getShortestPath(삼성, 성수);
 
-        assertThat(distance).isEqualTo(20);
+        assertThat(shortestPath.getShortestDistance()).isEqualTo(20);
     }
 
     @Test
@@ -90,7 +91,7 @@ public class SubwayGraphTest {
         List<Section> 구간들 = List.of(강남_삼성, 삼성_건대, 건대_성수, 왕십리_합정, 합정_성수, 성수_강남, 창동_당고개);
         SubwayGraph subwayGraph = new SubwayGraph(구간들);
 
-        assertThatThrownBy(() -> subwayGraph.getShortestRoute(강남, 창동))
+        assertThatThrownBy(() -> subwayGraph.getShortestPath(강남, 창동))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("해당 경로가 존재하지 않습니다.");
     }
@@ -101,7 +102,7 @@ public class SubwayGraphTest {
         List<Section> 구간들 = List.of(강남_삼성, 삼성_건대, 건대_성수, 왕십리_합정, 합정_성수, 성수_강남);
         SubwayGraph subwayGraph = new SubwayGraph(구간들);
 
-        assertThatThrownBy(() -> subwayGraph.getShortestRoute(강남, 창동))
+        assertThatThrownBy(() -> subwayGraph.getShortestPath(강남, 창동))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하지 않는 역입니다.");
     }
