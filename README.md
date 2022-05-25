@@ -12,8 +12,28 @@
 
 > 우아한테크코스 웹 백엔드 4기, 지하철 경로 조회 저장소입니다.
 
+## 지하철역 조회, 생성, 삭제
+
 <p align="center">
-    <img src="./subway-path-operation.gif" alt="subway-path-operation" width="500px">
+    <img src="./station-operation.gif" alt="station-operation">
+</p>
+
+## 노선 조회, 생성, 수정, 삭제
+
+<p align="center">
+    <img src="./line-operation.gif" alt="line-operation">
+</p>
+
+## 구간 조회, 생성, 수정, 삭제
+
+<p align="center">
+    <img src="./section-operation.gif" alt="section-operation">
+</p>
+
+## 출발지->도착지 설정을 통한 경로 및 거리, 연령별 요금 조회
+
+<p align="center">
+    <img src="./path-operation.gif" alt="path-operation">
 </p>
 
 <br>
