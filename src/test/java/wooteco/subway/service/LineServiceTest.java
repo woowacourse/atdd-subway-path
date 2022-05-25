@@ -56,13 +56,24 @@ class LineServiceTest extends DBTest {
         );
     }
 
-    @DisplayName("같은 이름의 노선을 저장하는 경우 예외가 발생한다.")
+    @DisplayName("같은 이름의 노선을 저장하는 경우 예외를 발생시킨다.")
     @Test
     void save_exception_duplicatedName() {
         lineService.save(lineCreationServiceRequest);
 
         assertThatThrownBy(() -> lineService.save(lineCreationServiceRequest))
                 .isInstanceOf(DuplicateKeyException.class);
+    }
+
+    @DisplayName("노선의 추가 요금이 100원 보다 적다면 예외를 발생시킨다.")
+    @Test
+    void create_exception_extraFareLowerThanMinValue() {
+        LineCreationServiceRequest lineCreationServiceRequest = new LineCreationServiceRequest(
+                "2호선", "green", upStation.getId(), downStation.getId(), 10, 99);
+
+        assertThatThrownBy(() -> lineService.save(lineCreationServiceRequest))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("최소 추가 금액은 100원입니다.");
     }
 
     @DisplayName("모든 지하철 노선을 조회한다.")

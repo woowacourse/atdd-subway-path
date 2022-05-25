@@ -1,6 +1,5 @@
 package wooteco.subway.ui.dto;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import wooteco.subway.service.dto.LineCreationServiceRequest;
@@ -18,10 +17,8 @@ public class LineCreationRequest {
     @NotNull(message = "노선의 하행역" + OMISSION_MESSAGE)
     private Long downStationId;
     @NotNull(message = "노선의 거리 값" + OMISSION_MESSAGE)
-    @Min(value = 1, message = "노선의 거리 값" + OMISSION_MESSAGE)
     private Integer distance;
     @NotNull(message = "추가 요금 값" + OMISSION_MESSAGE)
-    @Min(value = 1, message = "추가 요금 값" + OMISSION_MESSAGE)
     private Integer extraFare;
 
     public LineCreationRequest() {

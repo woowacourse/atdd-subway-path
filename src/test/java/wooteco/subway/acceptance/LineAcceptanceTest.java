@@ -83,18 +83,58 @@ class LineAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    @DisplayName("노선을 생성하는데 필요한 정보 중 하나라도 유효하지 않을 시에 badRequest를 응답한다.")
+    @DisplayName("노선을 생성하는데 필요한 정보 중 null 혹은 빈 문자열이 하나라도 존재할 경우에 badRequest를 응답한다.")
     @ParameterizedTest
     @MethodSource("provideNotInvalidCreationSource")
     void createLine_badRequest_InvalidResource(String name, String color, Long upStationId, Long downStationId,
                                                Integer distance, Integer extraFare) {
         ExtractableResponse<Response> response =
                 requestToCreateLine(name, color, upStationId, downStationId, distance, extraFare);
-        ExceptionResponse exceptionResponse = response.jsonPath().getObject(".", ExceptionResponse.class);
+        ExceptionResponse exceptionResponse = response.jsonPath()
+                .getObject(".", ExceptionResponse.class);
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
                 () -> assertThat(exceptionResponse.getErrorMessage()).contains("이(가) 유효하지 않습니다.")
+        );
+    }
+
+    @DisplayName("노선을 생성하는데 상행역과 하행역의 거리가 1 미만이라면 badRequest를 응답한다.")
+    @Test
+    void createLine_badRequest_lowerThanOneDistance() {
+        // given
+        Integer invalidDistance = 0;
+
+        // when
+        ExtractableResponse<Response> response =
+                requestToCreateLine(LINE_NAME, LINE_COLOR,
+                        stationResponse1.getId(), stationResponse2.getId(), invalidDistance, LINE_EXTRA_FARE);
+        ExceptionResponse exceptionResponse = response.jsonPath()
+                .getObject(".", ExceptionResponse.class);
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(exceptionResponse.getErrorMessage()).isEqualTo("역간의 거리는 1 이상이어야 합니다.")
+        );
+    }
+
+    @DisplayName("노선 추가 요금이 100원 미만이라면 badRequest를 응답한다.")
+    @Test
+    void create_badRequest_extraFareLowerThanMinValue() {
+        //given
+        Integer invalidExtraFare = 99;
+
+        //when
+        ExtractableResponse<Response> response = requestToCreateLine(LINE_NAME, LINE_COLOR,
+                stationResponse1.getId(), stationResponse2.getId(), LINE_DISTANCE, invalidExtraFare);
+        ExceptionResponse exceptionResponse = response.jsonPath()
+                .getObject(".", ExceptionResponse.class);
+
+        //then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(exceptionResponse.getErrorMessage()).isEqualTo("최소 추가 금액은 100원입니다.")
         );
     }
 
@@ -295,9 +335,7 @@ class LineAcceptanceTest extends AcceptanceTest {
                 Arguments.of(LINE_NAME, LINE_COLOR, null, 2L, LINE_DISTANCE, LINE_EXTRA_FARE),
                 Arguments.of(LINE_NAME, LINE_COLOR, 1L, null, LINE_DISTANCE, LINE_EXTRA_FARE),
                 Arguments.of(LINE_NAME, LINE_COLOR, 1L, 2L, null, LINE_EXTRA_FARE),
-                Arguments.of(LINE_NAME, LINE_COLOR, 1L, 2L, 0, LINE_EXTRA_FARE),
-                Arguments.of(LINE_NAME, LINE_COLOR, 1L, 2L, LINE_DISTANCE, null),
-                Arguments.of(LINE_NAME, LINE_COLOR, 1L, 2L, LINE_DISTANCE, 0)
+                Arguments.of(LINE_NAME, LINE_COLOR, 1L, 2L, LINE_DISTANCE, null)
         );
     }
 
