@@ -14,6 +14,7 @@ import wooteco.subway.exception.DataNotFoundException;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class SectionService {
 
     private final SectionDao sectionDao;
@@ -50,13 +51,6 @@ public class SectionService {
         sections.remove(stationId);
         sectionDao.deleteByLineId(lineId);
         sectionDao.saveAll(sections.getSections());
-    }
-
-    @Transactional(readOnly = true)
-    public List<Station> getStationsByLine(final long lineId) {
-        final List<Section> lineSections = sectionDao.findAllByLineId(lineId);
-        final Sections sections = new Sections(lineSections);
-        return sections.extractStations();
     }
 
     private Station findStationById(final Station station) {

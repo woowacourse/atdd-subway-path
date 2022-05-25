@@ -15,6 +15,7 @@ import wooteco.subway.service.dto.PathServiceRequest;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class PathService {
 
     private final StationDao stationDao;
@@ -27,7 +28,6 @@ public class PathService {
         this.strategy = strategy;
     }
 
-    @Transactional(readOnly = true)
     public PathResponse createPath(final PathServiceRequest request) {
         final Long sourceId = request.getSource();
         final Long targetId = request.getTarget();

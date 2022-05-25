@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class LineService {
 
     private final LineDao lineDao;
@@ -48,7 +49,6 @@ public class LineService {
         return LineResponse.from(savedLine, getStationsByLine(savedLine.getId()));
     }
 
-    @Transactional(readOnly = true)
     public List<LineResponse> getAllLines() {
         final List<Line> lines = lineDao.findAll();
 
@@ -57,14 +57,12 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
     public LineResponse getLineById(final Long id) {
         final Line line = findLineById(id);
 
         return LineResponse.from(line, getStationsByLine(line.getId()));
     }
 
-    @Transactional(readOnly = true)
     public List<Station> getStationsByLine(final long lineId) {
         final List<Section> lineSections = sectionDao.findAllByLineId(lineId);
         final Sections sections = new Sections(lineSections);
