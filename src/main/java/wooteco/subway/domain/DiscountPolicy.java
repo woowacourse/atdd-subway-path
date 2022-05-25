@@ -3,7 +3,7 @@ package wooteco.subway.domain;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
-public enum AgePolicy {
+public enum DiscountPolicy {
     INFANT(age -> 0 <= age && age < 6, 0, 0),
     CHILD(age -> 6 <= age && age < 13, 350, 0.5),
     TEEN(age -> 13 <= age && age < 19, 350, 0.8),
@@ -14,14 +14,14 @@ public enum AgePolicy {
     private int deductibleFare;
     private double fareRatio;
 
-    AgePolicy(Predicate<Integer> predicate, int deductibleFare, double fareRatio) {
+    DiscountPolicy(Predicate<Integer> predicate, int deductibleFare, double fareRatio) {
         this.predicate = predicate;
         this.deductibleFare = deductibleFare;
         this.fareRatio = fareRatio;
     }
 
     public static int calculateFareByAge(int age, int fare) {
-        AgePolicy agePolicy = Arrays.stream(values())
+        DiscountPolicy agePolicy = Arrays.stream(values())
                 .filter(policy -> policy.predicate.test(age))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("올바르지 않은 나이입니다."));

@@ -2,7 +2,7 @@ package wooteco.subway.domain;
 
 import java.util.Arrays;
 
-public enum FarePolicy {
+public enum ExtraFarePolicy {
     DEFAULT_DISTANCE(0, 10, 1, 0, 1250),
     FIRST_EXTRA_DISTANCE(10, 50, 5, 100, 0),
     SECOND_EXTRA_DISTANCE(50, Integer.MAX_VALUE, 8, 100, 0);
@@ -14,8 +14,8 @@ public enum FarePolicy {
     private int basicFare;
 
     public static int findFare(double distance) {
-        return Arrays.stream(FarePolicy.values())
-                .mapToInt(farePolicy -> farePolicy.calculate(distance))
+        return Arrays.stream(ExtraFarePolicy.values())
+                .mapToInt(extraFarePolicy -> extraFarePolicy.calculate(distance))
                 .sum();
     }
 
@@ -37,7 +37,7 @@ public enum FarePolicy {
         return distance < lowerDistance;
     }
 
-    FarePolicy(int lowerDistance, int upperDistance, int perKm, int perFare, int basicFare) {
+    ExtraFarePolicy(int lowerDistance, int upperDistance, int perKm, int perFare, int basicFare) {
         this.lowerDistance = lowerDistance;
         this.upperDistance = upperDistance;
         this.perKm = perKm;

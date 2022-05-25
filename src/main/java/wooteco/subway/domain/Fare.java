@@ -1,7 +1,6 @@
 package wooteco.subway.domain;
 
 import java.util.List;
-import java.util.Optional;
 
 public class Fare {
 
@@ -9,13 +8,13 @@ public class Fare {
 
     public static int chargeFare(Path path, int age) {
         double distance = path.calculateShortestDistance();
-        int fare = FarePolicy.findFare(distance);
+        int fare = ExtraFarePolicy.findFare(distance);
 
         return calculateFareByAge(age, fare + findExtraLineFare(path));
     }
 
     private static int calculateFareByAge(int age, int fare) {
-        return AgePolicy.calculateFareByAge(age, fare);
+        return DiscountPolicy.calculateFareByAge(age, fare);
     }
 
     private static int findExtraLineFare(Path path) {
