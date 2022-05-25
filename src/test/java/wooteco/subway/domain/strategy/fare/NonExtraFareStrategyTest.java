@@ -16,5 +16,4 @@ class NonExtraFareStrategyTest {
 
         assertThat(extraFare).isEqualTo(0);
     }
-
 }

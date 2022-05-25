@@ -23,12 +23,9 @@ public class LineRepository {
     }
 
     public Optional<Line> findById(Long id) {
-        LineEntity lineEntity = lineDao.findById(id).orElse(null);
-        if (lineEntity == null) {
-            return Optional.ofNullable(null);
-        }
-        return Optional.of(new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(),
-                lineEntity.getExtraFare()));
+        return lineDao.findById(id)
+                .map(entity -> new Line(entity.getId(), entity.getName(), entity.getColor(),
+                        entity.getExtraFare()));
     }
 
     public List<Line> findAll() {

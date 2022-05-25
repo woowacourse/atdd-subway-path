@@ -23,16 +23,15 @@ public class StationRepository {
     }
 
     public Optional<Station> findById(Long id) {
-        StationEntity stationEntity = stationDao.findById(id).orElse(null);
-        if (stationEntity == null) {
-            return Optional.ofNullable(null);
-        }
-        return Optional.ofNullable(new Station(stationEntity.getId(), stationEntity.getName()));
+        return stationDao.findById(id)
+                .map(entity -> new Station(entity.getId(), entity.getName()));
     }
 
     public List<Station> findAll() {
         List<StationEntity> list = stationDao.findAll();
-        return list.stream().map(entity -> new Station(entity.getId(), entity.getName())).collect(toList());
+        return list.stream()
+                .map(entity -> new Station(entity.getId(), entity.getName()))
+                .collect(toList());
     }
 
     public void deleteById(Long id) {

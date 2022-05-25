@@ -61,7 +61,8 @@ public class SectionRepository {
 
     private Station findStation(Long id, String message) {
         StationEntity stationEntity = stationDao
-                .findById(id).orElseThrow(() -> new NotFoundException(message));
+                .findById(id)
+                .orElseThrow(() -> new NotFoundException(message));
         return new Station(stationEntity.getId(), stationEntity.getName());
     }
 
