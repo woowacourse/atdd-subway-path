@@ -147,7 +147,7 @@ class LineServiceTest {
         long lineId = lineResponse.getId();
 
         // when
-        lineService.update(lineId, new LineUpdateRequest("다른분당선", "bg-green-600"));
+        lineService.update(lineId, new LineUpdateRequest("다른분당선", "bg-green-600", 0));
 
         // then
         List<String> lineNames = lineService.findAll().stream()
@@ -165,7 +165,7 @@ class LineServiceTest {
         long lineId = lineResponse.getId();
 
         // when & then
-        assertThatThrownBy(() -> lineService.update(lineId, new LineUpdateRequest("신분당선", "bg-green-600")))
+        assertThatThrownBy(() -> lineService.update(lineId, new LineUpdateRequest("신분당선", "bg-green-600", 0)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("지하철 노선 이름이 중복됩니다.");
     }
@@ -178,7 +178,7 @@ class LineServiceTest {
         long lineId = lineResponse.getId();
 
         // when & then
-        assertThatThrownBy(() -> lineService.update(lineId, new LineUpdateRequest("다른분당선", "bg-red-600")))
+        assertThatThrownBy(() -> lineService.update(lineId, new LineUpdateRequest("다른분당선", "bg-red-600", 0)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("지하철 노선 색상이 중복됩니다.");
     }
@@ -187,7 +187,7 @@ class LineServiceTest {
     @Test
     void updateNotExistLine() {
         // when & then
-        assertThatThrownBy(() -> lineService.update(1L, new LineUpdateRequest("다른분당선", "bg-green-600")))
+        assertThatThrownBy(() -> lineService.update(1L, new LineUpdateRequest("다른분당선", "bg-green-600", 0)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하지 않는 지하철 노선입니다.");
     }
