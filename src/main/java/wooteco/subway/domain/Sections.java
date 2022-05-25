@@ -96,21 +96,21 @@ public class Sections {
         insertAtDownStation(newSection, foundSection);
     }
 
-    private void insertAtUpStation(Section newSection, Section foundSection) {
+    private void insertAtUpStation(final Section newSection, final Section foundSection) {
         Station newUpStation = newSection.getDownStation();
         Station newDownStation = foundSection.getDownStation();
         foundSection.updateSection(newUpStation, newDownStation, newSection.getDistance());
         values.add(newSection);
     }
 
-    private void insertAtDownStation(Section newSection, Section foundSection) {
+    private void insertAtDownStation(final Section newSection, final Section foundSection) {
         Station newUpStation = foundSection.getUpStation();
         Station newDownStation = newSection.getUpStation();
         foundSection.updateSection(newUpStation, newDownStation, newSection.getDistance());
         values.add(newSection);
     }
 
-    private void validateCutInDistance(Section section, Section foundSection) {
+    private void validateCutInDistance(final Section section, final Section foundSection) {
         if (!foundSection.isLongerThan(section.getDistance())) {
             throw new SectionCreateException(SECTION_MUST_SHORTER_MESSAGE);
         }
