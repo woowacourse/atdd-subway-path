@@ -157,8 +157,7 @@ class LineRepositoryTest extends DatabaseUsageTest {
             Line actualLine = lineDao.findById(1L).get();
             List<Section> actualSections = sectionDao.findAll();
             Line expectedLine = new Line(1L, "노선", "색상", 300);
-            List<Section> expectedSections = List.of(
-                    new Section(1L, 강남역, 잠실역, 10));
+            List<Section> expectedSections = List.of(new Section(1L, 강남역, 잠실역, 10));
 
             assertThat(actualLine).isEqualTo(expectedLine);
             assertThat(actualSections).isEqualTo(expectedSections);
@@ -168,8 +167,10 @@ class LineRepositoryTest extends DatabaseUsageTest {
     @Test
     void updateLine_메서드는_노선_정보를_수정() {
         databaseFixtureUtils.saveLine("기존 노선명", "색상", 200);
+        databaseFixtureUtils.saveSection(1L, 강남역, 선릉역, 10);
 
-        repository.updateLine(new Line(1L, "새로운 노선명", "새로운 색상", 0));
+        repository.updateLine(LineMap.of(new Line(1L, "새로운 노선명", "새로운 색상", 0),
+                new Section(1L, 강남역, 선릉역, 10)));
         Line actual = lineDao.findById(1L).get();
         Line expected = new Line(1L, "새로운 노선명", "새로운 색상", 0);
 

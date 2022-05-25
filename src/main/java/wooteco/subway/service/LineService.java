@@ -12,8 +12,6 @@ import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.request.CreateLineRequest;
 import wooteco.subway.dto.request.UpdateLineRequest;
 import wooteco.subway.dto.response.LineResponse;
-import wooteco.subway.exception.ExceptionType;
-import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
@@ -59,23 +57,18 @@ public class LineService {
 
     @Transactional
     public void update(Long id, UpdateLineRequest lineRequest) {
+        LineMap line = lineRepository.findExistingLine(id);
         String name = lineRequest.getName();
-        validateExistingLine(id);
         validateUniqueLineName(name);
-        lineRepository.updateLine(new Line(id, name, lineRequest.getColor(), lineRequest.getExtraFare()));
+
+        Line updatedLine = new Line(id, name, lineRequest.getColor(), lineRequest.getExtraFare());
+        lineRepository.updateLine(new LineMap(updatedLine, line.getSections()));
     }
 
     @Transactional
     public void delete(Long id) {
         LineMap line = lineRepository.findExistingLine(id);
         lineRepository.deleteLine(line);
-    }
-
-    private void validateExistingLine(Long id) {
-        boolean isExistingLine = lineRepository.checkExistingLine(id);
-        if (!isExistingLine) {
-            throw new NotFoundException(ExceptionType.LINE_NOT_FOUND);
-        }
     }
 
     private void validateUniqueLineName(String name) {

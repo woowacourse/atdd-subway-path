@@ -182,7 +182,9 @@ class LineServiceTest extends DatabaseUsageTest {
 
         @Test
         void 유효한_입력인_경우_성공() {
+            databaseFixtureUtils.saveStations(강남역, 선릉역);
             databaseFixtureUtils.saveLine("노선1", "색깔", 100);
+            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역, 10);
 
             service.update(1L, generateUpdateLineRequest("수정된 노선명", "수정된 색깔", 300));
             Line actual = lineDao.findById(1L).get();
@@ -201,8 +203,11 @@ class LineServiceTest extends DatabaseUsageTest {
 
         @Test
         void 중복되는_노선명으로_수정하려는_경우_예외발생() {
+            databaseFixtureUtils.saveStations(강남역, 선릉역, 잠실역);
             databaseFixtureUtils.saveLine("존재하는 노선명", "색깔");
             databaseFixtureUtils.saveLine("현재 노선명", "색깔");
+            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역, 10);
+            databaseFixtureUtils.saveSection(2L, 강남역, 잠실역, 10);
 
             UpdateLineRequest duplicateLineNameRequest = generateUpdateLineRequest(
                     "존재하는 노선명", "새로운 색깔", 300);
@@ -212,7 +217,9 @@ class LineServiceTest extends DatabaseUsageTest {
 
         @Test
         void 추가비용이_0미만인_경우_예외발생() {
+            databaseFixtureUtils.saveStations(강남역, 선릉역);
             databaseFixtureUtils.saveLine("현재 노선명", "색깔");
+            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역, 10);
 
             UpdateLineRequest negativeExtraFareRequest = generateUpdateLineRequest(
                     "유효한 노선명", "색깔", -1);

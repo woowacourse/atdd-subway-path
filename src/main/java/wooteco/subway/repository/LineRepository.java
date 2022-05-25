@@ -56,7 +56,7 @@ public class LineRepository {
         return LineMap.of(savedLine, section);
     }
 
-    public void updateLine(Line line) {
+    public void updateLine(LineMap line) {
         Long id = line.getId();
         String name = line.getName();
         String color = line.getColor();

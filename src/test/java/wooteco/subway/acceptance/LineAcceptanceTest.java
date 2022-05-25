@@ -188,7 +188,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         @Test
         void 성공시_200_OK() {
+            databaseFixtureUtils.saveStations(강남역, 선릉역);
             databaseFixtureUtils.saveLine("신분당선", "노란색", 0);
+            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역, 10);
             Map<String, Object> params = jsonLineOf("NEW 분당선", "bg-red-800", 900);
 
             ExtractableResponse<Response> response = HttpUtils.send(HttpMethod.PUT, toPath(1L), params);
@@ -207,8 +209,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         @Test
         void 이미_존재하는_지하철_노선_이름으로_수정시_400_BAD_REQUEST() {
+            databaseFixtureUtils.saveStations(강남역, 선릉역);
             databaseFixtureUtils.saveLine("현재 노선명", "노란색", 1000);
             databaseFixtureUtils.saveLine("존재하는 노선명", "노란색", 1000);
+            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역);
+            databaseFixtureUtils.saveSection(2L, 강남역, 선릉역);
             Map<String, Object> duplicateNameParams = jsonLineOf("존재하는 노선명", "bg-red-600", 100);
 
             ExtractableResponse<Response> response = HttpUtils.send(HttpMethod.PUT, toPath(2L), duplicateNameParams);
