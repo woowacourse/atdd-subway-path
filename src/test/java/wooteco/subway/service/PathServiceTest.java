@@ -12,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import wooteco.subway.acceptance.DBTest;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.DijkstraPath;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.service.dto.LineCreationServiceRequest;
@@ -63,7 +62,7 @@ class PathServiceTest extends DBTest {
                 "3호선", "orange", station2.getId(), station4.getId(), 4, 300);
         lineService.save(secondLineRequest);
         PathServiceRequest pathServiceRequest = new PathServiceRequest(station1.getId(), station4.getId(), 10);
-        PathServiceResponse pathServiceResponse = pathService.findShortestPath(pathServiceRequest, DijkstraPath::new);
+        PathServiceResponse pathServiceResponse = pathService.findShortestPath(pathServiceRequest);
 
         assertAll(
                 () -> assertThat(pathServiceResponse.getStations()).containsExactly(station1, station2, station4),
@@ -80,7 +79,7 @@ class PathServiceTest extends DBTest {
         lineService.save(secondLineRequest);
         PathServiceRequest pathServiceRequest = new PathServiceRequest(station1.getId(), station5.getId(), 10);
 
-        assertThatThrownBy(() -> pathService.findShortestPath(pathServiceRequest, DijkstraPath::new))
+        assertThatThrownBy(() -> pathService.findShortestPath(pathServiceRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("구간에 등록 되지 않은 역입니다.");
     }
@@ -93,7 +92,7 @@ class PathServiceTest extends DBTest {
         lineService.save(secondLineRequest);
         PathServiceRequest pathServiceRequest = new PathServiceRequest(station1.getId(), station5.getId(), 10);
 
-        assertThatThrownBy(() -> pathService.findShortestPath(pathServiceRequest, DijkstraPath::new))
+        assertThatThrownBy(() -> pathService.findShortestPath(pathServiceRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("연결되지 않은 구간입니다.");
     }
@@ -108,7 +107,7 @@ class PathServiceTest extends DBTest {
         PathServiceRequest pathServiceRequest =
                 new PathServiceRequest(station1.getId(), station4.getId(), invalidAgeValue);
 
-        assertThatThrownBy(() -> pathService.findShortestPath(pathServiceRequest, DijkstraPath::new))
+        assertThatThrownBy(() -> pathService.findShortestPath(pathServiceRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("나이는 1살 보다 어릴 수 없습니다.");
     }

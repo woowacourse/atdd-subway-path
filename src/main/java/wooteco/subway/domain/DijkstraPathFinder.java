@@ -9,24 +9,24 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
 
-public class DijkstraPath implements Path {
-
-    private final List<Section> sections;
-
-    public DijkstraPath(final List<Section> sections) {
-        this.sections = sections;
-    }
+@Component
+public class DijkstraPathFinder implements PathFinder {
 
     @Override
-    public List<Long> getShortestPathStationIds(long departureId, long arrivalId) {
-        return findShortestPath(departureId, arrivalId).getVertexList();
+    public Path getShortestPath(List<Section> sections, long departureId, long arrivalId) {
+        GraphPath graphPath = findShortestPath(sections, departureId, arrivalId);
+        List<Long> stationIds = graphPath.getVertexList();
+        int distance = (int) graphPath.getWeight();
+        List<Long> lineIds = getShortestPathLineIds(graphPath);
+        return new Path(stationIds, distance, lineIds);
     }
 
-    private GraphPath findShortestPath(long departureId, long arrivalId) {
+    private GraphPath findShortestPath(List<Section> sections, long departureId, long arrivalId) {
         WeightedMultigraph<Long, LineEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        addStationVertex(graph);
-        addSectionEdge(graph);
+        addStationVertex(sections, graph);
+        addSectionEdge(sections, graph);
         GraphPath path = getGraphPath(departureId, arrivalId, graph);
         validateConnection(path);
         return path;
@@ -48,13 +48,13 @@ public class DijkstraPath implements Path {
         }
     }
 
-    private void addStationVertex(WeightedMultigraph<Long, LineEdge> graph) {
-        for (long stationId : getAllStationIds()) {
+    private void addStationVertex(List<Section> sections, WeightedMultigraph<Long, LineEdge> graph) {
+        for (long stationId : getAllStationIds(sections)) {
             graph.addVertex(stationId);
         }
     }
 
-    private List<Long> getAllStationIds() {
+    private List<Long> getAllStationIds(List<Section> sections) {
         Set<Long> stationIds = new HashSet<>();
         for (Section section : sections) {
             stationIds.add(section.getUpStationId());
@@ -63,7 +63,7 @@ public class DijkstraPath implements Path {
         return new ArrayList<>(stationIds);
     }
 
-    private void addSectionEdge(WeightedMultigraph<Long, LineEdge> graph) {
+    private void addSectionEdge(List<Section> sections, WeightedMultigraph<Long, LineEdge> graph) {
         for (Section section : sections) {
             int distance = section.getDistance();
             long lineId = section.getLineId();
@@ -71,16 +71,11 @@ public class DijkstraPath implements Path {
         }
     }
 
-    @Override
-    public int getShortestPathDistance(long departureId, long arrivalId) {
-        return (int) findShortestPath(departureId, arrivalId).getWeight();
-    }
-
-    @Override
-    public List<Long> getShortestPathLineIds(long departureId, long arrivalId) {
-        List<LineEdge> edges = findShortestPath(departureId, arrivalId).getEdgeList();
+    private List<Long> getShortestPathLineIds(GraphPath graphPath) {
+        List<LineEdge> edges = graphPath.getEdgeList();
         return edges.stream()
                 .map(LineEdge::getLindId)
+                .distinct()
                 .collect(Collectors.toList());
     }
 }

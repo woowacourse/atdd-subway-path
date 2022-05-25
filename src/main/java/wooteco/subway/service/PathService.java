@@ -1,12 +1,12 @@
 package wooteco.subway.service;
 
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.Age;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
+import wooteco.subway.domain.PathFinder;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.service.dto.PathServiceRequest;
@@ -18,42 +18,37 @@ public class PathService {
     private final StationService stationService;
     private final SectionService sectionService;
     private final LineService lineService;
+    private final PathFinder pathFinder;
 
-    public PathService(StationService stationService, SectionService sectionService, LineService lineService) {
+    public PathService(StationService stationService, SectionService sectionService,
+                       LineService lineService, PathFinder pathFinder) {
         this.stationService = stationService;
         this.sectionService = sectionService;
         this.lineService = lineService;
+        this.pathFinder = pathFinder;
     }
 
-    public PathServiceResponse findShortestPath(PathServiceRequest pathServiceRequest,
-                                                Function<List<Section>, Path> pathStrategy) {
-        Path path = pathStrategy.apply(sectionService.findAll().getSections());
-        List<Long> shortestPathStationIds = findShortestPathStationIds(path, pathServiceRequest);
-        List<Station> stations = findShortestPathStationIds(shortestPathStationIds);
-        int distance =
-                path.getShortestPathDistance(pathServiceRequest.getDepartureId(), pathServiceRequest.getArrivalId());
-        int fare = calculateFare(path, distance, pathServiceRequest);
+    public PathServiceResponse findShortestPath(PathServiceRequest pathServiceRequest) {
+        List<Section> sections = sectionService.findAll()
+                .getSections();
+        Path path = pathFinder
+                .getShortestPath(sections, pathServiceRequest.getDepartureId(), pathServiceRequest.getArrivalId());
+        List<Station> stations = findShortestPathStations(path.getStationIds());
+        int distance = path.getDistance();
+        Age age = new Age(pathServiceRequest.getAge());
+        int fare = calculateFare(path, distance, age.getValue());
         return new PathServiceResponse(stations, distance, fare);
     }
 
-    private List<Long> findShortestPathStationIds(Path path, PathServiceRequest pathServiceRequest) {
-        long departureId = pathServiceRequest.getDepartureId();
-        long arrivalId = pathServiceRequest.getArrivalId();
-        return path.getShortestPathStationIds(departureId, arrivalId);
-    }
-
-    private List<Station> findShortestPathStationIds(List<Long> shortestPathStationIds) {
+    private List<Station> findShortestPathStations(List<Long> shortestPathStationIds) {
         return shortestPathStationIds.stream()
                 .map(stationService::findById)
                 .collect(Collectors.toList());
     }
 
-    private int calculateFare(Path path, int distance, PathServiceRequest pathServiceRequest) {
-        Age age = new Age(pathServiceRequest.getAge());
-        int highestExtraFare =
-                lineService.findHighestExtraFareByIds(path.getShortestPathLineIds(pathServiceRequest.getDepartureId(),
-                        pathServiceRequest.getArrivalId()));
-        Fare fare = new Fare(distance, highestExtraFare, age.getValue());
+    private int calculateFare(Path path, int distance, int age) {
+        int highestExtraFare = lineService.findHighestExtraFareByIds(path.getLineIds());
+        Fare fare = new Fare(distance, highestExtraFare, age);
         return fare.value();
     }
 }

@@ -2,11 +2,27 @@ package wooteco.subway.domain;
 
 import java.util.List;
 
-public interface Path {
+public class Path {
 
-    List<Long> getShortestPathStationIds(long departureId, long arrivalId);
+    private final List<Long> stationIds;
+    private final int distance;
+    private final List<Long> lineIds;
 
-    int getShortestPathDistance(long departureId, long arrivalId);
+    public Path(List<Long> stationIds, int distance, List<Long> lineIds) {
+        this.stationIds = stationIds;
+        this.distance = distance;
+        this.lineIds = lineIds;
+    }
 
-    List<Long> getShortestPathLineIds(long departureId, long arrivalId);
+    public List<Long> getStationIds() {
+        return stationIds;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public List<Long> getLineIds() {
+        return lineIds;
+    }
 }
