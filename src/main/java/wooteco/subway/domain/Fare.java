@@ -2,17 +2,17 @@ package wooteco.subway.domain;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import wooteco.subway.domain.strategy.FareStrategy;
+import wooteco.subway.domain.strategy.fare.ExtraFareStrategy;
 import wooteco.subway.domain.strategy.discount.DiscountStrategy;
 
 public class Fare {
 
     private static final int BASIC_FARE = 1250;
 
-    private final FareStrategy fareStrategy;
+    private final ExtraFareStrategy fareStrategy;
     private final DiscountStrategy discountStrategy;
 
-    public Fare(FareStrategy fareStrategy, DiscountStrategy discountStrategy) {
+    public Fare(ExtraFareStrategy fareStrategy, DiscountStrategy discountStrategy) {
         this.fareStrategy = fareStrategy;
         this.discountStrategy = discountStrategy;
     }

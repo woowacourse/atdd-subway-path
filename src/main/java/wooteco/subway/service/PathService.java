@@ -5,14 +5,14 @@ import java.util.List;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
-import wooteco.subway.domain.DiscountRole;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.ShortestPathEdge;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.strategy.BasicFareStrategy;
+import wooteco.subway.domain.strategy.discount.DiscountRole;
+import wooteco.subway.domain.strategy.fare.ExtraFareRole;
 import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.respones.PathResponse;
 import wooteco.subway.exception.NotFoundException;
@@ -44,7 +44,8 @@ public class PathService {
         GraphPath<Station, ShortestPathEdge> shortestPath = path.createShortestPath(source, target);
 
         int distance = (int) shortestPath.getWeight();
-        Fare fare = new Fare(new BasicFareStrategy(), DiscountRole.findDiscountStrategy(pathRequest.getAge()));
+        Fare fare = new Fare(ExtraFareRole.findExtraFareStrategy(distance),
+                DiscountRole.findDiscountStrategy(pathRequest.getAge()));
 
         int lineExtraFare = fare.calculateMaxLineExtraFare(findLine(shortestPath.getEdgeList()));
         return new PathResponse(shortestPath.getVertexList(), distance,

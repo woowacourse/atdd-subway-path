@@ -8,12 +8,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import wooteco.subway.domain.strategy.BasicFareStrategy;
+import wooteco.subway.domain.strategy.fare.BasicExtraFareStrategy;
 import wooteco.subway.domain.strategy.discount.NonDiscountStrategy;
 
 class FareTest {
 
-    private final Fare fare = new Fare(new BasicFareStrategy(), new NonDiscountStrategy());
+    private final Fare fare = new Fare(new BasicExtraFareStrategy(), new NonDiscountStrategy());
 
     @DisplayName("1Km 이상 10Km 이하이면 1250원 기본 요금이다.")
     @ParameterizedTest
