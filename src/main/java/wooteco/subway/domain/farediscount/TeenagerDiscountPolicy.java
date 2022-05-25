@@ -9,8 +9,7 @@ public class TeenagerDiscountPolicy extends AgeDiscountPolicy {
     @Override
     public int apply(int price) {
         price = price - TEENAGER_DISCOUNT_PRICE;
-        int i = percentageCalculate(price);
-        return price - i;
+        return price - percentageCalculate(price);
     }
 
     private int percentageCalculate(int price) {
