@@ -1,23 +1,27 @@
 package wooteco.subway.domain;
 
+import static java.math.BigDecimal.ONE;
+
 import java.math.BigDecimal;
 
 public enum Passenger {
     CHILD(BigDecimal.valueOf(350), BigDecimal.valueOf(0.5)),
-    YOUTH(BigDecimal.valueOf(350), BigDecimal.valueOf(0.8)),
-    ORDINAL(BigDecimal.valueOf(0), BigDecimal.valueOf(1.0));
+    YOUTH(BigDecimal.valueOf(350), BigDecimal.valueOf(0.2)),
+    ORDINAL(BigDecimal.valueOf(0), BigDecimal.valueOf(0.0));
 
-    private final BigDecimal discountAmount;
-    private final BigDecimal inverseOfDiscountRate;
+    private final BigDecimal deductionAmount;
+    private final BigDecimal discountRate;
 
-    Passenger(BigDecimal discountAmount, BigDecimal inverseOfDiscountRate) {
-        this.discountAmount = discountAmount;
-        this.inverseOfDiscountRate = inverseOfDiscountRate;
+    Passenger(BigDecimal deductionAmount, BigDecimal discountRate) {
+        this.deductionAmount = deductionAmount;
+        this.discountRate = discountRate;
     }
 
     public int calculateFare(int totalFare) {
+        BigDecimal inverseOfDiscountRate = ONE.subtract(discountRate);
+
         return BigDecimal.valueOf(totalFare)
-            .subtract(discountAmount)
+            .subtract(deductionAmount)
             .multiply(inverseOfDiscountRate)
             .intValue();
     }

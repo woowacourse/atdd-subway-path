@@ -91,7 +91,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선은 존재하지 않는 상행 또는 하행 역으로 등록할 수 없다.")
     @Test
     void createLineWithNotExistStation() {
-
         ExtractableResponse<Response> response = requestCreateLine("신분당선", "bg-red-600", 1L, 2L, 10,
             0);
 

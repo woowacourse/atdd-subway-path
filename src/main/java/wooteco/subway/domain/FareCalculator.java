@@ -22,7 +22,7 @@ public class FareCalculator {
     }
 
     private int extraFare(Path path) {
-        return overDistanceFare(path.getDistance()) + extraLineFare(path);
+        return overDistanceFare(path.getDistance()) + maxExtraLineFare(path);
     }
 
     private int overDistanceFare(int distance) {
@@ -66,7 +66,7 @@ public class FareCalculator {
         return COUNT_PER_OVER_FARE * count;
     }
 
-    private int extraLineFare(Path path) {
+    private int maxExtraLineFare(Path path) {
         return path.getSections().stream()
             .map(Section::getLineId)
             .mapToInt(extraFares::get)
