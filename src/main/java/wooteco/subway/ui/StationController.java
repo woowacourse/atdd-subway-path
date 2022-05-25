@@ -28,7 +28,7 @@ public class StationController {
     }
 
     @PostMapping("/stations")
-    public ResponseEntity<StationResponse> createStation(@RequestBody final StationRequest stationRequest) {
+    public ResponseEntity<StationResponse> createStation(@Validated @RequestBody final StationRequest stationRequest) {
         final Station newStation = stationService.saveStation(stationRequest);
         final StationResponse stationResponse = new StationResponse(newStation.getId(), newStation.getName());
         return ResponseEntity.created(URI.create("/stations/" + newStation.getId())).body(stationResponse);
@@ -44,7 +44,8 @@ public class StationController {
     }
 
     @DeleteMapping("/stations/{id}")
-    public ResponseEntity<Void> deleteStation(@Min(1) @PathVariable final Long id) {
+    public ResponseEntity<Void> deleteStation(@Min(value = 1, message = "정거장 아이디는 1보다 커야 합니다")
+                                              @PathVariable final Long id) {
         stationService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

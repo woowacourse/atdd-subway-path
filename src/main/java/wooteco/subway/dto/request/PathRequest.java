@@ -1,6 +1,7 @@
 package wooteco.subway.dto.request;
 
 import javax.validation.constraints.Min;
+import org.springframework.validation.annotation.Validated;
 
 public class PathRequest {
 

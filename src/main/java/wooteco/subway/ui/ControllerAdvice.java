@@ -9,17 +9,23 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.dto.response.ErrorResponse;
 
-@RestControllerAdvice
-public class ControllerAdvice {
+@RestControllerAdvice public class ControllerAdvice {
 
-    @ExceptionHandler({IllegalStateException.class, ConstraintViolationException.class,
-            MethodArgumentNotValidException.class})
+    public ControllerAdvice() {
+    }
+
+    @ExceptionHandler({IllegalStateException.class})
     public ResponseEntity<ErrorResponse> duplicateStation(final Exception exception) {
         return new ResponseEntity<>(new ErrorResponse(exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({ConstraintViolationException.class})
+    public ResponseEntity<ErrorResponse> requestDataInvalid(final ConstraintViolationException e) {
+        return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler({BindException.class})
-    public ResponseEntity<ErrorResponse> requestDataInvalid(final BindException e) {
+    public ResponseEntity<ErrorResponse> requestQueryInvalid(BindException e) {
         final String errorMessage = e.getBindingResult()
                 .getAllErrors()
                 .get(0)
@@ -33,3 +39,4 @@ public class ControllerAdvice {
         return new ResponseEntity<>(new ErrorResponse("실행할 수 없는 명령입니다."), HttpStatus.BAD_REQUEST);
     }
 }
+

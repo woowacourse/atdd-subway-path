@@ -1,5 +1,6 @@
 package wooteco.subway.ui;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -22,6 +23,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.factory.SectionFactory;
@@ -64,16 +66,16 @@ public class LineControllerTest {
             given(lineService.saveLine(any())).willReturn(response);
 
             mockMvc.perform(post("/lines")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(body)))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(body)))
                     .andExpect(status().isCreated());
         }
 
         @DisplayName("라인 생성에 필요한 데이터 중 하나가 비어 있거나, 역을 나타내는 식별자가 0이하면 라인을 생성하지 않는다.")
         @ParameterizedTest(name = "{index} {displayName} name={0}, color={1}, upStationId={2}, downStationId={3}, distance={4}")
-        @CsvSource(value = {"'', bg-red-600, 1, 2, 10", "a, bg-red-600, 0, 2, 10"})
+        @CsvSource(value = {"'', bg-red-600, 1, 2, 10, 라인 이름은 공백일 수 없습니다.", "a, bg-red-600, 0, 2, 10, 상행 종점역 아이디는 1보다 커야 합니다."})
         void failedToCreateLine(final String name, final String color, final Long upStationId, final Long downStationId,
-                            final int distance) throws Exception {
+                                final int distance, final String errorMessage) throws Exception {
             given(lineService.saveLine(any())).willReturn(response);
 
             final Map<String, Object> body = new HashMap<>(Map.ofEntries(
@@ -84,10 +86,12 @@ public class LineControllerTest {
                     Map.entry("distance", distance)
             ));
 
-            mockMvc.perform(post("/lines")
+            final MvcResult result = mockMvc.perform(post("/lines")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(body)))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isBadRequest())
+                    .andReturn();
+            assertThat(Converter.ConvertToStringFrom(result, objectMapper)).isEqualTo(errorMessage);
         }
     }
 
@@ -120,8 +124,11 @@ public class LineControllerTest {
         @Test
         @DisplayName("라인 아이디가 0 이하면 라인 정보를 반환하지 않는다.")
         void FailedToShowLine() throws Exception {
-            mockMvc.perform(get("/lines/0"))
-                    .andExpect(status().isBadRequest());
+            final MvcResult result = mockMvc.perform(get("/lines/0"))
+                    .andExpect(status().isBadRequest())
+                    .andReturn();
+            final String actualErrorMessage = Converter.ConvertToStringFrom(result, objectMapper);
+            assertThat(actualErrorMessage).isEqualTo("showLine.id: 라인 아이디는 1 이상이여야 합니다.");
         }
     }
 
@@ -133,18 +140,21 @@ public class LineControllerTest {
         @Test
         void successfullyUpdateLine() throws Exception {
             mockMvc.perform(put("/lines/1")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(body)))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(body)))
                     .andExpect(status().isOk());
         }
 
         @DisplayName("라인 아이디가 0 이하면 라인 정보를 업데이트 하지 않는다.")
         @Test
         void failedToCreateLine() throws Exception {
-            mockMvc.perform(put("/lines/0")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(body)))
-                    .andExpect(status().isBadRequest());
+            final MvcResult result = mockMvc.perform(put("/lines/0")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(body)))
+                    .andExpect(status().isBadRequest())
+                    .andReturn();
+            final String errorMessage = Converter.ConvertToStringFrom(result, objectMapper);
+            assertThat(errorMessage).isEqualTo("updateLine.id: 라인 아이디는 1 이상이여야 합니다.");
         }
     }
 
@@ -162,9 +172,11 @@ public class LineControllerTest {
         @DisplayName("라인 아이디가 0 이하면 라인을 지우지 않는다.")
         @Test
         void filedToDeleteLine() throws Exception {
-            mockMvc.perform(delete("/lines/0"))
-                    .andExpect(status().isBadRequest());
+            final MvcResult result = mockMvc.perform(delete("/lines/0"))
+                    .andExpect(status().isBadRequest())
+                    .andReturn();
+            final String errorMessage = Converter.ConvertToStringFrom(result, objectMapper);
+            assertThat(errorMessage).isEqualTo("deleteLine.id: 라인 아이디는 1 이상이여야 합니다.");
         }
     }
-
 }

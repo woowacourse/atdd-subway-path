@@ -1,5 +1,6 @@
 package wooteco.subway.ui;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -18,6 +19,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.factory.StationFactory;
 import wooteco.subway.service.StationService;
@@ -55,10 +57,13 @@ class StationControllerTest {
         @Test
         @DisplayName("요청에 역 이름이 존재하지 않으면 역을 추가하지 않는다.")
         void createStationWithBlankName() throws Exception {
-            mockMvc.perform(post("/stations")
+            final MvcResult result = mockMvc.perform(post("/stations")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(Map.of("name", ""))))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isBadRequest())
+                    .andReturn();
+            final String errorMessage = Converter.ConvertToStringFrom(result, objectMapper);
+            assertThat(errorMessage).isEqualTo("역 이름이 존재하지 않습니다.");
 
         }
     }
@@ -89,8 +94,11 @@ class StationControllerTest {
         @DisplayName("0이하면 역을 지우지 않는다.")
         @Test
         void deleteStationFailed() throws Exception {
-            mockMvc.perform(delete("/stations/0"))
-                    .andExpect(status().isBadRequest());
+            final MvcResult result = mockMvc.perform(delete("/stations/0"))
+                    .andExpect(status().isBadRequest())
+                    .andReturn();
+            final String errorMessage = Converter.ConvertToStringFrom(result, objectMapper);
+            assertThat(errorMessage).isEqualTo("deleteStation.id: 정거장 아이디는 1보다 커야 합니다");
         }
     }
 }
