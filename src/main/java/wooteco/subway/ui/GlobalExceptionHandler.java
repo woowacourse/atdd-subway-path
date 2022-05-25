@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NotFoundException.class)
-    private ResponseEntity<Void> handleExceptionToNotFound(Exception e) {
+    private ResponseEntity<Void> handleExceptionToNotFound(NotFoundException e) {
         return ResponseEntity.notFound().build();
     }
 

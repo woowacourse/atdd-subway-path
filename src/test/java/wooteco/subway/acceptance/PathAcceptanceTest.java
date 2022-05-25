@@ -104,9 +104,31 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("age가 음수이거나 150초과이면 400 에러를 발생시킨다.")
+    @DisplayName("나이가 음수 일 떄")
     @ParameterizedTest
-    @CsvSource({"151", "1000", "0", "-1", " -1000"})
+    @CsvSource({"-1", "-30", "-50", "-100", " -300"})
+    void searchPathInCaseOfAgeIsNegative() {
+        long 강남역 = requestCreateStation("강남역").jsonPath().getLong("id");
+        long 역삼역 = requestCreateStation("역삼역").jsonPath().getLong("id");
+        requestCreateLine("신분당선", "bg-red-600", 강남역, 역삼역, 20, 900);
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .param("source", 강남역)
+                .param("target", 역삼역)
+                .param("age", -1)
+                .when()
+                .get("/paths")
+                .then().log().all()
+                .extract();
+
+        String message = response.jsonPath().getString("message");
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(message).isEqualTo("나이는 음수일 수 없습니다.");
+    }
+
+    @DisplayName("나이가 150초과일 때")
+    @ParameterizedTest
+    @CsvSource({"151", "1000", "200", "500", " 3000"})
     void searchPathWithRidiculousAge(int age) {
         long 강남역 = requestCreateStation("강남역").jsonPath().getLong("id");
         long 역삼역 = requestCreateStation("역삼역").jsonPath().getLong("id");
@@ -121,8 +143,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .get("/paths")
                 .then().log().all()
                 .extract();
+        String message = response.jsonPath().getString("message");
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(message).isEqualTo("나이는 150세를 넘을 수 없습니다.");
     }
 
     @DisplayName("노선에 추가 요금이 있을 경우 경로 탐색")
@@ -307,25 +331,5 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         String message = response.jsonPath().getString("message");
         assertThat(message).isEqualTo("출발역은 빈 값일 수 없습니다.");
-    }
-
-    @DisplayName("나이가 음수 일 떄")
-    @Test
-    void searchPathInCaseOfAgeIsNegative() {
-        long 강남역 = requestCreateStation("강남역").jsonPath().getLong("id");
-        long 역삼역 = requestCreateStation("역삼역").jsonPath().getLong("id");
-        requestCreateLine("신분당선", "bg-red-600", 강남역, 역삼역, 20, 900);
-
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .param("source", 강남역)
-                .param("target", 역삼역)
-                .param("age", -1)
-                .when()
-                .get("/paths")
-                .then().log().all()
-                .extract();
-
-        String message = response.jsonPath().getString("message");
-        assertThat(message).isEqualTo("나이는 음수일 수 없습니다.");
     }
 }
