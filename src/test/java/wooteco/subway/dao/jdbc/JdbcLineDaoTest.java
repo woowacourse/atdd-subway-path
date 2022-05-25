@@ -16,7 +16,7 @@ import wooteco.subway.domain.Line;
 class JdbcLineDaoTest {
 
     private static final String FAIL_FIND_LINE = "fail";
-    private static final Line INAPPROPRIATE_LINE = new Line(FAIL_FIND_LINE, FAIL_FIND_LINE);
+    private static final Line INAPPROPRIATE_LINE = new Line(FAIL_FIND_LINE, FAIL_FIND_LINE, 0);
 
     private final JdbcLineDao jdbcLineDao;
 
@@ -29,22 +29,22 @@ class JdbcLineDaoTest {
     @DisplayName("노선을 등록할 수 있다.")
     void save() {
         // given
-        final Line line = new Line("신분당선", "bg-red-600");
+        final Line line = new Line("신분당선", "bg-red-600", 0);
 
         // when
         final Line savedLine = jdbcLineDao.save(line);
 
         // then
-        assertThat(savedLine).extracting("name", "color")
-                .contains("신분당선", "bg-red-600");
+        assertThat(savedLine).extracting("name", "color", "extraFare")
+                .contains("신분당선", "bg-red-600", 0);
     }
 
     @Test
     @DisplayName("전체 노선을 조회할 수 있다.")
     void findAll() {
         // given
-        final Line line1 = new Line("신분당선", "bg-red-600");
-        final Line line2 = new Line("분당선", "bg-green-600");
+        final Line line1 = new Line("신분당선", "bg-red-600", 0);
+        final Line line2 = new Line("분당선", "bg-green-600", 0);
         jdbcLineDao.save(line1);
         jdbcLineDao.save(line2);
 
@@ -53,17 +53,17 @@ class JdbcLineDaoTest {
 
         // then
         assertThat(lines).hasSize(2)
-                .extracting("name", "color")
+                .extracting("name", "color", "extraFare")
                 .containsExactlyInAnyOrder(
-                        tuple("신분당선", "bg-red-600"),
-                        tuple("분당선", "bg-green-600"));
+                        tuple("신분당선", "bg-red-600", 0),
+                        tuple("분당선", "bg-green-600", 0));
     }
 
     @Test
     @DisplayName("단건 노선을 조회한다.")
     void findById() {
         // given
-        final Line line = new Line("신분당선", "bg-red-600");
+        final Line line = new Line("신분당선", "bg-red-600", 0);
         final Line savedLine = jdbcLineDao.save(line);
 
         // when
@@ -71,34 +71,34 @@ class JdbcLineDaoTest {
                 .orElse(INAPPROPRIATE_LINE);
 
         // then
-        assertThat(findLine).extracting("name", "color")
-                .contains("신분당선", "bg-red-600");
+        assertThat(findLine).extracting("name", "color", "extraFare")
+                .contains("신분당선", "bg-red-600", 0);
     }
 
     @Test
     @DisplayName("기존 노선의 이름과 색상을 변경할 수 있다.")
     void updateById() {
         // given
-        final Line line = new Line("신분당선", "bg-red-600");
+        final Line line = new Line("신분당선", "bg-red-600", 0);
         final Line savedLine = jdbcLineDao.save(line);
 
         // when
-        final Line newLine = new Line(savedLine.getId(), "다른분당선", "bg-red-600");
+        final Line newLine = new Line(savedLine.getId(), "다른분당선", "bg-red-600", 0);
         jdbcLineDao.updateByLine(newLine);
 
         // then
         final Line findLine = jdbcLineDao.findById(savedLine.getId())
                         .orElse(INAPPROPRIATE_LINE);
 
-        assertThat(findLine).extracting("name", "color")
-                .contains("다른분당선", "bg-red-600");
+        assertThat(findLine).extracting("name", "color", "extraFare")
+                .contains("다른분당선", "bg-red-600", 0);
     }
 
     @Test
     @DisplayName("노선을 삭제할 수 있다.")
     void deleteById() {
         // given
-        final Line line = new Line("신분당선", "bg-red-600");
+        final Line line = new Line("신분당선", "bg-red-600", 0);
         final Line savedLine = jdbcLineDao.save(line);
 
         // when & then

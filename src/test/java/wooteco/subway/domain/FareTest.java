@@ -2,6 +2,8 @@ package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,10 +14,10 @@ class FareTest {
     @Test
     public void chargeDefaultFare9() {
         // given
-        final Fare fare = new Fare(9);
+        final Fare fare = Fare.of(9, 0);
 
         // when
-        final int result = fare.calculate();
+        final int result = fare.getValue();
 
         // then
         assertThat(result).isEqualTo(1250);
@@ -25,10 +27,10 @@ class FareTest {
     @Test
     public void chargeDefaultFare10() {
         // given
-        final Fare fare = new Fare(10);
+        final Fare fare = Fare.of(10, 0);
 
         // when
-        final int result = fare.calculate();
+        final int result = fare.getValue();
 
         // then
         assertThat(result).isEqualTo(1250);
@@ -38,10 +40,10 @@ class FareTest {
     @Test
     public void chargeAdditionalFare100() {
         // given
-        final Fare fare = new Fare(12);
+        final Fare fare = Fare.of(12, 0);
 
         // when
-        final int result = fare.calculate();
+        final int result = fare.getValue();
 
         // then
         assertThat(result).isEqualTo(1350);
@@ -51,10 +53,10 @@ class FareTest {
     @Test
     public void chargeAdditionalFare200() {
         // given
-        final Fare fare = new Fare(16);
+        final Fare fare = Fare.of(16, 0);
 
         // when
-        final int result = fare.calculate();
+        final int result = fare.getValue();
 
         // then
         assertThat(result).isEqualTo(1450);
@@ -64,10 +66,10 @@ class FareTest {
     @Test
     public void chargeAdditionalFareOver50() {
         // given
-        final Fare fare = new Fare(58);
+        final Fare fare = Fare.of(58, 0);
 
         // when
-        final int result = fare.calculate();
+        final int result = fare.getValue();
 
         // then
         assertThat(result).isEqualTo(2150);
@@ -77,10 +79,10 @@ class FareTest {
     @Test
     public void chargeAdditionalFare50() {
         // given
-        final Fare fare = new Fare(50);
+        final Fare fare = Fare.of(50, 0);
 
         // when
-        final int result = fare.calculate();
+        final int result = fare.getValue();
 
         // then
         assertThat(result).isEqualTo(2050);
@@ -90,7 +92,42 @@ class FareTest {
     @DisplayName("거리가 음수일 경우 예외가 발생한다.")
     public void validateDistance() {
         // given
-        assertThatThrownBy(() -> new Fare(-1)).isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(() -> Fare.of(-1, 0)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("거리는 양수여야합니다.");
     }
+
+    @Test
+    @DisplayName("추가 요금이 있는 노선을 이용할 경우 추가 요금 부과")
+    public void chargeAdditionalLineFare() {
+        // given
+        final Fare fare = Fare.of(50, 500);
+
+        // when
+        final int result = fare.getValue();
+
+        // then
+        assertThat(result).isEqualTo(2550);
+    }
+
+    @DisplayName("연령대 별 요금을 조회한다.")
+    @Test
+    public void chargeForAgeGroup() {
+        // given
+        final Fare fare = Fare.of(50, 500);
+
+        // when
+        final int resultBaby = fare.getDiscountedValue(AgeGroup.BABY);
+        final int resultChildren = fare.getDiscountedValue(AgeGroup.CHILDREN);
+        final int resultTeenAger = fare.getDiscountedValue(AgeGroup.TEENAGER);
+        final int resultAdult = fare.getDiscountedValue(AgeGroup.ADULT);
+
+        // then
+        assertAll(
+                () -> assertEquals(resultBaby, 0),
+                () -> assertEquals(resultChildren, 1450),
+                () -> assertEquals(resultTeenAger, 2110),
+                () -> assertEquals(resultAdult, 2550)
+        );
+    }
+
 }

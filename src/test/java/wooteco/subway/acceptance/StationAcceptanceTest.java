@@ -6,8 +6,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpStatus;
 import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.StationResponse;
@@ -79,6 +83,29 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("역 등록 시 거리 입력 값을 검증한다.")
+    @ParameterizedTest(name = "name = {0}")
+    @MethodSource("validateName")
+    public void validateArgument(String name) {
+        // given
+        final StationRequest params = new StationRequest(name);
+
+        // when
+        ExtractableResponse<Response> response = AcceptanceFixture.post(params, "/stations");
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static Stream<Arguments> validateName() {
+        return Stream.of(
+                Arguments.of(""),
+                Arguments.of(" "),
+                Arguments.of(
+                        "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789")
+        );
     }
 
     private Long extractId(ExtractableResponse<Response> response) {

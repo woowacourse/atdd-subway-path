@@ -4,8 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpStatus;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
@@ -23,7 +27,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         final Long stationId2 = extractStationIdFromName("강남역");
         final Long stationId3 = extractStationIdFromName("역삼역");
 
-        final LineRequest params1 = new LineRequest("2호선", "bg-red-600", stationId1, stationId2, 10);
+        final LineRequest params1 = new LineRequest("2호선", "bg-red-600", stationId1, stationId2, 10, 0);
         ExtractableResponse<Response> response1 = AcceptanceFixture.post(params1, "/lines");
         Long lineId1 = extractId(response1);
 
@@ -33,7 +37,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         final Long stationId4 = extractStationIdFromName("신사역");
         final Long stationId5 = extractStationIdFromName("양재역");
 
-        final LineRequest params2 = new LineRequest("신분당선", "bg-red-600", stationId4, stationId2, 10);
+        final LineRequest params2 = new LineRequest("신분당선", "bg-red-600", stationId4, stationId2, 10, 0);
         ExtractableResponse<Response> response2 = AcceptanceFixture.post(params2, "/lines");
         Long lineId2 = extractId(response2);
 
@@ -44,7 +48,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         assertThat(sectionResponse1.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(sectionResponse2.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
-    
+
     @DisplayName("갈래길을 방지하여 구간을 등록한다.")
     @Test
     public void addPreventFork() {
@@ -53,7 +57,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         final Long stationId2 = extractStationIdFromName("강남역");
         final Long stationId3 = extractStationIdFromName("역삼역");
 
-        final LineRequest params = new LineRequest("2호선", "bg-red-600", stationId1, stationId3, 7);
+        final LineRequest params = new LineRequest("2호선", "bg-red-600", stationId1, stationId3, 7, 0);
         ExtractableResponse<Response> response = AcceptanceFixture.post(params, "/lines");
         Long lineId = extractId(response);
 
@@ -79,7 +83,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         final Long stationId2 = extractStationIdFromName("강남역");
         final Long stationId3 = extractStationIdFromName("역삼역");
 
-        final LineRequest params = new LineRequest("2호선", "bg-red-600", stationId1, stationId3, 7);
+        final LineRequest params = new LineRequest("2호선", "bg-red-600", stationId1, stationId3, 7, 0);
         ExtractableResponse<Response> response = AcceptanceFixture.post(params, "/lines");
         Long lineId = extractId(response);
 
@@ -97,6 +101,37 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         assertThat(result.as(LineResponse.class).getStations()).hasSize(2)
                 .extracting("name")
                 .containsExactly("교대역", "역삼역");
+    }
+
+    @DisplayName("구간 등록 시 거리 입력 값을 검증한다.")
+    @ParameterizedTest(name = "distance = {0}")
+    @MethodSource("validateDistance")
+    public void validateArgument(int distance) {
+        // given
+        final Long stationId1 = extractStationIdFromName("교대역");
+        final Long stationId2 = extractStationIdFromName("강남역");
+        final Long stationId3 = extractStationIdFromName("역삼역");
+
+
+        final LineRequest params = new LineRequest("2호선", "bg-red-600", stationId1, stationId3, 7, 0);
+        ExtractableResponse<Response> response = AcceptanceFixture.post(params, "/lines");
+        Long lineId = extractId(response);
+
+        // when
+        final SectionRequest sectionRequest = new SectionRequest(stationId1, stationId2, distance);
+
+        final ExtractableResponse<Response> postResponse = AcceptanceFixture.post(sectionRequest,
+                "/lines/" + lineId + "/sections");
+
+        // then
+        assertThat(postResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static Stream<Arguments> validateDistance() {
+        return Stream.of(
+                Arguments.of(0),
+                Arguments.of(-1)
+        );
     }
 
     private Long extractId(ExtractableResponse<Response> response) {
