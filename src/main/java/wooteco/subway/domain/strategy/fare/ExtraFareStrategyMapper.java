@@ -3,7 +3,7 @@ package wooteco.subway.domain.strategy.fare;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
-public enum ExtraFareRole {
+public enum ExtraFareStrategyMapper {
 
     NON(distance -> Constants.NO_EXTRA_STANDARD_DISTANCE >= distance, new NonExtraFareStrategy()),
     BASIC(distance -> Constants.NO_EXTRA_STANDARD_DISTANCE < distance
@@ -18,7 +18,7 @@ public enum ExtraFareRole {
     private Predicate<Integer> predicate;
     private ExtraFareStrategy strategy;
 
-    ExtraFareRole(Predicate<Integer> predicate, ExtraFareStrategy strategy) {
+    ExtraFareStrategyMapper(Predicate<Integer> predicate, ExtraFareStrategy strategy) {
         this.predicate = predicate;
         this.strategy = strategy;
     }

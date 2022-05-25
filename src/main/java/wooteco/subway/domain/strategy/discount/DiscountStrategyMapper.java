@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 
-public enum DiscountRole {
+public enum DiscountStrategyMapper {
 
     BABY(age -> Constants.KID_STANDARD > age, new FreeDiscountStrategy()),
     KID(age -> Constants.KID_STANDARD <= age && age < Constants.ADOLESCENT_STANDARD,
@@ -25,7 +25,7 @@ public enum DiscountRole {
     private Predicate<Integer> predicate;
     private DiscountStrategy strategy;
 
-    DiscountRole(Predicate<Integer> predicate, DiscountStrategy strategy) {
+    DiscountStrategyMapper(Predicate<Integer> predicate, DiscountStrategy strategy) {
         this.predicate = predicate;
         this.strategy = strategy;
     }

@@ -11,8 +11,8 @@ import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.ShortestPathEdge;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.strategy.discount.DiscountRole;
-import wooteco.subway.domain.strategy.fare.ExtraFareRole;
+import wooteco.subway.domain.strategy.discount.DiscountStrategyMapper;
+import wooteco.subway.domain.strategy.fare.ExtraFareStrategyMapper;
 import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.respones.PathResponse;
 import wooteco.subway.exception.NotFoundException;
@@ -44,8 +44,8 @@ public class PathService {
         GraphPath<Station, ShortestPathEdge> shortestPath = path.createShortestPath(source, target);
 
         int distance = (int) shortestPath.getWeight();
-        Fare fare = new Fare(ExtraFareRole.findExtraFareStrategy(distance),
-                DiscountRole.findDiscountStrategy(pathRequest.getAge()));
+        Fare fare = new Fare(ExtraFareStrategyMapper.findExtraFareStrategy(distance),
+                DiscountStrategyMapper.findDiscountStrategy(pathRequest.getAge()));
 
         int lineExtraFare = fare.calculateMaxLineExtraFare(findLine(shortestPath.getEdgeList()));
         return new PathResponse(shortestPath.getVertexList(), distance,

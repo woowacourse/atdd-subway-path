@@ -1,7 +1,7 @@
 package wooteco.subway.domain.strategy.fare;
 
 
-import static wooteco.subway.domain.strategy.fare.ExtraFareRole.Constants.NO_EXTRA_STANDARD_DISTANCE;
+import static wooteco.subway.domain.strategy.fare.ExtraFareStrategyMapper.Constants.NO_EXTRA_STANDARD_DISTANCE;
 
 public class BasicExtraFareStrategy implements ExtraFareStrategy {
 
