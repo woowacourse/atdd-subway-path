@@ -26,6 +26,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
+import wooteco.subway.domain.vo.SectionDistance;
 import wooteco.subway.exception.validation.SectionDuplicateException;
 import wooteco.subway.exception.validation.SectionNotSuitableException;
 
@@ -39,11 +40,11 @@ class SectionsTest {
 
     @BeforeEach
     void setup() {
-        YEOKSAM_TO_SUNNEUNG = new Section(1L, 2L, 선릉역, 역삼역, 10L);
-        GANGNAM_TO_YEOKSAM = new Section(2L, 2L, 역삼역, 강남역, 10L);
-        SUNNEUNG_TO_SAMSUNG = new Section(3L, 2L, 삼성역, 선릉역, 10L);
-        SUNGDAM_BUILDING_TO_SAMSUNG = new Section(4L, 2L, 삼성역, 성담빌딩, 5L);
-        YEOKSAM_TO_SAMSUNG = new Section(5L, 2L, 삼성역, 역삼역, 10L);
+        YEOKSAM_TO_SUNNEUNG = new Section(1L, 2L, 선릉역, 역삼역, SectionDistance.from(10L));
+        GANGNAM_TO_YEOKSAM = new Section(2L, 2L, 역삼역, 강남역, SectionDistance.from(10L));
+        SUNNEUNG_TO_SAMSUNG = new Section(3L, 2L, 삼성역, 선릉역, SectionDistance.from(10L));
+        SUNGDAM_BUILDING_TO_SAMSUNG = new Section(4L, 2L, 삼성역, 성담빌딩, SectionDistance.from(5L));
+        YEOKSAM_TO_SAMSUNG = new Section(5L, 2L, 삼성역, 역삼역, SectionDistance.from(10L));
     }
 
     @Test
@@ -57,7 +58,7 @@ class SectionsTest {
         final Long distance = 10L;
 
         // when & then
-        assertThatCode(() -> new Section(id, lineId, upStation, downStation, distance))
+        assertThatCode(() -> new Section(id, lineId, upStation, downStation, SectionDistance.from(distance)))
                 .doesNotThrowAnyException();
     }
 

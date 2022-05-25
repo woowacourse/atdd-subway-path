@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.vo.SectionDistance;
 import wooteco.subway.infra.repository.SectionRepository;
 import wooteco.subway.service.dto.request.SectionServiceRequest;
 
@@ -25,7 +26,7 @@ public class SpringSectionService implements SectionService {
         final Sections sections = sectionRepository.findByLineId(lineId);
         final Section section = new Section(lineId, stationService.findById(request.getUpStationId()),
                 stationService.findById(request.getDownStationId()),
-                request.getDistance());
+                SectionDistance.from(request.getDistance()));
         sections.add(section);
 
         sectionRepository.save(sections);

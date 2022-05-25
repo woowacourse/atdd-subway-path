@@ -10,6 +10,7 @@ import wooteco.subway.domain.Station;
 import wooteco.subway.domain.vo.LineColor;
 import wooteco.subway.domain.vo.LineExtraFare;
 import wooteco.subway.domain.vo.LineName;
+import wooteco.subway.domain.vo.SectionDistance;
 import wooteco.subway.exception.notfound.NotFoundLineException;
 import wooteco.subway.exception.unknown.LineDeleteFailureException;
 import wooteco.subway.exception.unknown.LineUpdateFailureException;
@@ -39,7 +40,8 @@ public class SpringLineService implements LineService {
 
         final Station upStation = stationService.findById(lineServiceRequest.getUpStationId());
         final Station downStation = stationService.findById(lineServiceRequest.getDownStationId());
-        final Section section = new Section(upStation, downStation, lineServiceRequest.getDistance());
+        final Section section = new Section(upStation, downStation,
+                SectionDistance.from(lineServiceRequest.getDistance()));
 
         final Line saveRequest = new Line(LineName.from(lineServiceRequest.getName()),
                 LineColor.from(lineServiceRequest.getColor()),

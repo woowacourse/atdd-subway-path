@@ -23,6 +23,7 @@ import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.vo.SectionDistance;
 import wooteco.subway.infra.dao.SectionDao;
 import wooteco.subway.infra.repository.JdbcSectionRepository;
 import wooteco.subway.infra.repository.SectionRepository;
@@ -67,7 +68,7 @@ class SectionRepositoryTest {
     void saveSection() {
         // given
         final Long lineId = 2L;
-        final Section section = new Section(lineId, 강남역, 역삼역, 10L);
+        final Section section = new Section(lineId, 강남역, 역삼역, SectionDistance.from(10L));
 
         // when
         sectionRepository.save(lineId, section);

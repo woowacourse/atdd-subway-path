@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import wooteco.subway.domain.vo.SectionDistance;
 import wooteco.subway.exception.SubwayUnknownException;
 import wooteco.subway.exception.SubwayValidationException;
 import wooteco.subway.exception.validation.SectionDuplicateException;
@@ -102,7 +103,7 @@ public class Sections {
         final Section downSection = findSection(sectionsByStationId,
                 section -> section.getUpStation().isSameId(stationId));
         final Section merged = new Section(lineId, upSection.getUpStation(), downSection.getDownStation(),
-                upSection.getDistance() + downSection.getDistance());
+                SectionDistance.from(upSection.getDistance() + downSection.getDistance()));
 
         sections.removeAll(List.of(upSection, downSection));
         sections.add(merged);

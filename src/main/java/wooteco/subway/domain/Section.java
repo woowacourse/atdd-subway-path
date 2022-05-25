@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
 import java.util.Objects;
+import wooteco.subway.domain.vo.SectionDistance;
 
 public class Section implements Comparable<Section> {
 
@@ -8,9 +9,9 @@ public class Section implements Comparable<Section> {
     private final Long lineId;
     private Station upStation;
     private Station downStation;
-    private long distance;
+    private SectionDistance distance;
 
-    public Section(Long id, Long lineId, Station upStation, Station downStation, long distance) {
+    public Section(Long id, Long lineId, Station upStation, Station downStation, SectionDistance distance) {
         this.id = id;
         this.lineId = lineId;
         this.upStation = upStation;
@@ -18,11 +19,11 @@ public class Section implements Comparable<Section> {
         this.distance = distance;
     }
 
-    public Section(Long lineId, Station upStation, Station downStation, long distance) {
+    public Section(Long lineId, Station upStation, Station downStation, SectionDistance distance) {
         this(null, lineId, upStation, downStation, distance);
     }
 
-    public Section(Station upStation, Station downStation, long distance) {
+    public Section(Station upStation, Station downStation, SectionDistance distance) {
         this(null, null, upStation, downStation, distance);
     }
 
@@ -43,7 +44,7 @@ public class Section implements Comparable<Section> {
     }
 
     public boolean isWider(Section input) {
-        return this.distance > input.distance;
+        return this.distance.getDistance() > input.distance.getDistance();
     }
 
     public boolean upStationIsSameToDownStation(Section other) {
@@ -60,12 +61,12 @@ public class Section implements Comparable<Section> {
 
     public void shortenUpStation(Section input) {
         this.upStation = input.downStation;
-        this.distance = this.distance - input.distance;
+        this.distance = this.distance.minus(input.distance);
     }
 
     public void shortenDownStation(Section input) {
         this.downStation = input.upStation;
-        this.distance = this.distance - input.distance;
+        this.distance = this.distance.minus(input.distance);
     }
 
     public Long getId() {
@@ -84,8 +85,8 @@ public class Section implements Comparable<Section> {
         return downStation;
     }
 
-    public Long getDistance() {
-        return distance;
+    public long getDistance() {
+        return distance.getDistance();
     }
 
     @Override
