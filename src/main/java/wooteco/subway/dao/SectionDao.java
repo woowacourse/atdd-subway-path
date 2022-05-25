@@ -48,7 +48,7 @@ public class SectionDao {
     private SqlParameterSource[] generateParameters(List<Section> sections) {
         return sections.stream()
                 .map(this::generateParameter)
-                .toArray(MapSqlParameterSource[]::new);
+                .toArray(SqlParameterSource[]::new);
     }
 
     private SqlParameterSource generateParameter(Section section) {
