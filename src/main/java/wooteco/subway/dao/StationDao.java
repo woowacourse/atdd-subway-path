@@ -41,7 +41,7 @@ public class StationDao {
         return jdbcTemplate.query(sql, new MapSqlParameterSource(), getRowMapper());
     }
 
-    public List<Station> findAllByLineId(Long lineId) {
+    public List<Station> findAllByLineId(long lineId) {
         final String sql = "SELECT * FROM station WHERE"
                 + " id IN(SELECT st.id FROM section AS se INNER JOIN station AS st"
                 + " ON se.up_station_id = st.id"
@@ -56,7 +56,7 @@ public class StationDao {
         return jdbcTemplate.query(sql, params, getRowMapper());
     }
 
-    public Station findById(Long id) {
+    public Station findById(long id) {
         String sql = "SELECT id, name FROM station WHERE id=:id";
 
         Map<String, Object> params = new HashMap<>();
@@ -65,7 +65,7 @@ public class StationDao {
         return jdbcTemplate.queryForObject(sql, params, getRowMapper());
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(long id) {
         String sql = "DELETE FROM station WHERE id=:id";
 
         Map<String, Object> params = new HashMap<>();

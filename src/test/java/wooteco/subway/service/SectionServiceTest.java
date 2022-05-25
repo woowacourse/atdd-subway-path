@@ -93,7 +93,7 @@ class SectionServiceTest extends DBTest {
     @DisplayName("역간의 거리가 1 미만인 구간을 연결하려고 하면 예외를 발생시킨다.")
     @Test
     void connect_exception_distanceLowerThanOne() {
-        Integer invalidDistance = 0;
+        int invalidDistance = 0;
         SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(
                 lineServiceResponse.getId(), firstStation.getId(), thirdStation.getId(), invalidDistance);
 

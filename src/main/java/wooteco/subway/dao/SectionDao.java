@@ -41,7 +41,7 @@ public class SectionDao {
                 section.getDistance());
     }
 
-    public Sections findAllByLineId(Long id) {
+    public Sections findAllByLineId(long id) {
         String sql = "SELECT * FROM section WHERE line_id = :line_id";
 
         Map<String, Object> params = new HashMap<>();
@@ -72,7 +72,7 @@ public class SectionDao {
         }
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(long id) {
         String sql = "DELETE FROM section WHERE id = :id";
 
         Map<String, Object> params = new HashMap<>();

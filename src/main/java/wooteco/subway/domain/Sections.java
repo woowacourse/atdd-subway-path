@@ -21,11 +21,11 @@ public class Sections {
     public List<Long> getSortedStationIdsInSingleLine() {
         List<Long> stationIds = new ArrayList<>();
 
-        Long upStationId = getUpStationId(sections);
+        long upStationId = getUpStationId(sections);
         stationIds.add(upStationId);
 
         while (stationIds.size() != sections.size() + UP_STATION_SIZE) {
-            Long downStationId = getDownStationId(sections, upStationId);
+            long downStationId = getDownStationId(sections, upStationId);
             stationIds.add(downStationId);
             upStationId = downStationId;
         }
@@ -33,7 +33,7 @@ public class Sections {
         return stationIds;
     }
 
-    private Long getUpStationId(List<Section> sections) {
+    private long getUpStationId(List<Section> sections) {
         List<Long> upStationIds = sections.stream()
                 .map(Section::getUpStationId)
                 .collect(Collectors.toList());
@@ -46,9 +46,9 @@ public class Sections {
         return upStationIds.get(UP_STATION_INDEX);
     }
 
-    private Long getDownStationId(List<Section> sections, Long upStationId) {
+    private long getDownStationId(List<Section> sections, long upStationId) {
         return sections.stream()
-                .filter(section -> section.getUpStationId().equals(upStationId))
+                .filter(section -> section.getUpStationId() == upStationId)
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new)
                 .getDownStationId();

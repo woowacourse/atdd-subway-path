@@ -4,15 +4,13 @@ public class LineCreationServiceRequest {
 
     private String name;
     private String color;
-    private Long upStationId;
-    private Long downStationId;
+    private long upStationId;
+    private long downStationId;
     private int distance;
     private int extraFare;
 
-    public LineCreationServiceRequest(final String name, final String color, final Long upStationId,
-                                      final Long downStationId,
-                                      final int distance,
-                                      final int extraFare) {
+    public LineCreationServiceRequest(String name, String color, long upStationId, long downStationId,
+                                      int distance, int extraFare) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;
@@ -29,11 +27,11 @@ public class LineCreationServiceRequest {
         return color;
     }
 
-    public Long getUpStationId() {
+    public long getUpStationId() {
         return upStationId;
     }
 
-    public Long getDownStationId() {
+    public long getDownStationId() {
         return downStationId;
     }
 

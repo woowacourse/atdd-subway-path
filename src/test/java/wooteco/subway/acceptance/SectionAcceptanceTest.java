@@ -15,7 +15,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpStatus;
-import wooteco.subway.domain.Station;
 import wooteco.subway.ui.dto.ExceptionResponse;
 import wooteco.subway.ui.dto.LineResponse;
 import wooteco.subway.ui.dto.StationResponse;
@@ -129,7 +128,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void createSection_badRequest_bothNonExistingStations() {
         // given
-        Station station4 = requestToCreateStation("성수역").as(Station.class);
+        StationResponse station4 = requestToCreateStation("성수역").as(StationResponse.class);
         Long lineId = getCreatedLineId(station1.getId(), station3.getId());
 
         // when

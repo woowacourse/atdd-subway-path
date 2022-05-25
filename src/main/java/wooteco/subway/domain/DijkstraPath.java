@@ -19,11 +19,11 @@ public class DijkstraPath implements Path {
     }
 
     @Override
-    public List<Long> getShortestPathStationIds(Long departureId, Long arrivalId) {
+    public List<Long> getShortestPathStationIds(long departureId, long arrivalId) {
         return findShortestPath(departureId, arrivalId).getVertexList();
     }
 
-    private GraphPath findShortestPath(Long departureId, Long arrivalId) {
+    private GraphPath findShortestPath(long departureId, long arrivalId) {
         WeightedMultigraph<Long, LineEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
         addStationVertex(graph);
         addSectionEdge(graph);
@@ -38,7 +38,7 @@ public class DijkstraPath implements Path {
         }
     }
 
-    private GraphPath getGraphPath(Long departureId, Long arrivalId,
+    private GraphPath getGraphPath(long departureId, long arrivalId,
                                    WeightedMultigraph<Long, LineEdge> graph) {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         try {
@@ -49,7 +49,7 @@ public class DijkstraPath implements Path {
     }
 
     private void addStationVertex(WeightedMultigraph<Long, LineEdge> graph) {
-        for (Long stationId : getAllStationIds()) {
+        for (long stationId : getAllStationIds()) {
             graph.addVertex(stationId);
         }
     }
@@ -66,18 +66,18 @@ public class DijkstraPath implements Path {
     private void addSectionEdge(WeightedMultigraph<Long, LineEdge> graph) {
         for (Section section : sections) {
             int distance = section.getDistance();
-            Long lineId = section.getLineId();
+            long lineId = section.getLineId();
             graph.addEdge(section.getUpStationId(), section.getDownStationId(), new LineEdge(lineId, distance));
         }
     }
 
     @Override
-    public int getShortestPathDistance(Long departureId, Long arrivalId) {
+    public int getShortestPathDistance(long departureId, long arrivalId) {
         return (int) findShortestPath(departureId, arrivalId).getWeight();
     }
 
     @Override
-    public List<Long> getShortestPathLineIds(Long departureId, Long arrivalId) {
+    public List<Long> getShortestPathLineIds(long departureId, long arrivalId) {
         List<LineEdge> edges = findShortestPath(departureId, arrivalId).getEdgeList();
         return edges.stream()
                 .map(LineEdge::getLindId)

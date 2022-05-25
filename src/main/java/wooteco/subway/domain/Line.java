@@ -7,9 +7,9 @@ public class Line {
     private Long id;
     private final String name;
     private final String color;
-    private final Integer extraFare;
+    private final int extraFare;
 
-    public Line(Long id, String name, String color, Integer extraFare) {
+    public Line(Long id, String name, String color, int extraFare) {
         validateExtraFare(extraFare);
         this.id = id;
         this.name = name;
@@ -17,11 +17,11 @@ public class Line {
         this.extraFare = extraFare;
     }
 
-    public Line(String name, String color, Integer extraFare) {
+    public Line(String name, String color, int extraFare) {
         this(null, name, color, extraFare);
     }
 
-    private void validateExtraFare(Integer extraFare) {
+    private void validateExtraFare(int extraFare) {
         if (extraFare < EXTRA_FARE_MIN_VALUE) {
             throw new IllegalArgumentException("노선의 최소 추가 금액은 100원입니다.");
         }
@@ -39,7 +39,7 @@ public class Line {
         return color;
     }
 
-    public Integer getExtraFare() {
+    public int getExtraFare() {
         return extraFare;
     }
 }

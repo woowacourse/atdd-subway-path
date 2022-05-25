@@ -4,15 +4,15 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 
 public class LineEdge extends DefaultWeightedEdge {
 
-    private final Long lindId;
-    private final Integer distance;
+    private final long lindId;
+    private final int distance;
 
-    public LineEdge(final Long lindId, final Integer distance) {
+    public LineEdge(long lindId, int distance) {
         this.lindId = lindId;
         this.distance = distance;
     }
 
-    public Long getLindId() {
+    public long getLindId() {
         return lindId;
     }
 

@@ -37,12 +37,12 @@ public class PathService {
     }
 
     private List<Long> findShortestPathStationIds(Path path, PathServiceRequest pathServiceRequest) {
-        Long departureId = pathServiceRequest.getDepartureId();
-        Long arrivalId = pathServiceRequest.getArrivalId();
+        long departureId = pathServiceRequest.getDepartureId();
+        long arrivalId = pathServiceRequest.getArrivalId();
         return path.getShortestPathStationIds(departureId, arrivalId);
     }
 
-    private List<Station> findShortestPathStationIds(final List<Long> shortestPathStationIds) {
+    private List<Station> findShortestPathStationIds(List<Long> shortestPathStationIds) {
         return shortestPathStationIds.stream()
                 .map(stationService::findById)
                 .collect(Collectors.toList());

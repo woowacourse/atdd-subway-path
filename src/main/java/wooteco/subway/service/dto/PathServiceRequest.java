@@ -2,25 +2,25 @@ package wooteco.subway.service.dto;
 
 public class PathServiceRequest {
 
-    private final Long departureId;
-    private final Long arrivalId;
-    private final Integer age;
+    private final long departureId;
+    private final long arrivalId;
+    private final int age;
 
-    public PathServiceRequest(Long departureId, Long arrivalId, Integer age) {
+    public PathServiceRequest(long departureId, long arrivalId, int age) {
         this.departureId = departureId;
         this.arrivalId = arrivalId;
         this.age = age;
     }
 
-    public Long getDepartureId() {
+    public long getDepartureId() {
         return departureId;
     }
 
-    public Long getArrivalId() {
+    public long getArrivalId() {
         return arrivalId;
     }
 
-    public Integer getAge() {
+    public int getAge() {
         return age;
     }
 }

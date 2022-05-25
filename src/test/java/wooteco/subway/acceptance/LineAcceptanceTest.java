@@ -18,7 +18,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import wooteco.subway.domain.Station;
 import wooteco.subway.ui.dto.ExceptionResponse;
 import wooteco.subway.ui.dto.LineResponse;
 import wooteco.subway.ui.dto.StationResponse;
@@ -142,8 +141,8 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void findAllLines() {
         /// given
-        Station station3 = requestToCreateStation("교대역").as(Station.class);
-        Station station4 = requestToCreateStation("수서역").as(Station.class);
+        StationResponse station3 = requestToCreateStation("교대역").as(StationResponse.class);
+        StationResponse station4 = requestToCreateStation("수서역").as(StationResponse.class);
 
         requestToCreateLine(LINE_NAME, LINE_COLOR, stationResponse1.getId(), stationResponse2.getId(), LINE_DISTANCE,
                 LINE_EXTRA_FARE);

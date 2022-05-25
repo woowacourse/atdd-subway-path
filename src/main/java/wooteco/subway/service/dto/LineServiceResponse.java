@@ -7,10 +7,10 @@ import wooteco.subway.domain.Station;
 
 public class LineServiceResponse {
 
-    private final Long id;
+    private final long id;
     private final String name;
     private final String color;
-    private final Integer extraFare;
+    private final int extraFare;
     private final List<StationServiceResponse> stations;
 
     public LineServiceResponse(Line line, List<Station> stations) {
@@ -23,7 +23,7 @@ public class LineServiceResponse {
                 .collect(Collectors.toList());
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
@@ -39,7 +39,7 @@ public class LineServiceResponse {
         return stations;
     }
 
-    public Integer getExtraFare() {
+    public int getExtraFare() {
         return extraFare;
     }
 }

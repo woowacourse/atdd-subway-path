@@ -44,7 +44,7 @@ public class LineDao {
         return jdbcTemplate.query(sql, getRowMapper());
     }
 
-    public Line findById(Long id) {
+    public Line findById(long id) {
         String sql = "SELECT id, name, color, extra_fare FROM line WHERE id=:id";
 
         Map<String, Object> params = new HashMap<>();
@@ -53,7 +53,7 @@ public class LineDao {
         return jdbcTemplate.queryForObject(sql, params, getRowMapper());
     }
 
-    public void update(Long id, Line line) {
+    public void update(long id, Line line) {
         String sql = "UPDATE line SET name=:name, color=:color, extra_fare=:extra_fare where id=:id";
 
         Map<String, Object> params = new HashMap<>();
@@ -65,7 +65,7 @@ public class LineDao {
         jdbcTemplate.update(sql, params);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(long id) {
         String sql = "DELETE FROM line WHERE id=:id";
 
         Map<String, Object> params = new HashMap<>();

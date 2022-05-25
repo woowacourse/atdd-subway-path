@@ -48,7 +48,7 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public LineServiceResponse findById(Long id) {
+    public LineServiceResponse findById(long id) {
         Line line = lineDao.findById(id);
         Sections sections = sectionService.findAllByLineId(id);
         List<Station> stations = sections.getSortedStationIdsInSingleLine().stream()
@@ -59,14 +59,14 @@ public class LineService {
     }
 
     @Transactional
-    public void update(Long id, LineModificationServiceRequest lineModificationServiceRequest) {
+    public void update(long id, LineModificationServiceRequest lineModificationServiceRequest) {
         Line updatingLine = new Line(lineModificationServiceRequest.getName(),
                 lineModificationServiceRequest.getColor(), lineModificationServiceRequest.getExtraFare());
         lineDao.update(id, updatingLine);
     }
 
     @Transactional
-    public void deleteById(Long id) {
+    public void deleteById(long id) {
         lineDao.deleteById(id);
     }
 
