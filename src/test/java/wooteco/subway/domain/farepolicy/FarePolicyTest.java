@@ -12,9 +12,9 @@ class FarePolicyTest {
     @ParameterizedTest
     @CsvSource(value = {"10, 1250", "11, 1350", "50, 2050", "51, 2150"})
     void calculate(final int distance, final int expected) {
-        FarePolicy farePolicy = FarePolicyFactory.from(distance);
+        final FarePolicy farePolicy = FarePolicyFactory.from(distance);
 
-        int actual = farePolicy.calculate(distance);
+        final int actual = farePolicy.calculate(distance);
 
         assertThat(actual).isEqualTo(expected);
     }

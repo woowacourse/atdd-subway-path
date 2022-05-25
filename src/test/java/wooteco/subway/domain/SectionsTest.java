@@ -9,14 +9,14 @@ import org.junit.jupiter.api.Test;
 
 class SectionsTest {
 
+    private static final Section SECTION_1_2 = new Section(1L, 1L, 1L, 2L, 10);
+    private static final Section SECTION_2_3 = new Section(2L, 1L, 2L, 3L, 10);
+    private static final Section SECTION_3_4 = new Section(3L, 1L, 3L, 4L, 10);
+
     @DisplayName("구간 목록에 포함된 모든 역 id를 반환한다.")
     @Test
     void getStationIds() {
-        Section section1 = new Section(1L, 1L, 2L, 10);
-        Section section2 = new Section(2L, 2L, 3L, 10);
-        Section section3 = new Section(3L, 3L, 4L, 10);
-
-        Sections sections = new Sections(List.of(section1, section2, section3));
+        final Sections sections = new Sections(List.of(SECTION_1_2, SECTION_2_3, SECTION_3_4));
 
         assertThat(sections.getSortedStationIdsInSingleLine()).containsExactly(1L, 2L, 3L, 4L);
     }
@@ -24,11 +24,7 @@ class SectionsTest {
     @DisplayName("삭제 가능한 구간을 반환한다.")
     @Test
     void getSectionsToDelete() {
-        Section section1 = new Section(1L, 1L, 2L, 10);
-        Section section2 = new Section(2L, 2L, 3L, 10);
-        Section section3 = new Section(3L, 3L, 4L, 10);
-
-        Sections sections = new Sections(List.of(section1, section2, section3));
+        final Sections sections = new Sections(List.of(SECTION_1_2, SECTION_2_3, SECTION_3_4));
 
         assertAll(
                 () -> assertThat(sections.getSectionsToDelete(1L).size()).isEqualTo(1),
@@ -38,25 +34,18 @@ class SectionsTest {
 
     @Test
     void getSectionIds() {
-        Section section1 = new Section(1L, 1L, 1L, 2L, 10);
-        Section section2 = new Section(2L, 1L, 2L, 3L, 10);
-        Section section3 = new Section(3L, 1L, 3L, 4L, 10);
+        final Sections sections = new Sections(List.of(SECTION_1_2, SECTION_2_3, SECTION_3_4));
 
-        Sections sections = new Sections(List.of(section1, section2, section3));
-
-        List<Long> sectionIds = sections.getSectionIds();
+        final List<Long> sectionIds = sections.getSectionIds();
 
         assertThat(sectionIds).containsExactly(1L, 2L, 3L);
     }
 
     @Test
     void merge() {
-        Section section1 = new Section(1L, 1L, 1L, 2L, 10);
-        Section section2 = new Section(2L, 1L, 2L, 3L, 10);
+        final Sections sections = new Sections(List.of(SECTION_1_2, SECTION_2_3));
 
-        Sections sections = new Sections(List.of(section1, section2));
-
-        Section mergedSection = sections.merge();
+        final Section mergedSection = sections.merge();
 
         assertThat(mergedSection.getDistance()).isEqualTo(20);
     }
