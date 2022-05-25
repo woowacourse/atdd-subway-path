@@ -9,7 +9,7 @@ public class FarePolicies {
 
     private final List<FarePolicy> policies;
 
-    public FarePolicies(List<FarePolicy> policies) {
+    FarePolicies(List<FarePolicy> policies) {
         this.policies = policies;
     }
 

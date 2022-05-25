@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
+import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.exception.PathNotFoundException;
@@ -32,7 +33,7 @@ class PathServiceTest {
 
         @Test
         void 가장_짧은_경로를_찾는다() {
-            PathResponse path = pathService.findShortestPath(1L, 3L, 20);
+            PathResponse path = pathService.findShortestPath(new PathRequest(1L, 3L, 20));
             List<StationResponse> stations = path.getStations();
 
             assertAll(() -> {
@@ -47,19 +48,22 @@ class PathServiceTest {
 
         @Test
         void 존재하지_않는_역_id를_입력받은_경우_예외발생() {
-            assertThatThrownBy(() -> pathService.findShortestPath(9999L, 3L, 20))
+            PathRequest pathRequest = new PathRequest(9999L, 3L, 20);
+            assertThatThrownBy(() -> pathService.findShortestPath(pathRequest))
                 .isInstanceOf(IllegalArgumentException.class);
         }
 
         @Test
         void 출발역과_도착역이_같은_경우_예외발생() {
-            assertThatThrownBy(() -> pathService.findShortestPath(1L, 1L, 20))
+            PathRequest pathRequest = new PathRequest(1L, 1L, 20);
+            assertThatThrownBy(() -> pathService.findShortestPath(pathRequest))
                 .isInstanceOf(PathNotFoundException.class);
         }
 
         @Test
         void 등록되지_않은_구간일_경우_예외발생() {
-            assertThatThrownBy(() -> pathService.findShortestPath(3L, 4L, 30))
+            PathRequest pathRequest = new PathRequest(3L, 4L, 30);
+            assertThatThrownBy(() -> pathService.findShortestPath(pathRequest))
                 .isInstanceOf(PathNotFoundException.class);
         }
     }
