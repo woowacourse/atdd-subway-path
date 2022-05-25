@@ -1,7 +1,10 @@
 package wooteco.subway.dto;
 
+import javax.validation.constraints.NotNull;
+
 public class DeleteSectionRequest {
 
+    @NotNull(message = "제거할 역 ID가 필요합니다.")
     private Long stationId;
 
     public DeleteSectionRequest() {

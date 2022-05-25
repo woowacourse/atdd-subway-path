@@ -317,4 +317,46 @@ public class LineAcceptanceTest extends AcceptanceTest {
             .then().log().all()
             .statusCode(HttpStatus.NO_CONTENT.value());
     }
+
+    @DisplayName("지하철 노선 이름은 255자이하여야 한다.")
+    @Test
+    void createLineWithLongName() {
+        ExtractableResponse<Response> response = requestCreateLine("A".repeat(256), "bg-red-600",
+            1L, 2L, 10,
+            0);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isNotBlank();
+    }
+
+    @DisplayName("지하철 노선 색깔은 20자이하여야 한다.")
+    @Test
+    void createLineWithLongColor() {
+        ExtractableResponse<Response> response = requestCreateLine("신분당선", "A".repeat(21), 1L, 2L,
+            10,
+            0);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isNotBlank();
+    }
+
+    @DisplayName("지하철 거리는 1이상이여야 한다.")
+    @Test
+    void createLineWithInvalidDistance() {
+        ExtractableResponse<Response> response = requestCreateLine("신분당선", "bg-red-600", 1L, 2L, 0,
+            0);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isNotBlank();
+    }
+
+    @DisplayName("추가 요금은 0이상이여야 한다.")
+    @Test
+    void createLineWithInvalidAge() {
+        ExtractableResponse<Response> response = requestCreateLine("신분당선", "bg-red-600", 1L, 2L, 10,
+            -1);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isNotBlank();
+    }
 }

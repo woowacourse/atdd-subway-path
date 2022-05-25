@@ -12,6 +12,7 @@ import wooteco.subway.domain.SectionEdge;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
+import wooteco.subway.dto.LineUpdateRequest;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
 
@@ -57,7 +58,7 @@ public class LineService {
     }
 
     @Transactional
-    public Line update(Long id, LineRequest request) {
+    public Line update(Long id, LineUpdateRequest request) {
         Line line = findById(id);
 
         if (isDuplicateName(line, request.getName())) {

@@ -127,4 +127,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(distance).isEqualTo(20);
         assertThat(fare).isEqualTo(880);
     }
+
+    @DisplayName("잘못된 나이로 경로 탐색 요청 시 400 반환")
+    @Test
+    void searchPathInvalidAge() {
+        long 강남역_id = requestCreateStation("강남역").jsonPath().getLong("id");
+        long 역삼역_id = requestCreateStation("역삼역").jsonPath().getLong("id");
+        requestCreateLine("신분당선", "bg-red-600", 강남역_id, 역삼역_id, 10, 0);
+
+        ExtractableResponse<Response> response = requestSearchPath(강남역_id, 역삼역_id, 0);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.body().jsonPath().getString("message")).isNotBlank();
+    }
 }

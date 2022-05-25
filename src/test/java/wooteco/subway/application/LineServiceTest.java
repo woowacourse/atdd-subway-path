@@ -22,6 +22,7 @@ import wooteco.subway.domain.Station;
 import wooteco.subway.domain.exception.BlankArgumentException;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
+import wooteco.subway.dto.LineUpdateRequest;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.StationRepository;
@@ -163,7 +164,9 @@ public class LineServiceTest {
         Line line = lineService.save(request);
 
         assertThatThrownBy(
-            () -> lineService.update(line.getId(), new LineRequest(name, "bg-red-600", 0)))
+            () -> {
+                lineService.update(line.getId(), new LineUpdateRequest(name, "bg-red-600", 0));
+            })
             .isInstanceOf(BlankArgumentException.class);
     }
 
@@ -177,7 +180,7 @@ public class LineServiceTest {
         Line line = lineService.save(request);
 
         assertThatThrownBy(
-            () -> lineService.update(line.getId(), new LineRequest("신분당선", color, 0)))
+            () -> lineService.update(line.getId(), new LineUpdateRequest("신분당선", color, 0)))
             .isInstanceOf(BlankArgumentException.class);
     }
 
@@ -189,7 +192,7 @@ public class LineServiceTest {
 
         Line line = lineService.save(request);
 
-        lineService.update(line.getId(), new LineRequest("1호선", "bg-blue-600", 900));
+        lineService.update(line.getId(), new LineUpdateRequest("1호선", "bg-blue-600", 900));
 
         Line expectedLine = lineRepository.findById(line.getId()).orElseThrow();
         assertThat(expectedLine.getName()).isEqualTo("1호선");
@@ -200,7 +203,8 @@ public class LineServiceTest {
     @DisplayName("존재하지 않는 지하철 노선을 수정한다.")
     @Test
     void updateNotExistLine() {
-        assertThatThrownBy(() -> lineService.update(50L, new LineRequest("1호선", "bg-red-600", 0)))
+        assertThatThrownBy(
+            () -> lineService.update(50L, new LineUpdateRequest("1호선", "bg-red-600", 0)))
             .isInstanceOf(NotFoundLineException.class);
     }
 
