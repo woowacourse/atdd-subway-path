@@ -9,59 +9,59 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import wooteco.subway.dto.PathResponse;
-import wooteco.subway.repository.dao.SectionDao;
-import wooteco.subway.repository.dao.StationDao;
-import wooteco.subway.repository.entity.SectionEntity;
-import wooteco.subway.repository.entity.StationEntity;
-import wooteco.subway.service.LineService;
-import wooteco.subway.service.SectionService;
 import wooteco.subway.service.dto.LineRequest;
-import wooteco.subway.service.dto.LineResponse;
+import wooteco.subway.service.dto.SectionRequest;
+import wooteco.subway.service.dto.StationRequest;
 
 public class PathAcceptanceTest extends AcceptanceTest {
 
-    @Autowired
-    private StationDao stationDao;
+    ExtractableResponse<Response> response_신설동;
+    ExtractableResponse<Response> response_용두;
+    ExtractableResponse<Response> response_신답;
+    ExtractableResponse<Response> response_성수;
+    ExtractableResponse<Response> response_건대입구;
 
-    @Autowired
-    private SectionDao sectionDao;
+    ExtractableResponse<Response> 일호선_응답;
+    ExtractableResponse<Response> 이호선_응답;
+    ExtractableResponse<Response> 삼호선_응답;
 
-    @Autowired
-    private LineService lineService;
-
-    @Autowired
-    private SectionService sectionService;
-
-    private StationEntity 신설동역;
-    private StationEntity 용두역;
-    private StationEntity 신답역;
-    private StationEntity 성수역;
-    private StationEntity 건대입구역;
-
-    private LineResponse 일호선;
-    private LineResponse 이호선;
-    private LineResponse 삼호선;
+    ExtractableResponse<Response> 신설_용두_응답;
+    ExtractableResponse<Response> 용두_신답_응답;
+    ExtractableResponse<Response> 신답_성수_응답;
 
     @Override
     @BeforeEach
     void setUp() {
         super.setUp();
-        신설동역 = stationDao.save(new StationEntity(null, "신설동역"));
-        용두역 = stationDao.save(new StationEntity(null, "용두역"));
-        신답역 = stationDao.save(new StationEntity(null, "신답역"));
-        성수역 = stationDao.save(new StationEntity(null, "성수역"));
-        건대입구역 = stationDao.save(new StationEntity(null, "건대입구역"));
+        response_신설동 = postWithBody("/stations", new StationRequest("신설동역"));
+        response_용두 = postWithBody("/stations", new StationRequest("용두역"));
+        response_신답 = postWithBody("/stations", new StationRequest("신답역"));
+        response_성수 = postWithBody("/stations", new StationRequest("성수역"));
+        response_건대입구 = postWithBody("/stations", new StationRequest("건대입구역"));
 
-        이호선 = lineService.save(new LineRequest("2호선", "green", 신설동역.getId(), 성수역.getId(), 42, 0));
-        sectionDao.save(new SectionEntity(null, 이호선.getId(), 신설동역.getId(), 용두역.getId(), 10));
-        sectionDao.save(new SectionEntity(null, 이호선.getId(), 용두역.getId(), 신답역.getId(), 20));
-        sectionDao.save(new SectionEntity(null, 이호선.getId(), 신답역.getId(), 성수역.getId(), 12));
+        LineRequest 이호선_요청 = new LineRequest("2호선", "green", response_신설동.jsonPath().getLong("id"),
+                response_성수.jsonPath().getLong("id"), 42, 0);
+        이호선_응답 = postWithBody("/lines", 이호선_요청);
 
-        일호선 = lineService.save(new LineRequest("1호선", "red", 용두역.getId(), 성수역.getId(), 17, 800));
+        SectionRequest 신설_용두_요청 = new SectionRequest(response_신설동.jsonPath().getLong("id"),
+                response_용두.jsonPath().getLong("id"), 10);
+        SectionRequest 용두_신답_요청 = new SectionRequest(response_용두.jsonPath().getLong("id"),
+                response_신답.jsonPath().getLong("id"), 20);
+        SectionRequest 신답_성수_요청 = new SectionRequest(response_신답.jsonPath().getLong("id"),
+                response_성수.jsonPath().getLong("id"), 12);
 
-        삼호선 = lineService.save(new LineRequest("3호선", "orange", 성수역.getId(), 건대입구역.getId(), 10, 900));
+        신설_용두_응답 = postWithBody("/lines/" + 이호선_응답.jsonPath().getLong("id") + "/sections", 신설_용두_요청);
+        용두_신답_응답 = postWithBody("/lines/" + 이호선_응답.jsonPath().getLong("id") + "/sections", 용두_신답_요청);
+        신답_성수_응답 = postWithBody("/lines/" + 이호선_응답.jsonPath().getLong("id") + "/sections", 신답_성수_요청);
+
+        LineRequest 일호선_요청 = new LineRequest("1호선", "red", response_용두.jsonPath().getLong("id"),
+                response_성수.jsonPath().getLong("id"), 17, 800);
+        LineRequest 삼호선_요청 = new LineRequest("3호선", "orange", response_성수.jsonPath().getLong("id"),
+                response_건대입구.jsonPath().getLong("id"), 10, 900);
+
+        일호선_응답 = postWithBody("/lines", 일호선_요청);
+        삼호선_응답 = postWithBody("/lines", 삼호선_요청);
     }
 
     @ParameterizedTest
@@ -69,7 +69,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("선택한 출발지와 목적지에 해당하는 경로를 조회한다.")
     void getPath(int age, int fare) {
         // given
-        String url = "/paths?source=" + 신설동역.getId() + "&target=" + 신답역.getId() + "&age=" + age;
+        String url = "/paths?source="
+                + response_신설동.jsonPath().getLong("id") + "&target="
+                + response_신답.jsonPath().getLong("id") + "&age=" + age;
         ExtractableResponse<Response> response = get(url);
         // when
         PathResponse pathResponse = response.body().as(PathResponse.class);
@@ -86,7 +88,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("추가 요금이 있는 노선을 이용 할 경우 측정된 요금에 추가한다.")
     void getPath_WhenIncludeExtraFareLine(int age, int fare) {
         // given
-        String url = "/paths?source=" + 신설동역.getId() + "&target=" + 성수역.getId() + "&age=" + age;
+        String url = "/paths?source="
+                + response_신설동.jsonPath().getLong("id") + "&target="
+                + response_성수.jsonPath().getLong("id") + "&age=" + age;
         ExtractableResponse<Response> response = get(url);
         // when
         PathResponse pathResponse = response.body().as(PathResponse.class);
@@ -103,7 +107,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("추가 요금이 있는 노선을 여러 개 이용 할 경우 가장 높은 추가 금액만 적용하여 측정된 요금에 추가한다.")
     void getPath_WhenIncludeSomeExtraFareLine(int age, int fare) {
         // given
-        String url = "/paths?source=" + 신설동역.getId() + "&target=" + 건대입구역.getId() + "&age=" + age;
+        String url = "/paths?source="
+                + response_신설동.jsonPath().getLong("id") + "&target="
+                + response_건대입구.jsonPath().getLong("id") + "&age=" + age;
         ExtractableResponse<Response> response = get(url);
         // when
         PathResponse pathResponse = response.body().as(PathResponse.class);
