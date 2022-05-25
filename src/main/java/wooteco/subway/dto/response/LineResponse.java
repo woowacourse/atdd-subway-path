@@ -4,16 +4,16 @@ import java.util.List;
 import wooteco.subway.domain.line.Line;
 
 public class LineResponse {
-    private Long id;
+    private long id;
     private String name;
     private String color;
-    private Integer extraFare;
+    private int extraFare;
     private List<StationResponse> stations;
 
     private LineResponse() {
     }
 
-    public LineResponse(Long id, String name, String color, Integer extraFare, List<StationResponse> stationResponses) {
+    public LineResponse(long id, String name, String color, int extraFare, List<StationResponse> stationResponses) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -21,10 +21,10 @@ public class LineResponse {
         this.stations = stationResponses;
     }
 
-    public static LineResponse from(Long id, Line line, List<StationResponse> stationResponses) {
+    public static LineResponse from(long id, Line line, List<StationResponse> stationResponses) {
         String name = line.getName();
         String color = line.getColor();
-        Integer extraFare = line.getExtraFare().getValue();
+        int extraFare = line.getExtraFare().getValue();
 
         return new LineResponse(id, name, color, extraFare, stationResponses);
     }
@@ -33,7 +33,7 @@ public class LineResponse {
         return from(line.getId(), line, stationResponses);
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
@@ -45,7 +45,7 @@ public class LineResponse {
         return color;
     }
 
-    public Integer getExtraFare() {
+    public int getExtraFare() {
         return extraFare;
     }
 

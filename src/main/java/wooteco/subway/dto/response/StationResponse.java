@@ -3,18 +3,18 @@ package wooteco.subway.dto.response;
 import wooteco.subway.domain.station.Station;
 
 public class StationResponse {
-    private Long id;
+    private long id;
     private String name;
 
     private StationResponse() {
     }
 
-    public StationResponse(Long id, String name) {
+    public StationResponse(long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public static StationResponse from(Long id, Station station) {
+    public static StationResponse from(long id, Station station) {
         String name = station.getName();
         return new StationResponse(id, name);
     }
@@ -23,7 +23,7 @@ public class StationResponse {
         return from(station.getId(), station);
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
