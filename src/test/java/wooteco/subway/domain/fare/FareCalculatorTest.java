@@ -2,187 +2,59 @@ package wooteco.subway.domain.fare;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class FareCalculatorTest {
 
-    @Test
-    @DisplayName("거리별 요금테스트1: 10km 미만일 경우 1250을 부과한다.")
-    void calculateIfDistanceIsUnderTen() {
-        int distance = 9;
+    @DisplayName("거리별 요금테스트")
+    @ParameterizedTest
+    @MethodSource("provideParameters1")
+    void calculateFarePerDistance(int distance, int extraFare, int age, int expected) {
         FareCalculator fareCalculator = new FareCalculator();
-        int expected = fareCalculator.calculateFare(distance, 0, 20);
+        int actual = fareCalculator.calculateFare(distance, extraFare, age);
 
-        assertThat(expected).isEqualTo(1250);
+        assertThat(actual).isEqualTo(expected);
     }
 
-    @Test
-    @DisplayName("거리별 요금테스트2: 10km일 경우 1250을 부과한다.")
-    void calculateIfDistanceIsTen() {
-        int distance = 10;
-        FareCalculator fareCalculator = new FareCalculator();
-        int expected = fareCalculator.calculateFare(distance, 0, 20);
-
-        assertThat(expected).isEqualTo(1250);
+    private static Stream<Arguments> provideParameters1() {
+        return Stream.of(
+                Arguments.of(9, 0, 20, 1250),
+                Arguments.of(10, 0, 20, 1250),
+                Arguments.of(11, 0, 20, 1350),
+                Arguments.of(15, 0, 20, 1350),
+                Arguments.of(16, 0, 20, 1450),
+                Arguments.of(21, 0, 20, 1550),
+                Arguments.of(49, 0, 20, 2050),
+                Arguments.of(50, 0, 20, 2050),
+                Arguments.of(58, 0, 20, 2150),
+                Arguments.of(59, 0, 20, 2250)
+        );
     }
 
-    @Test
-    @DisplayName("거리별 요금테스트3: 11km일 경우 1350을 부과한다.")
-    void calculateIfDistanceIsEleven() {
-        int distance = 11;
+    @DisplayName("연령별 요금테스트")
+    @ParameterizedTest
+    @MethodSource("provideParameters2")
+    void calculateFarePerAge(int distance, int extraFare, int age, int expected) {
         FareCalculator fareCalculator = new FareCalculator();
-        int expected = fareCalculator.calculateFare(distance, 0, 20);
+        int actual = fareCalculator.calculateFare(distance, extraFare, age);
 
-        assertThat(expected).isEqualTo(1350);
+        assertThat(actual).isEqualTo(expected);
     }
 
-    @Test
-    @DisplayName("거리별 요금테스트4: 15km일 경우 1350을 부과한다.")
-    void calculateIfDistanceIsFifteen() {
-        int distance = 15;
-        FareCalculator fareCalculator = new FareCalculator();
-        int expected = fareCalculator.calculateFare(distance, 0, 20);
-
-        assertThat(expected).isEqualTo(1350);
-    }
-
-    @Test
-    @DisplayName("거리별 요금테스트5: 16km일 경우 1450을 부과한다.")
-    void calculateIfDistanceIsSixteen() {
-        int distance = 16;
-        FareCalculator fareCalculator = new FareCalculator();
-        int expected = fareCalculator.calculateFare(distance, 0, 20);
-        assertThat(expected).isEqualTo(1450);
-    }
-
-    @Test
-    @DisplayName("거리별 요금테스트6: 21km일 경우 1550을 부과한다.")
-    void calculateIfDistanceIsTwentyOne() {
-        int distance = 21;
-        FareCalculator fareCalculator = new FareCalculator();
-        int expected = fareCalculator.calculateFare(distance, 0, 20);
-
-        assertThat(expected).isEqualTo(1550);
-    }
-
-    @Test
-    @DisplayName("거리별 요금테스트7: 49km일 경우 2050을 부과한다.")
-    void calculateIfDistanceIsFortyNine() {
-        int distance = 49;
-        FareCalculator fareCalculator = new FareCalculator();
-        int expected = fareCalculator.calculateFare(distance, 0, 20);
-
-        assertThat(expected).isEqualTo(2050);
-    }
-
-    @Test
-    @DisplayName("거리별 요금테스트8: 50km일 경우 2050을 부과한다.")
-    void calculateIfDistanceIsFifty() {
-        int distance = 50;
-        FareCalculator fareCalculator = new FareCalculator();
-        int expected = fareCalculator.calculateFare(distance, 0, 20);
-
-        assertThat(expected).isEqualTo(2050);
-    }
-
-    @Test
-    @DisplayName("거리별 요금테스트9: 58km일 경우 2150을 부과한다.")
-    void calculateIfDistanceIsFiftyEight() {
-        int distance = 58;
-        FareCalculator fareCalculator = new FareCalculator();
-        int expected = fareCalculator.calculateFare(distance, 0, 20);
-
-        assertThat(expected).isEqualTo(2150);
-    }
-
-    @Test
-    @DisplayName("거리별 요금테스트10: 59km일 경우 2250을 부과한다.")
-    void calculateIfDistanceIsFiftyNine() {
-        int distance = 59;
-        FareCalculator fareCalculator = new FareCalculator();
-        int expected = fareCalculator.calculateFare(distance, 0, 20);
-
-        assertThat(expected).isEqualTo(2250);
-    }
-
-    @Test
-    @DisplayName("연령별 요금테스트1: 5세일 경우 무료이다.")
-    void calculateIfAgeIsFive() {
-        int distance = 10;
-        FareCalculator fareCalculator = new FareCalculator();
-        int expected = fareCalculator.calculateFare(distance, 0, 5);
-
-        assertThat(expected).isZero();
-    }
-
-    @Test
-    @DisplayName("연령별 요금테스트2: 6세일 경우 운임에서 350원을 공제한 금액의 50% 할인한다.")
-    void calculateIfAgeIsSix() {
-        int distance = 10;
-        FareCalculator fareCalculator = new FareCalculator();
-        int expected = fareCalculator.calculateFare(distance, 0, 6);
-
-        assertThat(expected).isEqualTo(450);
-    }
-
-    @Test
-    @DisplayName("연령별 요금테스트3: 12세일 경우 운임에서 350원을 공제한 금액의 50% 할인한다.")
-    void calculateIfAgeIsTwelve() {
-        int distance = 10;
-        FareCalculator fareCalculator = new FareCalculator();
-        int expected = fareCalculator.calculateFare(distance, 0, 12);
-
-        assertThat(expected).isEqualTo(450);
-    }
-
-    @Test
-    @DisplayName("연령별 요금테스트4: 13세일 경우 운임에서 350원을 공제한 금액의 20% 할인한다.")
-    void calculateIfAgeIsThirteen() {
-        int distance = 10;
-        FareCalculator fareCalculator = new FareCalculator();
-        int expected = fareCalculator.calculateFare(distance, 0, 13);
-
-        assertThat(expected).isEqualTo(720);
-    }
-
-    @Test
-    @DisplayName("연령별 요금테스트5: 19세일 경우 운임에서 350원을 공제한 금액의 20% 할인한다.")
-    void calculateIfAgeIsNineteen() {
-        int distance = 10;
-        FareCalculator fareCalculator = new FareCalculator();
-        int expected = fareCalculator.calculateFare(distance, 0, 19);
-
-        assertThat(expected).isEqualTo(720);
-    }
-
-    @Test
-    @DisplayName("연령별 요금테스트6: 20세일 경우 운임요금의 100%를 받는다.")
-    void calculateIfAgeIsTwenty() {
-        int distance = 10;
-        FareCalculator fareCalculator = new FareCalculator();
-        int expected = fareCalculator.calculateFare(distance, 0, 20);
-
-        assertThat(expected).isEqualTo(1250);
-    }
-
-    @Test
-    @DisplayName("연령별 요금테스트7: 64세일 경우 운임요금의 100%를 받는다.")
-    void calculateIfAgeIsSixtyFour() {
-        int distance = 10;
-        FareCalculator fareCalculator = new FareCalculator();
-        int expected = fareCalculator.calculateFare(distance, 0, 64);
-
-        assertThat(expected).isEqualTo(1250);
-    }
-
-    @Test
-    @DisplayName("연령별 요금테스트8: 65세일 경우 무료이다.")
-    void calculateIfAgeIsSixtyFive() {
-        int distance = 10;
-        FareCalculator fareCalculator = new FareCalculator();
-        int expected = fareCalculator.calculateFare(distance, 0, 65);
-
-        assertThat(expected).isZero();
+    private static Stream<Arguments> provideParameters2() {
+        return Stream.of(
+                Arguments.of(10, 0, 5, 0),
+                Arguments.of(10, 0, 6, 450),
+                Arguments.of(10, 0, 12, 450),
+                Arguments.of(10, 0, 13, 720),
+                Arguments.of(10, 0, 19, 720),
+                Arguments.of(10, 0, 20, 1250),
+                Arguments.of(10, 0, 64, 1250),
+                Arguments.of(10, 0, 65, 0)
+        );
     }
 }
