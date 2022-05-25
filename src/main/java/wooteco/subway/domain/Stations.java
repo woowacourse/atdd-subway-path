@@ -2,6 +2,7 @@ package wooteco.subway.domain;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 public class Stations {
     private final List<Station> stations;
@@ -19,5 +20,11 @@ public class Stations {
                 .filter(it -> it.getId().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("[ERROR] 존재하지 않는 역 아이디입니다."));
+    }
+
+    public List<Long> getIds() {
+        return stations.stream()
+                .map(Station::getId)
+                .collect(Collectors.toList());
     }
 }

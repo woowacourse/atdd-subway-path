@@ -7,8 +7,10 @@ import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Lines;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Stations;
-import wooteco.subway.domain.path.SubwayPathFinder;
+import wooteco.subway.domain.path.Path;
 import wooteco.subway.dto.path.PathResponse;
+import wooteco.subway.util.GraphEdgeFactory;
+import wooteco.subway.util.PathFinder;
 
 @Service
 public class PathService {
@@ -24,12 +26,19 @@ public class PathService {
     }
 
     public PathResponse findPath(Long source, Long target, int age) {
-        var path = new SubwayPathFinder(
-                new Stations(stationDao.findAll()),
-                new Sections(sectionDao.findAll()),
+        var stations = new Stations(stationDao.findAll());
+        var sections = new Sections(sectionDao.findAll());
+
+        var pathFinder = new PathFinder(stations.getIds(), GraphEdgeFactory.from(sections.get()));
+
+        var graphPathResponse = pathFinder.find(source, target);
+
+        var path = new Path(
+                stations,
+                sections,
                 new Lines(lineDao.findAll())
         );
 
-        return new PathResponse(path.getPath(source, target, age));
+        return new PathResponse(path.getPath(graphPathResponse, age));
     }
 }
