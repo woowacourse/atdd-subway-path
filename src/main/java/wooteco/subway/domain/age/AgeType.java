@@ -12,19 +12,19 @@ public enum AgeType {
     private final int minValue;
     private final int maxValue;
 
-    AgeType(int minValue, int maxValue) {
+    AgeType(final int minValue, final int maxValue) {
         this.minValue = minValue;
         this.maxValue = maxValue;
     }
 
-    public static AgeType from(int age) {
+    public static AgeType from(final int age) {
         return Arrays.stream(values())
                 .filter(it -> it.isType(age))
                 .findFirst()
                 .orElseThrow();
     }
 
-    private boolean isType(int age) {
+    private boolean isType(final int age) {
         return age >= minValue && age <= maxValue;
     }
 }

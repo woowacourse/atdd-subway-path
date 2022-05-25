@@ -12,7 +12,7 @@ public enum FareByAgePolicy {
     private final AgeType ageType;
     private final DiscountByAgePolicy discountPolicy;
 
-    FareByAgePolicy(AgeType ageType, DiscountByAgePolicy discountPolicy) {
+    FareByAgePolicy(final AgeType ageType, final DiscountByAgePolicy discountPolicy) {
         this.ageType = ageType;
         this.discountPolicy = discountPolicy;
     }
@@ -24,7 +24,7 @@ public enum FareByAgePolicy {
                 .orElseThrow();
     }
 
-    public int applyDiscount(int fare) {
+    public int applyDiscount(final int fare) {
         return discountPolicy.apply(fare);
     }
 }
