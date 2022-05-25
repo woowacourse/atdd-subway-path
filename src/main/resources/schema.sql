@@ -1,11 +1,15 @@
-CREATE TABLE IF NOT EXISTS Station
+DROP TABLE IF EXISTS STATION;
+DROP TABLE IF EXISTS LINE;
+DROP TABLE IF EXISTS SECTIONS;
+
+CREATE TABLE Station
 (
     id   bigint       not null auto_increment,
     name varchar(255) not null unique,
     primary key (id)
 );
 
-CREATE TABLE IF NOT EXISTS Line
+CREATE TABLE Line
 (
     id         bigint       not null auto_increment,
     name       varchar(255) not null unique,
@@ -14,7 +18,7 @@ CREATE TABLE IF NOT EXISTS Line
     primary key (id)
 );
 
-CREATE TABLE IF NOT EXISTS Section
+CREATE TABLE Section
 (
     id              bigint not null auto_increment,
     line_id         bigint not null,
