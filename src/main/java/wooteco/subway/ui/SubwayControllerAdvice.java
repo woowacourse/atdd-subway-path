@@ -34,7 +34,7 @@ public class SubwayControllerAdvice {
                 .getAllErrors()
                 .stream()
                 .map(error -> ((FieldError) error).getField() + " : " + error.getDefaultMessage())
-                .collect(Collectors.joining(", "));
+                .collect(Collectors.joining(System.lineSeparator()));
     }
 
     @ExceptionHandler(SubwayNotFoundException.class)
