@@ -80,27 +80,6 @@ class LineDaoTest {
         assertThat(lines).hasSize(2);
     }
 
-    @DisplayName("지하철 노선에 포함되어 있는 지하철역 목록을 조회한다.")
-    @Test
-    void findStations() {
-        // given
-        long stationId1 = stationDao.save(new Station("강남역"));
-        long stationId2 = stationDao.save(new Station("역삼역"));
-        long stationId3 = stationDao.save(new Station("삼성역"));
-
-        sectionDao.save(1L, new Section(stationId2, stationId1, 5));
-        sectionDao.save(1L, new Section(stationId1, stationId3, 5));
-
-        // when
-        List<Station> stations = lineDao.findStations(1L);
-        List<String> stationNames = stations.stream()
-                .map(Station::getName)
-                .collect(Collectors.toUnmodifiableList());
-
-        // then
-        assertThat(stationNames).containsExactly("강남역", "역삼역", "삼성역");
-    }
-
     @DisplayName("지하철 노선을 조회한다.")
     @Test
     void find() {

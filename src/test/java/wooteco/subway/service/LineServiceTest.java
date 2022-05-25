@@ -26,7 +26,7 @@ import wooteco.subway.service.dto.response.StationResponse;
 @JdbcTest
 class LineServiceTest {
 
-    private static final LineSaveRequest LINE_SAVE_REQUEST = new LineSaveRequest("신분당선", "bg-red-600", 1L, 2L, 10);
+    private static LineSaveRequest LINE_SAVE_REQUEST;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -41,6 +41,10 @@ class LineServiceTest {
         stationDao = new StationDao(jdbcTemplate);
 
         lineService = new LineService(lineDao, sectionDao, stationDao);
+
+        long upStationId = stationDao.save(new Station("출발역"));
+        long downStationId = stationDao.save(new Station("도착역"));
+        LINE_SAVE_REQUEST = new LineSaveRequest("신분당선", "bg-red-600", upStationId, downStationId, 10);
     }
 
     @DisplayName("지하철 노선을 생성한다.")

@@ -1,5 +1,6 @@
 package wooteco.subway.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,7 +52,7 @@ public class LineService {
     public LineResponse find(final Long id) {
         Line line = lineDao.find(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지하철 노선입니다."));
-        List<Station> stations = lineDao.findStations(id);
+        List<Station> stations = findStationsByLineId(id);
 
         List<StationResponse> stationResponses = StationResponse.convertStationResponses(stations);
         return LineResponse.from(line, stationResponses);
@@ -69,12 +70,47 @@ public class LineService {
     public void delete(final Long id) {
         validateExistedLine(id);
 
-        List<Station> stations = lineDao.findStations(id);
+        List<Station> stations = findStationsByLineId(id);
         lineDao.delete(id);
         sectionDao.delete(id);
         for (Station station : stations) {
             stationDao.delete(station.getId());
         }
+    }
+
+    private List<Station> findStationsByLineId(final Long id) {
+        List<Long> stationIds = getStationIdsByLineId(id);
+
+        List<Station> stations = new ArrayList<>();
+        for (Long stationId : stationIds) {
+            stations.add(stationDao.findById(stationId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지하철역입니다.")));
+        }
+        return stations;
+    }
+
+    private List<Long> getStationIdsByLineId(final Long id) {
+        List<Section> sections = sectionDao.findAllById(id);
+
+        List<Long> stationIds = new ArrayList<>();
+        stationIds.addAll(getUpStationIds(sections));
+        stationIds.addAll(getDownStationIds(sections));
+
+        return stationIds.stream()
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    private List<Long> getUpStationIds(final List<Section> sections) {
+        return sections.stream()
+                .map(Section::getUpStationId)
+                .collect(Collectors.toList());
+    }
+
+    private List<Long> getDownStationIds(final List<Section> sections) {
+        return sections.stream()
+                .map(Section::getDownStationId)
+                .collect(Collectors.toList());
     }
 
     private void validateLine(final Line line) {

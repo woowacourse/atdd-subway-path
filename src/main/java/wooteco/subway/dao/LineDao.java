@@ -72,19 +72,6 @@ public class LineDao {
         return jdbcTemplate.query(sql, LINE_ROW_MAPPER);
     }
 
-    public List<Station> findStations(final Long id) {
-        final String sql = "SELECT STATION.id, name FROM STATION " +
-                "JOIN " +
-                "( " +
-                "(SELECT up_station_id as id FROM SECTION WHERE line_id = ?) " +
-                "UNION " +
-                "(SELECT down_station_id as id FROM SECTION WHERE line_id = ?) " +
-                ") " +
-                "AS STATION_IN_LINE " +
-                "ON STATION.id = STATION_IN_LINE.id";
-        return jdbcTemplate.query(sql, STATION_ROW_MAPPER, id, id);
-    }
-
     public Optional<Line> find(final Long id) {
         final String sql = "select id, name, color from LINE where id = ?";
         try {
