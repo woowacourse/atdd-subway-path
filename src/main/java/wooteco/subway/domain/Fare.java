@@ -25,16 +25,6 @@ public class Fare {
                 + addExtraFare(distance, DISTANCE_UNIT_OVER_50, MINIMUM_DISTANCE_OF_MAXIMUM_FARE);
     }
 
-    public static double discount(final double fare, final int age) {
-        if (age >= 13 && age < 19) {
-            return (fare - 350) * 0.8;
-        }
-        if (age >= 6 && age < 13) {
-            return (fare - 350) * 0.5;
-        }
-        return fare;
-    }
-
     private static double addExtraFare(final double distance, final double distanceUnit, final double limit) {
         return Math.ceil((distance - limit) / distanceUnit) * ADDITIONAL_AMOUNT;
     }
