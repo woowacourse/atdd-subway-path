@@ -2,7 +2,7 @@ package wooteco.subway.domain.property.fare;
 
 import java.util.List;
 
-import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.path.PathFinder;
 import wooteco.subway.domain.property.Age;
 
 public class FarePolicies {
@@ -13,18 +13,24 @@ public class FarePolicies {
         this.policies = policies;
     }
 
-    public static FarePolicies of(Path path, Age age) {
-        return new FarePolicies(List.of(
-            new DistanceFarePolicy(path.getDistance()),
-            new LineFarePolicy(path.getExtraFares()),
-            new AgeFarePolicy(age)
-        ));
+    public static FarePolicies of(PathFinder pathFinder, Age age) {
+        return new FarePolicies(
+            List.of(
+                new DistanceFarePolicy(pathFinder.getDistance()),
+                new LineFarePolicy(pathFinder.getPassingFares()),
+                new AgeFarePolicy(age)
+            )
+        );
     }
 
-    public Fare calculate(Fare fare) {
+    public int applyAll(int fare) {
         for (FarePolicy policy : policies) {
             fare = policy.apply(fare);
         }
         return fare;
+    }
+
+    public List<FarePolicy> getPolicies() {
+        return List.copyOf(policies);
     }
 }

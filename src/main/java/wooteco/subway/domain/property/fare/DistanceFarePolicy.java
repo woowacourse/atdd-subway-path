@@ -22,9 +22,8 @@ public class DistanceFarePolicy implements FarePolicy {
     }
 
     @Override
-    public Fare apply(Fare fare) {
-        return fare.surcharge(surchargeLowExtra())
-            .surcharge(surchargeHighExtra());
+    public int apply(int fare) {
+        return fare + surchargeLowExtra() + surchargeHighExtra();
     }
 
     private int surchargeLowExtra() {

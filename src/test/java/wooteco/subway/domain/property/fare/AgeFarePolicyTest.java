@@ -14,11 +14,10 @@ class AgeFarePolicyTest {
     public void discountWithChild() {
         // given
         AgeFarePolicy policy = new AgeFarePolicy(new Age(8));
-        Fare fare = new Fare(1250);
         // when
-        final Fare discounted = policy.apply(fare);
+        final int discounted = policy.apply(1250);
         // then
-        assertThat(discounted.getAmount()).isEqualTo(450);
+        assertThat(discounted).isEqualTo(450);
     }
 
     @Test
@@ -26,11 +25,10 @@ class AgeFarePolicyTest {
     public void discountWithTeenager() {
         // given
         AgeFarePolicy policy = new AgeFarePolicy(new Age(15));
-        Fare fare = new Fare(1250);
         // when
-        final Fare discounted = policy.apply(fare);
+        final int discounted = policy.apply(1250);
         // then
-        assertThat(discounted.getAmount()).isEqualTo(720);
+        assertThat(discounted).isEqualTo(720);
     }
 
     @Test
@@ -38,10 +36,9 @@ class AgeFarePolicyTest {
     public void discountWithAdult() {
         // given
         AgeFarePolicy policy = new AgeFarePolicy(new Age(20));
-        Fare fare = new Fare(1250);
         // when
-        final Fare discounted = policy.apply(fare);
+        final int discounted = policy.apply(1250);
         // then
-        assertThat(discounted.getAmount()).isEqualTo(1250);
+        assertThat(discounted).isEqualTo(1250);
     }
 }

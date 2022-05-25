@@ -2,31 +2,21 @@ package wooteco.subway.domain.path;
 
 import java.util.List;
 
-import wooteco.subway.domain.property.Distance;
-import wooteco.subway.domain.property.fare.Fare;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.SectionSeriesSorter;
 import wooteco.subway.domain.station.Station;
 
 public class Path {
 
-    private final List<Station> stations;
-    private final List<Fare> extraFares;
-    private final Distance distance;
+    private static final SectionSeriesSorter SORTER = new SectionSeriesSorter();
 
-    public Path(List<Station> stations, List<Fare> extraFares, Distance distance) {
-        this.stations = stations;
-        this.extraFares = extraFares;
-        this.distance = distance;
+    private final List<Section> sections;
+
+    public Path(List<Section> sections) {
+        this.sections = sections;
     }
 
-    public List<Station> getStations() {
-        return stations;
-    }
-
-    public List<Fare> getExtraFares() {
-        return extraFares;
-    }
-
-    public Distance getDistance() {
-        return distance;
+    public static Path of(PathFinder finder, Station sourceStation, Station targetStation) {
+         List<Section> sections = finder.findShortestSections(sourceStation, targetStation);
     }
 }

@@ -16,14 +16,12 @@ public class AgeFarePolicy implements FarePolicy {
     }
 
     @Override
-    public Fare apply(Fare fare) {
+    public int apply(int fare) {
         if (age.isTeenager()) {
-            return fare.discount(
-                (int)Math.round((fare.getAmount() - DEFAULT_DISCOUNT) * TEENAGER_DISCOUNT_RATE) + DEFAULT_DISCOUNT);
+            return fare - ((int)Math.round((fare - DEFAULT_DISCOUNT) * TEENAGER_DISCOUNT_RATE) + DEFAULT_DISCOUNT);
         }
         if (age.isChild()) {
-            return fare.discount(
-                (int)Math.round((fare.getAmount() - DEFAULT_DISCOUNT) * CHILD_DISCOUNT_RATE) + DEFAULT_DISCOUNT);
+            return fare - ((int)Math.round((fare - DEFAULT_DISCOUNT) * CHILD_DISCOUNT_RATE) + DEFAULT_DISCOUNT);
         }
         return fare;
     }

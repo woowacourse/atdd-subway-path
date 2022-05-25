@@ -19,9 +19,9 @@ class DistanceFarePolicyTest {
         FarePolicy policy = new DistanceFarePolicy(new Distance(distance));
 
         // when
-        final Fare surcharged = policy.apply(new Fare());
+        final int surcharged = policy.apply(1250);
 
         // then
-        assertThat(surcharged.getAmount()).isEqualTo(expectedFare);
+        assertThat(surcharged).isEqualTo(expectedFare);
     }
 }

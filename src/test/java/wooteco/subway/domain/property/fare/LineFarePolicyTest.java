@@ -18,9 +18,9 @@ class LineFarePolicyTest {
         final List<Fare> fares = List.of(new Fare(500), new Fare(200), new Fare(1000));
         LineFarePolicy policy = new LineFarePolicy(fares);
         // when
-        final Fare surcharged = policy.apply(new Fare(1250));
+        final int surcharged = policy.apply(1250);
         // then
-        assertThat(surcharged.getAmount()).isEqualTo(2250);
+        assertThat(surcharged).isEqualTo(2250);
     }
 
     @Test
@@ -31,6 +31,6 @@ class LineFarePolicyTest {
         // when
         final LineFarePolicy policy = new LineFarePolicy(fares);
         // then
-        assertThatExceptionOfType(UnexpectedException.class).isThrownBy(() -> policy.apply(new Fare()));
+        assertThatExceptionOfType(UnexpectedException.class).isThrownBy(() -> policy.apply(1250));
     }
 }

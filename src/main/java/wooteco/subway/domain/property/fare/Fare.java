@@ -17,18 +17,14 @@ public class Fare {
         this.amount = amount;
     }
 
+    public static Fare calculateFrom(FarePolicies policies) {
+        return new Fare(policies.applyAll(BASIC_AMOUNT));
+    }
+
     private void validateNotPositive(int amount) {
         if (amount < 0) {
             throw new NegativeFareException("운임 요금은 음수일 수 없습니다.");
         }
-    }
-
-    public Fare surcharge(int amount) {
-        return new Fare(this.amount + amount);
-    }
-
-    public Fare discount(int amount) {
-        return new Fare(this.amount - amount);
     }
 
     public int getAmount() {

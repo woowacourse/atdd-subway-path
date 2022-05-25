@@ -29,26 +29,4 @@ class FareTest {
         // then
         assertThat(fare.getAmount()).isEqualTo(1250);
     }
-
-    @Test
-    @DisplayName("운임을 할인한다.")
-    public void discountAmount() {
-        // given
-        Fare fare = new Fare(1000);
-        // when
-        final Fare discounted = fare.discount(200);
-        // then
-        assertThat(discounted.getAmount()).isEqualTo(800);
-    }
-
-    @Test
-    @DisplayName("운임을 할증한다.")
-    public void surchargeAmount() {
-        // given
-        Fare fare = new Fare(1000);
-        // when
-        final Fare surcharged = fare.surcharge(300);
-        // then
-        assertThat(surcharged.getAmount()).isEqualTo(1300);
-    }
 }

@@ -13,10 +13,10 @@ public class LineFarePolicy implements FarePolicy {
     }
 
     @Override
-    public Fare apply(Fare fare) {
-        return fare.surcharge(extraFares.stream()
+    public int apply(int fare) {
+        return fare + extraFares.stream()
             .mapToInt(Fare::getAmount)
             .max()
-            .orElseThrow(() -> new UnexpectedException("지나간 경로에 추가 금액이 존재하지 않습니다.")));
+            .orElseThrow(() -> new UnexpectedException("지나간 경로에 추가 금액이 존재하지 않습니다."));
     }
 }
