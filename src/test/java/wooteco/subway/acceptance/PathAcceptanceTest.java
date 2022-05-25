@@ -52,8 +52,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // given
         Long departureStationId = AcceptanceUtil.createStation("출발역");
         Long arrivalStationId = AcceptanceUtil.createStation("도착역");
-        AcceptanceUtil.createLine("추가 운임 없는 호선", "bg-red-600", extraFare, departureStationId, arrivalStationId,
-                distance);
+        AcceptanceUtil.createLine("호선", "bg-red-600", extraFare, departureStationId, arrivalStationId, distance);
 
         // when
         ExtractableResponse<Response> response = requestGetPath(departureStationId, arrivalStationId, age);

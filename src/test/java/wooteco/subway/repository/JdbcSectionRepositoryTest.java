@@ -43,7 +43,7 @@ class JdbcSectionRepositoryTest {
         LineDao lineDao = new LineDao(jdbcTemplate);
 
         stationRepository = new JdbcStationRepository(stationDao);
-        sectionRepository = new JdbcSectionRepository(sectionDao, lineDao, stationRepository);
+        sectionRepository = new JdbcSectionRepository(sectionDao, stationRepository);
         lineRepository = new JdbcLineRepository(lineDao, sectionRepository);
     }
 

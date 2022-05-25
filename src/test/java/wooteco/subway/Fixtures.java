@@ -22,13 +22,12 @@ public class Fixtures {
     public static Station 부개역 = new Station(9L, "부개역");
 
     public static Line 이호선 = new Line("2호선", COLOR2, new Fare(600));
+    public static Section 강남_역삼_구간 = new Section(1L, 이호선.getId(), 강남역, 역삼역, new Distance(5));
+    public static Section 역삼_선릉_구간 = new Section(2L, 이호선.getId(), 역삼역, 선릉역, new Distance(10));
+    public static Section 선릉_삼성_구간 = new Section(3L, 이호선.getId(), 선릉역, 삼성역, new Distance(15));
+    public static Section 삼성_종합운동장_구간 = new Section(4L, 이호선.getId(), 삼성역, 종합운동장역, new Distance(20));
+    public static Section 종합운동장_잠실새내_구간 = new Section(5L, 이호선.getId(), 종합운동장역, 잠실새내역, new Distance(25));
+    public static Section 잠실새내_잠실_구간 = new Section(6L, 이호선.getId(), 잠실새내역, 잠실역, new Distance(30));
     public static Line 삼호선 = new Line("3호선", COLOR3, new Fare(600));
-
-    public static Section 강남_역삼_구간 = new Section(1L, 이호선, 강남역, 역삼역, new Distance(5));
-    public static Section 역삼_선릉_구간 = new Section(2L, 이호선, 역삼역, 선릉역, new Distance(10));
-    public static Section 선릉_삼성_구간 = new Section(3L, 이호선, 선릉역, 삼성역, new Distance(15));
-    public static Section 삼성_종합운동장_구간 = new Section(4L, 이호선, 삼성역, 종합운동장역, new Distance(20));
-    public static Section 종합운동장_잠실새내_구간 = new Section(5L, 이호선, 종합운동장역, 잠실새내역, new Distance(25));
-    public static Section 잠실새내_잠실_구간 = new Section(6L, 이호선, 잠실새내역, 잠실역, new Distance(30));
 
 }

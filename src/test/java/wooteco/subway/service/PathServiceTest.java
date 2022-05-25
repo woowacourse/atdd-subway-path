@@ -13,6 +13,7 @@ import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.dto.request.LineRequest;
+import wooteco.subway.dto.request.PathRequest;
 import wooteco.subway.dto.request.StationRequest;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.dto.response.StationResponse;
@@ -36,12 +37,12 @@ class PathServiceTest {
         SectionDao sectionDao = new SectionDao(jdbcTemplate);
         LineDao lineDao = new LineDao(jdbcTemplate);
         JdbcStationRepository stationRepository = new JdbcStationRepository(stationDao);
-        JdbcSectionRepository sectionRepository = new JdbcSectionRepository(sectionDao, lineDao, stationRepository);
+        JdbcSectionRepository sectionRepository = new JdbcSectionRepository(sectionDao, stationRepository);
         JdbcLineRepository lineRepository = new JdbcLineRepository(lineDao, sectionRepository);
 
         stationService = new StationService(stationRepository);
         lineService = new LineService(lineRepository, stationRepository, sectionRepository);
-        pathService = new PathService(sectionRepository, stationRepository);
+        pathService = new PathService(sectionRepository, stationRepository, lineRepository);
     }
 
     @BeforeEach
@@ -59,7 +60,8 @@ class PathServiceTest {
                 new LineRequest("2호선", "bg-green-600", 0, createdStation1.getId(), createdStation2.getId(), distance));
 
         // when
-        PathResponse pathResponse = pathService.getPath(createdStation1.getId(), createdStation2.getId(), 20);
+        PathResponse pathResponse = pathService.getPath(
+                new PathRequest(createdStation1.getId(), createdStation2.getId(), 20));
 
         // then
         assertThat(pathResponse.getFare()).isEqualTo(expectedFare);

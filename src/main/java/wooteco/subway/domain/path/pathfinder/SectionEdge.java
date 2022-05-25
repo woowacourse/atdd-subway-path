@@ -1,7 +1,6 @@
 package wooteco.subway.domain.path.pathfinder;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
-import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.section.Section;
 
 public class SectionEdge extends DefaultWeightedEdge {
@@ -11,8 +10,8 @@ public class SectionEdge extends DefaultWeightedEdge {
         this.section = section;
     }
 
-    public Line getLine() {
-        return section.getLine();
+    public Long getLineId() {
+        return section.getLineId();
     }
 
     @Override

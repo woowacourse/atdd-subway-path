@@ -13,16 +13,21 @@ import wooteco.subway.domain.station.Station;
 
 public class DijkstraShortestPathFinder {
 
-    public Path getPath(List<Section> sections, Station source, Station target) {
+    public Path getPath(List<Section> allSections, List<Line> allLines, Station source, Station target) {
         validateDepartureAndArrival(source, target);
 
-        GraphPath<Station, SectionEdge> path = generatePath(sections, source, target);
+        GraphPath<Station, SectionEdge> path = generatePath(allSections, source, target);
 
         List<Station> stations = path.getVertexList();
-        List<Line> lines = getLinesFromPath(path);
+        List<Line> filteredLines = getLinesFromGraphPath(allLines, path);
         Distance distance = new Distance(path.getWeight());
 
-        return new Path(stations, lines, distance);
+        return new Path(stations, filteredLines, distance);
+    }
+
+    private List<Line> getLinesFromGraphPath(List<Line> allLines, GraphPath<Station, SectionEdge> path) {
+        List<Long> lineIds = path.getEdgeList().stream().map(SectionEdge::getLineId).collect(Collectors.toList());
+        return allLines.stream().filter(line -> lineIds.contains(line.getId())).collect(Collectors.toList());
     }
 
     private void validateDepartureAndArrival(Station departure, Station arrival) {
@@ -57,12 +62,5 @@ public class DijkstraShortestPathFinder {
         SectionEdge edge = new SectionEdge(section);
         graph.addEdge(section.getUpStation(), section.getDownStation(), edge);
         graph.setEdgeWeight(edge, section.getDistance().getValue());
-    }
-
-    private List<Line> getLinesFromPath(GraphPath<Station, SectionEdge> path) {
-        return path.getEdgeList()
-                .stream()
-                .map(SectionEdge::getLine)
-                .collect(Collectors.toList());
     }
 }

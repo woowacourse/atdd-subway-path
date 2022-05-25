@@ -21,11 +21,7 @@ public class PathController {
 
     @GetMapping
     public ResponseEntity<PathResponse> getPath(@ModelAttribute PathRequest pathRequest) {
-        Long sourceStationId = pathRequest.getSource();
-        Long targetStationId = pathRequest.getTarget();
-        Integer age = pathRequest.getAge();
-
-        final PathResponse pathResponse = pathService.getPath(sourceStationId, targetStationId, age);
+        final PathResponse pathResponse = pathService.getPath(pathRequest);
         return ResponseEntity.ok().body(pathResponse);
     }
 }

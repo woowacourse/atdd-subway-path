@@ -18,7 +18,7 @@ public class SectionEntity {
     }
 
     public static SectionEntity of(Long id, Section section) {
-        Long lineId = section.getLine().getId();
+        Long lineId = section.getId();
         Long upStationId = section.getUpStation().getId();
         Long downStationId = section.getDownStation().getId();
         int distance = section.getDistance().getValue();

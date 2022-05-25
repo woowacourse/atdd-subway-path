@@ -62,7 +62,7 @@ public class Line {
     }
 
     public Sections getSections() {
-        return sections.withLine(this);
+        return sections;
     }
 
     @Override

@@ -10,6 +10,7 @@ import static wooteco.subway.Fixtures.선릉_삼성_구간;
 import static wooteco.subway.Fixtures.선릉역;
 import static wooteco.subway.Fixtures.역삼_선릉_구간;
 import static wooteco.subway.Fixtures.역삼역;
+import static wooteco.subway.Fixtures.이호선;
 import static wooteco.subway.Fixtures.잠실새내_잠실_구간;
 import static wooteco.subway.Fixtures.잠실새내역;
 import static wooteco.subway.Fixtures.잠실역;
@@ -20,6 +21,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.path.pathfinder.DijkstraShortestPathFinder;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
@@ -29,17 +31,19 @@ class DijkstraShortestPathFinderTest {
     private final DijkstraShortestPathFinder dijkstraShortestPathFinder = new DijkstraShortestPathFinder();
 
     private List<Section> sections;
+    private List<Line> lines;
 
     @BeforeEach
     void setUp() {
         sections = List.of(강남_역삼_구간, 역삼_선릉_구간, 선릉_삼성_구간, 삼성_종합운동장_구간, 종합운동장_잠실새내_구간, 잠실새내_잠실_구간);
+        lines = List.of(이호선);
     }
 
     @DisplayName("구간 리스트를 전달 받아 Path 객체를 생성한다.")
     @Test
     void constructor_withSectionList() {
         // given & when
-        Path createdPath = dijkstraShortestPathFinder.getPath(sections, 강남역, 잠실역);
+        Path createdPath = dijkstraShortestPathFinder.getPath(sections, lines, 강남역, 잠실역);
 
         // then
         assertThat(createdPath).isNotNull();
@@ -49,7 +53,7 @@ class DijkstraShortestPathFinderTest {
     @Test
     void shortest_path() {
         // given
-        Path createdPath = dijkstraShortestPathFinder.getPath(sections, 강남역, 잠실역);
+        Path createdPath = dijkstraShortestPathFinder.getPath(sections, lines, 강남역, 잠실역);
 
         // when
         List<Station> actual = createdPath.getStations();
@@ -62,7 +66,7 @@ class DijkstraShortestPathFinderTest {
     @Test
     void shortest_path_2() {
         // given
-        Path createdPath = dijkstraShortestPathFinder.getPath(sections, 강남역, 잠실새내역);
+        Path createdPath = dijkstraShortestPathFinder.getPath(sections, lines, 강남역, 잠실새내역);
 
         // when
         List<Station> actual = createdPath.getStations();
@@ -79,7 +83,7 @@ class DijkstraShortestPathFinderTest {
         Station arrival = 강남역;
 
         // when & then
-        assertThatThrownBy(() -> dijkstraShortestPathFinder.getPath(sections, departure, arrival))
+        assertThatThrownBy(() -> dijkstraShortestPathFinder.getPath(sections, lines, departure, arrival))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("경로의 출발역과 도착역이 같을 수 없습니다.");
     }

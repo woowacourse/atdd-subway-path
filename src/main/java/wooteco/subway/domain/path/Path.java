@@ -29,8 +29,6 @@ public class Path {
     }
 
     private Fare generateExtraFare() {
-        System.out.println(lines);
-
         int maxFare = lines.stream()
                 .map(Line::getExtraFare)
                 .mapToInt(Fare::getValue)
