@@ -1,17 +1,15 @@
 package wooteco.subway.ui.dto;
 
-import static wooteco.subway.ui.dto.LineCreationRequest.OMISSION_MESSAGE;
-
 import javax.validation.constraints.NotNull;
 import wooteco.subway.service.dto.SectionServiceRequest;
 
 public class SectionRequest {
 
-    @NotNull(message = "상행역" + OMISSION_MESSAGE)
+    @NotNull
     private Long upStationId;
-    @NotNull(message = "하행역" + OMISSION_MESSAGE)
+    @NotNull
     private Long downStationId;
-    @NotNull(message = "구간의 거리" + OMISSION_MESSAGE)
+    @NotNull
     private Integer distance;
 
     public SectionRequest() {

@@ -1,19 +1,17 @@
 package wooteco.subway.ui.dto;
 
-import static wooteco.subway.ui.dto.LineCreationRequest.OMISSION_MESSAGE;
-
 import javax.validation.constraints.NotNull;
 import wooteco.subway.service.dto.PathServiceRequest;
 
 public class PathRequest {
 
-    @NotNull(message = "출발역" + OMISSION_MESSAGE)
+    @NotNull
     private Long source;
 
-    @NotNull(message = "도착역" + OMISSION_MESSAGE)
+    @NotNull
     private Long target;
 
-    @NotNull(message = "나이" + OMISSION_MESSAGE)
+    @NotNull
     private Integer age;
 
     public PathRequest(Long source, Long target, Integer age) {

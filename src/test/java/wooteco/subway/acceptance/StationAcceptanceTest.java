@@ -62,7 +62,7 @@ class StationAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(exceptionResponse.getErrorMessage()).contains("지하철 역 이름이(가) 유효하지 않습니다.")
+                () -> assertThat(exceptionResponse.getErrorMessage()).isEqualTo("입력되지 않은 정보가 있습니다.")
         );
     }
 
@@ -77,7 +77,7 @@ class StationAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(exceptionResponse.getErrorMessage()).contains("지하철 역 이름이(가) 유효하지 않습니다.")
+                () -> assertThat(exceptionResponse.getErrorMessage()).isEqualTo("입력되지 않은 정보가 있습니다.")
         );
     }
 

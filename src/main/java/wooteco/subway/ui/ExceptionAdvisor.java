@@ -28,8 +28,7 @@ public class ExceptionAdvisor {
 
     @ExceptionHandler(BindException.class)
     public ResponseEntity<ExceptionResponse> handleNotEnoughResourceException(BindException e) {
-        e.printStackTrace();
-        return ResponseEntity.badRequest().body(new ExceptionResponse(e.getMessage()));
+        return ResponseEntity.badRequest().body(new ExceptionResponse("입력되지 않은 정보가 있습니다."));
     }
 
     @ExceptionHandler({Exception.class, RuntimeException.class})

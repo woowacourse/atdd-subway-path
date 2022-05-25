@@ -6,19 +6,17 @@ import wooteco.subway.service.dto.LineCreationServiceRequest;
 
 public class LineCreationRequest {
 
-    static final String OMISSION_MESSAGE = "이(가) 유효하지 않습니다.";
-
-    @NotBlank(message = "노선의 이름" + OMISSION_MESSAGE)
+    @NotBlank
     private String name;
-    @NotBlank(message = "노선의 색상" + OMISSION_MESSAGE)
+    @NotBlank
     private String color;
-    @NotNull(message = "노선의 상행역" + OMISSION_MESSAGE)
+    @NotNull
     private Long upStationId;
-    @NotNull(message = "노선의 하행역" + OMISSION_MESSAGE)
+    @NotNull
     private Long downStationId;
-    @NotNull(message = "노선의 거리 값" + OMISSION_MESSAGE)
+    @NotNull
     private Integer distance;
-    @NotNull(message = "추가 요금 값" + OMISSION_MESSAGE)
+    @NotNull
     private Integer extraFare;
 
     public LineCreationRequest() {
