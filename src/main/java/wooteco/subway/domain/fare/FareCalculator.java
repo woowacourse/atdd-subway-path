@@ -1,8 +1,8 @@
 package wooteco.subway.domain.fare;
 
-public class FareCalculator {
+import java.util.List;
 
-    private static final int BASIC_FARE = 1250;
+public class FareCalculator {
 
     private final int distance;
     private final int extraFare;
@@ -19,12 +19,13 @@ public class FareCalculator {
     }
 
     private int calculateByDistance() {
-        int userDistance = this.distance;
-        int sum = BASIC_FARE;
+        int distanceForPay = this.distance;
+        List<Distance> distances = Distance.findByDistance(distanceForPay);
+        int sum = 0;
 
-        for (Distance distance : Distance.sortedByDistanceUnit()) {
-            sum += distance.calculate(userDistance);
-            userDistance = distance.getDistanceUnit();
+        for (Distance distance : distances) {
+            sum += distance.calculateAdditionalFare(distanceForPay);
+            distanceForPay = distance.getDistanceUnit();
         }
         return sum;
     }

@@ -7,9 +7,11 @@ import java.util.stream.Collectors;
 
 public enum Distance {
 
-    FIRST(5, 10),
-    SECOND(8, 50);
+    BASIC(0, 0),
+    MIDDLE(5, 10),
+    FAR(8, 50);
 
+    private static final int BASIC_FARE = 1250;
     private static final int EXTRA_FARE = 100;
 
     private final int fareUnit;
@@ -20,15 +22,16 @@ public enum Distance {
         this.distanceUnit = distanceUnit;
     }
 
-    public static List<Distance> sortedByDistanceUnit() {
+    public static List<Distance> findByDistance(int distance) {
         return Arrays.stream(Distance.values())
-                .sorted(Comparator.comparingInt(distance -> distance.distanceUnit))
+                .sorted(Comparator.comparingInt(it -> -it.distanceUnit))
+                .filter(it -> it.distanceUnit < distance)
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public int calculate(int distance) {
-        if (distance <= distanceUnit) {
-            return 0;
+    public int calculateAdditionalFare(int distance) {
+        if (BASIC == this) {
+            return BASIC_FARE;
         }
         return ((distance - distanceUnit - 1) / fareUnit + 1) * EXTRA_FARE;
     }
