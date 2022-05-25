@@ -1,6 +1,5 @@
 package wooteco.subway.dto;
 
-import java.util.Optional;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
