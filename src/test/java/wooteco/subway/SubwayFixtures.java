@@ -2,22 +2,23 @@ package wooteco.subway;
 
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.vo.StationName;
 import wooteco.subway.ui.dto.request.LineRequest;
 import wooteco.subway.ui.dto.request.StationRequest;
 
 public class SubwayFixtures {
 
-    public static final Station STATION_FIXTURE1 = new Station(1L, "선릉역");
-    public static final Station STATION_FIXTURE2 = new Station(2L, "대림역");
-    public static final Station 강남역 = new Station(1L, "강남역");
-    public static final Station 역삼역 = new Station(2L, "역삼역");
-    public static final Station 선릉역 = new Station(3L, "선릉역");
-    public static final Station 삼성역 = new Station(4L, "삼성역");
-    public static final Station 성담빌딩 = new Station(5L, "성담빌딩");
-    public static final Station 서초역 = new Station(6L, "서초역");
-    public static final Station 대림역 = new Station(7L, "대림역");
-    public static final Station 청담역 = new Station(8L, "청담역");
-    public static final Station 압구정역 = new Station(9L, "압구정역");
+    public static final Station STATION_FIXTURE1 = new Station(1L, StationName.from("선릉역"));
+    public static final Station STATION_FIXTURE2 = new Station(2L, StationName.from("대림역"));
+    public static final Station 강남역 = new Station(1L, StationName.from("강남역"));
+    public static final Station 역삼역 = new Station(2L, StationName.from("역삼역"));
+    public static final Station 선릉역 = new Station(3L, StationName.from("선릉역"));
+    public static final Station 삼성역 = new Station(4L, StationName.from("삼성역"));
+    public static final Station 성담빌딩 = new Station(5L, StationName.from("성담빌딩"));
+    public static final Station 서초역 = new Station(6L, StationName.from("서초역"));
+    public static final Station 대림역 = new Station(7L, StationName.from("대림역"));
+    public static final Station 청담역 = new Station(8L, StationName.from("청담역"));
+    public static final Station 압구정역 = new Station(9L, StationName.from("압구정역"));
 
     public static Section YEOKSAM_TO_SUNNEUNG = new Section(1L, 2L, 선릉역, 역삼역, 10L);
     public static Section GANGNAM_TO_YEOKSAM = new Section(2L, 2L, 역삼역, 강남역, 10L);

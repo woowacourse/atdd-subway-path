@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.vo.StationName;
 import wooteco.subway.infra.dao.StationDao;
 import wooteco.subway.infra.dao.entity.StationEntity;
 
@@ -35,7 +36,7 @@ public class JdbcStationRepository implements StationRepository {
     }
 
     private Station toStation(StationEntity entity) {
-        return new Station(entity.getId(), entity.getName());
+        return new Station(entity.getId(), StationName.from(entity.getName()));
     }
 
     @Override

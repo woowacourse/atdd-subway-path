@@ -1,17 +1,18 @@
 package wooteco.subway.domain;
 
 import java.util.Objects;
+import wooteco.subway.domain.vo.StationName;
 
 public class Station {
     private Long id;
-    private String name;
+    private StationName name;
 
-    public Station(Long id, String name) {
+    public Station(Long id, StationName name) {
         this.id = id;
         this.name = name;
     }
 
-    public Station(String name) {
+    public Station(StationName name) {
         this.name = name;
     }
 
@@ -24,7 +25,7 @@ public class Station {
     }
 
     public String getName() {
-        return name;
+        return name.getName();
     }
 
     @Override

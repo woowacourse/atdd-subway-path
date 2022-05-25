@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.vo.StationName;
 import wooteco.subway.exception.notfound.NotFoundStationException;
 import wooteco.subway.exception.unknown.StationDeleteFailureException;
 import wooteco.subway.exception.validation.StationNameDuplicateException;
@@ -25,7 +26,7 @@ public class SpringStationService implements StationService {
         final String stationName = stationServiceRequest.getName();
         validateDuplicateName(stationName);
 
-        return stationRepository.save(new Station(stationName));
+        return stationRepository.save(new Station(StationName.from(stationName)));
     }
 
     private void validateDuplicateName(String name) {

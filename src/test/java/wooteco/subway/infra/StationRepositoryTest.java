@@ -16,6 +16,7 @@ import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.TestConstructor.AutowireMode;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.vo.StationName;
 import wooteco.subway.infra.dao.StationDao;
 import wooteco.subway.infra.repository.JdbcStationRepository;
 import wooteco.subway.infra.repository.StationRepository;
@@ -38,7 +39,7 @@ class StationRepositoryTest {
     @DisplayName("Station 저장")
     void save() {
         // given
-        final Station newStation = new Station("선릉역");
+        final Station newStation = new Station(StationName.from("선릉역"));
 
         // when
         final Station saved = stationRepository.save(newStation);
@@ -54,8 +55,8 @@ class StationRepositoryTest {
     @DisplayName("Station 전체 조회")
     void findAll() {
         // given
-        final Station station1 = new Station("선릉역");
-        final Station station2 = new Station("삼성역");
+        final Station station1 = new Station(StationName.from("선릉역"));
+        final Station station2 = new Station(StationName.from("삼성역"));
         stationRepository.save(station1);
         stationRepository.save(station2);
 
@@ -70,7 +71,7 @@ class StationRepositoryTest {
     @DisplayName("Station 단 건 조회")
     void findById() {
         // given
-        final Station station = new Station("선릉역");
+        final Station station = new Station(StationName.from("선릉역"));
         final Station saved = stationRepository.save(station);
 
         // when
@@ -90,7 +91,7 @@ class StationRepositoryTest {
     @DisplayName("Station 단 건 삭제")
     void deleteById() {
         // given
-        final Station station = new Station("선릉역");
+        final Station station = new Station(StationName.from("선릉역"));
         final Station saved = stationRepository.save(station);
         final Long id = saved.getId();
 
