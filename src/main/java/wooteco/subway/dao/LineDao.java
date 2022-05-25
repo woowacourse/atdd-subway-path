@@ -25,13 +25,6 @@ public class LineDao {
         );
     };
 
-    private static final RowMapper<Station> STATION_ROW_MAPPER = (resultSet, rowNum) -> {
-        return new Station(
-                resultSet.getLong("id"),
-                resultSet.getString("name")
-        );
-    };
-
     private final JdbcTemplate jdbcTemplate;
 
     public LineDao(JdbcTemplate jdbcTemplate) {
