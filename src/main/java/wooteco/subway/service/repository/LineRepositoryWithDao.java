@@ -97,6 +97,19 @@ public class LineRepositoryWithDao implements LineRepository {
         lineDao.delete(id);
     }
 
+    @Override
+    public void addSection(Line line, Section section) {
+        sectionDao.save(line.getId(), section);
+        Sections sections = line.getSections();
+        sections.forEach(section1 -> sectionDao.update(line.getId(), section1));
+    }
+
+    @Override
+    public void deleteSection(Line line, Section deletedSection) {
+        sectionDao.delete(line.getId(), deletedSection);
+        line.getSections().forEach(section -> sectionDao.update(line.getId(), section));
+    }
+
     private Line createLine(Long lineId) {
         LineEntity lineEntity = lineDao.find(lineId);
         return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(),
