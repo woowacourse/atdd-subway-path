@@ -14,11 +14,13 @@ public class StationResponse {
         this.name = name;
     }
 
-    public static StationResponse from(Station station) {
-        Long id = station.getId();
+    public static StationResponse from(Long id, Station station) {
         String name = station.getName();
-
         return new StationResponse(id, name);
+    }
+
+    public static StationResponse from(Station station) {
+        return from(station.getId(), station);
     }
 
     public Long getId() {

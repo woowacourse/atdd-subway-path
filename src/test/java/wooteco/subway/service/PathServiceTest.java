@@ -16,26 +16,36 @@ import wooteco.subway.dto.request.LineRequest;
 import wooteco.subway.dto.request.StationRequest;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.dto.response.StationResponse;
+import wooteco.subway.repository.JdbcLineRepository;
+import wooteco.subway.repository.JdbcSectionRepository;
+import wooteco.subway.repository.JdbcStationRepository;
 
 @JdbcTest
 class PathServiceTest {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    private PathService pathService;
-    private LineService lineService;
+    private final StationService stationService;
+    private final LineService lineService;
+    private final PathService pathService;
 
     private StationResponse createdStation1;
     private StationResponse createdStation2;
 
+    @Autowired
+    public PathServiceTest(JdbcTemplate jdbcTemplate) {
+        StationDao stationDao = new StationDao(jdbcTemplate);
+        SectionDao sectionDao = new SectionDao(jdbcTemplate);
+        LineDao lineDao = new LineDao(jdbcTemplate);
+        JdbcStationRepository stationRepository = new JdbcStationRepository(stationDao);
+        JdbcSectionRepository sectionRepository = new JdbcSectionRepository(sectionDao, lineDao, stationRepository);
+        JdbcLineRepository lineRepository = new JdbcLineRepository(lineDao, sectionRepository);
+
+        stationService = new StationService(stationRepository);
+        lineService = new LineService(lineRepository, stationRepository, sectionRepository);
+        pathService = new PathService(sectionRepository, stationRepository);
+    }
+
     @BeforeEach
     void setUp() {
-        pathService = new PathService(new SectionDao(jdbcTemplate), new StationDao(jdbcTemplate));
-        lineService = new LineService(new LineDao(jdbcTemplate), new StationDao(jdbcTemplate),
-                new SectionDao(jdbcTemplate));
-
-        StationService stationService = new StationService(new StationDao(jdbcTemplate));
         createdStation1 = stationService.createStation(new StationRequest("강남역"));
         createdStation2 = stationService.createStation(new StationRequest("역삼역"));
     }
@@ -46,8 +56,7 @@ class PathServiceTest {
     void getPath(int distance, int expectedFare) {
         // given
         lineService.createLine(
-                new LineRequest("2호선", "bg-green-600", 0, createdStation1.getId(), createdStation2.getId(),
-                        distance));
+                new LineRequest("2호선", "bg-green-600", 0, createdStation1.getId(), createdStation2.getId(), distance));
 
         // when
         PathResponse pathResponse = pathService.getPath(createdStation1.getId(), createdStation2.getId(), 20);

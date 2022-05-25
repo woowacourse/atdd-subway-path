@@ -7,59 +7,27 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
-import wooteco.subway.domain.fare.Fare;
-import wooteco.subway.domain.line.Line;
-import wooteco.subway.domain.section.Distance;
 import wooteco.subway.domain.section.Section;
-import wooteco.subway.domain.section.Sections;
-import wooteco.subway.domain.station.Station;
+import wooteco.subway.entity.SectionEntity;
 
 @Repository
 public class SectionDao {
 
-    private final RowMapper<Section> sectionRowMapper;
+    private static final RowMapper<SectionEntity> SECTION_ROW_MAPPER = (rs, rowNum) -> new SectionEntity(
+            rs.getLong("id"),
+            rs.getLong("line_id"),
+            rs.getLong("up_station_id"),
+            rs.getLong("down_station_id"),
+            rs.getInt("distance")
+    );
 
     private final JdbcTemplate jdbcTemplate;
 
     public SectionDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.sectionRowMapper = (rs, rowNum) -> new Section(
-                rs.getLong("id"),
-                new Line(rs.getLong("line_id"), rs.getString("line_name"), rs.getString("line_color"),
-                        new Fare(rs.getInt("line_extra_fare"))),
-                new Station(rs.getLong("up_station_id"), rs.getString("up_station_name")),
-                new Station(rs.getLong("down_station_id"), rs.getString("down_station_name")),
-                new Distance(rs.getInt("distance"))
-        );
     }
 
-    public Sections findSectionsByLineId(Long lineId) {
-        String sql =
-                "SELECT SECTION.id, LINE.id AS line_id, LINE.name AS line_name, LINE.color AS line_color, "
-                        + "LINE.extra_fare AS line_extra_fare, UP_STATION.id AS up_station_id, UP_STATION.name AS up_station_name, "
-                        + "DOWN_STATION.id AS down_station_id, DOWN_STATION.name AS down_station_name, distance FROM SECTION "
-                        + "INNER JOIN STATION AS UP_STATION ON SECTION.up_station_id = UP_STATION.id "
-                        + "INNER JOIN STATION AS DOWN_STATION ON SECTION.down_station_id = DOWN_STATION.id "
-                        + "INNER JOIN LINE ON SECTION.line_id = LINE.id "
-                        + "WHERE line_id = ?";
-
-        List<Section> sections = jdbcTemplate.query(sql, sectionRowMapper, lineId);
-        return new Sections(sections);
-    }
-
-    public List<Section> findAll() {
-        String sql =
-                "SELECT SECTION.id, LINE.id AS line_id, LINE.name AS line_name, LINE.color AS line_color, "
-                        + "LINE.extra_fare AS line_extra_fare, UP_STATION.id AS up_station_id, UP_STATION.name AS up_station_name, "
-                        + "DOWN_STATION.id AS down_station_id, DOWN_STATION.name AS down_station_name, distance FROM SECTION "
-                        + "INNER JOIN STATION AS UP_STATION ON SECTION.up_station_id = UP_STATION.id "
-                        + "INNER JOIN STATION AS DOWN_STATION ON SECTION.down_station_id = DOWN_STATION.id "
-                        + "INNER JOIN LINE ON SECTION.line_id = LINE.id";
-
-        return jdbcTemplate.query(sql, sectionRowMapper);
-    }
-
-    public Section save(Long lineId, Section section) {
+    public Long save(Long lineId, Section section) {
         String sql = "INSERT INTO SECTION (line_id, up_station_id, down_station_id, distance) VALUES(?, ?, ?, ?)";
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
@@ -72,10 +40,20 @@ public class SectionDao {
             return ps;
         }, keyHolder);
 
-        Long createdId = Objects.requireNonNull(keyHolder.getKey()).longValue();
-        return new Section(createdId, section);
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
+    public List<SectionEntity> findAll() {
+        String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM SECTION";
+        return jdbcTemplate.query(sql, SECTION_ROW_MAPPER);
+    }
+
+    public List<SectionEntity> findSectionsByLineId(Long lineId) {
+        String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM SECTION WHERE line_id = ?";
+        return jdbcTemplate.query(sql, SECTION_ROW_MAPPER, lineId);
+    }
+
+    // TODO: 제거
     public void deleteAllSectionsByLineId(Long lineId) {
         String sql = "DELETE FROM SECTION WHERE line_id = ?";
         jdbcTemplate.update(sql, lineId);

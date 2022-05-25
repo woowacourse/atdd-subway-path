@@ -1,4 +1,4 @@
-package wooteco.subway.dao;
+package wooteco.subway.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.Fixtures.부평역;
@@ -16,21 +16,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import wooteco.subway.dao.LineDao;
+import wooteco.subway.dao.SectionDao;
+import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.section.Distance;
 import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Sections;
 import wooteco.subway.domain.station.Station;
-import wooteco.subway.entity.SectionEntity;
-import wooteco.subway.repository.JdbcLineRepository;
-import wooteco.subway.repository.JdbcSectionRepository;
-import wooteco.subway.repository.JdbcStationRepository;
-import wooteco.subway.repository.LineRepository;
-import wooteco.subway.repository.SectionRepository;
-import wooteco.subway.repository.StationRepository;
 
 @JdbcTest
-class SectionDaoTest {
+class JdbcSectionRepositoryTest {
 
-    private final SectionDao sectionDao;
     private final SectionRepository sectionRepository;
     private final StationRepository stationRepository;
     private final LineRepository lineRepository;
@@ -41,11 +37,11 @@ class SectionDaoTest {
     private Long 저장된_이호선_ID;
 
     @Autowired
-    public SectionDaoTest(JdbcTemplate jdbcTemplate) {
+    public JdbcSectionRepositoryTest(JdbcTemplate jdbcTemplate) {
         StationDao stationDao = new StationDao(jdbcTemplate);
+        SectionDao sectionDao = new SectionDao(jdbcTemplate);
         LineDao lineDao = new LineDao(jdbcTemplate);
 
-        sectionDao = new SectionDao(jdbcTemplate);
         stationRepository = new JdbcStationRepository(stationDao);
         sectionRepository = new JdbcSectionRepository(sectionDao, lineDao, stationRepository);
         lineRepository = new JdbcLineRepository(lineDao, sectionRepository);
@@ -79,7 +75,8 @@ class SectionDaoTest {
     @Test
     void findSectionsByLineId() {
         // when
-        List<SectionEntity> actual = sectionDao.findSectionsByLineId(저장된_이호선_ID);
+        Sections foundSections = sectionRepository.findSectionsByLineId(저장된_이호선_ID);
+        List<Section> actual = foundSections.getValue();
 
         // then
         assertThat(actual).hasSize(4);
@@ -89,13 +86,23 @@ class SectionDaoTest {
     @Test
     void saveSections() {
         // given
-        Section 새로운_구간 = new Section(저장된_잠실역, 저장된_부평역, new Distance(10));
+        Sections sections = sectionRepository.findSectionsByLineId(저장된_이호선_ID);
+        sections.addSection(new Section(저장된_잠실역, 저장된_부평역, new Distance(10)));
 
         // when
-        sectionDao.save(저장된_이호선_ID, 새로운_구간);
-        List<SectionEntity> actual = sectionDao.findSectionsByLineId(저장된_이호선_ID);
+        saveSections(저장된_이호선_ID, sections);
+        List<Section> actual = sectionRepository.findSectionsByLineId(저장된_이호선_ID).getValue();
+        List<Section> expected = sections.getValue();
 
         // then
-        assertThat(actual).hasSize(5);
+        assertThat(actual).hasSameSizeAs(expected);
+    }
+
+    private void saveSections(Long lineId, Sections sections) {
+        sectionRepository.deleteAllSectionsByLineId(lineId);
+
+        for (Section section : sections.getValue()) {
+            sectionRepository.save(lineId, section);
+        }
     }
 }

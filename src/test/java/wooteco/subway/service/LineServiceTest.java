@@ -14,7 +14,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
@@ -32,17 +31,19 @@ import wooteco.subway.exception.CanNotInsertSectionException;
 import wooteco.subway.exception.DuplicateNameException;
 import wooteco.subway.exception.NotFoundLineException;
 import wooteco.subway.exception.OnlyOneSectionException;
+import wooteco.subway.repository.JdbcLineRepository;
+import wooteco.subway.repository.JdbcSectionRepository;
+import wooteco.subway.repository.JdbcStationRepository;
+import wooteco.subway.repository.LineRepository;
 
-@Transactional
 @JdbcTest
 class LineServiceTest {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-    private LineService lineService;
+    private final LineRepository lineRepository;
+    private final LineService lineService;
+    private final StationService stationService;
 
     private LineResponse lineResponse;
-    private LineDao lineDao;
 
     private StationResponse stationResponse1;
     private StationResponse stationResponse2;
@@ -50,12 +51,21 @@ class LineServiceTest {
     private StationResponse stationResponse4;
     private StationResponse stationResponse5;
 
+    @Autowired
+    public LineServiceTest(JdbcTemplate jdbcTemplate) {
+        StationDao stationDao = new StationDao(jdbcTemplate);
+        SectionDao sectionDao = new SectionDao(jdbcTemplate);
+        LineDao lineDao = new LineDao(jdbcTemplate);
+        JdbcStationRepository stationRepository = new JdbcStationRepository(stationDao);
+        JdbcSectionRepository sectionRepository = new JdbcSectionRepository(sectionDao, lineDao, stationRepository);
+
+        lineRepository = new JdbcLineRepository(lineDao, sectionRepository);
+        lineService = new LineService(lineRepository, stationRepository, sectionRepository);
+        stationService = new StationService(stationRepository);
+    }
+
     @BeforeEach
     void setUp() {
-        lineDao = new LineDao(jdbcTemplate);
-        lineService = new LineService(lineDao, new StationDao(jdbcTemplate), new SectionDao(jdbcTemplate));
-        StationService stationService = new StationService(new StationDao(jdbcTemplate));
-
         stationResponse1 = stationService.createStation(new StationRequest("선릉역"));
         stationResponse2 = stationService.createStation(new StationRequest("삼성역"));
         stationResponse3 = stationService.createStation(new StationRequest("종합운동장역"));
@@ -263,7 +273,7 @@ class LineServiceTest {
         lineService.createSection(lineId, sectionRequest);
 
         // then
-        Line line = lineDao.findById(lineId).get();
+        Line line = lineRepository.findById(lineId).get();
         boolean isCreatedSectionExisting = line.getSections().getValue()
                 .stream()
                 .anyMatch(section -> section.getUpStation().getId().equals(sectionRequest.getUpStationId())
@@ -285,7 +295,7 @@ class LineServiceTest {
         lineService.createSection(lineId, sectionRequest);
 
         // then
-        Sections sections = lineDao.findById(lineId).get().getSections();
+        Sections sections = lineRepository.findById(lineId).get().getSections();
         boolean isCreatedSectionExisting = sections.getValue()
                 .stream()
                 .anyMatch(section -> section.getUpStation().getId().equals(sectionRequest.getUpStationId())
@@ -307,7 +317,7 @@ class LineServiceTest {
         lineService.createSection(lineId, sectionRequest);
 
         // then
-        Sections sections = lineDao.findById(lineId).get().getSections();
+        Sections sections = lineRepository.findById(lineId).get().getSections();
         boolean isCreatedSectionExisting = sections.getValue()
                 .stream()
                 .anyMatch(section -> section.getUpStation().getId().equals(sectionRequest.getUpStationId())
@@ -374,7 +384,7 @@ class LineServiceTest {
         lineService.deleteStationById(lineId, upStationId);
 
         // then
-        int actual = lineDao.findById(lineId).get().getSections().getValue().size();
+        int actual = lineRepository.findById(lineId).get().getSections().getValue().size();
         assertThat(actual).isOne();
     }
 
@@ -393,7 +403,7 @@ class LineServiceTest {
         lineService.deleteStationById(lineId, downStationId);
 
         // then
-        int actual = lineDao.findById(lineId).get().getSections().getValue().size();
+        int actual = lineRepository.findById(lineId).get().getSections().getValue().size();
         assertThat(actual).isOne();
     }
 
@@ -412,7 +422,7 @@ class LineServiceTest {
         lineService.deleteStationById(lineId, downStationId);
 
         // then
-        int actual = lineDao.findById(lineId).get().getSections().getValue().size();
+        int actual = lineRepository.findById(lineId).get().getSections().getValue().size();
         assertThat(actual).isOne();
     }
 
