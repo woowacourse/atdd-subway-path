@@ -50,7 +50,7 @@ class PathServiceTest {
         // when
         PathResponse pathResponse = pathService.findShortestPath(stationId1, stationId3);
 
-        final List<String> stationNames = pathResponse.getStationResponses().stream()
+        final List<String> stationNames = pathResponse.getStations().stream()
                         .map(StationResponse::getName)
                         .collect(Collectors.toList());
 
