@@ -8,7 +8,7 @@ import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.station.Stations;
-import wooteco.subway.dto.PathResponse;
+import wooteco.subway.dto.path.PathResponse;
 import wooteco.subway.dto.station.StationResponse;
 import wooteco.subway.exception.DataNotExistException;
 import wooteco.subway.exception.SubwayException;
