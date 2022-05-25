@@ -9,8 +9,8 @@ import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
-import wooteco.subway.utils.exception.NameDuplicatedException;
-import wooteco.subway.utils.exception.SubwayException;
+import wooteco.subway.exception.NameDuplicatedException;
+import wooteco.subway.exception.SubwayException;
 
 @Transactional
 @Service
@@ -35,7 +35,7 @@ public class StationService {
 
     private void validateDuplicateName(final boolean isDuplicateName, final String name) {
         if (isDuplicateName) {
-            throw new NameDuplicatedException(NameDuplicatedException.NAME_DUPLICATE_MESSAGE + name);
+            throw new NameDuplicatedException(name);
         }
     }
 

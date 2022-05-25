@@ -13,9 +13,8 @@ import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.dto.StationResponse;
-import wooteco.subway.utils.exception.SectionCreateException;
-import wooteco.subway.utils.exception.SectionDeleteException;
+import wooteco.subway.exception.SectionCreateException;
+import wooteco.subway.exception.SectionDeleteException;
 
 public class SectionsTest {
 
@@ -133,9 +132,7 @@ public class SectionsTest {
         Sections sections = createInitialSections(신당역, 창신역);
         sections.add(createSection(2L, 동묘앞역, 창신역, 2));
 
-        assertThat(sections.sortSections()).containsExactly(new StationResponse(신당역),
-                new StationResponse(동묘앞역),
-                new StationResponse(창신역));
+        assertThat(sections.findStationsByLine()).containsExactly(신당역, 동묘앞역, 창신역);
     }
 
     private List<Section> getSections() {

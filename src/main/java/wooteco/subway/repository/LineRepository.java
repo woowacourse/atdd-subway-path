@@ -18,8 +18,8 @@ import wooteco.subway.domain.LineSection;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.utils.exception.IdNotFoundException;
-import wooteco.subway.utils.exception.NameDuplicatedException;
+import wooteco.subway.exception.IdNotFoundException;
+import wooteco.subway.exception.NameDuplicatedException;
 
 @Repository
 public class LineRepository {
@@ -28,6 +28,32 @@ public class LineRepository {
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
+
+    private final RowMapper<LineSection> lineSectionMapper = (resultSet, rowNum) -> {
+        long lineId = resultSet.getLong("line_id");
+        String name = resultSet.getString("name");
+        String color = resultSet.getString("color");
+        Line line = new Line(lineId, name, color);
+        long sectionId = resultSet.getLong("section_id");
+        long upStationId = resultSet.getLong("up_station_id");
+        long downStationId = resultSet.getLong("down_station_id");
+        String upStationName = resultSet.getString("up_station_name");
+        String downStationName = resultSet.getString("down_station_name");
+        int distance = resultSet.getInt("distance");
+        Section section = new Section(sectionId,
+                lineId,
+                new Station(upStationId, upStationName),
+                new Station(downStationId, downStationName),
+                distance);
+        return new LineSection(line, section);
+    };
+
+    private final RowMapper<Line> lineMapper = (resultSet, rowNum) -> {
+        long id = resultSet.getLong("id");
+        String name = resultSet.getString("name");
+        String color = resultSet.getString("color");
+        return new Line(id, name, color);
+    };
 
     public LineRepository(DataSource dataSource) {
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
@@ -45,7 +71,7 @@ public class LineRepository {
             return simpleJdbcInsert.executeAndReturnKey(parameters)
                     .longValue();
         } catch (DuplicateKeyException e) {
-            throw new NameDuplicatedException(NameDuplicatedException.NAME_DUPLICATE_MESSAGE + line.getName());
+            throw new NameDuplicatedException(line.getName());
         }
     }
 
@@ -59,7 +85,7 @@ public class LineRepository {
                 + "LEFT JOIN station AS us ON us.id = s.up_station_id "
                 + "LEFT JOIN station AS ds ON ds.id = s.down_station_id";
 
-        List<LineSection> lineSections = namedParameterJdbcTemplate.query(sql, joinRowMapper());
+        List<LineSection> lineSections = namedParameterJdbcTemplate.query(sql, lineSectionMapper);
         Map<Line, List<LineSection>> groupByLine = lineSections.stream()
                 .collect(Collectors.groupingBy(LineSection::getLine));
         return groupByLine.keySet()
@@ -72,9 +98,9 @@ public class LineRepository {
         String sql = "SELECT * FROM line WHERE id = :id";
         SqlParameterSource parameters = new MapSqlParameterSource("id", id);
         try {
-            return namedParameterJdbcTemplate.queryForObject(sql, parameters, rowMapper());
+            return namedParameterJdbcTemplate.queryForObject(sql, parameters, lineMapper);
         } catch (EmptyResultDataAccessException e) {
-            throw new IdNotFoundException(IdNotFoundException.NO_ID_MESSAGE + id);
+            throw new IdNotFoundException(id);
         }
     }
 
@@ -90,45 +116,15 @@ public class LineRepository {
         return Boolean.TRUE.equals(namedParameterJdbcTemplate.queryForObject(sql, parameters, Boolean.class));
     }
 
-    private RowMapper<Line> rowMapper() {
-        return (resultSet, rowNum) -> {
-            long id = resultSet.getLong("id");
-            String name = resultSet.getString("name");
-            String color = resultSet.getString("color");
-            return new Line(id, name, color);
-        };
-    }
-
-    private RowMapper<LineSection> joinRowMapper() {
-        return (resultSet, rowNum) -> {
-            long lineId = resultSet.getLong("line_id");
-            String name = resultSet.getString("name");
-            String color = resultSet.getString("color");
-            Line line = new Line(lineId, name, color);
-            long sectionId = resultSet.getLong("section_id");
-            long upStationId = resultSet.getLong("up_station_id");
-            long downStationId = resultSet.getLong("down_station_id");
-            String upStationName = resultSet.getString("up_station_name");
-            String downStationName = resultSet.getString("down_station_name");
-            int distance = resultSet.getInt("distance");
-            Section section = new Section(sectionId,
-                    lineId,
-                    new Station(upStationId, upStationName),
-                    new Station(downStationId, downStationName),
-                    distance);
-            return new LineSection(line, section);
-        };
-    }
-
     public void update(final Line line) {
         String sql = "UPDATE line SET name = :name, color = :color WHERE id = :id";
         SqlParameterSource nameParameters = new BeanPropertySqlParameterSource(line);
         try {
             namedParameterJdbcTemplate.update(sql, nameParameters);
         } catch (DuplicateKeyException e) {
-            throw new NameDuplicatedException(NameDuplicatedException.NAME_DUPLICATE_MESSAGE + line.getName());
+            throw new NameDuplicatedException(line.getName());
         } catch (EmptyResultDataAccessException e) {
-            throw new IdNotFoundException(IdNotFoundException.NO_ID_MESSAGE + line.getId());
+            throw new IdNotFoundException(line.getId());
         }
     }
 
@@ -137,7 +133,7 @@ public class LineRepository {
         SqlParameterSource parameters = new MapSqlParameterSource("id", id);
         int rowCounts = namedParameterJdbcTemplate.update(sql, parameters);
         if (rowCounts == NO_ROW) {
-            throw new IdNotFoundException(IdNotFoundException.NO_ID_MESSAGE + id);
+            throw new IdNotFoundException(id);
         }
     }
 }

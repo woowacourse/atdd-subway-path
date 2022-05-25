@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static wooteco.subway.TestFixtures.STANDARD_DISTANCE;
 import static wooteco.subway.TestFixtures.동묘앞역;
+import static wooteco.subway.TestFixtures.보문역;
 import static wooteco.subway.TestFixtures.신당역;
 import static wooteco.subway.TestFixtures.창신역;
 
@@ -88,4 +89,26 @@ class SectionRepositoryTest extends RepositoryTest {
         assertThat(sectionRepository.isStationExist(saved_동묘앞역.getId())).isTrue();
     }
 
+    @DisplayName("모든 구간을 조회한다.")
+    @Test
+    void findAll() {
+        Station saved_신당역 = stationRepository.save(신당역);
+        Station saved_동묘앞역 = stationRepository.save(동묘앞역);
+        Station saved_창신역 = stationRepository.save(창신역);
+        Station saved_보문역 = stationRepository.save(보문역);
+
+        Section firstSection = new Section(1L, saved_신당역, saved_동묘앞역, STANDARD_DISTANCE);
+        Long id1 = sectionRepository.save(firstSection);
+
+        Section secondSection = new Section(1L, saved_신당역, saved_창신역, STANDARD_DISTANCE);
+        Long id2 = sectionRepository.save(secondSection);
+
+        Section thirdSection = new Section(2L, saved_신당역, saved_보문역, STANDARD_DISTANCE);
+        Long id3 = sectionRepository.save(thirdSection);
+
+        assertThat(sectionRepository.findAll())
+                .containsExactly(new Section(id1, 1L, saved_신당역, saved_동묘앞역, STANDARD_DISTANCE),
+                        new Section(id2, 1L, saved_신당역, saved_창신역, STANDARD_DISTANCE),
+                        new Section(id3, 1L, saved_신당역, saved_보문역, STANDARD_DISTANCE));
+    }
 }

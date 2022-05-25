@@ -9,7 +9,7 @@ import static wooteco.subway.TestFixtures.창신역;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.utils.exception.SectionCreateException;
+import wooteco.subway.exception.SectionCreateException;
 
 public class SectionTest {
 

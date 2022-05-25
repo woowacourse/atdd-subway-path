@@ -10,11 +10,12 @@ import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
+import wooteco.subway.dto.LineUpdateRequest;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
-import wooteco.subway.utils.exception.NameDuplicatedException;
+import wooteco.subway.exception.NameDuplicatedException;
 
 @Transactional
 @Service
@@ -25,8 +26,8 @@ public class LineService {
     private final StationRepository stationRepository;
 
     public LineService(LineRepository lineRepository,
-                       SectionRepository sectionRepository,
-                       StationRepository stationRepository) {
+            SectionRepository sectionRepository,
+            StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.sectionRepository = sectionRepository;
         this.stationRepository = stationRepository;
@@ -51,7 +52,7 @@ public class LineService {
 
     private void validateDuplicateName(final boolean isDuplicateName, final String name) {
         if (isDuplicateName) {
-            throw new NameDuplicatedException(NameDuplicatedException.NAME_DUPLICATE_MESSAGE + name);
+            throw new NameDuplicatedException(name);
         }
     }
 
@@ -62,7 +63,7 @@ public class LineService {
                 .map(line -> new LineResponse(line.getId(),
                         line.getName(),
                         line.getColor(),
-                        line.getSections().sortSections()))
+                        toStationResponses(line.getSections().findStationsByLine())))
                 .collect(Collectors.toList());
     }
 
@@ -72,16 +73,23 @@ public class LineService {
         return new LineResponse(line.getId(),
                 line.getName(),
                 line.getColor(),
-                new Sections(sectionRepository.findByLineId(id)).sortSections());
+                toStationResponses(new Sections(sectionRepository.findByLineId(id))
+                        .findStationsByLine()));
     }
 
-    public void update(final Long id, final LineRequest lineRequest) {
+    private List<StationResponse> toStationResponses(List<Station> stations) {
+        return stations.stream()
+                .map(StationResponse::new)
+                .collect(Collectors.toList());
+    }
+
+    public void update(final Long id, final LineUpdateRequest lineUpdateRequest) {
         Line currentLine = lineRepository.findById(id);
-        String name = lineRequest.getName();
+        String name = lineUpdateRequest.getName();
         if (!currentLine.isSameName(name)) {
             validateDuplicateName(lineRepository.isNameExists(name), name);
         }
-        lineRepository.update(new Line(id, name, lineRequest.getColor()));
+        lineRepository.update(new Line(id, name, lineUpdateRequest.getColor()));
     }
 
     public void delete(final Long id) {

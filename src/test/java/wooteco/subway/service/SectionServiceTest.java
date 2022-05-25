@@ -21,11 +21,11 @@ import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationResponse;
+import wooteco.subway.exception.SectionCreateException;
+import wooteco.subway.exception.SectionDeleteException;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
-import wooteco.subway.utils.exception.SectionCreateException;
-import wooteco.subway.utils.exception.SectionDeleteException;
 
 @Transactional
 @SpringBootTest
@@ -168,7 +168,6 @@ class SectionServiceTest {
     void deleteOneSectionException() {
         Station saved_신당역 = createStation(신당역);
         Station saved_동묘앞역 = createStation(동묘앞역);
-        Station saved_창신역 = createStation(창신역);
         Line lineSix = createLine(LINE_SIX, LINE_COLOR);
         sectionRepository.save(new Section(lineSix.getId(), saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
 
