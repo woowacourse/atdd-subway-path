@@ -6,7 +6,6 @@ import wooteco.subway.domain.discountpolicy.AgeDiscountPolicy;
 public class Fare {
 
     private static final int DEFAULT_FARE = 1250;
-    private static final int DEFAULT_EXTRA_LINE_FARE = 0;
     private static final int ADDITIONAL_DISTANCE_PER_5KM = 10;
     private static final int ADDITIONAL_DISTANCE_PER_8KM = 51;
     private static final int DISTANCE_UNIT_UNDER_50 = 5;
