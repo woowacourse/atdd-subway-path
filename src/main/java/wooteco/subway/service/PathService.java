@@ -27,26 +27,24 @@ public class PathService {
     private final LineDao lineDao;
     private final SectionDao sectionDao;
     private final PathFindStrategy pathFindStrategy;
+    private final PricingStrategy pricingStrategy;
     private final DiscountStrategy discountStrategy;
-    private final List<PricingStrategy> pricingStrategies;
 
     public PathService(StationDao stationDao, LineDao lineDao, SectionDao sectionDao,
                        @Qualifier("MinimumDistance") PathFindStrategy pathFindStrategy,
-                       @Qualifier("Age") DiscountStrategy discountStrategy,
-                       List<PricingStrategy> pricingStrategies) {
+                       @Qualifier("All") PricingStrategy pricingStrategy,
+                       @Qualifier("Age") DiscountStrategy discountStrategy) {
         this.stationDao = stationDao;
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.pathFindStrategy = pathFindStrategy;
+        this.pricingStrategy = pricingStrategy;
         this.discountStrategy = discountStrategy;
-        this.pricingStrategies = pricingStrategies;
     }
 
     public PathResponse searchPaths(PathRequest pathRequest) {
         Path path = getPath(pathFindStrategy, pathRequest.getSource(), pathRequest.getTarget());
-        int fare = pricingStrategies.stream()
-                .mapToInt(it -> getFare(it, path))
-                .sum();
+        int fare = getFare(path);
         int discountFare = applyFare(discountStrategy, pathRequest.getAge(), fare);
 
         return new PathResponse(
@@ -61,7 +59,7 @@ public class PathService {
         return discountStrategy.discount(specification);
     }
 
-    private int getFare(PricingStrategy pricingStrategy, Path path) {
+    private int getFare(Path path) {
         FareCacluateSpecification fareCacluateSpecification = new FareCacluateSpecification(path.getSectionsInPath(), lineDao.findAll());
         return pricingStrategy.calculateFee(fareCacluateSpecification);
     }
