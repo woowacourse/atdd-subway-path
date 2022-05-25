@@ -13,6 +13,7 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.PathCalculator;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.service.dto.request.PathRequest;
 import wooteco.subway.service.dto.response.PathResponse;
 
 @Service
@@ -30,7 +31,10 @@ public class PathService {
         this.lineDao = lineDao;
     }
 
-    public PathResponse findShortestPath(final Long sourceId, final Long targetId) {
+    public PathResponse findShortestPath(final PathRequest pathRequest) {
+        final Long sourceId = pathRequest.getSource();
+        final Long targetId = pathRequest.getTarget();
+        final int age = pathRequest.getAge();
         final List<Section> sections = sectionDao.findAll();
 
         final PathCalculator pathCalculator = new PathCalculator(sections);
@@ -39,7 +43,7 @@ public class PathService {
         final int extraFare = getExtraFare(stationIds);
         final double fare = Fare.calculate(distance, extraFare);
 
-        return PathResponse.from(convertStation(stationIds), distance, fare);
+        return PathResponse.from(convertStation(stationIds), distance, Fare.discount(fare, age));
     }
 
     private int getExtraFare(final List<Long> stationIds) {

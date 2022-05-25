@@ -23,7 +23,7 @@ public class PathController {
 
     @GetMapping
     public ResponseEntity<PathResponse> showPath(@ModelAttribute @Valid PathRequest pathRequest) {
-        final PathResponse pathResponse = pathService.findShortestPath(pathRequest.getSource(), pathRequest.getTarget());
+        final PathResponse pathResponse = pathService.findShortestPath(pathRequest);
         return ResponseEntity.ok().body(pathResponse);
     }
 }
