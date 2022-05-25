@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import wooteco.subway.domain.station.Station;
 
 public class Sections {
 
@@ -16,7 +17,7 @@ public class Sections {
     private static final String NO_STATIONS_IN_LINE_ERROR = "해당 구간은 기존 노선과 이어지지 않습니다.\n -> %s";
     private static final String NO_STATION_IN_SECTION_ERROR = "해당 역은 구간에 포함되지 않습니다.\n -> stationId: %d";
     private static final String DUPLICATED_SECTION_LIST_ERROR = "해당 구간은 이미 등록되어 있습니다.\n -> upStationId: %d, downStationId: %d";
-    private static final String CREATE_CROSSROADS_LIST_ERROR = "갈림길을 생성할 수 없습니다.\n -> %s";
+    private static final String CREATE_CROSSROADS_LIST_ERROR = "갈림길을 생성할 수 없습니다.";
     private static final String MIN_STATIONS_COUNT_ERROR = String.format("노선은 최소 %d개의 역을 갖고 있어야 합니다.",
             MIN_SECTION_COUNT);
 
@@ -28,8 +29,8 @@ public class Sections {
 
     public List<Long> getSortedStationIds() {
         List<Long> ids = new LinkedList<>();
-        addUpStationIds(ids, value.get(0).getDownStationId());
-        addDownStationIds(ids, value.get(0).getUpStationId());
+        addUpStationIds(ids, value.get(0).getDownStation().getId());
+        addDownStationIds(ids, value.get(0).getUpStation().getId());
 
         return ids;
     }
@@ -44,7 +45,9 @@ public class Sections {
 
     private Map<Long, Long> initMapByUpStationKey() {
         return value.stream()
-                .collect(Collectors.toMap(Section::getUpStationId, Section::getDownStationId));
+                .collect(Collectors.toMap(section -> section.getUpStation().getId(),
+                        section -> section.getDownStation().getId()
+                        , (section1, section2) -> section1));
     }
 
     private void addDownStationIds(List<Long> ids, Long nowId) {
@@ -57,7 +60,8 @@ public class Sections {
 
     private Map<Long, Long> initMapByDownStationKey() {
         return value.stream()
-                .collect(Collectors.toMap(Section::getDownStationId, Section::getUpStationId));
+                .collect(Collectors.toMap(section -> section.getDownStation().getId(),
+                        section -> section.getUpStation().getId()));
     }
 
     /**
@@ -68,47 +72,50 @@ public class Sections {
      */
     public Optional<Section> findUpdateWhenAdd(Section newSection) {
         validNewSection(newSection);
+        validCrossPath(newSection);
 
-        for (Section section : value) {
-            validCrossPath(newSection, section);
+        Optional<Section> section = value.stream()
+                .filter(newSection::isSameUpStationId)
+                .findAny();
 
-            if (newSection.isSameUpStationId(section)) {
-                section.updateUpStationId(newSection.getDownStationId());
-                section.reduceDistance(newSection);
-                return Optional.of(section);
-            }
-        }
-        return Optional.empty();
+        section.ifPresent(it -> {
+            it.updateUpStationId(newSection.getDownStation());
+            it.reduceDistance(newSection);
+        });
+
+        return section;
     }
 
-    private void validCrossPath(Section newSection, Section existSection) {
-        if (newSection.isSameDownStationId(existSection)) {
-            throw new IllegalArgumentException(String.format(CREATE_CROSSROADS_LIST_ERROR, newSection));
+    private void validCrossPath(Section existSection) {
+        boolean result = value.stream()
+                .anyMatch(existSection::isSameDownStationId);
+        if (result) {
+            throw new IllegalArgumentException(CREATE_CROSSROADS_LIST_ERROR);
         }
     }
 
     private void validNewSection(Section section) {
-        Set<Long> allSectionIds = findStationIds();
-        Long downStationId = section.getDownStationId();
-        Long upStationId = section.getUpStationId();
+        Set<Station> allSectionIds = findStations();
+        Station downStation = section.getDownStation();
+        Station upStation = section.getUpStation();
 
-        if (!allSectionIds.contains(downStationId) && !allSectionIds.contains(upStationId)) {
+        if (!allSectionIds.contains(downStation) && !allSectionIds.contains(upStation)) {
             throw new IllegalArgumentException(String.format(NO_STATIONS_IN_LINE_ERROR, section));
         }
 
-        if (allSectionIds.containsAll(List.of(downStationId, upStationId))) {
+        if (allSectionIds.containsAll(List.of(downStation, upStation))) {
             throw new IllegalArgumentException(
-                    String.format(DUPLICATED_SECTION_LIST_ERROR, upStationId, downStationId));
+                    String.format(DUPLICATED_SECTION_LIST_ERROR, upStation.getId(), downStation.getId()));
         }
     }
 
-    private Set<Long> findStationIds() {
-        Set<Long> ids = new HashSet<>();
+    private Set<Station> findStations() {
+        Set<Station> stations = new HashSet<>();
         for (Section section : value) {
-            ids.add(section.getUpStationId());
-            ids.add(section.getDownStationId());
+            stations.add(section.getUpStation());
+            stations.add(section.getDownStation());
         }
-        return ids;
+        return stations;
     }
 
     /**
@@ -144,7 +151,7 @@ public class Sections {
 
         Section removedSection = findByDownStationId(stationId);
         Section updatedSection = findByUpStationId(stationId);
-        updatedSection.updateUpStationId(removedSection.getUpStationId());
+        updatedSection.updateUpStationId(removedSection.getUpStation());
         updatedSection.addDistance(removedSection);
 
         return Optional.of(updatedSection);

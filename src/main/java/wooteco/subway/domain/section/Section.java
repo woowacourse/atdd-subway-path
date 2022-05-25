@@ -1,6 +1,7 @@
 package wooteco.subway.domain.section;
 
 import java.util.Objects;
+import wooteco.subway.domain.station.Station;
 
 public class Section {
 
@@ -10,26 +11,26 @@ public class Section {
 
     private Long id;
     private Long lineId;
-    private Long upStationId;
-    private Long downStationId;
+    private Station upStation;
+    private Station downStation;
     private int distance;
 
-    public Section(Long id, Long lineId, Long upStationId, Long downStationId, int distance) {
-        validSection(upStationId, downStationId, distance);
+    public Section(Long id, Long lineId, Station upStation, Station downStation, int distance) {
+        validSection(upStation, downStation, distance);
         this.id = id;
         this.lineId = lineId;
-        this.upStationId = upStationId;
-        this.downStationId = downStationId;
+        this.upStation = upStation;
+        this.downStation = downStation;
         this.distance = distance;
     }
 
-    public Section(Long lineId, Long upStationId, Long downStationId, int distance) {
-        this(null, lineId, upStationId, downStationId, distance);
+    public Section(Long lineId, Station upStation, Station downStation, int distance) {
+        this(null, lineId, upStation, downStation, distance);
     }
 
-    private void validSection(Long upStationId, Long downStationId, int distance) {
+    private void validSection(Station upStation, Station downStation, int distance) {
         validDistance(distance);
-        validStations(upStationId, downStationId);
+        validStations(upStation.getId(), downStation.getId());
     }
 
     private void validDistance(int distance) {
@@ -54,24 +55,24 @@ public class Section {
     }
 
     public boolean isSameDownStationId(Section section) {
-        return isSameDownStationId(section.downStationId);
+        return isSameDownStationId(section.downStation.getId());
     }
 
     public boolean isSameDownStationId(Long id) {
-        return id.equals(downStationId);
+        return id.equals(downStation.getId());
     }
 
     public boolean isSameUpStationId(Section section) {
-        return isSameUpStationId(section.upStationId);
+        return isSameUpStationId(section.upStation.getId());
     }
 
     public boolean isSameUpStationId(Long id) {
-        return id.equals(upStationId);
+        return id.equals(upStation.getId());
     }
 
-    public void updateUpStationId(Long id) {
-        validStations(id, downStationId);
-        this.upStationId = id;
+    public void updateUpStationId(Station newStation) {
+        validStations(newStation.getId(), downStation.getId());
+        this.upStation = newStation;
     }
 
     public Long getId() {
@@ -82,12 +83,12 @@ public class Section {
         return lineId;
     }
 
-    public Long getUpStationId() {
-        return upStationId;
+    public Station getUpStation() {
+        return upStation;
     }
 
-    public Long getDownStationId() {
-        return downStationId;
+    public Station getDownStation() {
+        return downStation;
     }
 
     public int getDistance() {
@@ -104,13 +105,13 @@ public class Section {
         }
         Section section = (Section) o;
         return distance == section.distance && Objects.equals(id, section.id) && Objects.equals(lineId,
-                section.lineId) && Objects.equals(upStationId, section.upStationId) && Objects.equals(
-                downStationId, section.downStationId);
+                section.lineId) && Objects.equals(upStation, section.upStation) && Objects.equals(
+                downStation, section.downStation);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, lineId, upStationId, downStationId, distance);
+        return Objects.hash(id, lineId, upStation, downStation, distance);
     }
 
     @Override
@@ -118,8 +119,8 @@ public class Section {
         return "Section{" +
                 "id=" + id +
                 ", lineId=" + lineId +
-                ", upStationId=" + upStationId +
-                ", downStationId=" + downStationId +
+                ", upStation=" + upStation +
+                ", downStation=" + downStation +
                 ", distance=" + distance +
                 '}';
     }

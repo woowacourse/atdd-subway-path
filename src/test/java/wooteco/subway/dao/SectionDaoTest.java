@@ -20,9 +20,9 @@ class SectionDaoTest {
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
 
-    private Long lineId;
-    private Long stationId1;
-    private Long stationId2;
+    private final Long lineId = 1L;
+    private Station station1;
+    private Station station2;
     private Long sectionId;
 
     private SectionDao sectionDao;
@@ -30,15 +30,18 @@ class SectionDaoTest {
 
     @BeforeEach
     void init() {
-        StationDao stationDao = new StationDao(jdbcTemplate);
         sectionDao = new SectionDao(jdbcTemplate);
 
-        lineId = 1L;
+        StationDao stationDao = new StationDao(jdbcTemplate);
+        station1 = saveNewStation(stationDao, "강남역");
+        station2 = saveNewStation(stationDao, "왕십리역");
 
-        stationId1 = stationDao.save(new Station("강남역"));
-        stationId2 = stationDao.save(new Station("왕십리역"));
+        sectionId = sectionDao.save(new Section(lineId, station1, station2, 10));
+    }
 
-        sectionId = sectionDao.save(new Section(lineId, stationId1, stationId2, 10));
+    private Station saveNewStation(StationDao stationDao, String name) {
+        Long id = stationDao.save(new Station(name));
+        return new Station(id, name);
     }
 
     @DisplayName("구간 전체 조회")
@@ -71,7 +74,7 @@ class SectionDaoTest {
         // given
 
         // when
-        List<Section> sections = sectionDao.findByStationId(stationId1);
+        List<Section> sections = sectionDao.findByStationId(station1.getId());
 
         // then
         assertThat(sections.size()).isEqualTo(1);
@@ -83,7 +86,7 @@ class SectionDaoTest {
         // given
 
         // when
-        List<Section> sections = sectionDao.findByLineIdAndStationId(lineId, stationId2);
+        List<Section> sections = sectionDao.findByLineIdAndStationId(lineId, station2.getId());
 
         // then
         assertThat(sections.size()).isEqualTo(1);
@@ -93,10 +96,10 @@ class SectionDaoTest {
     @Test
     void save() {
         // given
-        SectionRequest section = new SectionRequest(stationId1, stationId2, 10);
+        SectionRequest section = new SectionRequest(station1.getId(), station2.getId(), 10);
 
         // when
-        Long id = sectionDao.save(section.toEntity(lineId));
+        Long id = sectionDao.save(section.toEntity(lineId, station1, station2));
 
         // then
         assertThat(id).isEqualTo(sectionId + 1);
@@ -106,7 +109,7 @@ class SectionDaoTest {
     @Test
     void update() {
         // given
-        Section updateSection = new Section(sectionId, lineId, stationId2, stationId1, 30);
+        Section updateSection = new Section(sectionId, lineId, station2, station1, 30);
 
         // when
         sectionDao.update(updateSection);

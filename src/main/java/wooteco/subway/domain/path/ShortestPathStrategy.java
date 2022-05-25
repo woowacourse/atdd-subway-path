@@ -1,49 +1,39 @@
 package wooteco.subway.domain.path;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.station.Station;
 
 public class ShortestPathStrategy implements PathStrategy {
 
     private final DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath;
 
-    public ShortestPathStrategy(List<Station> stations, List<Section> sections) {
+    public ShortestPathStrategy(List<Section> sections) {
         WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph<>(SectionEdge.class);
-        setVertex(graph, stations);
-        setEdgeWeight(graph, sections, stations);
+        setVertex(graph, sections);
+        setEdgeWeight(graph, sections);
         dijkstraShortestPath = new DijkstraShortestPath<>(graph);
     }
 
-    private void setVertex(WeightedMultigraph<Station, SectionEdge> graph, List<Station> stations) {
-        stations.forEach(graph::addVertex);
+    private void setVertex(WeightedMultigraph<Station, SectionEdge> graph, List<Section> sections) {
+        sections.forEach((section) -> {
+            graph.addVertex(section.getDownStation());
+            graph.addVertex(section.getUpStation());
+        });
     }
 
-    private void setEdgeWeight(WeightedMultigraph<Station, SectionEdge> graph,
-                               List<Section> sections, List<Station> stations) {
-        Map<Long, Station> sectionMap = initSectionMap(stations);
-
+    private void setEdgeWeight(WeightedMultigraph<Station, SectionEdge> graph, List<Section> sections) {
         for (Section section : sections) {
-            Station downStation = sectionMap.get(section.getDownStationId());
-            Station upStation = sectionMap.get(section.getUpStationId());
+            Station downStation = section.getDownStation();
+            Station upStation = section.getUpStation();
             SectionEdge sectionEdge = new SectionEdge(section.getLineId(), section.getDistance());
 
             graph.addEdge(downStation, upStation, sectionEdge);
         }
-    }
-
-    private Map<Long, Station> initSectionMap(List<Station> stations) {
-        Map<Long, Station> sectionMap = new HashMap<>();
-        for (Station station : stations) {
-            sectionMap.put(station.getId(), station);
-        }
-        return sectionMap;
     }
 
     public List<Station> findPath(Station source, Station target) {

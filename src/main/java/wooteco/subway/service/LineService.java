@@ -47,7 +47,9 @@ public class LineService {
         Long lineId = lineDao.save(line);
 
         SectionRequest sectionRequest = SectionRequest.from(line);
-        sectionDao.save(sectionRequest.toEntity(lineId));
+        sectionDao.save(sectionRequest.toEntity(lineId
+                , stationDao.findById(sectionRequest.getUpStationId())
+                , stationDao.findById(sectionRequest.getDownStationId())));
 
         List<StationResponse> stations = generateStationResponses(line.getDownStationId(), line.getUpStationId());
         return new LineResponse(lineId, line.getName(), line.getColor(), line.getExtraFare(), stations);
