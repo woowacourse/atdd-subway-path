@@ -11,15 +11,15 @@ public class Section {
 
     private final Long id;
     private final Long lineId;
-    private Station upStation;
-    private Station downStation;
-    private int distance;
+    private final Station upStation;
+    private final Station downStation;
+    private final int distance;
 
     public Section(final Long id,
-                   final Long lineId,
-                   final Station upStation,
-                   final Station downStation,
-                   final int distance) {
+            final Long lineId,
+            final Station upStation,
+            final Station downStation,
+            final int distance) {
         validateDistance(distance);
         validateSameSection(upStation, downStation);
         this.id = id;
@@ -62,18 +62,8 @@ public class Section {
         return downStation.equals(station);
     }
 
-    public void updateSection(final Station upStation, final Station downStation, final int distance) {
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = subtractDistance(distance);
-    }
-
     public boolean isLongerThan(final int distance) {
         return this.distance > distance;
-    }
-
-    private int subtractDistance(final int distance) {
-        return this.distance -= distance;
     }
 
     public boolean isUpdate(final Section section) {

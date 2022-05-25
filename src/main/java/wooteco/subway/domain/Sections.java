@@ -99,15 +99,22 @@ public class Sections {
     private void insertAtUpStation(final Section newSection, final Section foundSection) {
         Station newUpStation = newSection.getDownStation();
         Station newDownStation = foundSection.getDownStation();
-        foundSection.updateSection(newUpStation, newDownStation, newSection.getDistance());
+        updateSection(foundSection, newUpStation, newDownStation, newSection.getDistance());
         values.add(newSection);
     }
 
     private void insertAtDownStation(final Section newSection, final Section foundSection) {
         Station newUpStation = foundSection.getUpStation();
         Station newDownStation = newSection.getUpStation();
-        foundSection.updateSection(newUpStation, newDownStation, newSection.getDistance());
+        updateSection(foundSection, newUpStation, newDownStation, newSection.getDistance());
         values.add(newSection);
+    }
+
+    private void updateSection(final Section foundSection, final Station newUpStation, final Station newDownStation,
+            final int distance) {
+        values.remove(foundSection);
+        values.add(new Section(foundSection.getId(), foundSection.getLineId(), newUpStation, newDownStation,
+                foundSection.getDistance() - distance));
     }
 
     private void validateCutInDistance(final Section section, final Section foundSection) {
