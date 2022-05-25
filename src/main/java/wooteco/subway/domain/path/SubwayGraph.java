@@ -51,6 +51,7 @@ public class SubwayGraph implements ShortestPath {
         }
     }
 
+    @Override
     public Long getExpensiveLineId(Station source, Station target) {
         return graph.getPath(source, target).getEdgeList().stream()
                 .mapToLong(DefaultWeightedEdgeCustom::getLineId)
