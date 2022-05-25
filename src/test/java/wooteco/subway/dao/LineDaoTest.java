@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import wooteco.subway.domain.line.Line;
-import wooteco.subway.ui.dto.LineCreateRequest;
-import wooteco.subway.ui.dto.LineRequest;
 
 @JdbcTest
 class LineDaoTest {
@@ -28,15 +26,15 @@ class LineDaoTest {
     @BeforeEach
     void init() {
         lineDao = new LineDao(jdbcTemplate);
-        lineId1 = lineDao.save(new LineCreateRequest("신분당선", "red", 1L, 2L, 2, 500));
-        lineId2 = lineDao.save(new LineCreateRequest("2호선", "green", 1L, 2L, 2, 0));
+        lineId1 = lineDao.save(new Line("신분당선", "red", 500));
+        lineId2 = lineDao.save(new Line("2호선", "green", 0));
     }
 
     @DisplayName("노선 저장")
     @Test
     void save() {
         // given
-        LineCreateRequest line = new LineCreateRequest("분당선", "yellow", 1L, 2L, 2, 0);
+        Line line = new Line("분당선", "yellow", 0);
 
         // when
         Long id = lineDao.save(line);
@@ -126,10 +124,10 @@ class LineDaoTest {
     @Test
     void update() {
         // given
-        LineRequest lineRequest = new LineRequest("신분당선", "pink", 0);
+        Line lineRequest = new Line(lineId1, "신분당선", "pink", 0);
 
         // when
-        lineDao.update(lineId1, lineRequest);
+        lineDao.update(lineRequest);
 
         // then
         Optional<Line> line = lineDao.findById(lineId1);

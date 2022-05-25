@@ -16,6 +16,10 @@ public class Line {
         this.extraFare = extraFare;
     }
 
+    public Line(String name, String color, int extraFare) {
+        this(null, name, color, extraFare);
+    }
+
     public Long getId() {
         return id;
     }

@@ -13,8 +13,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.line.Line;
-import wooteco.subway.ui.dto.LineCreateRequest;
-import wooteco.subway.ui.dto.LineRequest;
 
 @Repository
 public class LineDao {
@@ -31,7 +29,7 @@ public class LineDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Long save(LineCreateRequest line) {
+    public Long save(Line line) {
         String sql = "insert into LINE (name, color, extra_fare) values (:name, :color, :extraFare)";
         SqlParameterSource source = new BeanPropertySqlParameterSource(line);
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -80,12 +78,9 @@ public class LineDao {
         return jdbcTemplate.query(sql, source, eventRowMapper);
     }
 
-    public void update(Long id, LineRequest lineRequest) {
+    public void update(Line line) {
         String sql = "update LINE set name=:name, color=:color where id=:id";
-        MapSqlParameterSource source = new MapSqlParameterSource();
-        source.addValue("id", id);
-        source.addValue("color", lineRequest.getColor());
-        source.addValue("name", lineRequest.getName());
+        SqlParameterSource source = new BeanPropertySqlParameterSource(line);
         jdbcTemplate.update(sql, source);
     }
 

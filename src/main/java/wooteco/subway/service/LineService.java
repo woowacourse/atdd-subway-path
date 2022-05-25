@@ -44,7 +44,7 @@ public class LineService {
         validDuplicatedName(line.getName());
         validStations(line.getDownStationId(), line.getUpStationId());
 
-        Long lineId = lineDao.save(line);
+        Long lineId = lineDao.save(line.toEntity());
 
         SectionRequest sectionRequest = SectionRequest.from(line);
         sectionDao.save(sectionRequest.toEntity(lineId
@@ -81,7 +81,7 @@ public class LineService {
 
     public void update(Long id, LineRequest lineRequest) {
         validDuplicatedNameWithoutId(lineRequest.getName(), id);
-        lineDao.update(id, lineRequest);
+        lineDao.update(lineRequest.toEntity(id));
     }
 
     private void validDuplicatedNameWithoutId(String name, Long id) {
