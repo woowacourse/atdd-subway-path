@@ -1,16 +1,17 @@
 package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.dto.StationResponse;
 
 @DisplayName("구간 관련 기능")
 @Sql("classpath:setUp_test_db.sql")
@@ -26,7 +27,13 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 구간_response = httpPost("/lines/1/sections", 구간_param);
 
         // then
-        assertThat(구간_response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        List<StationResponse> 전체_구간_response = httpGet("/lines/1").jsonPath().get("stations");
+        assertAll(
+                () -> assertThat(구간_response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(전체_구간_response).hasSize(3)
+                        .extracting("name")
+                        .containsExactly("선릉역", "강남역", "역삼역")
+        );
     }
 
     @Test
@@ -39,7 +46,14 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 구간_response = httpPost("/lines/1/sections", 구간_param);
 
         // then
-        assertThat(구간_response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        List<StationResponse> 전체_구간_response = httpGet("/lines/1").jsonPath().get("stations");
+        assertAll(
+                () -> assertThat(구간_response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(전체_구간_response).hasSize(3)
+                        .extracting("name")
+                        .containsExactly("강남역", "역삼역", "선릉역")
+        );
+
     }
 
     @Test
@@ -52,7 +66,13 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> 구간_응답 = httpPost("/lines/1/sections", 구간_param);
 
         // then
-        assertThat(구간_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+        List<StationResponse> 전체_구간_response = httpGet("/lines/1").jsonPath().get("stations");
+        assertAll(
+                () -> assertThat(구간_응답.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(전체_구간_response).hasSize(3)
+                        .extracting("name")
+                        .containsExactly("강남역", "역삼역", "선릉역")
+        );
     }
 
     @Test
@@ -66,7 +86,14 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 삭제_응답 = httpDelete("/lines/1/sections?stationId=1");
 
         // then
-        assertThat(삭제_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+        List<StationResponse> 전체_구간_response = httpGet("/lines/1").jsonPath().get("stations");
+        assertAll(
+                () -> assertThat(삭제_응답.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(전체_구간_response).hasSize(2)
+                        .extracting("name")
+                        .containsExactly("역삼역", "선릉역")
+        );
+
     }
 
     @Test
@@ -80,6 +107,13 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> 삭제_응답 = httpDelete("/lines/1/sections?stationId=2");
 
         // then
-        assertThat(삭제_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+        List<StationResponse> 전체_구간_response = httpGet("/lines/1").jsonPath().get("stations");
+        assertAll(
+                () -> assertThat(삭제_응답.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(전체_구간_response).hasSize(2)
+                        .extracting("name")
+                        .containsExactly("강남역", "선릉역")
+        );
+
     }
 }

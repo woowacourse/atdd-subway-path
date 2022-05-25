@@ -34,7 +34,7 @@ class SectionServiceTest {
         Long stationSaveId2 = stationDao.save(new Station("역삼역"));
         Long stationSaveId3 = stationDao.save(new Station("선릉역"));
 
-        Long lineId = lineService.save(new LineRequest("신분당선", "bg-red-600", stationSaveId1, stationSaveId2, 10));
+        Long lineId = lineService.save(new LineRequest("신분당선", "bg-red-600", stationSaveId1, stationSaveId2, 10, 1000));
 
         // when
         sectionService.add(lineId, new SectionRequest(stationSaveId3, stationSaveId1, 4));
@@ -52,7 +52,7 @@ class SectionServiceTest {
         Long stationSaveId1 = stationDao.save(new Station("강남역"));
         Long stationSaveId2 = stationDao.save(new Station("역삼역"));
         Long stationSaveId3 = stationDao.save(new Station("선릉역"));
-        Long lineId = lineService.save(new LineRequest("신분당선", "bg-red-600", stationSaveId1, stationSaveId2, 10));
+        Long lineId = lineService.save(new LineRequest("신분당선", "bg-red-600", stationSaveId1, stationSaveId2, 10, 1000));
 
         // when
         sectionService.add(lineId, new SectionRequest(stationSaveId2, stationSaveId3, 4));
@@ -71,7 +71,7 @@ class SectionServiceTest {
         Long stationSaveId2 = stationDao.save(new Station("역삼역"));
         Long stationSaveId3 = stationDao.save(new Station("선릉역"));
         Long stationSaveId4 = stationDao.save(new Station("잠실역"));
-        Long lineId = lineService.save(new LineRequest("신분당선", "bg-red-600", stationSaveId1, stationSaveId2, 10));
+        Long lineId = lineService.save(new LineRequest("신분당선", "bg-red-600", stationSaveId1, stationSaveId2, 10, 1000));
         sectionService.add(lineId, new SectionRequest(stationSaveId2, stationSaveId3, 4));
 
         // when
@@ -91,7 +91,7 @@ class SectionServiceTest {
         Long stationSaveId2 = stationDao.save(new Station("역삼역"));
         Long stationSaveId3 = stationDao.save(new Station("선릉역"));
         Long stationSaveId4 = stationDao.save(new Station("잠실역"));
-        Long lineId = lineService.save(new LineRequest("신분당선", "bg-red-600", stationSaveId1, stationSaveId2, 10));
+        Long lineId = lineService.save(new LineRequest("신분당선", "bg-red-600", stationSaveId1, stationSaveId2, 10, 1000));
         sectionService.add(lineId, new SectionRequest(stationSaveId2, stationSaveId3, 4));
 
         // when
@@ -110,7 +110,7 @@ class SectionServiceTest {
         Long stationSaveId1 = stationDao.save(new Station("강남역"));
         Long stationSaveId2 = stationDao.save(new Station("역삼역"));
         Long stationSaveId3 = stationDao.save(new Station("선릉역"));
-        Long lineId = lineService.save(new LineRequest("신분당선", "bg-red-600", stationSaveId1, stationSaveId2, 10));
+        Long lineId = lineService.save(new LineRequest("신분당선", "bg-red-600", stationSaveId1, stationSaveId2, 10, 1000));
         sectionService.add(lineId, new SectionRequest(stationSaveId2, stationSaveId3, 4));
 
         // when & then

@@ -32,15 +32,15 @@ class LineServiceTest {
         Station station2 = new Station("더새로운역");
         Long stationSaveId1 = stationDao.save(station1);
         Long stationSaveId2 = stationDao.save(station2);
-        LineRequest request = new LineRequest("신분당선", "bg-red-600", stationSaveId1, stationSaveId2, 10);
+        LineRequest request = new LineRequest("신분당선", "bg-red-600", stationSaveId1, stationSaveId2, 10, 1000);
 
         // when
         Long savedId = lineService.save(request);
 
         // then
         LineResponse response = lineService.findById(savedId);
-        assertThat(response).extracting("name", "color")
-                .contains("신분당선", "bg-red-600");
+        assertThat(response).extracting("name", "color", "extraFare")
+                .contains("신분당선", "bg-red-600", 1000);
     }
 
     @Test
@@ -51,8 +51,8 @@ class LineServiceTest {
         Station station2 = new Station("더새로운역");
         Long stationSaveId1 = stationDao.save(station1);
         Long stationSaveId2 = stationDao.save(station2);
-        LineRequest request1 = new LineRequest("신분당선", "bg-red-600", stationSaveId1, stationSaveId2, 10);
-        LineRequest request2 = new LineRequest("분당선", "bg-green-600", stationSaveId1, stationSaveId2, 10);
+        LineRequest request1 = new LineRequest("신분당선", "bg-red-600", stationSaveId1, stationSaveId2, 10, 1000);
+        LineRequest request2 = new LineRequest("분당선", "bg-green-600", stationSaveId1, stationSaveId2, 10, 1000);
         lineService.save(request1);
         lineService.save(request2);
 
@@ -61,10 +61,10 @@ class LineServiceTest {
 
         // then
         assertThat(responses).hasSize(2)
-                .extracting("name", "color")
+                .extracting("name", "color", "extraFare")
                 .contains(
-                        tuple("신분당선", "bg-red-600"),
-                        tuple("분당선", "bg-green-600")
+                        tuple("신분당선", "bg-red-600", 1000),
+                        tuple("분당선", "bg-green-600", 1000)
                 );
     }
 
@@ -76,7 +76,7 @@ class LineServiceTest {
         Station station2 = new Station("더새로운역");
         Long stationSaveId1 = stationDao.save(station1);
         Long stationSaveId2 = stationDao.save(station2);
-        LineRequest request = new LineRequest("신분당선", "bg-red-600", stationSaveId1, stationSaveId2, 10);
+        LineRequest request = new LineRequest("신분당선", "bg-red-600", stationSaveId1, stationSaveId2, 10, 1000);
         Long saveId = lineService.save(request);
 
         // when
@@ -97,7 +97,7 @@ class LineServiceTest {
         Station station2 = new Station("더새로운역");
         Long stationSaveId1 = stationDao.save(station1);
         Long stationSaveId2 = stationDao.save(station2);
-        LineRequest request = new LineRequest("신분당선", "bg-red-600", stationSaveId1, stationSaveId2, 10);
+        LineRequest request = new LineRequest("신분당선", "bg-red-600", stationSaveId1, stationSaveId2, 10, 1000);
         Long saveId = lineService.save(request);
 
         // when & then

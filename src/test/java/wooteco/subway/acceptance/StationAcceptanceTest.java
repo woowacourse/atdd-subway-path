@@ -2,6 +2,7 @@ package wooteco.subway.acceptance;
 
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -26,8 +27,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 역_응답 = httpPost("/stations", 역_요청);
 
         // then
-        assertThat(역_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(역_응답.header("Location")).isNotBlank();
+        assertAll(
+                () -> assertThat(역_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+                () -> assertThat(역_응답.header("Location")).isNotBlank()
+        );
     }
 
     @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
@@ -64,8 +67,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
         List<Long> resultLineIds = 역리스트_응답.jsonPath().getList(".", StationResponse.class).stream()
                 .map(StationResponse::getId)
                 .collect(toList());
-        assertThat(역리스트_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(resultLineIds).containsAll(expectedLineIds);
+        assertAll(
+                () -> assertThat(역리스트_응답.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(resultLineIds).containsAll(expectedLineIds)
+        );
     }
 
     @DisplayName("지하철역을 제거한다.")

@@ -83,12 +83,12 @@ public class Section {
     }
 
     public Section merge(Section section) {
-        final int sumDistance = this.distance + section.distance;
+        final int sumDistance = distance + section.distance;
 
         if (isSameDownStation(section.upStation)) {
             return new Section(lineId, upStation, section.downStation, sumDistance);
         }
-        return new Section(lineId, section.downStation, upStation, sumDistance);
+        return new Section(lineId, section.upStation, downStation, sumDistance);
     }
 
     public Long getId() {
