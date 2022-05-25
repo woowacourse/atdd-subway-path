@@ -15,6 +15,10 @@ import wooteco.subway.domain.Line;
 @JdbcTest
 public class LineDaoTest {
 
+    private static final Line _2호선 = new Line("2호선", "green", 0);
+    private static final Line _3호선 = new Line("3호선", "orange", 0);
+    private static final Line _8호선 = new Line("8호선", "pink", 0);
+
     private final LineDao lineDao;
 
     @Autowired
@@ -25,34 +29,26 @@ public class LineDaoTest {
     @DisplayName("노선을 저장한다.")
     @Test
     void save() {
-        Line line = new Line("2호선", "green", 0);
+        final Line line = lineDao.save(_2호선);
 
-        Line savedLine = lineDao.save(line);
-
-        assertThat(savedLine.getName()).isEqualTo(line.getName());
+        assertThat(line.getName()).isEqualTo(_2호선.getName());
     }
 
     @DisplayName("같은 이름의 노선을 저장하는 경우 예외가 발생한다.")
     @Test
     void saveExistingName() {
-        Line line = new Line("2호선", "green", 0);
+        lineDao.save(_2호선);
 
-        lineDao.save(line);
-
-        assertThatThrownBy(() -> lineDao.save(line))
+        assertThatThrownBy(() -> lineDao.save(_2호선))
                 .isInstanceOf(DuplicateKeyException.class);
     }
 
     @DisplayName("모든 지하철 노선을 조회한다.")
     @Test
     void findAll() {
-        Line line1 = new Line("2호선", "green", 0);
-        Line line2 = new Line("3호선", "orange", 0);
-        Line line3 = new Line("8호선", "pink", 0);
-
-        lineDao.save(line1);
-        lineDao.save(line2);
-        lineDao.save(line3);
+        lineDao.save(_2호선);
+        lineDao.save(_3호선);
+        lineDao.save(_8호선);
 
         assertThat(lineDao.findAll().size()).isEqualTo(3);
     }
@@ -60,12 +56,11 @@ public class LineDaoTest {
     @DisplayName("지하철 노선을 조회한다.")
     @Test
     void findById() {
-        Line line = new Line("2호선", "green", 0);
-        Line savedLine = lineDao.save(line);
+        final Line line = lineDao.save(_2호선);
 
-        Line foundLine = lineDao.findById(savedLine.getId());
+        final Line foundLine = lineDao.findById(line.getId());
 
-        assertThat(foundLine.getName()).isEqualTo(savedLine.getName());
+        assertThat(foundLine.getName()).isEqualTo(line.getName());
     }
 
     @DisplayName("존재하지 않는 지하철 노선을 조회할 경우 예외가 발생한다.")
@@ -78,21 +73,19 @@ public class LineDaoTest {
     @DisplayName("지하철 노선을 수정한다.")
     @Test
     void update() {
-        Line line = new Line("2호선", "green", 0);
-        Line savedLine = lineDao.save(line);
+        final Line line = lineDao.save(_2호선);
 
-        lineDao.updateById(savedLine.getId(), new Line("3호선", "orange", 0));
+        lineDao.updateById(line.getId(), _3호선);
 
-        assertThat(lineDao.findById(savedLine.getId()).getName()).isEqualTo("3호선");
+        assertThat(lineDao.findById(line.getId()).getName()).isEqualTo(_3호선.getName());
     }
 
     @DisplayName("지하철 노선을 삭제한다.")
     @Test
     void deleteById() {
-        Line line = new Line("2호선", "green", 0);
-        Line savedLine = lineDao.save(line);
+        final Line line = lineDao.save(_2호선);
 
-        lineDao.deleteById(savedLine.getId());
+        lineDao.deleteById(line.getId());
 
         assertThat(lineDao.findAll().size()).isZero();
     }
