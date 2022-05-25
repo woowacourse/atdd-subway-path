@@ -1,6 +1,7 @@
 package wooteco.subway.repository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
@@ -27,15 +28,18 @@ public class LineRepository {
         return lineDao.findAll();
     }
 
-    public List<Line> findAllLinesByIds(List<Long> ids) {
-        return lineDao.findAllByIds(ids);
-    }
-
     public LineMap findExistingLine(Long id) {
         Line line = lineDao.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionType.LINE_NOT_FOUND));
         Sections sections = new Sections(sectionDao.findAllByLineId(id));
         return new LineMap(line, sections);
+    }
+
+    public List<Integer> findLineExtraFaresByIds(List<Long> ids) {
+        return lineDao.findAllByIds(ids)
+                .stream()
+                .map(Line::getExtraFare)
+                .collect(Collectors.toList());
     }
 
     public boolean checkExistingLine(Long id) {

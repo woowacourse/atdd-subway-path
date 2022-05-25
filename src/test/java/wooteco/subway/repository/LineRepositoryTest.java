@@ -56,15 +56,13 @@ class LineRepositoryTest extends DatabaseUsageTest {
     }
 
     @Test
-    void findAllLinesByIds_메서드는_id_목록에_해당되는_모든_노선_정보들을_조회하여_도메인들의_리스트로_반환() {
+    void findLineExtraFaresByIds_메서드는_id_목록에_해당되는_노선들의_추가요금_정보들을_조회하여_리스트로_반환() {
         databaseFixtureUtils.saveLine("노선명1", "색깔1", 1000);
         databaseFixtureUtils.saveLine("노선명2", "색깔2", 0);
         databaseFixtureUtils.saveLine("노선명3", "색깔3", 900);
 
-        List<Line> actual = repository.findAllLinesByIds(List.of(1L, 3L));
-        List<Line> expected = List.of(
-                new Line(1L, "노선명1", "색깔1", 1000),
-                new Line(3L, "노선명3", "색깔3", 900));
+        List<Integer> actual = repository.findLineExtraFaresByIds(List.of(2L, 3L));
+        List<Integer> expected = List.of(0, 900);
 
         assertThat(actual).isEqualTo(expected);
     }

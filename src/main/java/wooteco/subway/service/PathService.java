@@ -6,8 +6,7 @@ import wooteco.subway.domain.fare.AgeDiscountFare;
 import wooteco.subway.domain.fare.BasicFare;
 import wooteco.subway.domain.fare.DistanceOverFare;
 import wooteco.subway.domain.fare.Fare;
-import wooteco.subway.domain.fare.LineOverFare;
-import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.fare.ExtraFare;
 import wooteco.subway.domain.path.Navigator;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.section.Section;
@@ -39,10 +38,10 @@ public class PathService {
         Navigator navigator = new Navigator(sections);
         Path path = new Path(startStation, endStation, navigator);
         int distance = path.getDistance();
-        List<Line> lines = lineRepository.findAllLinesByIds(path.getPassingLineIds());
+        List<Integer> extraFares = lineRepository.findLineExtraFaresByIds(path.getPassingLineIds());
 
         Fare fare = new DistanceOverFare(new BasicFare(), distance);
-        fare = new LineOverFare(fare, lines);
+        fare = new ExtraFare(fare, extraFares);
         fare = new AgeDiscountFare(fare, age);
         return PathResponse.of(path, fare.calculate());
     }
