@@ -21,7 +21,7 @@ import wooteco.subway.infra.repository.JdbcStationRepository;
 import wooteco.subway.infra.repository.StationRepository;
 
 @DisplayName("Station 레포지토리")
-@Sql("classpath:/schema-test.sql")
+@Sql("/truncate.sql")
 @TestConstructor(autowireMode = AutowireMode.ALL)
 @JdbcTest
 class StationRepositoryTest {

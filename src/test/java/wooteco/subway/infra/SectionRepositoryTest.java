@@ -12,7 +12,6 @@ import static wooteco.subway.SubwayFixtures.역삼역;
 
 import java.util.List;
 import javax.sql.DataSource;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
@@ -29,31 +28,17 @@ import wooteco.subway.infra.repository.JdbcSectionRepository;
 import wooteco.subway.infra.repository.SectionRepository;
 
 @DisplayName("Section 레포지토리")
-@Sql("classpath:/schema-test.sql")
+@Sql({"/truncate.sql", "/section-repository-test.sql"})
 @TestConstructor(autowireMode = AutowireMode.ALL)
 @JdbcTest
 class SectionRepositoryTest {
 
     private final SectionRepository sectionRepository;
-    private final JdbcTemplate jdbcTemplate;
 
     public SectionRepositoryTest(DataSource dataSource) {
-        final JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         this.sectionRepository = new JdbcSectionRepository(
-                new SectionDao(jdbcTemplate, dataSource, new NamedParameterJdbcTemplate(dataSource))
+                new SectionDao(new JdbcTemplate(dataSource), dataSource, new NamedParameterJdbcTemplate(dataSource))
         );
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
-    @BeforeEach
-    void setup() {
-        jdbcTemplate.update("INSERT INTO Line(name, color) VALUES('4호선', 'bg-600-blue')");
-        jdbcTemplate.update("INSERT INTO Line(name, color) VALUES('2호선', 'bg-600-green')");
-        jdbcTemplate.update("INSERT INTO Station(name) VALUES('강남역')");
-        jdbcTemplate.update("INSERT INTO Station(name) VALUES('역삼역')");
-        jdbcTemplate.update("INSERT INTO Station(name) VALUES('선릉역')");
-        jdbcTemplate.update("INSERT INTO Station(name) VALUES('삼성역')");
-        jdbcTemplate.update("INSERT INTO Station(name) VALUES('성담빌딩')");
     }
 
     @DisplayName("노선 내 구간 변경 시 사용되는 Sections 저장 테스트")

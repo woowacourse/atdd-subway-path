@@ -16,7 +16,7 @@ import wooteco.subway.ui.dto.request.StationRequest;
 import wooteco.subway.ui.dto.response.PathResponse;
 
 @DisplayName("경로 조회 E2E")
-@Sql("classpath:/schema-test.sql")
+@Sql("/truncate.sql")
 class PathAcceptanceTest extends AcceptanceTest {
 
     @ParameterizedTest(name = "나이 : {0}, 추가요금 : 20000, 기대요금 : {1}")

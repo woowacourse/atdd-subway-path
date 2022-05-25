@@ -21,7 +21,7 @@ import wooteco.subway.ui.dto.response.ExceptionResponse;
 import wooteco.subway.ui.dto.response.LineResponse;
 
 @DisplayName("노선 E2E")
-@Sql("classpath:/schema-test.sql")
+@Sql("/truncate.sql")
 class LineAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach

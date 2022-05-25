@@ -24,7 +24,7 @@ import wooteco.subway.ui.dto.response.LineResponse;
 import wooteco.subway.ui.dto.response.StationResponse;
 
 @DisplayName("구간 E2E")
-@Sql("classpath:/schema-test.sql")
+@Sql("/truncate.sql")
 class SectionAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("구간 추가, 삭제 테스트")

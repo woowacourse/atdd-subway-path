@@ -19,7 +19,7 @@ import wooteco.subway.ui.dto.response.ExceptionResponse;
 import wooteco.subway.ui.dto.response.StationResponse;
 
 @DisplayName("지하철역 E2E")
-@Sql("classpath:/schema-test.sql")
+@Sql("/truncate.sql")
 class StationAcceptanceTest extends AcceptanceTest {
 
     @Test
