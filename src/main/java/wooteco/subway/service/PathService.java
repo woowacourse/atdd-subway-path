@@ -4,10 +4,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.fare.Fare;
+import wooteco.subway.domain.fare.FareCalculator;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.Lines;
 import wooteco.subway.domain.path.Path;
@@ -23,16 +24,15 @@ public class PathService {
     private final StationDao stationDao;
     private final LineRepository lineRepository;
     private final PathFindingStrategy pathFindingStrategy;
-    private final Fare fare;
 
     public PathService(StationDao stationDao, LineRepository lineRepository,
-        PathFindingStrategy pathFindingStrategy, Fare fare) {
+        PathFindingStrategy pathFindingStrategy) {
         this.stationDao = stationDao;
         this.lineRepository = lineRepository;
         this.pathFindingStrategy = pathFindingStrategy;
-        this.fare = fare;
     }
 
+    @Transactional
     public PathServiceResponse getShortestPath(PathServiceRequest pathServiceRequest) {
         validateNotExists(pathServiceRequest.getSource());
         validateNotExists(pathServiceRequest.getTarget());
@@ -45,7 +45,8 @@ public class PathService {
             .map(station -> new StationDto(station.getId(), station.getName()))
             .collect(Collectors.toList());
         int distance = path.getShortestDistance();
-        return new PathServiceResponse(stationDtos, distance, fare.calculate(path, pathServiceRequest.getAge()));
+        return new PathServiceResponse(stationDtos, distance,
+            FareCalculator.calculate(path, pathServiceRequest.getAge()));
     }
 
     private void validateNotExists(Long id) {

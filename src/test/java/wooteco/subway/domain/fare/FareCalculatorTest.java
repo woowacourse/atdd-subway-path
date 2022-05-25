@@ -16,7 +16,7 @@ import wooteco.subway.domain.path.PathFindingStrategy;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
 
-public class FareTest {
+public class FareCalculatorTest {
 
     Section section = new Section(new Station("강남역"), new Station("선릉역"), 10);
     Line line1 = new Line(1L, "2호선", "green", 900, new Sections(List.of(section)));
@@ -29,10 +29,9 @@ public class FareTest {
     void getFareOver19(String distance, String resultFare) {
         PathFindingStrategy pathFindingStrategy = new TestPathFindingStrategy(Integer.parseInt(distance),
             List.of(1L, 2L, 3L));
-        Fare fare = new Fare(new DistanceFarePolicy(), new AgeDiscountPolicy());
         Path path = new Path(new Lines(List.of(line1, line2)), pathFindingStrategy, new Station("강남역"),
             new Station("선릉역"));
-        assertThat(fare.calculate(path, 19)).isEqualTo(Integer.parseInt(resultFare));
+        assertThat(FareCalculator.calculate(path, 19)).isEqualTo(Integer.parseInt(resultFare));
     }
 
     @DisplayName("운임에 따른 요금을 반환한다(13세 이상 19세 미만)")
@@ -41,10 +40,9 @@ public class FareTest {
     void getFareOver13Under19(String distance, String resultFare) {
         PathFindingStrategy pathFindingStrategy = new TestPathFindingStrategy(Integer.parseInt(distance),
             List.of(1L, 2L, 3L));
-        Fare fare = new Fare(new DistanceFarePolicy(), new AgeDiscountPolicy());
         Path path = new Path(new Lines(List.of(line1, line2, line3)), pathFindingStrategy, new Station("강남역"),
             new Station("선릉역"));
-        assertThat(fare.calculate(path, 18)).isEqualTo(Integer.parseInt(resultFare));
+        assertThat(FareCalculator.calculate(path, 18)).isEqualTo(Integer.parseInt(resultFare));
     }
 
     @DisplayName("운임에 따른 요금을 반환한다(13세 이상 19세 미만)")
@@ -53,10 +51,9 @@ public class FareTest {
     void getFareOver6Under13(String distance, String resultFare) {
         PathFindingStrategy pathFindingStrategy = new TestPathFindingStrategy(Integer.parseInt(distance),
             List.of(1L, 2L, 3L));
-        Fare fare = new Fare(new DistanceFarePolicy(), new AgeDiscountPolicy());
         Path path = new Path(new Lines(List.of(line3, line2)), pathFindingStrategy, new Station("강남역"),
             new Station("선릉역"));
-        assertThat(fare.calculate(path, 6)).isEqualTo(Integer.parseInt(resultFare));
+        assertThat(FareCalculator.calculate(path, 6)).isEqualTo(Integer.parseInt(resultFare));
     }
 
     private class TestPathFindingStrategy implements PathFindingStrategy {
