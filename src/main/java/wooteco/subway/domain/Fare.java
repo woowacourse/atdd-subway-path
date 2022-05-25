@@ -1,7 +1,7 @@
 package wooteco.subway.domain;
 
 import java.util.Objects;
-import wooteco.subway.domain.age.Age;
+import wooteco.subway.domain.age.AgeType;
 import wooteco.subway.domain.age.FareByAgePolicy;
 import wooteco.subway.domain.distance.Distance;
 import wooteco.subway.exception.IllegalInputException;
@@ -24,7 +24,7 @@ public class Fare {
 
     public static Fare from(final Distance distance, final int extraFare, final int age) {
         int fareValue = calculateFareByDistance(distance) + extraFare;
-        return new Fare(FareByAgePolicy.find(Age.from(age)).applyDiscount(fareValue));
+        return new Fare(FareByAgePolicy.from(AgeType.from(age)).applyDiscount(fareValue));
     }
 
     private static int calculateFareByDistance(final Distance distance) {

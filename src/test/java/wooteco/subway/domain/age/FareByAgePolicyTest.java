@@ -15,7 +15,7 @@ public class FareByAgePolicyTest {
     @DisplayName("BABY 이면 BABY_POLICY 를 찾는다.")
     void Find_MoreThan1LessThan6_BABY() {
         //when
-        FareByAgePolicy actual = FareByAgePolicy.find(Age.BABY);
+        FareByAgePolicy actual = FareByAgePolicy.from(AgeType.BABY);
 
         //then
         assertThat(actual).isEqualTo(BABY_POLICY);
@@ -25,7 +25,7 @@ public class FareByAgePolicyTest {
     @DisplayName("KIDS 이면 KIDS_POLICY 를 찾는다.")
     void Find_MoreThan6LessThan13_KIDS() {
         //when
-        FareByAgePolicy actual = FareByAgePolicy.find(Age.KIDS);
+        FareByAgePolicy actual = FareByAgePolicy.from(AgeType.KIDS);
 
         //then
         assertThat(actual).isEqualTo(KIDS_POLICY);
@@ -35,7 +35,7 @@ public class FareByAgePolicyTest {
     @DisplayName("TEENAGER 이면 TEENAGER_POLICY 를 찾는다.")
     void Find_MoreThan13LessThan19_TEENAGER() {
         //when
-        FareByAgePolicy actual = FareByAgePolicy.find(Age.TEENAGER);
+        FareByAgePolicy actual = FareByAgePolicy.from(AgeType.TEENAGER);
 
         //then
         assertThat(actual).isEqualTo(TEENAGER_POLICY);
@@ -45,7 +45,7 @@ public class FareByAgePolicyTest {
     @DisplayName("ADULT 이면 ADULT_POLICY 를 찾는다.")
     void Find_MoreThan19_ADULT() {
         //when
-        FareByAgePolicy actual = FareByAgePolicy.find(Age.ADULT);
+        FareByAgePolicy actual = FareByAgePolicy.from(AgeType.ADULT);
 
         //then
         assertThat(actual).isEqualTo(ADULT_POLICY);

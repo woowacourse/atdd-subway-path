@@ -4,22 +4,22 @@ import java.util.Arrays;
 
 public enum FareByAgePolicy {
 
-    BABY_POLICY(Age.BABY, new BabyDiscountPolicy()),
-    KIDS_POLICY(Age.KIDS, new KidsDiscountPolicy()),
-    TEENAGER_POLICY(Age.TEENAGER, new TeenagerDiscountPolicy()),
-    ADULT_POLICY(Age.ADULT, new AdultDiscountPolicy());
+    BABY_POLICY(AgeType.BABY, new BabyDiscountPolicy()),
+    KIDS_POLICY(AgeType.KIDS, new KidsDiscountPolicy()),
+    TEENAGER_POLICY(AgeType.TEENAGER, new TeenagerDiscountPolicy()),
+    ADULT_POLICY(AgeType.ADULT, new AdultDiscountPolicy());
 
-    private final Age age;
+    private final AgeType ageType;
     private final DiscountByAgePolicy discountPolicy;
 
-    FareByAgePolicy(Age age, DiscountByAgePolicy discountPolicy) {
-        this.age = age;
+    FareByAgePolicy(AgeType ageType, DiscountByAgePolicy discountPolicy) {
+        this.ageType = ageType;
         this.discountPolicy = discountPolicy;
     }
 
-    public static FareByAgePolicy find(final Age age) {
+    public static FareByAgePolicy from(final AgeType ageType) {
         return Arrays.stream(values())
-                .filter(it -> it.age.equals(age))
+                .filter(it -> it.ageType.equals(ageType))
                 .findFirst()
                 .orElseThrow();
     }
