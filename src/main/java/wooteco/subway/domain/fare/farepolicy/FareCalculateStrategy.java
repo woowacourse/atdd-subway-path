@@ -1,4 +1,4 @@
-package wooteco.subway.domain.fare.strategy;
+package wooteco.subway.domain.fare.farepolicy;
 
 @FunctionalInterface
 public interface FareCalculateStrategy {

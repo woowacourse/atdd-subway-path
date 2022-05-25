@@ -1,11 +1,7 @@
-package wooteco.subway.domain.fare;
+package wooteco.subway.domain.fare.farepolicy;
 
 import java.util.Arrays;
 import java.util.function.Predicate;
-import wooteco.subway.domain.fare.strategy.BaseCalculateStrategy;
-import wooteco.subway.domain.fare.strategy.FareCalculateStrategy;
-import wooteco.subway.domain.fare.strategy.FirstConditionCalculateStrategy;
-import wooteco.subway.domain.fare.strategy.SecondConditionCalculateStrategy;
 
 public enum FarePolicy {
 

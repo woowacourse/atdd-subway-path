@@ -3,6 +3,8 @@ package wooteco.subway.domain.fare;
 import java.util.Comparator;
 import java.util.List;
 import wooteco.subway.domain.Line;
+import wooteco.subway.domain.fare.agepolicy.AgePolicy;
+import wooteco.subway.domain.fare.farepolicy.FarePolicy;
 import wooteco.subway.exception.CalculatePathsException;
 import wooteco.subway.exception.datanotfound.LineNotFoundException;
 
