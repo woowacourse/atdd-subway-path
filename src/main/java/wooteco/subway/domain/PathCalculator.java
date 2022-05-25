@@ -29,11 +29,11 @@ public class PathCalculator {
         graph.setEdgeWeight(graph.addEdge(downStationId, upStationId), section.getDistance());
     }
 
-    public List<Long> findShortestPath(final Long source, final Long target) {
-        return dijkstraShortestPath.getPath(source, target).getVertexList();
+    public List<Long> findShortestPath(final Path path) {
+        return dijkstraShortestPath.getPath(path.getSource(), path.getTarget()).getVertexList();
     }
 
-    public double findShortestDistance(final Long source, final Long target) {
-        return dijkstraShortestPath.getPath(source, target).getWeight();
+    public double findShortestDistance(final Path path) {
+        return dijkstraShortestPath.getPath(path.getSource(), path.getTarget()).getWeight();
     }
 }

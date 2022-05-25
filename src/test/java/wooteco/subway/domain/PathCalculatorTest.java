@@ -21,7 +21,7 @@ class PathCalculatorTest {
         final PathCalculator pathCalculator = new PathCalculator(sections);
 
         // when & then
-        assertThat(pathCalculator.findShortestPath(1L, 4L)).isEqualTo(List.of(1L, 2L, 3L, 4L));
+        assertThat(pathCalculator.findShortestPath(Path.of(1L, 4L))).isEqualTo(List.of(1L, 2L, 3L, 4L));
     }
 
     @DisplayName("지하철 최단 경로 거리를 구한다.")
@@ -36,7 +36,7 @@ class PathCalculatorTest {
         final PathCalculator pathCalculator = new PathCalculator(sections);
 
         // when & then
-        assertThat(pathCalculator.findShortestDistance(1L, 4L))
+        assertThat(pathCalculator.findShortestDistance(Path.of(1L, 4L)))
                 .isEqualTo(30);
     }
 }

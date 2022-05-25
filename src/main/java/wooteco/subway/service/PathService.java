@@ -10,6 +10,7 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Path;
 import wooteco.subway.domain.PathCalculator;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
@@ -32,16 +33,13 @@ public class PathService {
     }
 
     public PathResponse findShortestPath(final PathRequest pathRequest) {
-        final Long sourceId = pathRequest.getSource();
-        final Long targetId = pathRequest.getTarget();
+        final Path path = pathRequest.toPath();
         final int age = pathRequest.getAge();
-        final List<Section> sections = sectionDao.findAll();
 
-        final PathCalculator pathCalculator = new PathCalculator(sections);
-        final List<Long> stationIds = pathCalculator.findShortestPath(sourceId, targetId);
-        final double distance = pathCalculator.findShortestDistance(sourceId, targetId);
-        final int extraFare = getExtraFare(stationIds);
-        final double fare = Fare.calculate(distance, extraFare);
+        final PathCalculator pathCalculator = new PathCalculator(sectionDao.findAll());
+        final List<Long> stationIds = pathCalculator.findShortestPath(path);
+        final double distance = pathCalculator.findShortestDistance(path);
+        final double fare = Fare.calculate(distance, getExtraFare(stationIds));
 
         return PathResponse.from(convertStation(stationIds), distance, Fare.discount(fare, age));
     }
