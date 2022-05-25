@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.station.Station;
 
 public class Sections implements Iterable<Section> {
     private static final String ERROR_MESSAGE_MINIMUM_SIZE = "구간은 최소 %d개가 있어야 합니다.";

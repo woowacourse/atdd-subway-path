@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.service.request.LineServiceRequest;
 import wooteco.subway.dto.service.request.LineUpdateRequest;
 import wooteco.subway.dto.service.response.LineServiceResponse;

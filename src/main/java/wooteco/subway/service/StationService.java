@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.service.StationDto;
 
 @Service

@@ -3,8 +3,8 @@ package wooteco.subway.domain.path;
 import java.util.List;
 import java.util.Map;
 
-import wooteco.subway.domain.Station;
 import wooteco.subway.domain.line.Lines;
+import wooteco.subway.domain.station.Station;
 
 public class Path {
     private final Lines lines;

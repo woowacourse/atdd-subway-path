@@ -12,7 +12,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import wooteco.subway.domain.section.Section;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.SectionEntity;
 
 @JdbcTest
@@ -100,7 +100,7 @@ public class JdbcSectionDaoTest {
 
         Section section1 = new Section(sectionEntity.getId(), station1, station2, 10);
         sectionDao.delete(lineId, section1);
-        
+
         assertThat(sectionDao.findByLine(lineId)).hasSize(1);
     }
 

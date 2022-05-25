@@ -10,7 +10,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.station.Station;
 
 public class Lines implements Iterable<Line> {
     private final List<Line> lines;

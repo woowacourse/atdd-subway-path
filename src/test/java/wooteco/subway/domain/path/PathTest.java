@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -10,10 +10,9 @@ import org.junit.jupiter.api.Test;
 
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.Lines;
-import wooteco.subway.domain.path.DijkstraPathFindingStrategy;
-import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
+import wooteco.subway.domain.station.Station;
 
 public class PathTest {
 

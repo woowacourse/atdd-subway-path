@@ -8,13 +8,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import wooteco.subway.domain.Station;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.Lines;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.PathFindingStrategy;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
+import wooteco.subway.domain.station.Station;
 
 public class FareCalculatorTest {
 

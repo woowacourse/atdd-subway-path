@@ -2,9 +2,9 @@ package wooteco.subway.domain.line;
 
 import java.util.List;
 
-import wooteco.subway.domain.Station;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
+import wooteco.subway.domain.station.Station;
 
 public class Line {
     private static final String ERROR_MESSAGE_NAME_SIZE = "존재할 수 없는 이름입니다.";
