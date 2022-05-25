@@ -7,7 +7,7 @@ public class AgeDisCountFarePolicy implements FarePolicy {
     private static final int TEENAGER_AGE_THRESHOLD = 19;
     private static final int DEFAULT_DISCOUNT = 350;
     private static final double CHILE_DISCOUNT_RATE = 0.5;
-    private static final double TEENAGER_DISCOUNT_RATE = 0.5;
+    private static final double TEENAGER_DISCOUNT_RATE = 0.8;
 
     private final int age;
 
