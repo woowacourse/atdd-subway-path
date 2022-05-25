@@ -53,6 +53,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         );
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.asPrettyString()).isEqualTo("존재하지 않는 지하철 노선 id입니다.");
     }
 
     @DisplayName("상행역, 하행역이 이미 노선에 있는 구간을 등록 요청한다.(400에러)")
@@ -76,8 +77,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
             makeBodyForPost("1", "3", "20"),
             "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections"
         );
-
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.asPrettyString()).isEqualTo("해당 구간은 이미 이동 가능합니다.");
+
     }
 
     @DisplayName("상행역, 하행역이 둘다 노선에 없는 구간을 등록 요청한다.(400에러)")
@@ -102,6 +104,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         );
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.asPrettyString()).isEqualTo("존재하지 않는 역을 지나는 구간은 만들 수 없습니다.");
     }
 
     @DisplayName("기존 구간의 내부에 더 긴 구간을 등록 요청한다.(400에러)")
@@ -122,6 +125,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         );
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.asPrettyString()).isEqualTo("해당 구간은 추가될 수 없습니다.");
     }
 
     @DisplayName("구간을 삭제한다.")
@@ -161,6 +165,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
             "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections?stationId=2");
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.asPrettyString()).isEqualTo("구간이 1개 밖에 없으므로 삭제할 수 없습니다.");
     }
 
     @DisplayName("노선이 지나지 않는 역을 포함한 구간 삭제 요청한다.(400에러)")
@@ -168,16 +173,22 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     void deleteSection_notExistStationInLine() {
         createStationForTest("강남역");
         createStationForTest("선릉역");
+        createStationForTest("역삼역");
+        createStationForTest("잠실역");
 
         ExtractableResponse<Response> createLineResponse = RequestFrame.post(
             BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
             "/lines"
         );
+        ExtractableResponse<Response> createSection = RequestFrame.post(makeBodyForPost("2", "3", "10"),
+            "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections"
+        );
 
         ExtractableResponse<Response> response = RequestFrame.delete(
-            "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections?stationId=3");
+            "/lines/" + createLineResponse.jsonPath().getLong("id") + "/sections?stationId=4");
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.asPrettyString()).isEqualTo("해당 역을 지나지 않습니다.");
     }
 
     private void createStationForTest(String stationName) {

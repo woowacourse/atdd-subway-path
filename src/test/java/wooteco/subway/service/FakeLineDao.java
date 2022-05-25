@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 import org.springframework.util.ReflectionUtils;
 
 import wooteco.subway.dao.LineDao;
-import wooteco.subway.domain.Line;
-import wooteco.subway.dto.LineEntity;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.entity.LineEntity;
 
 public class FakeLineDao implements LineDao {
     private Long seq = 0L;

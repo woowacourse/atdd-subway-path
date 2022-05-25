@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import wooteco.subway.dto.response.LineResponse;
+import wooteco.subway.controller.dto.response.LineResponse;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
@@ -56,6 +56,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.asPrettyString()).isEqualTo("중복된 지하철 노선 이름입니다.");
     }
 
     @DisplayName("지하철 노선 전체를 조회한다.")
@@ -96,22 +97,25 @@ public class LineAcceptanceTest extends AcceptanceTest {
         createStationForTest("강남역");
         createStationForTest("선릉역");
 
-        ExtractableResponse<Response> createResponse1 = RequestFrame.post(
+        ExtractableResponse<Response> createResponse = RequestFrame.post(
             BodyCreator.makeLineBodyForPost("2호선", "green", "1", "2", "10", "900"),
             "/lines"
         );
 
         // when
-        String uri = createResponse1.header("Location");
+        String uri = createResponse.header("Location");
+
         ExtractableResponse<Response> response = RequestFrame.get(uri);
+
+        LineResponse postResponse = createResponse.jsonPath().getObject(".", LineResponse.class);
+        LineResponse getResponse = response.jsonPath().getObject(".", LineResponse.class);
+        System.out.println(getResponse);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        Long expectedLineId = Long.parseLong(createResponse1.header("Location").split("/")[2]);
-        assertThat(expectedLineId).isEqualTo(response.jsonPath().getLong("id"));
-        assertThat(createResponse1.jsonPath().getLong("id")).isEqualTo(response.jsonPath().getLong("id"));
-        assertThat(createResponse1.jsonPath().getString("name")).isEqualTo(response.jsonPath().getString("name"));
-        assertThat(createResponse1.jsonPath().getString("color")).isEqualTo(response.jsonPath().getString("color"));
+        assertThat(postResponse.getId()).isEqualTo(getResponse.getId());
+        assertThat(postResponse.getName()).isEqualTo(getResponse.getName());
+        assertThat(postResponse.getColor()).isEqualTo(getResponse.getColor());
     }
 
     @DisplayName("존재하지 않는 지하철 노선을 조회한다.(400에러)")
@@ -124,6 +128,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.asPrettyString()).isEqualTo("존재하지 않는 지하철 노선 id입니다.");
     }
 
     @DisplayName("지하철 노선을 수정한다.")
@@ -156,6 +161,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.asPrettyString()).isEqualTo("존재하지 않는 지하철 노선 id입니다.");
     }
 
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 수정한다.(400에러)")
@@ -181,6 +187,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.asPrettyString()).isEqualTo("중복된 지하철 노선 이름입니다.");
     }
 
     @DisplayName("지하철 노선을 제거한다.")
@@ -227,6 +234,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Map<String, String> params = new HashMap<>();
         params.put("name", stationName);
 
-        ExtractableResponse<Response> response = RequestFrame.post(params, "/stations");
+        RequestFrame.post(params, "/stations");
     }
 }

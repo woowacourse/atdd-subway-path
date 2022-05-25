@@ -6,10 +6,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import wooteco.subway.domain.Station;
-import wooteco.subway.dto.info.LineServiceRequest;
-import wooteco.subway.dto.info.LineServiceResponse;
-import wooteco.subway.dto.info.LineUpdateRequest;
+import wooteco.subway.domain.station.Station;
+import wooteco.subway.service.dto.request.LineServiceRequest;
+import wooteco.subway.service.dto.request.LineUpdateRequest;
+import wooteco.subway.service.dto.response.LineServiceResponse;
+import wooteco.subway.service.repository.LineRepositoryWithDao;
 
 public class LineServiceTest {
 
@@ -23,8 +24,7 @@ public class LineServiceTest {
         fakeLineDao = new FakeLineDao();
         fakeSectionDao = new FakeSectionDao();
         fakeStationDao = new FakeStationDao();
-        lineService = new LineService(fakeLineDao, fakeSectionDao, fakeStationDao,
-            new DomainCreatorService(fakeLineDao, fakeSectionDao, fakeStationDao));
+        lineService = new LineService(new LineRepositoryWithDao(fakeLineDao, fakeSectionDao, fakeStationDao));
 
         fakeStationDao.save(new Station("강남역"));
         fakeStationDao.save(new Station("선릉역"));

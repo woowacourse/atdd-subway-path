@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import wooteco.subway.dto.response.StationResponse;
+import wooteco.subway.controller.dto.response.StationResponse;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
@@ -46,6 +46,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.asPrettyString()).isEqualTo("중복된 지하철 역 이름입니다.");
     }
 
     @DisplayName("지하철역을 조회한다.")
@@ -95,5 +96,6 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = RequestFrame.delete("/stations/1");
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.asPrettyString()).isEqualTo("존재하지 않는 지하철 역입니다.");
     }
 }

@@ -6,41 +6,27 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import wooteco.subway.dao.SectionDao;
-import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Station;
-import wooteco.subway.dto.info.StationDto;
+import wooteco.subway.domain.station.Station;
+import wooteco.subway.domain.station.StationRepository;
+import wooteco.subway.service.dto.StationDto;
 
 @Service
 public class StationService {
-    private static final String ERROR_MESSAGE_DUPLICATE_NAME = "중복된 지하철 역 이름입니다.";
-    private static final String ERROR_MESSAGE_NOT_EXISTS_ID = "존재하지 않는 지하철 역입니다.";
-    private static final String ERROR_MESSAGE_ALREADY_USED = "해당 역을 지나는 노선이 있으므로 삭제가 불가합니다.";
+    private final StationRepository stationRepository;
 
-    private final StationDao stationDao;
-    private final SectionDao sectionDao;
-
-    public StationService(StationDao stationDao, SectionDao sectionDao) {
-        this.stationDao = stationDao;
-        this.sectionDao = sectionDao;
+    public StationService(StationRepository stationRepository) {
+        this.stationRepository = stationRepository;
     }
 
     @Transactional
     public StationDto save(StationDto stationDto) {
-        validateNameDuplicate(stationDto);
         Station station = new Station(stationDto.getName());
-        Station newStation = stationDao.save(station);
+        Station newStation = stationRepository.save(station);
         return new StationDto(newStation.getId(), newStation.getName());
     }
 
-    private void validateNameDuplicate(StationDto stationDto) {
-        if (stationDao.existByName(stationDto.getName())) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_DUPLICATE_NAME);
-        }
-    }
-
     public List<StationDto> findAll() {
-        List<Station> stations = stationDao.findAll();
+        List<Station> stations = stationRepository.findAll();
         return stations.stream()
             .map(it -> new StationDto(it.getId(), it.getName()))
             .collect(Collectors.toList());
@@ -48,20 +34,6 @@ public class StationService {
 
     @Transactional
     public void delete(Long id) {
-        validateNotExists(id);
-        validateAlreadyUsedInSection(id);
-        stationDao.delete(id);
-    }
-
-    private void validateNotExists(Long id) {
-        if (!stationDao.existById(id)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_NOT_EXISTS_ID);
-        }
-    }
-
-    private void validateAlreadyUsedInSection(Long id) {
-        if (sectionDao.existSectionUsingStation(id)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_ALREADY_USED);
-        }
+        stationRepository.delete(id);
     }
 }
