@@ -1,5 +1,6 @@
 package wooteco.subway.dao;
 
+import java.util.Collections;
 import java.util.List;
 import javax.sql.DataSource;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -57,6 +58,13 @@ public class JdbcLineDao implements LineDao {
         } catch (EmptyResultDataAccessException exception) {
             throw new NotFoundLineException();
         }
+    }
+
+    @Override
+    public List<Line> findByIds(List<Long> lineIds) {
+        String inSql = String.join(", ", Collections.nCopies(lineIds.size(), "?"));
+        String sql = String.format("SELECT * FROM LINE WHERE id IN (%s)", inSql);
+        return jdbcTemplate.query(sql, lineRowMapper, lineIds.toArray());
     }
 
     @Override

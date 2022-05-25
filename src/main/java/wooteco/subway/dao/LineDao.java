@@ -13,6 +13,8 @@ public interface LineDao {
 
     Line findById(Long lineId);
 
+    List<Line> findByIds(List<Long> lineIds);
+
     void update(Long lineId, Line line);
 
     boolean existByName(Line line);

@@ -3,7 +3,7 @@ package wooteco.subway.domain;
 import java.util.List;
 import java.util.Objects;
 
-public class Section {
+public final class Section {
 
     private final Long id;
     private final long lineId;
@@ -38,7 +38,7 @@ public class Section {
     }
 
     public long getOppositeStation(long stationId) {
-        if(upStationId == stationId){
+        if (upStationId == stationId) {
             return downStationId;
         }
         return upStationId;
@@ -60,7 +60,7 @@ public class Section {
         return downStationId;
     }
 
-    public List<Long> getAllStations(){
+    public List<Long> getAllStations() {
         return List.of(upStationId, downStationId);
     }
 

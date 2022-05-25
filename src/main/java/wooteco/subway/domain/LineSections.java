@@ -9,7 +9,7 @@ import wooteco.subway.exception.IllegalDistanceException;
 import wooteco.subway.exception.NotFoundSectionException;
 import wooteco.subway.exception.NotFoundStationException;
 
-public class LineSections {
+public final class LineSections {
 
     public static final int FIRST_SECTION_INDEX = 0;
 
@@ -97,18 +97,22 @@ public class LineSections {
     public List<Section> findOverlapSection(long upStationId, long downStationId, int distance) {
         if (existByUpStationId(upStationId)) {
             Section section = findById(findIdByUpStationId(upStationId));
-            return separateSectionInExistUpMatchCase(upStationId, downStationId, distance, section, section.getDistance() - distance);
+            return separateSectionInExistUpMatchCase(upStationId, downStationId, distance, section,
+                    section.getDistance() - distance);
         }
         if (existByDownStationId(downStationId)) {
             Section section = findById(findIdByDownStationId(downStationId));
-            return separateSectionInExistDownMatchCase(upStationId, downStationId, distance, section, section.getDistance() - distance);
+            return separateSectionInExistDownMatchCase(upStationId, downStationId, distance, section,
+                    section.getDistance() - distance);
         }
         if (existByUpStationId(downStationId)) {
             Section section = findById(findIdByUpStationId(downStationId));
-            return separateSectionInExistUpMatchCase(upStationId, downStationId, distance, section, section.getDistance());
+            return separateSectionInExistUpMatchCase(upStationId, downStationId, distance, section,
+                    section.getDistance());
         }
         Section section = findById(findIdByDownStationId(upStationId));
-        return separateSectionInExistDownMatchCase(upStationId, downStationId, distance, section, section.getDistance());
+        return separateSectionInExistDownMatchCase(upStationId, downStationId, distance, section,
+                section.getDistance());
     }
 
     private List<Section> separateSectionInExistUpMatchCase(
