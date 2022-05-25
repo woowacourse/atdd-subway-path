@@ -1,11 +1,16 @@
 package wooteco.subway.domain.policy;
 
-import wooteco.subway.domain.fare.Fare;
-
 public class AdultPolicy implements DiscountPolicy {
 
+    private static final int ADULT_START_AGE = 19;
+
     @Override
-    public int calculateDiscountFare(Fare fare) {
-        return fare.calculateFare();
+    public int calculateDiscountFare(int fare) {
+        return fare;
+    }
+
+    @Override
+    public boolean checkAgeRange(int age) {
+        return ADULT_START_AGE <= age;
     }
 }

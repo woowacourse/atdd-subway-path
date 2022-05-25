@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.fare.FareFactory;
 import wooteco.subway.domain.policy.DiscountPolicy;
 import wooteco.subway.domain.policy.DiscountPolicyFactory;
@@ -13,7 +12,7 @@ import wooteco.subway.exception.domain.DiscountPolicyException;
 
 public class DiscountPolicyTest {
 
-    private final Fare fare = new FareFactory().getFare(58, 0);
+    private final int fare = new FareFactory().getFare(58).calculateFare(58, 0);
     private final DiscountPolicyFactory discountPolicyFactory = new DiscountPolicyFactory();
 
     @Test

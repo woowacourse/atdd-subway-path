@@ -3,14 +3,14 @@ package wooteco.subway.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import wooteco.subway.domain.pathfinder.PathFinder;
-import wooteco.subway.domain.pathfinder.PathFinderFactory;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.policy.DiscountPolicy;
-import wooteco.subway.domain.policy.DiscountPolicyFactory;
 import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.fare.FareFactory;
+import wooteco.subway.domain.pathfinder.PathFinder;
+import wooteco.subway.domain.pathfinder.PathFinderFactory;
+import wooteco.subway.domain.policy.DiscountPolicy;
+import wooteco.subway.domain.policy.DiscountPolicyFactory;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.StationRepository;
@@ -37,9 +37,9 @@ public class PathService {
         List<Section> sections = pathFinder.calculateSections(fromStation, toStation);
         int extraFare = calculateMaxExtraFare(sections);
         int distance = pathFinder.calculateDistance(fromStation, toStation);
-        Fare fare = new FareFactory().getFare(distance, extraFare);
+        int  totalFare = new FareFactory().getFare(distance).calculateFare(distance, extraFare);
         DiscountPolicy discountPolicy = new DiscountPolicyFactory().getDiscountPolicy(age);
-        return PathResponse.of(stations, distance, discountPolicy.calculateDiscountFare(fare));
+        return PathResponse.of(stations, distance, discountPolicy.calculateDiscountFare(totalFare));
     }
 
     private int calculateMaxExtraFare(List<Section> sections) {
