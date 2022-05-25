@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import wooteco.subway.domain.Line;
 
-public class FareCondition {
+public final class FareCondition {
 
     private final int distance;
     private final List<Line> line;

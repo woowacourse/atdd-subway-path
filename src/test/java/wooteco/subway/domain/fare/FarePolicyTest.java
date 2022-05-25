@@ -9,12 +9,13 @@ import wooteco.subway.domain.Line;
 class FarePolicyTest {
 
     @ParameterizedTest
-    @CsvSource(value = {"0, 1250", "9, 1250", "10, 1250", "11, 1350", "15, 1350", "50, 2050", "55, 2150", "58, 2150", "59, 2250"})
+    @CsvSource(value = {"0, 1250", "9, 1250", "10, 1250", "11, 1350", "15, 1350", "50, 2050", "55, 2150", "58, 2150",
+            "59, 2250"})
     void calculateFareWithDistance(int distance, int expectedFare) {
         Line line1 = new Line("신분당선", "red", 0);
         Line line2 = new Line("2호선", "green", 0);
 
-        FarePolicy farePolicy = new FarePolicyImpl();
+        FarePolicy farePolicy = new FarePolicy();
         Fare fare = farePolicy.calculateFare(distance, List.of(line1, line2));
 
         Assertions.assertThat(fare.getValue()).isEqualTo(expectedFare);
@@ -26,7 +27,7 @@ class FarePolicyTest {
         Line line1 = new Line("신분당선", "red", line1ExtraFare);
         Line line2 = new Line("2호선", "green", line2ExtraFare);
 
-        FarePolicy farePolicy = new FarePolicyImpl();
+        FarePolicy farePolicy = new FarePolicy();
         Fare fare = farePolicy.calculateFare(0, List.of(line1, line2));
 
         Assertions.assertThat(fare.getValue()).isEqualTo(2250);

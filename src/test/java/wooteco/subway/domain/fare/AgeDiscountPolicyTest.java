@@ -12,8 +12,8 @@ class AgeDiscountPolicyTest {
     @DisplayName("어린이의 경우 할인을 적용한다.")
     @ValueSource(ints = {6, 12})
     void discountFareWithChild(int age) {
-        DiscountPolicy discountPolicy = new AgeDiscountPolicy();
-        Fare discountFare = discountPolicy.discountFare(new Fare(1250), age);
+        AgeDiscountPolicy ageDiscountPolicy = new AgeDiscountPolicy();
+        Fare discountFare = ageDiscountPolicy.discountFare(new Fare(1250), age);
 
         assertThat(discountFare).isEqualTo(new Fare(800));
     }
@@ -22,9 +22,9 @@ class AgeDiscountPolicyTest {
     @DisplayName("청소년의 경우 할인을 적용한다.")
     @ValueSource(ints = {13, 18})
     void discountFareWithTeenager(int age) {
-        DiscountPolicy discountPolicy = new AgeDiscountPolicy();
-        Fare discountFare = discountPolicy.discountFare(new Fare(1250), age);
-        
+        AgeDiscountPolicy ageDiscountPolicy = new AgeDiscountPolicy();
+        Fare discountFare = ageDiscountPolicy.discountFare(new Fare(1250), age);
+
         assertThat(discountFare).isEqualTo(new Fare(1070));
     }
 }
