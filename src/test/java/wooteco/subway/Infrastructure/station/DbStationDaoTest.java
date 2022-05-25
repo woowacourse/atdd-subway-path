@@ -1,10 +1,11 @@
-package wooteco.subway.Infrastructure;
+package wooteco.subway.Infrastructure.station;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import wooteco.subway.Infrastructure.DbDaoTest;
 import wooteco.subway.Infrastructure.station.DbStationDao;
 import wooteco.subway.domain.station.Station;
 

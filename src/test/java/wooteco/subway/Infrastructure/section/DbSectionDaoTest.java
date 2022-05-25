@@ -1,9 +1,10 @@
-package wooteco.subway.Infrastructure;
+package wooteco.subway.Infrastructure.section;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import wooteco.subway.Infrastructure.DbDaoTest;
 import wooteco.subway.Infrastructure.section.DbSectionDao;
 import wooteco.subway.domain.section.Section;
 
@@ -12,7 +13,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class DbSectionDaoTest extends DbDaoTest{
+class DbSectionDaoTest extends DbDaoTest {
 
     @Autowired
     private DataSource dataSource;
