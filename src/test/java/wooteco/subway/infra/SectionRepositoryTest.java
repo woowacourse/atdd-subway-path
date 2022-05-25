@@ -2,17 +2,16 @@ package wooteco.subway.infra;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.SubwayFixtures.GANGNAM_TO_YEOKSAM;
-import static wooteco.subway.SubwayFixtures.SUNNEUNG_TO_SUNGDAM;
-import static wooteco.subway.SubwayFixtures.YEOKSAM_TO_SUNNEUNG;
+import static wooteco.subway.SubwayFixtures.강남에서_역삼_구간;
 import static wooteco.subway.SubwayFixtures.강남역;
+import static wooteco.subway.SubwayFixtures.선릉에서_성담빌딩_구간;
 import static wooteco.subway.SubwayFixtures.선릉역;
 import static wooteco.subway.SubwayFixtures.성담빌딩;
+import static wooteco.subway.SubwayFixtures.역삼에서_선릉_구간;
 import static wooteco.subway.SubwayFixtures.역삼역;
 
 import java.util.List;
 import javax.sql.DataSource;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
@@ -24,49 +23,37 @@ import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.vo.LineId;
+import wooteco.subway.domain.vo.SectionDistance;
 import wooteco.subway.infra.dao.SectionDao;
 import wooteco.subway.infra.repository.JdbcSectionRepository;
 import wooteco.subway.infra.repository.SectionRepository;
 
 @DisplayName("Section 레포지토리")
-@Sql("classpath:/schema-test.sql")
+@Sql({"/truncate.sql", "/section-repository-test.sql"})
 @TestConstructor(autowireMode = AutowireMode.ALL)
 @JdbcTest
 class SectionRepositoryTest {
 
     private final SectionRepository sectionRepository;
-    private final JdbcTemplate jdbcTemplate;
 
     public SectionRepositoryTest(DataSource dataSource) {
-        final JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         this.sectionRepository = new JdbcSectionRepository(
-                new SectionDao(jdbcTemplate, dataSource, new NamedParameterJdbcTemplate(dataSource))
+                new SectionDao(new JdbcTemplate(dataSource), dataSource, new NamedParameterJdbcTemplate(dataSource))
         );
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
-    @BeforeEach
-    void setup() {
-        jdbcTemplate.update("INSERT INTO Line(name, color) VALUES('4호선', 'bg-600-blue')");
-        jdbcTemplate.update("INSERT INTO Line(name, color) VALUES('2호선', 'bg-600-green')");
-        jdbcTemplate.update("INSERT INTO Station(name) VALUES('강남역')");
-        jdbcTemplate.update("INSERT INTO Station(name) VALUES('역삼역')");
-        jdbcTemplate.update("INSERT INTO Station(name) VALUES('선릉역')");
-        jdbcTemplate.update("INSERT INTO Station(name) VALUES('삼성역')");
-        jdbcTemplate.update("INSERT INTO Station(name) VALUES('성담빌딩')");
     }
 
     @DisplayName("노선 내 구간 변경 시 사용되는 Sections 저장 테스트")
     @Test
     void saveSections() {
         // given
-        final Sections sections = new Sections(List.of(GANGNAM_TO_YEOKSAM, YEOKSAM_TO_SUNNEUNG, SUNNEUNG_TO_SUNGDAM));
+        final Sections sections = new Sections(List.of(강남에서_역삼_구간, 역삼에서_선릉_구간, 선릉에서_성담빌딩_구간));
         final int expectedSize = sections.getSections().size();
         final List<Section> expectedSections = sections.getSections();
 
         // when
         sectionRepository.save(sections);
-        final Sections sectionsByLineId = sectionRepository.findByLineId(GANGNAM_TO_YEOKSAM.getLineId());
+        final Sections sectionsByLineId = sectionRepository.findByLineId(강남에서_역삼_구간.getLineId());
 
         // then
         final List<Section> savedSections = sectionsByLineId.getSections();
@@ -82,7 +69,7 @@ class SectionRepositoryTest {
     void saveSection() {
         // given
         final Long lineId = 2L;
-        final Section section = new Section(lineId, 강남역, 역삼역, 10);
+        final Section section = new Section(LineId.from(lineId), 강남역, 역삼역, SectionDistance.from(10L));
 
         // when
         sectionRepository.save(lineId, section);
@@ -101,7 +88,7 @@ class SectionRepositoryTest {
     @Test
     void findAll() {
         // given
-        final Sections sections = new Sections(List.of(GANGNAM_TO_YEOKSAM, SUNNEUNG_TO_SUNGDAM, YEOKSAM_TO_SUNNEUNG));
+        final Sections sections = new Sections(List.of(강남에서_역삼_구간, 선릉에서_성담빌딩_구간, 역삼에서_선릉_구간));
         sectionRepository.save(sections);
 
         // when
@@ -115,7 +102,7 @@ class SectionRepositoryTest {
         assertAll(
                 () -> assertThat(allSectionsSaved.size()).isOne(),
                 () -> assertThat(sectionsFound).containsExactly(
-                        SUNNEUNG_TO_SUNGDAM, YEOKSAM_TO_SUNNEUNG, GANGNAM_TO_YEOKSAM
+                        선릉에서_성담빌딩_구간, 역삼에서_선릉_구간, 강남에서_역삼_구간
                 ),
                 () -> assertThat(stations).containsExactly(성담빌딩, 선릉역, 역삼역, 강남역)
         );
@@ -125,11 +112,11 @@ class SectionRepositoryTest {
     @Test
     void findByLineId() {
         // given
-        final Sections sections = new Sections(List.of(GANGNAM_TO_YEOKSAM, SUNNEUNG_TO_SUNGDAM, YEOKSAM_TO_SUNNEUNG));
+        final Sections sections = new Sections(List.of(강남에서_역삼_구간, 선릉에서_성담빌딩_구간, 역삼에서_선릉_구간));
         sectionRepository.save(sections);
 
         // when
-        final Sections sectionsByLineId = sectionRepository.findByLineId(GANGNAM_TO_YEOKSAM.getLineId());
+        final Sections sectionsByLineId = sectionRepository.findByLineId(강남에서_역삼_구간.getLineId());
 
         // then
         final List<Section> sectionsFound = sectionsByLineId.getSections();
@@ -137,7 +124,7 @@ class SectionRepositoryTest {
 
         assertAll(
                 () -> assertThat(sectionsFound).containsExactly(
-                        SUNNEUNG_TO_SUNGDAM, YEOKSAM_TO_SUNNEUNG, GANGNAM_TO_YEOKSAM
+                        선릉에서_성담빌딩_구간, 역삼에서_선릉_구간, 강남에서_역삼_구간
                 ),
                 () -> assertThat(stations).containsExactly(성담빌딩, 선릉역, 역삼역, 강남역)
         );

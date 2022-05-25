@@ -2,9 +2,9 @@ package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.SubwayFixtures.GANGNAM_REQUEST;
 import static wooteco.subway.SubwayFixtures.STATIONS_URI;
-import static wooteco.subway.SubwayFixtures.YEOKSAM_REQUEST;
+import static wooteco.subway.SubwayFixtures.강남역_요청;
+import static wooteco.subway.SubwayFixtures.역삼역_요청;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -19,14 +19,14 @@ import wooteco.subway.ui.dto.response.ExceptionResponse;
 import wooteco.subway.ui.dto.response.StationResponse;
 
 @DisplayName("지하철역 E2E")
-@Sql("classpath:/schema-test.sql")
+@Sql("/truncate.sql")
 class StationAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("신규 지하철역 생성 성공 시, 응답코드는 CREATED 이고 응답헤더에 Location 이 존재한다")
     void createStation() {
         // given
-        final String newStationRequestJson = toJson(GANGNAM_REQUEST);
+        final String newStationRequestJson = toJson(강남역_요청);
 
         // when
         final ExtractableResponse<Response> createResponse = post(STATIONS_URI, newStationRequestJson);
@@ -36,7 +36,7 @@ class StationAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(createResponse.header("Location")).isNotBlank(),
-                () -> assertThat(stationResponse.getName()).isEqualTo(GANGNAM_REQUEST.getName())
+                () -> assertThat(stationResponse.getName()).isEqualTo(강남역_요청.getName())
         );
     }
 
@@ -44,12 +44,12 @@ class StationAcceptanceTest extends AcceptanceTest {
     @DisplayName("기존에 존재하는 이름으로 지하철역 생성 시도 시 생성되지 않고 응답코드는 BAD_REQUEST 이다.")
     void createStationWithDuplicateName() {
         // given
-        final ExtractableResponse<Response> createResponse = post(STATIONS_URI, toJson(GANGNAM_REQUEST));
+        final ExtractableResponse<Response> createResponse = post(STATIONS_URI, toJson(강남역_요청));
 
         // when
-        final ExtractableResponse<Response> duplicateCreateResponse = post(STATIONS_URI, toJson(GANGNAM_REQUEST));
+        final ExtractableResponse<Response> duplicateCreateResponse = post(STATIONS_URI, toJson(강남역_요청));
         final ExceptionResponse exceptionResponse = duplicateCreateResponse.as(ExceptionResponse.class);
-        final String expectedMessage = "이미 존재하는 지하철역 이름입니다 : " + GANGNAM_REQUEST.getName();
+        final String expectedMessage = "이미 존재하는 지하철역 이름입니다 : " + 강남역_요청.getName();
 
         // then
         assertAll(
@@ -63,8 +63,8 @@ class StationAcceptanceTest extends AcceptanceTest {
     @DisplayName("전체 지하철역을 조회할 수 있으며, 응답코드는 OK이다")
     void getStations() {
         /// given
-        final ExtractableResponse<Response> gangNamCreateResponse = post(STATIONS_URI, toJson(GANGNAM_REQUEST));
-        final ExtractableResponse<Response> yeokSamCreateResponse = post(STATIONS_URI, toJson(YEOKSAM_REQUEST));
+        final ExtractableResponse<Response> gangNamCreateResponse = post(STATIONS_URI, toJson(강남역_요청));
+        final ExtractableResponse<Response> yeokSamCreateResponse = post(STATIONS_URI, toJson(역삼역_요청));
 
         // when
         final ExtractableResponse<Response> findAllResponse = get(STATIONS_URI);
@@ -89,7 +89,7 @@ class StationAcceptanceTest extends AcceptanceTest {
     @DisplayName("ID로 지하철역을 삭제할 수 있으며, 삭제 성공 시 응답코드는 NO_CONTENT 이다")
     void deleteStation() {
         // given
-        final ExtractableResponse<Response> createResponse = post(STATIONS_URI, toJson(GANGNAM_REQUEST));
+        final ExtractableResponse<Response> createResponse = post(STATIONS_URI, toJson(강남역_요청));
 
         // when
         final String uri = createResponse.header("Location");

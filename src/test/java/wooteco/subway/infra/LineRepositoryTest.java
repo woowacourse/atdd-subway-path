@@ -2,7 +2,7 @@ package wooteco.subway.infra;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.SubwayFixtures.GANGNAM_TO_YEOKSAM;
+import static wooteco.subway.SubwayFixtures.강남에서_역삼_구간;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -18,6 +18,9 @@ import org.springframework.test.context.TestConstructor.AutowireMode;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.vo.LineColor;
+import wooteco.subway.domain.vo.LineId;
+import wooteco.subway.domain.vo.LineName;
 import wooteco.subway.infra.dao.LineDao;
 import wooteco.subway.infra.dao.SectionDao;
 import wooteco.subway.infra.repository.JdbcLineRepository;
@@ -26,12 +29,12 @@ import wooteco.subway.infra.repository.LineRepository;
 import wooteco.subway.infra.repository.SectionRepository;
 
 @DisplayName("Line 레포지토리")
-@Sql("classpath:/schema-test.sql")
+@Sql("/truncate.sql")
 @TestConstructor(autowireMode = AutowireMode.ALL)
 @JdbcTest
 class LineRepositoryTest {
 
-    private static final Sections SECTIONS = new Sections(List.of(GANGNAM_TO_YEOKSAM));
+    private static final Sections SECTIONS = new Sections(List.of(강남에서_역삼_구간));
 
     private final LineRepository lineRepository;
 
@@ -48,7 +51,7 @@ class LineRepositoryTest {
     @DisplayName("Line 저장")
     void save() {
         // given
-        final Line line = new Line("2호선", "bg-600-green", SECTIONS);
+        final Line line = new Line(LineName.from("2호선"), LineColor.from("bg-600-green"), SECTIONS);
 
         // when
         final Line saved = lineRepository.save(line);
@@ -66,7 +69,7 @@ class LineRepositoryTest {
     @DisplayName("Line 단 건 조회")
     void findById() {
         // given
-        final Line line = new Line("2호선", "bg-600-green", SECTIONS);
+        final Line line = new Line(LineName.from("2호선"), LineColor.from("bg-600-green"), SECTIONS);
         final Line saved = lineRepository.save(line);
 
         // when
@@ -86,11 +89,11 @@ class LineRepositoryTest {
     @DisplayName("Line 업데이트")
     void updateById() {
         // given
-        final Line line = new Line("2호선", "bg-600-green", SECTIONS);
+        final Line line = new Line(LineName.from("2호선"), LineColor.from("bg-600-green"), SECTIONS);
         final Line saved = lineRepository.save(line);
 
         // when
-        final Line newLine = new Line(saved.getId(), "3호선", "bg-700-blue");
+        final Line newLine = new Line(LineId.from(saved.getId()), LineName.from("3호선"), LineColor.from("bg-700-blue"));
         final long affectedRow = lineRepository.update(newLine);
         final Optional<Line> updated = lineRepository.findById(saved.getId());
 
@@ -107,7 +110,7 @@ class LineRepositoryTest {
     @DisplayName("Line 단 건 삭제")
     void deleteById() {
         // given
-        final Line line = new Line("2호선", "bg-600-green", SECTIONS);
+        final Line line = new Line(LineName.from("2호선"), LineColor.from("bg-600-green"), SECTIONS);
         final Line saved = lineRepository.save(line);
         final Long id = saved.getId();
 

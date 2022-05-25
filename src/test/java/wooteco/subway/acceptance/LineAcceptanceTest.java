@@ -2,9 +2,9 @@ package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.SubwayFixtures.BOONDANGLINE_REQUEST;
 import static wooteco.subway.SubwayFixtures.LINES_URI;
-import static wooteco.subway.SubwayFixtures.SECONDLINE_REQUEST;
+import static wooteco.subway.SubwayFixtures.신분당선_요청;
+import static wooteco.subway.SubwayFixtures.이호선_요청;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -21,7 +21,7 @@ import wooteco.subway.ui.dto.response.ExceptionResponse;
 import wooteco.subway.ui.dto.response.LineResponse;
 
 @DisplayName("노선 E2E")
-@Sql("classpath:/schema-test.sql")
+@Sql("/truncate.sql")
 class LineAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
@@ -40,7 +40,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("노선 생성 요청 성공 시, 응답코드는 201 CREATED 이고 응답헤더에는 Location 이 있다")
     void createLine() {
         // given
-        final String newLineRequestJson = toJson(BOONDANGLINE_REQUEST);
+        final String newLineRequestJson = toJson(신분당선_요청);
 
         // when
         final ExtractableResponse<Response> createResponse = post(LINES_URI, newLineRequestJson);
@@ -50,8 +50,8 @@ class LineAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(createResponse.header("Location")).isNotBlank(),
-                () -> assertThat(lineResponse.getName()).isEqualTo(BOONDANGLINE_REQUEST.getName()),
-                () -> assertThat(lineResponse.getColor()).isEqualTo(BOONDANGLINE_REQUEST.getColor())
+                () -> assertThat(lineResponse.getName()).isEqualTo(신분당선_요청.getName()),
+                () -> assertThat(lineResponse.getColor()).isEqualTo(신분당선_요청.getColor())
         );
     }
 
@@ -59,7 +59,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("중복되는 노선 이름으로 노선 생성 시도 시, 생성에 실패하고 응답코드는 BAD_REQUEST 이다 ")
     void createLineWithDuplicateName() {
         // given
-        final String createRequestJson = toJson(BOONDANGLINE_REQUEST);
+        final String createRequestJson = toJson(신분당선_요청);
         final ExtractableResponse<Response> createResponse = post(LINES_URI, createRequestJson);
 
         // when
@@ -76,8 +76,8 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("노선을 조회 시 응답코드는 OK이다")
     void getLines() {
         /// given
-        final ExtractableResponse<Response> firstLineCreate = post(LINES_URI, toJson(BOONDANGLINE_REQUEST));
-        final ExtractableResponse<Response> secondLineCreate = post(LINES_URI, toJson(SECONDLINE_REQUEST));
+        final ExtractableResponse<Response> firstLineCreate = post(LINES_URI, toJson(신분당선_요청));
+        final ExtractableResponse<Response> secondLineCreate = post(LINES_URI, toJson(이호선_요청));
 
         // when
         final Long firstId = Long.parseLong(firstLineCreate.header("Location").replace("/lines/", ""));
@@ -103,7 +103,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("노선을 제거 시 응답코드는 NO_CONTENT 이다. 존재하지 않는 노선 조회 시, 응답코드는 NOT_FOUND 이다")
     void deleteLine() {
         // given
-        final ExtractableResponse<Response> createResponse = post(LINES_URI, toJson(BOONDANGLINE_REQUEST));
+        final ExtractableResponse<Response> createResponse = post(LINES_URI, toJson(신분당선_요청));
 
         // when
         final String uri = createResponse.header("Location");
@@ -125,7 +125,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("ID로 특정 단일 노선의 정보를 조회할 수 있으며, 응답코드는 OK이다")
     void getLineById() {
         /// given
-        final ExtractableResponse<Response> createResponse = post(LINES_URI, toJson(BOONDANGLINE_REQUEST));
+        final ExtractableResponse<Response> createResponse = post(LINES_URI, toJson(신분당선_요청));
         final LineResponse expected = createResponse.jsonPath().getObject(".", LineResponse.class);
 
         // when
@@ -145,12 +145,12 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("ID로 특정 노선의 정보를 갱신할 수 있으며, 정상 갱신 시 응답코드는 OK이다")
     void updateLine() {
         // given
-        final ExtractableResponse<Response> createResponse = post(LINES_URI, toJson(BOONDANGLINE_REQUEST));
+        final ExtractableResponse<Response> createResponse = post(LINES_URI, toJson(신분당선_요청));
         final LineResponse expected = createResponse.jsonPath().getObject(".", LineResponse.class);
 
         // when
         final String uri = createResponse.header("Location");
-        final ExtractableResponse<Response> updateResponse = put(uri, toJson(SECONDLINE_REQUEST));
+        final ExtractableResponse<Response> updateResponse = put(uri, toJson(이호선_요청));
         final ExtractableResponse<Response> findAfterUpdateResponse = get(uri);
         final LineResponse actual = findAfterUpdateResponse.jsonPath().getObject(".", LineResponse.class);
 
@@ -160,8 +160,8 @@ class LineAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(findAfterUpdateResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(actual.getId()).isEqualTo(expected.getId()),
-                () -> assertThat(actual.getName()).isEqualTo(SECONDLINE_REQUEST.getName()),
-                () -> assertThat(actual.getColor()).isEqualTo(SECONDLINE_REQUEST.getColor())
+                () -> assertThat(actual.getName()).isEqualTo(이호선_요청.getName()),
+                () -> assertThat(actual.getColor()).isEqualTo(이호선_요청.getColor())
         );
     }
 }

@@ -49,7 +49,7 @@ public class LineController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineRequest) {
+    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody @Valid LineRequest lineRequest) {
         lineService.update(id, getLineServiceRequest(lineRequest));
         return ResponseEntity.ok().build();
     }
@@ -63,7 +63,7 @@ public class LineController {
     private LineServiceRequest getLineServiceRequest(LineRequest lineRequest) {
         return new LineServiceRequest(null, lineRequest.getName(),
                 lineRequest.getColor(), lineRequest.getUpStationId(),
-                lineRequest.getDownStationId(), lineRequest.getDistance());
+                lineRequest.getDownStationId(), lineRequest.getDistance(), lineRequest.getExtraFare());
     }
 
     private List<LineResponse> toLineResponses(List<Line> lines) {

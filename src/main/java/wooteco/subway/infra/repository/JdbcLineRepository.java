@@ -7,6 +7,10 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.vo.LineColor;
+import wooteco.subway.domain.vo.LineExtraFare;
+import wooteco.subway.domain.vo.LineId;
+import wooteco.subway.domain.vo.LineName;
 import wooteco.subway.exception.SubwayUnknownException;
 import wooteco.subway.exception.SubwayValidationException;
 import wooteco.subway.infra.dao.LineDao;
@@ -25,7 +29,7 @@ public class JdbcLineRepository implements LineRepository {
 
     @Override
     public Line save(Line line) {
-        final LineEntity savedLine = lineDao.save(new LineEntity(line.getName(), line.getColor()));
+        final LineEntity savedLine = lineDao.save(new LineEntity(line.getName(), line.getColor(), line.getExtraFare()));
         final Sections sectionInput = line.getSections();
         final List<Section> sections = sectionInput.getSections();
         if (sections.size() != 1) {
@@ -34,7 +38,14 @@ public class JdbcLineRepository implements LineRepository {
         final Section section = sections.get(0);
         sectionRepository.save(savedLine.getId(), section);
 
-        return new Line(savedLine.getId(), savedLine.getName(), savedLine.getColor(), sectionInput);
+        return new Line
+                (
+                        LineId.from(savedLine.getId()),
+                        LineName.from(savedLine.getName()),
+                        LineColor.from(savedLine.getColor()),
+                        LineExtraFare.from(savedLine.getExtraFare()),
+                        sectionInput
+                );
     }
 
     @Override
@@ -50,13 +61,19 @@ public class JdbcLineRepository implements LineRepository {
     private List<Line> findAllLines() {
         return lineDao.findAll()
                 .stream()
-                .map(entity -> new Line(entity.getId(), entity.getName(), entity.getColor()))
+                .map(entity -> new Line
+                        (
+                                LineId.from(entity.getId()),
+                                LineName.from(entity.getName()),
+                                LineColor.from(entity.getColor()),
+                                LineExtraFare.from(entity.getExtraFare())
+                        ))
                 .collect(Collectors.toList());
     }
 
     private Line findLineBySections(List<Line> lines, Sections oneSections) {
         return lines.stream()
-                .filter(line -> oneSections.isSameLineId(line.getId()))
+                .filter(line -> oneSections.isSameLineId(LineId.from(line.getId())))
                 .findAny()
                 .orElseThrow(() -> new SubwayUnknownException("구간에 해당하는 노선을 찾지 못헀습니다"));
     }
@@ -73,7 +90,13 @@ public class JdbcLineRepository implements LineRepository {
     }
 
     private Line toLine(LineEntity entity) {
-        return new Line(entity.getId(), entity.getName(), entity.getColor());
+        return new Line
+                (
+                        LineId.from(entity.getId()),
+                        LineName.from(entity.getName()),
+                        LineColor.from(entity.getColor()),
+                        LineExtraFare.from(entity.getExtraFare())
+                );
     }
 
     @Override
@@ -98,7 +121,8 @@ public class JdbcLineRepository implements LineRepository {
 
     @Override
     public long update(Line line) {
-        final LineEntity lineEntity = new LineEntity(line.getId(), line.getName(), line.getColor());
+        final LineEntity lineEntity = new LineEntity(line.getId(), line.getName(), line.getColor(),
+                line.getExtraFare());
         return lineDao.updateById(lineEntity);
     }
 

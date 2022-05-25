@@ -6,19 +6,22 @@ public class LineServiceRequest {
     private String color;
     private Long upStationId;
     private Long downStationId;
-    private int distance;
+    private Long distance;
+    private Long extraFare;
 
-    public LineServiceRequest(Long id, String name, String color, Long upStationId, Long downStationId, int distance) {
+    public LineServiceRequest(Long id, String name, String color, Long upStationId, Long downStationId, Long distance,
+                              Long extraFare) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+        this.extraFare = extraFare;
     }
 
-    public LineServiceRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
-        this(null, name, color, upStationId, downStationId, distance);
+    public LineServiceRequest(String name, String color, Long upStationId, Long downStationId, Long distance) {
+        this(null, name, color, upStationId, downStationId, distance, 0L);
     }
 
     public void setId(Long id) {
@@ -45,7 +48,11 @@ public class LineServiceRequest {
         return downStationId;
     }
 
-    public int getDistance() {
+    public Long getDistance() {
         return distance;
+    }
+
+    public Long getExtraFare() {
+        return extraFare;
     }
 }

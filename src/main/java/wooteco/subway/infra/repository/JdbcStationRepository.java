@@ -1,10 +1,13 @@
 package wooteco.subway.infra.repository;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.vo.StationId;
+import wooteco.subway.domain.vo.StationName;
 import wooteco.subway.infra.dao.StationDao;
 import wooteco.subway.infra.dao.entity.StationEntity;
 
@@ -29,11 +32,12 @@ public class JdbcStationRepository implements StationRepository {
 
         return stations.stream()
                 .map(this::toStation)
+                .sorted(Comparator.comparing(Station::getName))
                 .collect(Collectors.toList());
     }
 
     private Station toStation(StationEntity entity) {
-        return new Station(entity.getId(), entity.getName());
+        return new Station(StationId.from(entity.getId()), StationName.from(entity.getName()));
     }
 
     @Override

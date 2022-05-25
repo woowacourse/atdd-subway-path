@@ -11,6 +11,11 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.vo.LineId;
+import wooteco.subway.domain.vo.SectionDistance;
+import wooteco.subway.domain.vo.SectionId;
+import wooteco.subway.domain.vo.StationId;
+import wooteco.subway.domain.vo.StationName;
 import wooteco.subway.infra.dao.SectionDao;
 import wooteco.subway.infra.dao.entity.SectionEntity;
 
@@ -82,11 +87,11 @@ public class JdbcSectionRepository implements SectionRepository {
 
     private Section toSection(SectionEntity entity) {
         return new Section(
-                entity.getId(),
-                entity.getLineId(),
-                new Station(entity.getUpStationId(), entity.getUpStationName()),
-                new Station(entity.getDownStationId(), entity.getDownStationName()),
-                entity.getDistance()
+                SectionId.from(entity.getId()),
+                LineId.from(entity.getLineId()),
+                new Station(StationId.from(entity.getUpStationId()), StationName.from(entity.getUpStationName())),
+                new Station(StationId.from(entity.getDownStationId()), StationName.from(entity.getDownStationName())),
+                SectionDistance.from(entity.getDistance())
         );
     }
 }

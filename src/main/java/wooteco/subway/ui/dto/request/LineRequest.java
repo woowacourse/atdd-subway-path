@@ -1,9 +1,8 @@
 package wooteco.subway.ui.dto.request;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import org.hibernate.validator.constraints.Length;
 
 public class LineRequest {
@@ -15,28 +14,28 @@ public class LineRequest {
     @Length(min = 1, max = 20)
     private String color;
     @Positive
-    @NotNull
     private Long upStationId;
     @Positive
-    @NotNull
     private Long downStationId;
     @Positive
-    @Min(value = 1)
-    private int distance;
+    private Long distance;
+    @PositiveOrZero
+    private long extraFare;
 
     private LineRequest() {
     }
 
-    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
+    public LineRequest(String name, String color, Long upStationId, Long downStationId, Long distance, long extraFare) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+        this.extraFare = extraFare;
     }
 
-    public LineRequest(String name, String color) {
-        this(name, color, null, null, 0);
+    public LineRequest(String name, String color, Long upStationId, Long downStationId, Long distance) {
+        this(name, color, upStationId, downStationId, distance, 0);
     }
 
     public String getName() {
@@ -55,7 +54,11 @@ public class LineRequest {
         return downStationId;
     }
 
-    public int getDistance() {
+    public Long getDistance() {
         return distance;
+    }
+
+    public long getExtraFare() {
+        return extraFare;
     }
 }

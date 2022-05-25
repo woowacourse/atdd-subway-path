@@ -8,11 +8,15 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 import static wooteco.subway.SubwayFixtures.STATION_FIXTURE1;
 import static wooteco.subway.SubwayFixtures.STATION_FIXTURE2;
 import static wooteco.subway.SubwayFixtures.강남역;
+import static wooteco.subway.SubwayFixtures.대림에서_서초_구간;
 import static wooteco.subway.SubwayFixtures.대림역;
 import static wooteco.subway.SubwayFixtures.삼성역;
+import static wooteco.subway.SubwayFixtures.서초에서_강남_구간;
 import static wooteco.subway.SubwayFixtures.서초역;
+import static wooteco.subway.SubwayFixtures.선릉에서_성담빌딩_구간;
 import static wooteco.subway.SubwayFixtures.선릉역;
 import static wooteco.subway.SubwayFixtures.성담빌딩;
+import static wooteco.subway.SubwayFixtures.역삼에서_선릉_구간;
 import static wooteco.subway.SubwayFixtures.역삼역;
 
 import java.util.List;
@@ -22,7 +26,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
-import wooteco.subway.SubwayFixtures;
+import wooteco.subway.domain.vo.LineId;
+import wooteco.subway.domain.vo.SectionDistance;
+import wooteco.subway.domain.vo.SectionId;
 import wooteco.subway.exception.validation.SectionDuplicateException;
 import wooteco.subway.exception.validation.SectionNotSuitableException;
 
@@ -36,11 +42,12 @@ class SectionsTest {
 
     @BeforeEach
     void setup() {
-        YEOKSAM_TO_SUNNEUNG = new Section(1L, 2L, 선릉역, 역삼역, 10);
-        GANGNAM_TO_YEOKSAM = new Section(2L, 2L, 역삼역, 강남역, 10);
-        SUNNEUNG_TO_SAMSUNG = new Section(3L, 2L, 삼성역, 선릉역, 10);
-        SUNGDAM_BUILDING_TO_SAMSUNG = new Section(4L, 2L, 삼성역, 성담빌딩, 5);
-        YEOKSAM_TO_SAMSUNG = new Section(5L, 2L, 삼성역, 역삼역, 10);
+        YEOKSAM_TO_SUNNEUNG = new Section(SectionId.from(1L), LineId.from(2L), 선릉역, 역삼역, SectionDistance.from(10L));
+        GANGNAM_TO_YEOKSAM = new Section(SectionId.from(2L), LineId.from(2L), 역삼역, 강남역, SectionDistance.from(10L));
+        SUNNEUNG_TO_SAMSUNG = new Section(SectionId.from(3L), LineId.from(2L), 삼성역, 선릉역, SectionDistance.from(10L));
+        SUNGDAM_BUILDING_TO_SAMSUNG = new Section(SectionId.from(4L), LineId.from(2L), 삼성역, 성담빌딩,
+                SectionDistance.from(5L));
+        YEOKSAM_TO_SAMSUNG = new Section(SectionId.from(5L), LineId.from(2L), 삼성역, 역삼역, SectionDistance.from(10L));
     }
 
     @Test
@@ -51,10 +58,12 @@ class SectionsTest {
         final Long lineId = 2L;
         final Station upStation = STATION_FIXTURE1;
         final Station downStation = STATION_FIXTURE2;
-        final int distance = 10;
+        final Long distance = 10L;
 
         // when & then
-        assertThatCode(() -> new Section(id, lineId, upStation, downStation, distance))
+        assertThatCode(
+                () -> new Section(SectionId.from(id), LineId.from(lineId), upStation, downStation,
+                        SectionDistance.from(distance)))
                 .doesNotThrowAnyException();
     }
 
@@ -151,7 +160,7 @@ class SectionsTest {
         return Stream.of(
                 dynamicTest("역삼-강남 에 선릉-역삼 을 추가하면 선릉-역삼-강남 이 된다", () -> {
                     // given
-                    final Section input = SubwayFixtures.YEOKSAM_TO_SUNNEUNG;
+                    final Section input = 역삼에서_선릉_구간;
 
                     // when
                     final SectionResult result = sections.add(input);
@@ -166,7 +175,7 @@ class SectionsTest {
 
                 dynamicTest("선릉-역삼-강남 에 강남-서초 를 추가하면 선릉-역삼-강남-서초 가 된다", () -> {
                     // given
-                    final Section input = SubwayFixtures.SEOCHO_TO_GANGNAM;
+                    final Section input = 서초에서_강남_구간;
 
                     // when
                     final SectionResult result = sections.add(input);
@@ -181,7 +190,7 @@ class SectionsTest {
 
                 dynamicTest("선릉-역삼-강남-서초 에 서초-대림 을 추가하면 선릉-역삼-강남-서초-대림 이 된다", () -> {
                     // given
-                    final Section input = SubwayFixtures.DAELIM_TO_SEOCHO;
+                    final Section input = 대림에서_서초_구간;
 
                     // when
                     final SectionResult result = sections.add(input);
@@ -196,7 +205,7 @@ class SectionsTest {
 
                 dynamicTest("선릉-역삼-강남-서초-대림 에 성담빌딩-선릉 을 추가하면 성담빌딩-선릉-역삼-강남-서초-대림 이 된다", () -> {
                     // given
-                    final Section input = SubwayFixtures.SUNNEUNG_TO_SUNGDAM;
+                    final Section input = 선릉에서_성담빌딩_구간;
 
                     // when
                     final SectionResult result = sections.add(input);

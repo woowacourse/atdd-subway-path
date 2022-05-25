@@ -34,7 +34,7 @@ public class SectionDao extends AbstractDao<SectionEntity, Long> {
                     rs.getString("up_station_name"),
                     rs.getLong("down_station_id"),
                     rs.getString("down_station_name"),
-                    rs.getInt("distance")
+                    rs.getLong("distance")
             );
 
     private final JdbcTemplate jdbcTemplate;

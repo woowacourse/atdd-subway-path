@@ -8,6 +8,9 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import wooteco.subway.domain.vo.LineId;
+import wooteco.subway.domain.vo.SectionDistance;
+import wooteco.subway.domain.vo.StationId;
 import wooteco.subway.exception.SubwayUnknownException;
 import wooteco.subway.exception.SubwayValidationException;
 import wooteco.subway.exception.validation.SectionDuplicateException;
@@ -98,11 +101,11 @@ public class Sections {
         }
 
         final Section upSection = findSection(sectionsByStationId,
-                section -> section.getDownStation().isSameId(stationId));
+                section -> section.getDownStation().isSameId(StationId.from(stationId)));
         final Section downSection = findSection(sectionsByStationId,
-                section -> section.getUpStation().isSameId(stationId));
-        final Section merged = new Section(lineId, upSection.getUpStation(), downSection.getDownStation(),
-                upSection.getDistance() + downSection.getDistance());
+                section -> section.getUpStation().isSameId(StationId.from(stationId)));
+        final Section merged = new Section(LineId.from(lineId), upSection.getUpStation(), downSection.getDownStation(),
+                SectionDistance.from(upSection.getDistance() + downSection.getDistance()));
 
         sections.removeAll(List.of(upSection, downSection));
         sections.add(merged);
@@ -112,7 +115,7 @@ public class Sections {
 
     private List<Section> findSectionsByStationId(Long stationId) {
         final List<Section> sectionsByStationId = sections.stream()
-                .filter(section -> section.hasStationById(stationId))
+                .filter(section -> section.hasStationById(StationId.from(stationId)))
                 .collect(Collectors.toList());
 
         if (sectionsByStationId.isEmpty()) {
@@ -141,7 +144,7 @@ public class Sections {
 
     private SectionResult reduceEndPoint(Long stationId, Section section) {
         sections.remove(section);
-        if (section.getUpStation().isSameId(stationId)) {
+        if (section.getUpStation().isSameId(StationId.from(stationId))) {
             return SectionResult.UP_REDUCED;
         }
         return SectionResult.DOWN_REDUCED;
@@ -151,7 +154,7 @@ public class Sections {
         return sections.size() == SINGLE_SIZE;
     }
 
-    public boolean isSameLineId(Long lineId) {
+    public boolean isSameLineId(LineId lineId) {
         return sections.get(FIRST_INDEX).isSameLineId(lineId);
     }
 
