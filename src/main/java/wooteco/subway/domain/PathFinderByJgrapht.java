@@ -14,7 +14,7 @@ public class PathFinderByJgrapht implements PathFinder {
 
     @Override
     public Path findShortestPath(List<Section> sections, Long source, Long target) {
-        GraphPath<Long, SubwayWeightedEdge> path = initPathGraph(sections, source, target, findStationIds(sections));
+        GraphPath<Long, SubwayWeightedEdge> path = initGraphPath(sections, source, target, findStationIds(sections));
         return new Path(path.getVertexList(), findLineIdsOfPath(path), (int) path.getWeight());
     }
 
@@ -27,7 +27,7 @@ public class PathFinderByJgrapht implements PathFinder {
         return ids;
     }
 
-    private GraphPath<Long, SubwayWeightedEdge> initPathGraph(List<Section> sections,
+    private GraphPath<Long, SubwayWeightedEdge> initGraphPath(List<Section> sections,
                                                               Long source,
                                                               Long target,
                                                               Set<Long> ids) {
@@ -43,9 +43,9 @@ public class PathFinderByJgrapht implements PathFinder {
         return new DijkstraShortestPath(graph).getPath(source, target);
     }
 
-    private List<Long> findLineIdsOfPath(final GraphPath<Long, SubwayWeightedEdge> path) {
+    private Set<Long> findLineIdsOfPath(final GraphPath<Long, SubwayWeightedEdge> path) {
         return path.getEdgeList().stream()
                 .map(SubwayWeightedEdge::getLineId)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 }
