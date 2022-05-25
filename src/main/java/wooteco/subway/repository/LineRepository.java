@@ -8,12 +8,12 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
-import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineExtraFare;
 import wooteco.subway.domain.line.LineMap;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
 import wooteco.subway.domain.station.Station;
+import wooteco.subway.entity.LineEntity;
 import wooteco.subway.exception.ExceptionType;
 import wooteco.subway.exception.NotFoundException;
 
@@ -39,16 +39,16 @@ public class LineRepository {
     }
 
     public LineMap findExistingLine(Long id) {
-        Line line = lineDao.findById(id)
+        LineEntity line = lineDao.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionType.LINE_NOT_FOUND));
         Sections sections = new Sections(sectionDao.findAllByLineId(id));
-        return new LineMap(id, line.getName(), line.getColor(), line.getExtraFare(), sections);
+        return toDomain(line, sections);
     }
 
     public List<LineExtraFare> findLineExtraFaresByIds(List<Long> ids) {
         return lineDao.findAllByIds(ids)
                 .stream()
-                .map(Line::getLineExtraFare)
+                .map(line -> new LineExtraFare(line.getExtraFare()))
                 .collect(Collectors.toList());
     }
 
@@ -65,7 +65,7 @@ public class LineRepository {
         String color = line.getColor();
         int extraFare = line.getExtraFare();
 
-        Line savedLine = lineDao.save(new Line(name, color, extraFare));
+        LineEntity savedLine = lineDao.save(new LineEntity(name, color, extraFare));
         saveSections(savedLine.getId(), line.toSectionList());
         return toDomain(savedLine, line.getSections());
     }
@@ -85,7 +85,7 @@ public class LineRepository {
         String color = line.getColor();
         int extraFare = line.getExtraFare();
 
-        Line updatedLine = new Line(id, name, color, extraFare);
+        LineEntity updatedLine = new LineEntity(id, name, color, extraFare);
         lineDao.update(updatedLine);
     }
 
@@ -95,7 +95,7 @@ public class LineRepository {
         sectionDao.deleteAllByLineId(id);
     }
 
-    private LineMap toDomain(Line lineEntity, Sections sections) {
+    private LineMap toDomain(LineEntity lineEntity, Sections sections) {
         Long lineId = lineEntity.getId();
         String color = lineEntity.getColor();
         int extraFare = lineEntity.getExtraFare();
