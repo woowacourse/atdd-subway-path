@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.pathfinder;
 
 import java.util.HashSet;
 import java.util.List;
@@ -6,13 +6,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Station;
 import wooteco.subway.exception.ExceptionMessage;
 import wooteco.subway.exception.domain.PathException;
 
-public class CustomPathFinder implements PathFinder {
+public class ShortestPathFinder implements PathFinder {
     private final WeightedMultigraph<Station, SectionEdge> graph;
 
-    public CustomPathFinder(WeightedMultigraph<Station, SectionEdge> graph) {
+    public ShortestPathFinder(WeightedMultigraph<Station, SectionEdge> graph) {
         this.graph = graph;
     }
 
@@ -21,7 +23,7 @@ public class CustomPathFinder implements PathFinder {
         Set<Station> stations = getDistinctStations(sections);
         stations.forEach(graph::addVertex);
         sections.forEach(section -> setWeightedEdgeFromSection(graph, section));
-        return new CustomPathFinder(graph);
+        return new ShortestPathFinder(graph);
     }
 
     private static Set<Station> getDistinctStations(List<Section> sections) {

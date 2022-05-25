@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.pathfinder;
 
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.stereotype.Component;
@@ -15,12 +15,12 @@ public class PathFinderFactory implements FactoryBean<PathFinder> {
 
     @Override
     public PathFinder getObject() throws Exception {
-        return CustomPathFinder.of(repository.findAll());
+        return ShortestPathFinder.of(repository.findAll());
     }
 
     @Override
     public Class<?> getObjectType() {
-        return JGraphPathFinder.class;
+        return ShortestPathFinder.class;
     }
 
     @Override

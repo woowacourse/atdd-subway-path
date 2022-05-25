@@ -7,10 +7,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.pathfinder.PathFinder;
+import wooteco.subway.domain.pathfinder.ShortestPathFinder;
 import wooteco.subway.exception.domain.PathException;
 
 class PathFinderTest {
-
+    
     Station station1 = new Station(1L, "station1");
     Station station2 = new Station(2L, "station2");
     Station station3 = new Station(3L, "station3");
@@ -29,7 +31,7 @@ class PathFinderTest {
     @DisplayName("구간들로 경로 객체를 생성한다")
     void createPath() {
 
-        assertThatCode(() -> JGraphPathFinder.of(sections))
+        assertThatCode(() -> ShortestPathFinder.of(sections))
                 .doesNotThrowAnyException();
     }
 
@@ -37,7 +39,7 @@ class PathFinderTest {
     @DisplayName("두 역의 경로 거리를 반환한다.")
     void calculateDistance() {
         // given
-        PathFinder path = JGraphPathFinder.of(sections);
+        PathFinder path = ShortestPathFinder.of(sections);
 
         // when
         int distance = path.calculateDistance(station1, station3);
@@ -50,7 +52,7 @@ class PathFinderTest {
     @DisplayName("역이 경로에 포함되지 않는 경우 예외를 던진다.")
     void calculateDistance_notFoundPath_exception() {
         // given
-        PathFinder path = JGraphPathFinder.of(sections);
+        PathFinder path = ShortestPathFinder.of(sections);
 
         // then
         assertThatThrownBy(() -> path.calculateDistance(station1, station4))
@@ -61,7 +63,7 @@ class PathFinderTest {
     @DisplayName("두 역의 경로가 연결되지 않은 경우 예외를 던진다.")
     void calculateDistance_notConnectedPath_exception() {
         // given
-        PathFinder path = JGraphPathFinder.of(unconnectedSect);
+        PathFinder path = ShortestPathFinder.of(unconnectedSect);
 
         // then
         assertThatThrownBy(() -> path.calculateDistance(station1, station4))
@@ -72,7 +74,7 @@ class PathFinderTest {
     @DisplayName("두 역의 경로 거리를 반환한다.")
     void calculateStationPath() {
         // given
-        PathFinder pathFinder = JGraphPathFinder.of(sections);
+        PathFinder pathFinder = ShortestPathFinder.of(sections);
 
         // when
         List<Station> path = pathFinder.calculatePath(station1, station3);

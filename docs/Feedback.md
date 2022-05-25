@@ -20,16 +20,19 @@
     - `FactoryBean`을 사용하여 빈으로 주입받아 사용할 수 있도록 수정
 - [x] `PathServiceTest`
     - 경로 조회 테스트 시 다양한 케이스에 대해 테스트
-- [ ] `AcceptanceTest`
+- [x] `AcceptanceTest`
     - 사용자 유스케이스에 대한 테스트 작성
         - 브라우저로 직접 테스트할 때 흐름을 AcceptanceTest에서 작성
 
 ## 2단계 피드백
 
-- [ ] 미사용 클래스 제거
-- [ ] `PathFinderFactory`
-    - [ ] `getObjectType()` 메서드 반환 타입 수정
-    - [ ] 적절한 패키지 위치로 수정
+- [x] 미사용 클래스 제거
+  - `JGraphPathFinder` 클래스 미사용으로 제거 
+- [x] `PathFinderFactory`
+    - [x] `getObjectType()` 메서드 반환 타입 수정
+      - 사용하는 클래스 수정한 것과 동일하게 `ShortestPathFinder.class`로 수정 
+    - [x] 적절한 패키지 위치로 수정
+      - `domain > pathfinder` 패키지로 수정  
 - [ ] `Fare`
     - [ ] 상수를 사용하는 클래스에서 가지고 있도록 수정
     - [ ] 인터페이스로 수정 후 구현하도록 수정
