@@ -19,7 +19,9 @@ public class LineDao {
     private static final RowMapper<LineEntity> ROW_MAPPER = (resultSet, rowNum) -> new LineEntity(
             resultSet.getLong("id"),
             resultSet.getString("name"),
-            resultSet.getString("color"));
+            resultSet.getString("color"),
+            resultSet.getInt("extraFare")
+    );
 
     private final SimpleJdbcInsert insertActor;
     private final NamedParameterJdbcTemplate jdbcTemplate;

@@ -4,35 +4,29 @@ import java.util.Objects;
 
 public class Section {
 
-    private static final int MIN_DISTANCE = 0;
-
     private final Long id;
     private final Station upStation;
     private final Station downStation;
     private final int distance;
+    private final int extraFare;
 
     public Section(final Station upStation, final Station downStation, final int distance) {
-        this(null, upStation, downStation, distance);
+        this(null, upStation, downStation, distance, 0);
     }
 
-    public Section(final Long id, final Station upStation, final Station downStation, final int distance) {
+    public Section(final Long id, final Station upStation, final Station downStation, final int distance,
+                   final int extraFare) {
         validateSameStationId(upStation, downStation);
-        validateDistance(distance);
         this.id = id;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+        this.extraFare = extraFare;
     }
 
     private void validateSameStationId(final Station upStation, final Station downStation) {
         if (upStation.equals(downStation)) {
             throw new IllegalArgumentException("상행, 하행 역은 서로 달라야합니다.");
-        }
-    }
-
-    private void validateDistance(final int distance) {
-        if (distance <= MIN_DISTANCE) {
-            throw new IllegalArgumentException("구간의 거리는 0보다 커야합니다.");
         }
     }
 
@@ -78,6 +72,10 @@ public class Section {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     @Override

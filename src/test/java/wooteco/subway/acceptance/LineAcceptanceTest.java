@@ -3,12 +3,17 @@ package wooteco.subway.acceptance;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static wooteco.subway.Fixtures.BLUE;
-import static wooteco.subway.Fixtures.GANGNAM;
-import static wooteco.subway.Fixtures.HYEHWA;
+import static wooteco.subway.Fixtures.LINE_1;
 import static wooteco.subway.Fixtures.LINE_2;
-import static wooteco.subway.Fixtures.LINE_4;
 import static wooteco.subway.Fixtures.RED;
-import static wooteco.subway.Fixtures.SINSA;
+import static wooteco.subway.Fixtures.STATION_1;
+import static wooteco.subway.Fixtures.STATION_2;
+import static wooteco.subway.Fixtures.STATION_3;
+import static wooteco.subway.acceptance.AcceptanceFixture.createLine;
+import static wooteco.subway.acceptance.AcceptanceFixture.createSection;
+import static wooteco.subway.acceptance.AcceptanceFixture.createStation;
+import static wooteco.subway.acceptance.AcceptanceFixture.deleteLine;
+import static wooteco.subway.acceptance.AcceptanceFixture.updateLine;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -38,37 +43,33 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선을 등록한다.")
     void create() {
         // given
-        final Long upStationId = createStation(HYEHWA);
-        final Long downStationId = createStation(SINSA);
+        final Long upStationId = createStation(STATION_1);
+        final Long downStationId = createStation(STATION_2);
 
         final Map<String, Object> params = new HashMap<>();
-        params.put("name", LINE_2);
+        params.put("name", LINE_1);
         params.put("color", RED);
         params.put("upStationId", upStationId);
         params.put("downStationId", downStationId);
         params.put("distance", 10);
+        params.put("extraFare", 500);
 
         // when
-        final ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines")
-                .then().log().all()
-                .extract();
+        final ExtractableResponse<Response> response = createLine(params);
         final List<StationResponse> stationResponses = response.body().jsonPath()
                 .getList("stations", StationResponse.class);
 
         // then
-        assertAll(() -> {
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-            assertThat(response.header("Location")).isNotBlank();
-            assertThat(response.body().jsonPath().getString("name")).isEqualTo(LINE_2);
-            assertThat(response.body().jsonPath().getString("color")).isEqualTo(RED);
-            assertThat(stationResponses).hasSize(2);
-            assertThat(stationResponses.get(0).getName()).isEqualTo(HYEHWA);
-            assertThat(stationResponses.get(1).getName()).isEqualTo(SINSA);
-        });
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+                () -> assertThat(response.header("Location")).isNotBlank(),
+                () -> assertThat(response.body().jsonPath().getString("name")).isEqualTo(LINE_1),
+                () -> assertThat(response.body().jsonPath().getString("color")).isEqualTo(RED),
+                () -> assertThat(response.body().jsonPath().getInt("extraFare")).isEqualTo(500),
+                () -> assertThat(stationResponses).hasSize(2),
+                () -> assertThat(stationResponses.get(0).getName()).isEqualTo(STATION_1),
+                () -> assertThat(stationResponses.get(1).getName()).isEqualTo(STATION_2)
+        );
     }
 
     /*
@@ -81,32 +82,20 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("기존에 존재하는 노선 이름으로 생성하면, 예외를 발생한다.")
     void createWithDuplicateName() {
         // given
-        final Long upStationId = createStation(HYEHWA);
-        final Long downStationId = createStation(SINSA);
+        final Long upStationId = createStation(STATION_1);
+        final Long downStationId = createStation(STATION_2);
 
         final Map<String, Object> params = new HashMap<>();
-        params.put("name", LINE_2);
+        params.put("name", LINE_1);
         params.put("color", RED);
         params.put("upStationId", upStationId);
         params.put("downStationId", downStationId);
         params.put("distance", 10);
-
-        RestAssured.given().log().all()
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines")
-                .then().log().all()
-                .extract();
+        params.put("extraFare", 500);
+        createLine(params);
 
         // when
-        final ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines")
-                .then().log().all()
-                .extract();
+        final ExtractableResponse<Response> response = createLine(params);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -121,34 +110,28 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선 목록을 조회한다.")
     void showAll() {
         // given
-        final Long upStationId = createStation(HYEHWA);
-        final Long downStationId = createStation(SINSA);
+        final Long upStationId = createStation(STATION_1);
+        final Long downStationId = createStation(STATION_2);
 
         final Map<String, Object> params1 = new HashMap<>();
-        params1.put("name", LINE_2);
+        params1.put("name", LINE_1);
         params1.put("color", RED);
         params1.put("upStationId", upStationId);
         params1.put("downStationId", downStationId);
         params1.put("distance", 10);
-        RestAssured.given().log().all()
-                .body(params1)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines")
-                .then().log().all();
+        params1.put("extraFare", 400);
+
+        createLine(params1);
 
         final Map<String, Object> params2 = new HashMap<>();
-        params2.put("name", LINE_4);
+        params2.put("name", LINE_2);
         params2.put("color", BLUE);
         params2.put("upStationId", upStationId);
         params2.put("downStationId", downStationId);
         params2.put("distance", 10);
-        RestAssured.given().log().all()
-                .body(params2)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines")
-                .then().log().all();
+        params2.put("extraFare", 500);
+
+        createLine(params2);
 
         // when
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -159,17 +142,19 @@ public class LineAcceptanceTest extends AcceptanceTest {
         final List<LineResponse> lineResponses = response.jsonPath().getList(".", LineResponse.class);
 
         // then
-        assertAll(() -> {
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(lineResponses.get(0).getName()).isEqualTo(LINE_2);
-            assertThat(lineResponses.get(0).getColor()).isEqualTo(RED);
-            assertThat(lineResponses.get(0).getStations().get(0).getName()).isEqualTo(HYEHWA);
-            assertThat(lineResponses.get(0).getStations().get(1).getName()).isEqualTo(SINSA);
-            assertThat(lineResponses.get(1).getName()).isEqualTo(LINE_4);
-            assertThat(lineResponses.get(1).getColor()).isEqualTo(BLUE);
-            assertThat(lineResponses.get(1).getStations().get(0).getName()).isEqualTo(HYEHWA);
-            assertThat(lineResponses.get(1).getStations().get(1).getName()).isEqualTo(SINSA);
-        });
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(lineResponses.get(0).getName()).isEqualTo(LINE_1),
+                () -> assertThat(lineResponses.get(0).getColor()).isEqualTo(RED),
+                () -> assertThat(lineResponses.get(0).getExtraFare()).isEqualTo(400),
+                () -> assertThat(lineResponses.get(0).getStations().get(0).getName()).isEqualTo(STATION_1),
+                () -> assertThat(lineResponses.get(0).getStations().get(1).getName()).isEqualTo(STATION_2),
+                () -> assertThat(lineResponses.get(1).getName()).isEqualTo(LINE_2),
+                () -> assertThat(lineResponses.get(1).getColor()).isEqualTo(BLUE),
+                () -> assertThat(lineResponses.get(1).getExtraFare()).isEqualTo(500),
+                () -> assertThat(lineResponses.get(1).getStations().get(0).getName()).isEqualTo(STATION_1),
+                () -> assertThat(lineResponses.get(1).getStations().get(1).getName()).isEqualTo(STATION_2)
+        );
     }
 
     /*
@@ -181,15 +166,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선 ID로 노선을 조회한다.")
     void show() {
         // given
-        final Long upStationId = createStation(HYEHWA);
-        final Long downStationId = createStation(SINSA);
+        final Long upStationId = createStation(STATION_1);
+        final Long downStationId = createStation(STATION_2);
 
         final Map<String, Object> params = new HashMap<>();
-        params.put("name", LINE_2);
+        params.put("name", LINE_1);
         params.put("color", RED);
         params.put("upStationId", upStationId);
         params.put("downStationId", downStationId);
         params.put("distance", 10);
+        params.put("extraFare", 500);
+
         final long id = Long.parseLong(RestAssured.given().log().all()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -209,14 +196,15 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .getList("stations", StationResponse.class);
 
         // then
-        assertAll(() -> {
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(response.body().jsonPath().getString("name")).isEqualTo(LINE_2);
-            assertThat(response.body().jsonPath().getString("color")).isEqualTo(RED);
-            assertThat(stationResponses).hasSize(2);
-            assertThat(stationResponses.get(0).getName()).isEqualTo(HYEHWA);
-            assertThat(stationResponses.get(1).getName()).isEqualTo(SINSA);
-        });
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.body().jsonPath().getString("name")).isEqualTo(LINE_1),
+                () -> assertThat(response.body().jsonPath().getString("color")).isEqualTo(RED),
+                () -> assertThat(response.body().jsonPath().getInt("extraFare")).isEqualTo(500),
+                () -> assertThat(stationResponses).hasSize(2),
+                () -> assertThat(stationResponses.get(0).getName()).isEqualTo(STATION_1),
+                () -> assertThat(stationResponses.get(1).getName()).isEqualTo(STATION_2)
+        );
     }
 
     /*
@@ -251,15 +239,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("노선을 업데이트 한다.")
     void update() {
         // given
-        final Long upStationId = createStation(HYEHWA);
-        final Long downStationId = createStation(SINSA);
+        final Long upStationId = createStation(STATION_1);
+        final Long downStationId = createStation(STATION_2);
 
         final Map<String, Object> saveParams = new HashMap<>();
-        saveParams.put("name", LINE_2);
+        saveParams.put("name", LINE_1);
         saveParams.put("color", RED);
         saveParams.put("upStationId", upStationId);
         saveParams.put("downStationId", downStationId);
         saveParams.put("distance", 10);
+        saveParams.put("extraFare", 500);
+
         final long id = Long.parseLong(RestAssured.given().log().all()
                 .body(saveParams)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -269,18 +259,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract()
                 .header("Location").split("/")[2]);
 
-        final Map<String, String> params = new HashMap<>();
-        params.put("name", LINE_4);
+        final Map<String, Object> params = new HashMap<>();
+        params.put("name", LINE_2);
         params.put("color", BLUE);
+        params.put("extraFare", 600);
 
         // when
-        final ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .put("/lines/" + id)
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = updateLine(id, params);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -296,18 +281,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void updateNotExistId() {
         // given
         final long id = 100L;
-        final Map<String, String> params = new HashMap<>();
+        final Map<String, Object> params = new HashMap<>();
         params.put("name", "분당선");
         params.put("color", "bg-blue-500");
+        params.put("extraFare", 500);
 
         // when
-        final ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .put("/lines/" + id)
-                .then().log().all()
-                .extract();
+        final ExtractableResponse<Response> response = updateLine(id, params);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
@@ -323,15 +303,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선을 삭제한다.")
     void delete() {
         // given
-        final Long upStationId = createStation(HYEHWA);
-        final Long downStationId = createStation(SINSA);
+        final Long upStationId = createStation(STATION_1);
+        final Long downStationId = createStation(STATION_2);
 
         final Map<String, Object> saveParams = new HashMap<>();
-        saveParams.put("name", LINE_2);
+        saveParams.put("name", LINE_1);
         saveParams.put("color", RED);
         saveParams.put("upStationId", upStationId);
         saveParams.put("downStationId", downStationId);
         saveParams.put("distance", 10);
+        saveParams.put("extraFare", 500);
+
         final long id = Long.parseLong(RestAssured.given().log().all()
                 .body(saveParams)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -342,11 +324,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .header("Location").split("/")[2]);
 
         // when
-        final ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .when()
-                .delete("/lines/" + id)
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = deleteLine(id);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -364,11 +342,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         final long id = 1L;
 
         // when
-        final ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .when()
-                .delete("/lines/" + id)
-                .then().log().all()
-                .extract();
+        final ExtractableResponse<Response> response = deleteLine(id);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
@@ -388,10 +362,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
         @DisplayName("노선의 끝에 구간을 추가한다. - 성공 200")
         void createSection1() {
             // given
-            final Long stationId1 = createStation(HYEHWA);
-            final Long stationId2 = createStation(SINSA);
-            final Long stationId3 = createStation(GANGNAM);
-            final Long lineId = createLine(LINE_2, RED, stationId1, stationId2, 10);
+            final Long stationId1 = createStation(STATION_1);
+            final Long stationId2 = createStation(STATION_2);
+            final Long stationId3 = createStation(STATION_3);
+            final Long lineId = createLine(LINE_1, RED, stationId1, stationId2, 10, 500);
 
             final Map<String, Object> params = new HashMap<>();
             params.put("upStationId", stationId2);
@@ -415,10 +389,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
         @DisplayName("노선의 처음에 구간을 추가한다. - 성공 200")
         void createSection2() {
             // given
-            final Long stationId1 = createStation(HYEHWA);
-            final Long stationId2 = createStation(SINSA);
-            final Long stationId3 = createStation(GANGNAM);
-            final Long lineId = createLine(LINE_2, RED, stationId2, stationId3, 10);
+            final Long stationId1 = createStation(STATION_1);
+            final Long stationId2 = createStation(STATION_2);
+            final Long stationId3 = createStation(STATION_3);
+            final Long lineId = createLine(LINE_1, RED, stationId2, stationId3, 10, 500);
 
             final Map<String, Object> params = new HashMap<>();
             params.put("upStationId", stationId1);
@@ -442,10 +416,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
         @DisplayName("상행역이 겹치는 구간을 등록한다. - 성공 200")
         void createSection3() {
             // given
-            final Long stationId1 = createStation(HYEHWA);
-            final Long stationId2 = createStation(SINSA);
-            final Long stationId3 = createStation(GANGNAM);
-            final Long lineId = createLine(LINE_2, RED, stationId1, stationId3, 10);
+            final Long stationId1 = createStation(STATION_1);
+            final Long stationId2 = createStation(STATION_2);
+            final Long stationId3 = createStation(STATION_3);
+            final Long lineId = createLine(LINE_1, RED, stationId1, stationId3, 10, 500);
 
             final Map<String, Object> params = new HashMap<>();
             params.put("upStationId", stationId1);
@@ -469,10 +443,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
         @DisplayName("하행역이 겹치는 구간을 등록한다. - 성공 200")
         void createSection4() {
             // given
-            final Long stationId1 = createStation(HYEHWA);
-            final Long stationId2 = createStation(SINSA);
-            final Long stationId3 = createStation(GANGNAM);
-            final Long lineId = createLine(LINE_2, RED, stationId1, stationId3, 10);
+            final Long stationId1 = createStation(STATION_1);
+            final Long stationId2 = createStation(STATION_2);
+            final Long stationId3 = createStation(STATION_3);
+            final Long lineId = createLine(LINE_1, RED, stationId1, stationId3, 10, 500);
 
             final Map<String, Object> params = new HashMap<>();
             params.put("upStationId", stationId2);
@@ -496,10 +470,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
         @DisplayName("상/하행역이 겹치는 구간을 등록할 때, 기존보다 긴 구간을 등록한다. - 실패 400")
         void createSection5() {
             // given
-            final Long stationId1 = createStation(HYEHWA);
-            final Long stationId2 = createStation(SINSA);
-            final Long stationId3 = createStation(GANGNAM);
-            final Long lineId = createLine(LINE_2, RED, stationId1, stationId3, 10);
+            final Long stationId1 = createStation(STATION_1);
+            final Long stationId2 = createStation(STATION_2);
+            final Long stationId3 = createStation(STATION_3);
+            final Long lineId = createLine(LINE_1, RED, stationId1, stationId3, 10, 500);
 
             final Map<String, Object> params = new HashMap<>();
             params.put("upStationId", stationId1);
@@ -523,8 +497,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         @DisplayName("라인이 없는 경우 - 실패 404")
         void createSection6() {
             // given
-            final Long stationId1 = createStation(HYEHWA);
-            final Long stationId2 = createStation(SINSA);
+            final Long stationId1 = createStation(STATION_1);
+            final Long stationId2 = createStation(STATION_2);
             final long lineId = 10L;
 
             final Map<String, Object> params = new HashMap<>();
@@ -549,9 +523,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
         @DisplayName("역이 없는 경우 - 실패 404")
         void createSection7() {
             // given
-            final Long stationId1 = createStation(HYEHWA);
-            final Long stationId2 = createStation(SINSA);
-            final Long lineId = createLine(LINE_2, RED, stationId1, stationId2, 10);
+            final Long stationId1 = createStation(STATION_1);
+            final Long stationId2 = createStation(STATION_2);
+            final Long lineId = createLine(LINE_1, RED, stationId1, stationId2, 10, 500);
 
             final Map<String, Object> params = new HashMap<>();
             params.put("upStationId", stationId2);
@@ -572,7 +546,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
         }
     }
 
-
     @Nested
     @DisplayName("지하철 구간을 삭제한다.")
     class DeleteSectionTest extends AcceptanceTest {
@@ -587,10 +560,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
         @DisplayName("구간을 삭제한다. - 성공 200")
         void deleteSection1() {
             // given
-            final Long stationId1 = createStation(HYEHWA);
-            final Long stationId2 = createStation(SINSA);
-            final Long stationId3 = createStation(GANGNAM);
-            final Long lineId = createLine(LINE_2, RED, stationId1, stationId2, 10);
+            final Long stationId1 = createStation(STATION_1);
+            final Long stationId2 = createStation(STATION_2);
+            final Long stationId3 = createStation(STATION_3);
+            final Long lineId = createLine(LINE_1, RED, stationId1, stationId2, 10, 500);
             createSection(lineId, stationId2, stationId3, 10);
 
             // when
@@ -608,7 +581,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         @DisplayName("없는 라인의 구간을 삭제한다. - 실패 404")
         void deleteSections2() {
             // given
-            final Long stationId = createStation(HYEHWA);
+            final Long stationId = createStation(STATION_1);
 
             // when
             final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -625,10 +598,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
         @DisplayName("없는 역의 구간을 삭제한다. - 실패 404")
         void deleteSections3() {
             // given
-            final Long stationId1 = createStation(HYEHWA);
-            final Long stationId2 = createStation(SINSA);
-            final Long stationId3 = createStation(GANGNAM);
-            final Long lineId = createLine(LINE_2, RED, stationId1, stationId2, 10);
+            final Long stationId1 = createStation(STATION_1);
+            final Long stationId2 = createStation(STATION_2);
+            final Long stationId3 = createStation(STATION_3);
+            final Long lineId = createLine(LINE_1, RED, stationId1, stationId2, 10, 500);
             createSection(lineId, stationId2, stationId3, 10);
 
             // when
@@ -646,9 +619,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
         @DisplayName("삭제할 수 없는 구간을 삭제한다. - 실패 400")
         void deleteSections4() {
             // given
-            final Long stationId1 = createStation(HYEHWA);
-            final Long stationId2 = createStation(SINSA);
-            final Long lineId = createLine(LINE_2, RED, stationId1, stationId2, 10);
+            final Long stationId1 = createStation(STATION_1);
+            final Long stationId2 = createStation(STATION_2);
+            final Long lineId = createLine(LINE_1, RED, stationId1, stationId2, 10, 500);
 
             // when
             final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -660,54 +633,5 @@ public class LineAcceptanceTest extends AcceptanceTest {
             // then
             assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         }
-    }
-
-    private Long createStation(final String name) {
-        final Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-
-        return RestAssured.given().log().all()
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all()
-                .extract()
-                .body().jsonPath().getLong("id");
-    }
-
-    private Long createLine(final String name, final String color, final Long upStationId, final Long downStationId,
-                            final int distance) {
-        final Map<String, Object> params = new HashMap<>();
-        params.put("name", name);
-        params.put("color", color);
-        params.put("upStationId", upStationId);
-        params.put("downStationId", downStationId);
-        params.put("distance", distance);
-
-        return Long.parseLong(RestAssured.given().log().all()
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines")
-                .then().log().all()
-                .extract()
-                .header("Location").split("/")[2]);
-    }
-
-    private void createSection(final Long lineId, final Long upStationId, final Long downStationId,
-                               final int distance) {
-        final Map<String, Object> params = new HashMap<>();
-        params.put("upStationId", upStationId);
-        params.put("downStationId", downStationId);
-        params.put("distance", distance);
-
-        RestAssured.given().log().all()
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines/" + lineId + "/sections")
-                .then().log().all()
-                .extract();
     }
 }

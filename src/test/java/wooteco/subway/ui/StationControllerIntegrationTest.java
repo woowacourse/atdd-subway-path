@@ -6,12 +6,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static wooteco.subway.Fixtures.HYEHWA;
+import static wooteco.subway.Fixtures.STATION_1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Objects;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,7 +38,7 @@ public class StationControllerIntegrationTest {
     @DisplayName("역 생성을 요청한다.")
     void create() throws Exception {
         // given
-        final CreateStationRequest request = new CreateStationRequest(HYEHWA);
+        final CreateStationRequest request = new CreateStationRequest(STATION_1);
         final String requestContent = objectMapper.writeValueAsString(request);
 
         // when
@@ -47,14 +49,32 @@ public class StationControllerIntegrationTest {
 
         // then
         response.andExpect(status().isCreated())
-                .andExpect(jsonPath("name").value(HYEHWA));
+                .andExpect(jsonPath("name").value(STATION_1));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", " "})
+    @DisplayName("이름이 없는 역 생성을 요청한다.")
+    void create_noName(final String name) throws Exception {
+        // given
+        final CreateStationRequest request = new CreateStationRequest(name);
+        final String requestContent = objectMapper.writeValueAsString(request);
+
+        // when
+        final ResultActions response = mockMvc.perform(post("/stations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestContent))
+                .andDo(print());
+
+        // then
+        response.andExpect(status().isBadRequest());
     }
 
     @Test
     @DisplayName("역 목록을 조회한다.")
     void showAll() throws Exception {
         // given
-        createStation(HYEHWA);
+        createStation(STATION_1);
 
         // when
         final ResultActions response = mockMvc.perform(get("/stations"))
@@ -62,14 +82,14 @@ public class StationControllerIntegrationTest {
 
         // then
         response.andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name").value(HYEHWA));
+                .andExpect(jsonPath("$[0].name").value(STATION_1));
     }
 
     @Test
     @DisplayName("역을 삭제한다.")
     void deleteStation() throws Exception {
         // given
-        final Long stationId = createStation(HYEHWA);
+        final Long stationId = createStation(STATION_1);
 
         // when
         final ResultActions response = mockMvc.perform(delete("/stations/" + stationId))

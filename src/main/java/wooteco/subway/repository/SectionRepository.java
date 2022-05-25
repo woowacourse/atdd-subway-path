@@ -3,6 +3,7 @@ package wooteco.subway.repository;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.entity.SectionEntity;
 import wooteco.subway.domain.Section;
@@ -13,11 +14,14 @@ import wooteco.subway.domain.Station;
 public class SectionRepository {
 
     private final SectionDao sectionDao;
+    private final LineDao lineDao;
 
     private final StationRepository stationRepository;
 
-    public SectionRepository(final SectionDao sectionDao, final StationRepository stationRepository) {
+    public SectionRepository(final SectionDao sectionDao, final LineDao lineDao,
+                             final StationRepository stationRepository) {
         this.sectionDao = sectionDao;
+        this.lineDao = lineDao;
         this.stationRepository = stationRepository;
     }
 
@@ -36,9 +40,10 @@ public class SectionRepository {
         final List<SectionEntity> entities = sectionDao.findAll();
         return entities.stream()
                 .map(e -> {
-                    final Station upStation = stationRepository.findById(e.getUpStationId());
-                    final Station downStation = stationRepository.findById(e.getDownStationId());
-                    return new Section(e.getId(), upStation, downStation, e.getDistance());
+                    final Station upStation = stationRepository.getById(e.getUpStationId());
+                    final Station downStation = stationRepository.getById(e.getDownStationId());
+                    int extraFare = lineDao.find(e.getLineId()).getExtraFare();
+                    return new Section(e.getId(), upStation, downStation, e.getDistance(), extraFare);
                 }).collect(Collectors.toList());
     }
 
@@ -46,17 +51,11 @@ public class SectionRepository {
         final List<SectionEntity> entities = sectionDao.findAllByLineId(id);
         return new Sections(entities.stream()
                 .map(e -> {
-                    final Station upStation = stationRepository.findById(e.getUpStationId());
-                    final Station downStation = stationRepository.findById(e.getDownStationId());
-                    return new Section(e.getId(), upStation, downStation, e.getDistance());
+                    final Station upStation = stationRepository.getById(e.getUpStationId());
+                    final Station downStation = stationRepository.getById(e.getDownStationId());
+                    int extraFare = lineDao.find(e.getLineId()).getExtraFare();
+                    return new Section(e.getId(), upStation, downStation, e.getDistance(), extraFare);
                 }).collect(Collectors.toList()));
-    }
-
-    public Section findById(final Long id) {
-        final SectionEntity entity = sectionDao.findById(id);
-        final Station upStation = stationRepository.findById(entity.getUpStationId());
-        final Station downStation = stationRepository.findById(entity.getDownStationId());
-        return new Section(entity.getId(), upStation, downStation, entity.getDistance());
     }
 
     public void deleteById(final Long id) {

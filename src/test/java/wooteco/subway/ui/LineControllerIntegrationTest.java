@@ -8,17 +8,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static wooteco.subway.Fixtures.BLUE;
-import static wooteco.subway.Fixtures.GANGNAM;
-import static wooteco.subway.Fixtures.HYEHWA;
+import static wooteco.subway.Fixtures.LINE_1;
 import static wooteco.subway.Fixtures.LINE_2;
-import static wooteco.subway.Fixtures.LINE_4;
 import static wooteco.subway.Fixtures.RED;
-import static wooteco.subway.Fixtures.SINSA;
+import static wooteco.subway.Fixtures.STATION_1;
+import static wooteco.subway.Fixtures.STATION_2;
+import static wooteco.subway.Fixtures.STATION_3;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Objects;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,10 +48,10 @@ public class LineControllerIntegrationTest {
     @DisplayName("노선 생성을 요청한다.")
     void create() throws Exception {
         // given
-        final Long upStationId = createStation(HYEHWA);
-        final Long downStationId = createStation(SINSA);
+        final Long upStationId = createStation(STATION_1);
+        final Long downStationId = createStation(STATION_2);
 
-        final CreateLineRequest request = new CreateLineRequest(LINE_2, RED, upStationId, downStationId, 10);
+        final CreateLineRequest request = new CreateLineRequest(LINE_1, RED, upStationId, downStationId, 10, 500);
         final String requestContent = objectMapper.writeValueAsString(request);
 
         // when
@@ -62,23 +64,109 @@ public class LineControllerIntegrationTest {
         response
                 .andExpect(status().isCreated())
                 .andExpect(header().string(HttpHeaders.LOCATION, "/lines/1"))
-                .andExpect(jsonPath("name").value(LINE_2))
+                .andExpect(jsonPath("name").value(LINE_1))
                 .andExpect(jsonPath("color").value(RED))
-                .andExpect(jsonPath("stations[0].id").value(1L))
-                .andExpect(jsonPath("stations[0].name").value(HYEHWA))
-                .andExpect(jsonPath("stations[1].id").value(2L))
-                .andExpect(jsonPath("stations[1].name").value(SINSA));
+                .andExpect(jsonPath("stations[0].id").value(upStationId))
+                .andExpect(jsonPath("stations[0].name").value(STATION_1))
+                .andExpect(jsonPath("stations[1].id").value(downStationId))
+                .andExpect(jsonPath("stations[1].name").value(STATION_2));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", " "})
+    @DisplayName("이름이 없는 노선 생성을 요청하면, 400 에러를 반환한다.")
+    void create_noName(final String name) throws Exception {
+        // given
+        final Long upStationId = createStation(STATION_1);
+        final Long downStationId = createStation(STATION_2);
+
+        final CreateLineRequest request = new CreateLineRequest(name, RED, upStationId, downStationId, 10, 500);
+        final String requestContent = objectMapper.writeValueAsString(request);
+
+        // when
+        final ResultActions response = mockMvc.perform(post("/lines")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestContent))
+                .andDo(print());
+
+        // then
+        response.andExpect(status().isBadRequest());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", " "})
+    @DisplayName("색깔이 없는 노선 생성을 요청하면, 400 에러를 반환한다.")
+    void create_noColor(final String color) throws Exception {
+        // given
+        final Long upStationId = createStation(STATION_1);
+        final Long downStationId = createStation(STATION_2);
+
+        final CreateLineRequest request = new CreateLineRequest(STATION_1, color, upStationId, downStationId, 10, 500);
+        final String requestContent = objectMapper.writeValueAsString(request);
+
+        // when
+        final ResultActions response = mockMvc.perform(post("/lines")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestContent))
+                .andDo(print());
+
+        // then
+        response.andExpect(status().isBadRequest());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {-1, 0})
+    @DisplayName("거리가 0보다 작거나 같은 노선생성을 요청하면, 400 에러를 반환한다.")
+    void create_negativeOrZeroDistance(final int distance) throws Exception {
+        // given
+        final Long upStationId = createStation(STATION_1);
+        final Long downStationId = createStation(STATION_2);
+
+        final CreateLineRequest request = new CreateLineRequest(STATION_1, RED, upStationId, downStationId, distance,
+                500);
+        final String requestContent = objectMapper.writeValueAsString(request);
+
+        // when
+        final ResultActions response = mockMvc.perform(post("/lines")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestContent))
+                .andDo(print());
+
+        // then
+        response.andExpect(status().isBadRequest());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {-100, -1})
+    @DisplayName("추가 요금이 음수인 노선생성을 요청하면, 400 에러를 반환한다.")
+    void create_negativeExtraFare(final int extraFare) throws Exception {
+        // given
+        final Long upStationId = createStation(STATION_1);
+        final Long downStationId = createStation(STATION_2);
+
+        final CreateLineRequest request = new CreateLineRequest(STATION_1, RED, upStationId, downStationId, 10,
+                extraFare);
+        final String requestContent = objectMapper.writeValueAsString(request);
+
+        // when
+        final ResultActions response = mockMvc.perform(post("/lines")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestContent))
+                .andDo(print());
+
+        // then
+        response.andExpect(status().isBadRequest());
     }
 
     @Test
     @DisplayName("노선 목록을 조회한다.")
     void showAll() throws Exception {
         // given
-        final Long upStationId = createStation(HYEHWA);
-        final Long downStationId = createStation(SINSA);
+        final Long upStationId = createStation(STATION_1);
+        final Long downStationId = createStation(STATION_2);
 
-        createLine(LINE_2, RED, upStationId, downStationId, 10);
-        createLine(LINE_4, BLUE, upStationId, downStationId, 10);
+        createLine(LINE_1, RED, upStationId, downStationId, 10, 500);
+        createLine(LINE_2, BLUE, upStationId, downStationId, 10, 500);
 
         // when
         final ResultActions response = mockMvc.perform(get("/lines"))
@@ -87,24 +175,24 @@ public class LineControllerIntegrationTest {
         // then
         response
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name").value(LINE_2))
+                .andExpect(jsonPath("$[0].name").value(LINE_1))
                 .andExpect(jsonPath("$[0].color").value(RED))
-                .andExpect(jsonPath("$[0].stations[0].name").value(HYEHWA))
-                .andExpect(jsonPath("$[0].stations[1].name").value(SINSA))
-                .andExpect(jsonPath("$[1].name").value(LINE_4))
+                .andExpect(jsonPath("$[0].stations[0].name").value(STATION_1))
+                .andExpect(jsonPath("$[0].stations[1].name").value(STATION_2))
+                .andExpect(jsonPath("$[1].name").value(LINE_2))
                 .andExpect(jsonPath("$[1].color").value(BLUE))
-                .andExpect(jsonPath("$[1].stations[0].name").value(HYEHWA))
-                .andExpect(jsonPath("$[1].stations[1].name").value(SINSA));
+                .andExpect(jsonPath("$[1].stations[0].name").value(STATION_1))
+                .andExpect(jsonPath("$[1].stations[1].name").value(STATION_2));
     }
 
     @Test
     @DisplayName("노선을 조회한다.")
     void show() throws Exception {
         // given
-        final Long upStationId = createStation(HYEHWA);
-        final Long downStationId = createStation(SINSA);
+        final Long upStationId = createStation(STATION_1);
+        final Long downStationId = createStation(STATION_2);
 
-        final Long lineId = createLine(LINE_2, RED, upStationId, downStationId, 10);
+        final Long lineId = createLine(LINE_1, RED, upStationId, downStationId, 10, 500);
 
         // when
         final ResultActions response = mockMvc.perform(get("/lines/" + lineId))
@@ -113,12 +201,12 @@ public class LineControllerIntegrationTest {
         // then
         response
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("name").value(LINE_2))
+                .andExpect(jsonPath("name").value(LINE_1))
                 .andExpect(jsonPath("color").value(RED))
                 .andExpect(jsonPath("stations[0].id").value(upStationId))
-                .andExpect(jsonPath("stations[0].name").value(HYEHWA))
+                .andExpect(jsonPath("stations[0].name").value(STATION_1))
                 .andExpect(jsonPath("stations[1].id").value(downStationId))
-                .andExpect(jsonPath("stations[1].name").value(SINSA));
+                .andExpect(jsonPath("stations[1].name").value(STATION_2));
     }
 
     @Test
@@ -137,10 +225,10 @@ public class LineControllerIntegrationTest {
     @DisplayName("구간을 등록한다.")
     void createSection() throws Exception {
         // given
-        final Long stationId1 = createStation(HYEHWA);
-        final Long stationId2 = createStation(SINSA);
-        final Long stationId3 = createStation(GANGNAM);
-        final Long lineId = createLine(LINE_2, RED, stationId1, stationId2, 10);
+        final Long stationId1 = createStation(STATION_1);
+        final Long stationId2 = createStation(STATION_2);
+        final Long stationId3 = createStation(STATION_3);
+        final Long lineId = createLine(LINE_1, RED, stationId1, stationId2, 10, 500);
 
         final CreateSectionRequest request = new CreateSectionRequest(stationId2, stationId3, 5);
         final String requestContent = objectMapper.writeValueAsString(request);
@@ -156,14 +244,37 @@ public class LineControllerIntegrationTest {
                 .andExpect(status().isOk());
     }
 
+    @ParameterizedTest
+    @ValueSource(ints = {-1, 0})
+    @DisplayName("0보다 작거나 같은 거리의 구간을 생성요청하면, 400 에러를 반환한다.")
+    void createSection_negativeOrZeroDistance(int distance) throws Exception {
+        // given
+        final Long stationId1 = createStation(STATION_1);
+        final Long stationId2 = createStation(STATION_2);
+        final Long stationId3 = createStation(STATION_3);
+        final Long lineId = createLine(LINE_1, RED, stationId1, stationId2, 10, 500);
+
+        final CreateSectionRequest request = new CreateSectionRequest(stationId2, stationId3, distance);
+        final String requestContent = objectMapper.writeValueAsString(request);
+
+        // when
+        final ResultActions response = mockMvc.perform(post("/lines/" + lineId + "/sections")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestContent))
+                .andDo(print());
+
+        // then
+        response.andExpect(status().isBadRequest());
+    }
+
     @Test
     @DisplayName("등록하는 구간의 길이가 더 긴 경우, 400 상태와 에러 메시지를 응답한다.")
     void createSectionWithLongDistance() throws Exception {
         // given
-        final Long stationId1 = createStation(HYEHWA);
-        final Long stationId2 = createStation(SINSA);
-        final Long stationId3 = createStation(GANGNAM);
-        final Long lineId = createLine(LINE_2, RED, stationId1, stationId3, 10);
+        final Long stationId1 = createStation(STATION_1);
+        final Long stationId2 = createStation(STATION_2);
+        final Long stationId3 = createStation(STATION_3);
+        final Long lineId = createLine(LINE_1, RED, stationId1, stationId3, 10, 500);
 
         final CreateSectionRequest request = new CreateSectionRequest(stationId1, stationId2, 20);
         final String requestContent = objectMapper.writeValueAsString(request);
@@ -182,10 +293,10 @@ public class LineControllerIntegrationTest {
     @DisplayName("구간을 삭제한다.")
     void deleteSection() throws Exception {
         // given
-        final Long stationId1 = createStation(HYEHWA);
-        final Long stationId2 = createStation(SINSA);
-        final Long stationId3 = createStation(GANGNAM);
-        final Long lineId = createLine(LINE_2, RED, stationId1, stationId2, 10);
+        final Long stationId1 = createStation(STATION_1);
+        final Long stationId2 = createStation(STATION_2);
+        final Long stationId3 = createStation(STATION_3);
+        final Long lineId = createLine(LINE_1, RED, stationId1, stationId2, 10, 500);
         createSection(lineId, stationId2, stationId3, 10);
 
         // when
@@ -211,8 +322,9 @@ public class LineControllerIntegrationTest {
     }
 
     private Long createLine(final String name, final String color, final Long upStationId, final Long downStationId,
-                            final int distance) throws Exception {
-        final CreateLineRequest request = new CreateLineRequest(name, color, upStationId, downStationId, distance);
+                            final int distance, final int extraFare) throws Exception {
+        final CreateLineRequest request = new CreateLineRequest(name, color, upStationId, downStationId, distance,
+                extraFare);
         final String requestContent = objectMapper.writeValueAsString(request);
 
         return Long.parseLong(Objects.requireNonNull(mockMvc.perform(post("/lines")

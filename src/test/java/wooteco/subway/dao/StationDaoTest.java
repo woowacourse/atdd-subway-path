@@ -2,8 +2,8 @@ package wooteco.subway.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static wooteco.subway.Fixtures.HYEHWA;
-import static wooteco.subway.Fixtures.SINSA;
+import static wooteco.subway.Fixtures.STATION_1;
+import static wooteco.subway.Fixtures.STATION_2;
 
 import java.util.List;
 import javax.sql.DataSource;
@@ -32,23 +32,23 @@ class StationDaoTest {
     @DisplayName("역을 저장한다.")
     void save() {
         // when
-        final Long id = stationDao.save(new StationEntity(HYEHWA));
+        final Long id = stationDao.save(new StationEntity(STATION_1));
 
         // then
-        assertThat(stationDao.findById(id).getName()).isEqualTo(HYEHWA);
+        assertThat(stationDao.findById(id).getName()).isEqualTo(STATION_1);
     }
 
     @Test
     @DisplayName("역을 조회한다.")
     void find() {
         // given
-        final long id = stationDao.save(new StationEntity(HYEHWA));
+        final long id = stationDao.save(new StationEntity(STATION_1));
 
         // when
         final StationEntity foundStation = stationDao.findById(id);
 
         // then
-        assertThat(foundStation.getName()).isEqualTo(HYEHWA);
+        assertThat(foundStation.getName()).isEqualTo(STATION_1);
     }
 
     @Test
@@ -63,8 +63,8 @@ class StationDaoTest {
     @DisplayName("모든 역을 조회한다.")
     void findAll() {
         // given
-        stationDao.save(new StationEntity(HYEHWA));
-        stationDao.save(new StationEntity(SINSA));
+        stationDao.save(new StationEntity(STATION_1));
+        stationDao.save(new StationEntity(STATION_2));
 
         // when
         final List<StationEntity> stations = stationDao.findAll();
@@ -77,7 +77,7 @@ class StationDaoTest {
     @DisplayName("역을 삭제한다.")
     void delete() {
         // given
-        final Long id = stationDao.save(new StationEntity(HYEHWA));
+        final Long id = stationDao.save(new StationEntity(STATION_1));
 
         // when
         stationDao.deleteById(id);

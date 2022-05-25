@@ -3,10 +3,11 @@ package wooteco.subway.service;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.domain.Path;
-import wooteco.subway.domain.PathFinder;
+import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.path.PathFinder;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.dto.request.FindPathRequest;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
@@ -23,12 +24,12 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findPath(final Long sourceId, final Long targetId) {
+    public PathResponse findPath(final FindPathRequest request) {
         final PathFinder pathFinder = createPathFinder();
-        final Station source = stationRepository.findById(sourceId);
-        final Station target = stationRepository.findById(targetId);
-        final Path path = pathFinder.findPath(source, target);
-        return PathResponse.of(path.getRouteStations(), path.getDistance(), path.calculateFare());
+        final Station source = stationRepository.getById(request.getSource());
+        final Station target = stationRepository.getById(request.getTarget());
+        final Path path = pathFinder.find(source, target);
+        return PathResponse.of(path.getRouteStations(), path.getDistance(), path.calculateFare(request.getAge()));
     }
 
     private PathFinder createPathFinder() {

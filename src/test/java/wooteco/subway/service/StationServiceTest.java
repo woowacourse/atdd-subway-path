@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static wooteco.subway.Fixtures.HYEHWA;
+import static wooteco.subway.Fixtures.STATION_1;
 
 import java.util.Arrays;
 import java.util.List;
@@ -41,7 +41,7 @@ class StationServiceTest {
 
         // mocking
         given(stationRepository.save(any())).willReturn(id);
-        given(stationRepository.findById(id)).willReturn(savedStation);
+        given(stationRepository.getById(id)).willReturn(savedStation);
 
         // when
         final StationResponse response = stationService.createStation(request);
@@ -71,20 +71,20 @@ class StationServiceTest {
     @DisplayName("역을 조회한다.")
     void show() {
         // mocking
-        given(stationRepository.findById(any(Long.class))).willReturn(new Station(1L, HYEHWA));
+        given(stationRepository.getById(any(Long.class))).willReturn(new Station(1L, STATION_1));
 
         // when
         final Station station = stationService.show(1L);
 
         // then
-        assertThat(station.getName()).isEqualTo(HYEHWA);
+        assertThat(station.getName()).isEqualTo(STATION_1);
     }
 
     @Test
     @DisplayName("없는 역을 조회하면, 예외를 발생시킨다.")
     void showNotExistStation() {
         // mocking
-        given(stationRepository.findById(any(Long.class))).willThrow(NotFoundStationException.class);
+        given(stationRepository.getById(any(Long.class))).willThrow(NotFoundStationException.class);
 
         // when & then
         assertThatThrownBy(() -> stationService.show(1L))

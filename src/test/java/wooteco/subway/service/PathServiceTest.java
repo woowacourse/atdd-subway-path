@@ -6,8 +6,8 @@ import static wooteco.subway.Fixtures.BLUE;
 import static wooteco.subway.Fixtures.CENTER;
 import static wooteco.subway.Fixtures.DOWN;
 import static wooteco.subway.Fixtures.LEFT;
+import static wooteco.subway.Fixtures.LINE_1;
 import static wooteco.subway.Fixtures.LINE_2;
-import static wooteco.subway.Fixtures.LINE_4;
 import static wooteco.subway.Fixtures.RED;
 import static wooteco.subway.Fixtures.RIGHT;
 import static wooteco.subway.Fixtures.UP;
@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.dto.request.FindPathRequest;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.dto.response.StationResponse;
 import wooteco.subway.repository.LineRepository;
@@ -54,14 +55,14 @@ public class PathServiceTest {
         final Long rightId = stationRepository.save(RIGHT);
         final Long downId = stationRepository.save(DOWN);
 
-        up = stationRepository.findById(upId);
-        left = stationRepository.findById(leftId);
-        center = stationRepository.findById(centerId);
-        right = stationRepository.findById(rightId);
-        down = stationRepository.findById(downId);
+        up = stationRepository.getById(upId);
+        left = stationRepository.getById(leftId);
+        center = stationRepository.getById(centerId);
+        right = stationRepository.getById(rightId);
+        down = stationRepository.getById(downId);
 
-        final Long line2Id = lineRepository.save(new Line(LINE_2, RED));
-        final Long line4Id = lineRepository.save(new Line(LINE_4, BLUE));
+        final Long line2Id = lineRepository.save(new Line(LINE_1, RED, 0));
+        final Long line4Id = lineRepository.save(new Line(LINE_2, BLUE, 0));
 
         sectionRepository.save(line2Id, new Section(up, center, 5));
         sectionRepository.save(line2Id, new Section(center, down, 6));
@@ -72,30 +73,26 @@ public class PathServiceTest {
     @Test
     @DisplayName("경로를 조회한다. 최단거리와 요금을 계산한다.")
     void findPath() {
-        final PathResponse pathResponse = pathService.findPath(up.getId(), down.getId());
+        final PathResponse pathResponse = pathService.findPath(new FindPathRequest(up.getId(), down.getId(), 20));
 
         assertAll(
                 () -> assertThat(pathResponse.getStations()).containsExactly(new StationResponse(up),
                         new StationResponse(center), new StationResponse(down)),
-
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(11),
                 () -> assertThat(pathResponse.getFare()).isEqualTo(1350)
-
         );
     }
 
     @Test
     @DisplayName("환승하는 경로를 조회한다. 최단거리와 요금을 계산한다.")
     void findPath_crossLine() {
-        final PathResponse pathResponse = pathService.findPath(up.getId(), left.getId());
+        final PathResponse pathResponse = pathService.findPath(new FindPathRequest(up.getId(), left.getId(), 20));
 
         assertAll(
                 () -> assertThat(pathResponse.getStations()).containsExactly(new StationResponse(up),
                         new StationResponse(center), new StationResponse(left)),
-
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(25),
                 () -> assertThat(pathResponse.getFare()).isEqualTo(1550)
-
         );
     }
 }
