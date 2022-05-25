@@ -30,18 +30,22 @@ public class SectionService {
         sectionDao.create(lineId, sectionRequest);
     }
 
-    @Transactional
     public void deleteSection(Long lineId, Long stationId) {
         var allSections = sectionDao.findByLineId(lineId);
 
         var sections = Sections.createByStationId(allSections, stationId);
 
         if (sections.hasOnlyOneSection()) {
-            sectionDao.delete(sections.getFirstSection());
+            sectionDao.delete(sections.findByStationId(stationId));
             return;
         }
 
-        sectionDao.update(sections.createSection());
+        deleteSection(sections, stationId);
+    }
+
+    @Transactional
+    void deleteSection(Sections sections, Long stationId) {
+        sectionDao.update(sections.createSectionByStationId(stationId));
         sectionDao.delete(sections.getSecondSection());
     }
 }

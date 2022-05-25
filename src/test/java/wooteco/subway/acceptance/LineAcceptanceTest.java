@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.domain.Station;
@@ -26,17 +28,18 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private static final String LINE_COLOR = "테스트1색";
     private static final String STATION_NAME1 = "테스트1역";
     private static final String STATION_NAME2 = "테스트2역";
-    private ExtractableResponse<Response> responseCreateLine;
+    private ExtractableResponse<Response> responseLine;
     private Long upStationId;
 
     @Override
     @BeforeEach
     public void setUp() {
         super.setUp();
-        responseCreateLine = insertLine(LINE_NAME, LINE_COLOR, List.of(STATION_NAME1, STATION_NAME2));
+//        responseLine = insertLine(LINE_NAME, LINE_COLOR, List.of(STATION_NAME1, STATION_NAME2));
     }
 
-    private ExtractableResponse<Response> insertLine(String name, String color, List<String> stationNames) {
+    @DisplayName("두 개의 역을 생성한 뒤에 두 역을 각각 상행 종점과 하행 종점으로 가지는 노선을 생성한다.")
+    private ExtractableResponse<Response> createLine(String name, String color, List<String> stationNames) {
         var response1 = create("/stations", Map.of("name", stationNames.get(0)));
         var response2 = create("/stations", Map.of("name", stationNames.get(1)));
 
@@ -55,60 +58,93 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     @Test
     void createLine() {
-        //given
-        var stations = responseCreateLine.jsonPath().getList("stations", Station.class);
-        var names = stations.stream()
+        //when
+        responseLine = createLine("테스트1호선", "테스트1색", List.of("테스트1역", "테스트2역"));
+
+        //then
+        var names = responseLine.jsonPath().getList("stations", Station.class).stream()
                 .map(Station::getName)
                 .collect(Collectors.toList());
 
-        //when
         assertAll(
-                () -> assertThat(responseCreateLine.jsonPath().getString("name")).isEqualTo(LINE_NAME),
-                () -> assertThat(responseCreateLine.jsonPath().getString("color")).isEqualTo(LINE_COLOR),
-                () -> assertThat(responseCreateLine.jsonPath().getInt("extraFare")).isEqualTo(EXTRA_FARE),
-                () -> assertThat(names).containsExactly(STATION_NAME1, STATION_NAME2)
+                () -> assertThat(responseLine.jsonPath().getString("name")).isEqualTo("테스트1호선"),
+                () -> assertThat(responseLine.jsonPath().getString("color")).isEqualTo("테스트1색"),
+                () -> assertThat(responseLine.jsonPath().getInt("extraFare")).isEqualTo(EXTRA_FARE),
+                () -> assertThat(names).containsExactly("테스트1역", "테스트2역")
+        );
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"테스트1호선,테스트2색", "테스트2호선,테스트1색"})
+    void createLineByInvalidInformation(String lineName, String lineColor) {
+        //given
+        createLine("테스트1호선", "테스트1색", List.of("테스트1역", "테스트2역"));
+
+        //when
+        var response = createLine(lineName, lineColor, List.of("테스트3역", "테스트4역"));
+
+        //then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(response.body().jsonPath().getString("message"))
+                        .isEqualTo("[ERROR] 이미 존재하는 노선 정보 입니다.")
         );
     }
 
     @Test
-    void createLineByDuplicateName() {
-        var response = insertLine(LINE_NAME, "테스트색", List.of("테스트3역", "테스트4역"));
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @Test
+    @DisplayName("노선 생성 후 해당 노선 조회하기")
     void findLineById() {
+        //given
+        var responseCreateLine = createLine("테스트1호선", "테스트1색", List.of("테스트1역", "테스트2역"));
+
+        //when
         var response = find("/lines/" + getId(responseCreateLine));
+
+        //then
+        var names = response.body().jsonPath().getList("stations", Station.class).stream()
+                .map(Station::getName)
+                .collect(Collectors.toList());
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(response.body().jsonPath().get("name").toString()).isEqualTo(LINE_NAME),
-                () -> assertThat(response.body().jsonPath().get("color").toString()).isEqualTo(LINE_COLOR)
+                () -> assertThat(response.body().jsonPath().getString("name")).isEqualTo(LINE_NAME),
+                () -> assertThat(response.body().jsonPath().getString("color")).isEqualTo(LINE_COLOR),
+                () -> assertThat(response.body().jsonPath().getInt("extraFare")).isEqualTo(EXTRA_FARE),
+                () -> assertThat(names).containsExactly("테스트1역", "테스트2역")
         );
     }
 
     @Test
+    @DisplayName("노선 두 개 생성 후 노선 목록 조회하기")
     void findAllLine() {
         /// given
-        var responseCreateLine2 = insertLine("테스트2호선", "테스트2색", List.of("테스트3역", "테스트4역"));
+        var responseCreateLine1 = createLine("테스트1호선", "테스트1색", List.of("테스트1역", "테스트2역"));
+        var responseCreateLine2 = createLine("테스트2호선", "테스트2색", List.of("테스트3역", "테스트4역"));
 
         // when
-        var response = RestAssured.given().log().all()
+        var responseFindAll = findAll();
+
+        // then
+        var ids = getIds(responseFindAll);
+        var stationNames = responseFindAll.jsonPath().getList("stations.name", String.class);
+        var names = responseFindAll.jsonPath().getList("name", String.class);
+        var colors = responseFindAll.jsonPath().getList("color", String.class);
+
+        assertAll(
+                () -> assertThat(responseFindAll.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(ids).containsExactly(getId(responseCreateLine1), getId(responseCreateLine2)),
+                () -> assertThat(names).containsExactly("테스트1호선", "테스트2호선"),
+                () -> assertThat(colors).containsExactly("테스트1색", "테스트2색"),
+                () -> assertThat(stationNames).containsExactly("[테스트1역, 테스트2역]", "[테스트3역, 테스트4역]")
+        );
+    }
+
+    private ExtractableResponse<Response> findAll() {
+        return RestAssured.given().log().all()
                 .when()
                 .get("/lines")
                 .then().log().all()
                 .extract();
-        var ids = getIds(response);
-        var stationNames = response.jsonPath().getList("stations.name", String.class);
-
-        // then
-        assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(ids).contains(getId(responseCreateLine)),
-                () -> assertThat(ids).contains(getId(responseCreateLine2)),
-                () -> assertThat(stationNames).containsExactly("[테스트1역, 테스트2역]", "[테스트3역, 테스트4역]")
-        );
     }
 
     private List<String> getIds(ExtractableResponse<Response> response) {
@@ -119,21 +155,31 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("노선 생성 -> 노선의 이름, 색상, 추가요금 변경 -> 해당 노선 조회")
     void updateLine() {
         /// given
+        var responseCreateLine = createLine("테스트1호선", "테스트1색", List.of("테스트1역", "테스트2역"));
         var id = getId(responseCreateLine);
 
         // when
-        var response = requestUpdateLine(id, "테스트2호선", "테스트색");
+        var responseUpdateLine = update(id, "테스트2호선", "테스트2색", 1000);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        var response = find("/lines/" + id);
+
+        assertAll(
+                () -> assertThat(responseUpdateLine.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.body().jsonPath().getString("name")).isEqualTo("테스트2호선"),
+                () -> assertThat(response.body().jsonPath().getString("color")).isEqualTo("테스트2색"),
+                () -> assertThat(response.body().jsonPath().getInt("extraFare")).isEqualTo(1000)
+        );
     }
 
-    private ExtractableResponse<Response> requestUpdateLine(String id, String name, String color) {
+    private ExtractableResponse<Response> update(String id, String name, String color, int extraFare) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
         params.put("color", color);
+        params.put("extraFare", String.valueOf(extraFare));
 
         return RestAssured.given().log().all()
                 .body(params)
@@ -144,16 +190,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    @DisplayName("다른 노선이 가지고있는 정보로 현재 노선을 업데이트시 400에러 발생")
-    @Test
-    void failUpdateLine() {
+    @DisplayName("다른 노선이 가지고있는 노선이름, 색상으로 현재 노선을 업데이트할 경우 에러발생")
+    @ParameterizedTest
+    @CsvSource(value = {"테스트2호선,테스트3색", "테스트3호선,테스트2색"})
+    void failUpdateLine(String lineName, String lineColor) {
         /// given
-        var firstInsertId = getId(responseCreateLine);
-
-        insertLine("테스트2호선", "테스트2색", List.of("테스트3역", "테스트4역"));
+        createLine("테스트2호선", "테스트2색", List.of("테스트3역", "테스트4역"));
+        var responseCreateLine = createLine("테스트1호선", "테스트1색", List.of("테스트1역", "테스트2역"));
+        var lineId = getId(responseCreateLine);
 
         // when
-        var response = requestUpdateLine(firstInsertId, "테스트2호선", "테스트색");
+        var response = update(lineId, lineName, lineColor, 1000);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -161,53 +208,106 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     @Test
     void deleteLineByLineId() {
-        var response = delete("/lines/" + getId(responseCreateLine));
+        //given
+        var responseCreateLine = createLine("테스트1호선", "테스트1색", List.of("테스트1역", "테스트2역"));
+        var lineId = getId(responseCreateLine);
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        //when
+        var responseDeleteLine = delete("/lines/" + lineId);
+
+        //then
+        var response = findAll();
+
+        var anyMatchByDeletedLineId = response.jsonPath().getList("id", String.class).stream()
+                .anyMatch(it -> it.equals(lineId));
+
+        assertAll(
+                () -> assertThat(responseDeleteLine.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
+                () -> assertThat(anyMatchByDeletedLineId).isFalse()
+        );
     }
-
 
     @Test
     void deleteByInvalidLineId() {
-        /// given
+        // given
         var invalidId = "-1";
 
         // when
         var response = delete("/lines/" + invalidId);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isEqualTo("[ERROR] 해당 노선이 존재하지 않습니다.");
     }
 
     @Test
-    void createSectionByValidInformation() {
-        var newDownStationId = 100L;
+    @DisplayName("노선 등록 -> 역 등록 -> 노선에 상행종점역 등록 -> 노선 조회하기")
+    void createSection() {
+        //given
+        var responseCreateLine = createLine("테스트1호선", "테스트1색", List.of("테스트1역", "테스트2역"));
+        var responseCreateStation = create("/stations", Map.of("name", "테스트3역"));
+        var lineId = Long.parseLong(getId(responseCreateLine));
+        var newStationId = Long.parseLong(getId(responseCreateStation));
 
-        var response = create(upStationId, newDownStationId);
+        //when
+        createSection(lineId, newStationId, upStationId, 10);
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        //then
+        var response = find("lines/" + lineId);
+        var names = response.jsonPath().getList("stations.name", String.class);
+
+        assertThat(names).containsExactly("테스트1역", "테스트2역", "테스트3역");
     }
 
-    private ExtractableResponse<Response> create(Long upStationId, Long downStationId) {
-        var path = "/lines/" + getId(responseCreateLine) + "/sections";
+    @Test
+    @DisplayName("노선 등록 -> 역 등록 -> 노선의 역 사이에 새로운 역을 등록할 경우 기존 역 사이보다 큰 경우")
+    void failToCreateSection() {
+        //given
+        var responseCreateLine = createLine("테스트1호선", "테스트1색", List.of("테스트1역", "테스트2역"));
+        var responseCreateStation = create("/stations", Map.of("name", "테스트3역"));
+        var lineId = Long.parseLong(getId(responseCreateLine));
+        var newStationId = Long.parseLong(getId(responseCreateStation));
+
+        //when
+        var response = createSection(lineId, upStationId, newStationId, 10);
+
+        //then
+        assertThat(response.jsonPath().getString("message")).isEqualTo("[ERROR] 기존 역 사이 길이보다 크거나 같으면 등록을 할 수 없습니다.");
+    }
+
+    private ExtractableResponse<Response> createSection(Long lineId,
+                                                        Long upStationId,
+                                                        Long downStationId,
+                                                        int distance
+    ) {
+        var path = "/lines/" + lineId + "/sections";
 
         Map<String, String> params = new HashMap<>();
         params.put("upStationId", upStationId.toString());
         params.put("downStationId", downStationId.toString());
-        params.put("distance", "1");
+        params.put("distance", String.valueOf(distance));
 
         return create(path, params);
     }
 
     @Test
+    @DisplayName("노선 등록 -> 역 등록 -> 노선에 상행 종점역 등록 -> 구간 제거(중간역 제거) -> 노선 조회하기")
     void deleteSection() {
-        var newDownStationId = 100L;
-        create(upStationId, newDownStationId);
+        //given
+        var responseCreateLine = createLine("테스트1호선", "테스트1색", List.of("테스트1역", "테스트2역"));
+        var responseCreateStation = create("/stations", Map.of("name", "테스트3역"));
+        var lineId = Long.parseLong(getId(responseCreateLine));
+        var newStationId = Long.parseLong(getId(responseCreateStation));
+        createSection(lineId, newStationId, upStationId, 10);
 
-        var path = "/lines/" + getId(responseCreateLine) + "/sections?stationId=" + upStationId;
-        var response = delete(path);
+        //when
+        var path = "lines/" + lineId + "/sections?stationId=" + upStationId;
+        delete(path);
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        //then
+        var response = find("lines/" + lineId);
+        var names = response.jsonPath().getList("stations.name", String.class);
+
+        assertThat(names).containsExactly("테스트2역", "테스트3역");
     }
 }
 

@@ -1,5 +1,6 @@
 package wooteco.subway.domain;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -51,20 +52,22 @@ public class Sections {
         return sections.size() == 1;
     }
 
-    public Section createSection() {
+    public Section createSectionByStationId(Long stationId) {
         var firstSection = sections.get(0);
         var secondSection = sections.get(1);
 
+        var parsedIds = sections.stream()
+                .map(it -> List.of(it.getUpStationId(), it.getDownStationId()))
+                .flatMap(Collection::stream)
+                .filter(it -> !it.equals(stationId))
+                .collect(Collectors.toList());
+
         return new Section(
                 firstSection.getId(),
-                firstSection.getUpStationId(),
-                secondSection.getDownStationId(),
+                parsedIds.get(0),
+                parsedIds.get(1),
                 firstSection.plusDistance(secondSection)
         );
-    }
-
-    public Section getFirstSection() {
-        return sections.get(0);
     }
 
     public Section getSecondSection() {
@@ -79,6 +82,13 @@ public class Sections {
         return sections.stream()
                 .filter(it -> it.getUpStationId().equals(ids.get(0)))
                 .filter(it -> it.getDownStationId().equals(ids.get(1)))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("[ERROR] 구간에 등록되지 않은 역 아이디입니다."));
+    }
+
+    public Section findByStationId(Long stationId) {
+        return sections.stream()
+                .filter(it -> it.isSameStationId(stationId))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("[ERROR] 구간에 등록되지 않은 역 아이디입니다."));
     }
