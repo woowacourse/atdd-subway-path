@@ -8,9 +8,9 @@ public class Section implements Comparable<Section> {
     private final Long lineId;
     private Station upStation;
     private Station downStation;
-    private Long distance;
+    private long distance;
 
-    public Section(Long id, Long lineId, Station upStation, Station downStation, Long distance) {
+    public Section(Long id, Long lineId, Station upStation, Station downStation, long distance) {
         this.id = id;
         this.lineId = lineId;
         this.upStation = upStation;
@@ -18,11 +18,11 @@ public class Section implements Comparable<Section> {
         this.distance = distance;
     }
 
-    public Section(Long lineId, Station upStation, Station downStation, Long distance) {
+    public Section(Long lineId, Station upStation, Station downStation, long distance) {
         this(null, lineId, upStation, downStation, distance);
     }
 
-    public Section(Station upStation, Station downStation, Long distance) {
+    public Section(Station upStation, Station downStation, long distance) {
         this(null, null, upStation, downStation, distance);
     }
 
