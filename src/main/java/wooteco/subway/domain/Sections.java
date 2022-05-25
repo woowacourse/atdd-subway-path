@@ -90,11 +90,20 @@ public class Sections {
     private void insertSectionBetween(final Section newSection, final Section foundSection) {
         validateCutInDistance(newSection, foundSection);
         if (foundSection.isSameUpStation(newSection.getUpStation())) {
-            Station newUpStation = newSection.getDownStation();
-            Station newDownStation = foundSection.getDownStation();
-            foundSection.updateSection(newUpStation, newDownStation, newSection.getDistance());
+            insertAtUpStation(newSection, foundSection);
             return;
         }
+        insertAtDownStation(newSection, foundSection);
+    }
+
+    private void insertAtUpStation(Section newSection, Section foundSection) {
+        Station newUpStation = newSection.getDownStation();
+        Station newDownStation = foundSection.getDownStation();
+        foundSection.updateSection(newUpStation, newDownStation, newSection.getDistance());
+        values.add(newSection);
+    }
+
+    private void insertAtDownStation(Section newSection, Section foundSection) {
         Station newUpStation = foundSection.getUpStation();
         Station newDownStation = newSection.getUpStation();
         foundSection.updateSection(newUpStation, newDownStation, newSection.getDistance());
