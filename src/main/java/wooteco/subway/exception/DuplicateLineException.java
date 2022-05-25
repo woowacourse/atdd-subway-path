@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 
 public final class DuplicateLineException extends SubwayException {
 
-    public DuplicateLineException(String message) {
+    public DuplicateLineException(final String message) {
         super(message, HttpStatus.BAD_REQUEST);
     }
 }

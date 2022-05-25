@@ -10,11 +10,11 @@ public class LineResponse {
     private int extraFare;
     private List<StationResponse> stations;
 
-    public LineResponse() {
+    private LineResponse() {
     }
 
-    public LineResponse(Long id, String name, String color, int extraFare,
-                        List<StationResponse> stations) {
+    public LineResponse(final Long id, final String name, final String color,
+                        final int extraFare, final List<StationResponse> stations) {
         this.id = id;
         this.name = name;
         this.color = color;

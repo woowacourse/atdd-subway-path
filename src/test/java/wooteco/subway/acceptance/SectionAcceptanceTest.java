@@ -14,7 +14,7 @@ import wooteco.subway.dto.request.SectionRequest;
 @Sql("/sectionInitSchema.sql")
 public class SectionAcceptanceTest extends AcceptanceTest {
 
-    private LineRequest createLineRequest(String name, String color) {
+    private LineRequest createLineRequest(final String name, final String color) {
         return new LineRequest(name, color, 1L, 2L, 10, 0);
     }
 
@@ -22,13 +22,13 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("구간을 추가한다.")
     void save() {
         // given
-        LineRequest lineRequest = createLineRequest("1호선", "blue");
+        final LineRequest lineRequest = createLineRequest("1호선", "blue");
         requestHttpPost(lineRequest, "/lines");
 
-        SectionRequest sectionRequest = new SectionRequest(2L, 3L, 6);
+        final SectionRequest sectionRequest = new SectionRequest(2L, 3L, 6);
 
         // when
-        ExtractableResponse<Response> response =
+        final ExtractableResponse<Response> response =
                 requestHttpPost(sectionRequest, "/lines/2/sections");
 
         // then
@@ -39,13 +39,13 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("구간을 삭제한다.")
     void delete() {
         // given
-        LineRequest lineRequest = createLineRequest("분당선", "green");
+        final LineRequest lineRequest = createLineRequest("분당선", "green");
         requestHttpPost(lineRequest, "/lines");
 
-        SectionRequest sectionRequest = new SectionRequest(1L, 2L, 6);
+        final SectionRequest sectionRequest = new SectionRequest(1L, 2L, 6);
 
         // when
-        ExtractableResponse<Response> response =
+        final ExtractableResponse<Response> response =
                 requestHttpDelete(sectionRequest, "/lines/2/sections?stationId=2");
 
         // then

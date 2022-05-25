@@ -21,13 +21,13 @@ public class LineController {
 
     private final LineService lineService;
 
-    public LineController(LineService lineService) {
+    public LineController(final LineService lineService) {
         this.lineService = lineService;
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLines(@RequestBody LineRequest lineRequest) {
-        LineResponse lineResponse = lineService.save(lineRequest);
+    public ResponseEntity<LineResponse> createLines(@RequestBody final LineRequest lineRequest) {
+        final LineResponse lineResponse = lineService.save(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + lineResponse.getId()))
                 .body(lineResponse);
     }
@@ -38,19 +38,19 @@ public class LineController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLines(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteLines(@PathVariable final Long id) {
         lineService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<LineResponse> showLine(@PathVariable Long id) {
+    public ResponseEntity<LineResponse> showLine(@PathVariable final Long id) {
         return ResponseEntity.ok().body(lineService.findById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateLine(@PathVariable Long id,
-                                           @RequestBody LineRequest lineRequest) {
+    public ResponseEntity<Void> updateLine(@PathVariable final Long id,
+                                           @RequestBody final LineRequest lineRequest) {
         lineService.update(id, lineRequest);
         return ResponseEntity.noContent().build();
     }

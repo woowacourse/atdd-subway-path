@@ -45,7 +45,7 @@ class StationServiceTest {
         stationService.save(new StationRequest("station2"));
         stationService.save(new StationRequest("station3"));
 
-        List<StationResponse> stations = stationService.findAll();
+        final List<StationResponse> stations = stationService.findAll();
 
         assertThat(stations).hasSize(3)
                 .extracting("name")
@@ -56,7 +56,7 @@ class StationServiceTest {
     @DisplayName("지하철역 삭제 테스트")
     void StationDeleteTest() {
         stationService.save(new StationRequest("station1"));
-        Long deleteId = stationService.save(new StationRequest("station2")).getId();
+        final Long deleteId = stationService.save(new StationRequest("station2")).getId();
         stationService.save(new StationRequest("station3"));
 
         stationService.delete(deleteId);

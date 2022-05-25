@@ -17,7 +17,7 @@ import wooteco.subway.dto.response.LineResponse;
 @Sql("/lineInitSchema.sql")
 public class LineAcceptanceTest extends AcceptanceTest {
 
-    private LineRequest createLineRequest(String name, String color) {
+    private LineRequest createLineRequest(final String name, final String color) {
         return new LineRequest(name, color, 1L, 2L, 5, 0);
     }
 
@@ -25,10 +25,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLineTest() {
         // given
-        LineRequest lineRequest = createLineRequest("신분당선", "red");
+        final LineRequest lineRequest = createLineRequest("신분당선", "red");
 
         // when
-        ExtractableResponse<Response> response = requestHttpPost(lineRequest, "/lines");
+        final ExtractableResponse<Response> response = requestHttpPost(lineRequest, "/lines");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -39,11 +39,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLineWithDuplicateInfoTest() {
         // given
-        LineRequest lineRequest = createLineRequest("신분당선", "red");
+        final LineRequest lineRequest = createLineRequest("신분당선", "red");
         requestHttpPost(lineRequest, "/lines");
 
         // when
-        ExtractableResponse<Response> response = requestHttpPost(lineRequest, "/lines");
+        final ExtractableResponse<Response> response = requestHttpPost(lineRequest, "/lines");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -53,20 +53,20 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getStations() {
         /// given
-        LineRequest lineRequest1 = createLineRequest("신분당선", "red");
-        ExtractableResponse<Response> createResponse1 = requestHttpPost(lineRequest1, "/lines");
+        final LineRequest lineRequest1 = createLineRequest("신분당선", "red");
+        final ExtractableResponse<Response> createResponse1 = requestHttpPost(lineRequest1, "/lines");
 
-        LineRequest lineRequest2 = createLineRequest("분당선", "green");
-        ExtractableResponse<Response> createResponse2 = requestHttpPost(lineRequest2, "/lines");
+        final LineRequest lineRequest2 = createLineRequest("분당선", "green");
+        final ExtractableResponse<Response> createResponse2 = requestHttpPost(lineRequest2, "/lines");
 
         // when
-        ExtractableResponse<Response> response = requestHttpGet("/lines");
+        final ExtractableResponse<Response> response = requestHttpGet("/lines");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        List<Long> expectedLineIds = extractLineIdsWithUri(createResponse1, createResponse2);
-        List<Long> resultLineIds = extractLineIdsWithJson(response);
+        final List<Long> expectedLineIds = extractLineIdsWithUri(createResponse1, createResponse2);
+        final List<Long> resultLineIds = extractLineIdsWithJson(response);
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
 
@@ -87,12 +87,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteStation() {
         // given
-        LineRequest lineRequest = createLineRequest("신분당선", "red");
-        ExtractableResponse<Response> createResponse = requestHttpPost(lineRequest, "/lines");
+        final LineRequest lineRequest = createLineRequest("신분당선", "red");
+        final ExtractableResponse<Response> createResponse = requestHttpPost(lineRequest, "/lines");
 
         // when
-        String uri = createResponse.header("Location");
-        ExtractableResponse<Response> response = requestHttpDelete(uri);
+        final String uri = createResponse.header("Location");
+        final ExtractableResponse<Response> response = requestHttpDelete(uri);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -102,18 +102,18 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getStationByIdTest() {
         /// given
-        LineRequest lineRequest = createLineRequest("분당선", "red");
-        ExtractableResponse<Response> createResponse = requestHttpPost(lineRequest, "/lines");
+        final LineRequest lineRequest = createLineRequest("분당선", "red");
+        final ExtractableResponse<Response> createResponse = requestHttpPost(lineRequest, "/lines");
 
         // when
-        String uri = createResponse.header("Location");
-        ExtractableResponse<Response> response = requestHttpGet(uri);
+        final String uri = createResponse.header("Location");
+        final ExtractableResponse<Response> response = requestHttpGet(uri);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        Long expectedLineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
-        Long resultLineId = response.jsonPath().getObject(".", LineResponse.class).getId();
+        final Long expectedLineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
+        final Long resultLineId = response.jsonPath().getObject(".", LineResponse.class).getId();
         assertThat(resultLineId).isEqualTo(expectedLineId);
     }
 
@@ -121,14 +121,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLine() {
         /// given
-        LineRequest lineRequest = createLineRequest("신분당선", "red");
-        ExtractableResponse<Response> createResponse = requestHttpPost(lineRequest, "/lines");
+        final LineRequest lineRequest = createLineRequest("신분당선", "red");
+        final ExtractableResponse<Response> createResponse = requestHttpPost(lineRequest, "/lines");
 
         // when, then
-        LineRequest newLineRequest = createLineRequest("분당선", "green");
+        final LineRequest newLineRequest = createLineRequest("분당선", "green");
 
-        String uri = createResponse.header("Location");
-        ExtractableResponse<Response> response =
+        final String uri = createResponse.header("Location");
+        final ExtractableResponse<Response> response =
                 requestHttpPut(newLineRequest, uri);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }

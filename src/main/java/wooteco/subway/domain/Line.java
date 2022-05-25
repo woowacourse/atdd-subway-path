@@ -4,25 +4,20 @@ import java.util.Objects;
 
 public class Line {
 
-    private Long id;
-    private String name;
-    private String color;
-    private int extraFare;
+    private final Long id;
+    private final String name;
+    private final String color;
+    private final int extraFare;
 
-    public Line() {
-    }
-
-    public Line(String name, String color, int extraFare) {
-        this.name = name;
-        this.color = color;
-        this.extraFare = extraFare;
-    }
-
-    public Line(Long id, String name, String color, int extraFare) {
+    public Line(final Long id, final String name, final String color, final int extraFare) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.extraFare = extraFare;
+    }
+
+    public static Line createWithoutId(final String name, final String color, final int extraFare) {
+        return new Line(null, name, color, extraFare);
     }
 
     public Long getId() {

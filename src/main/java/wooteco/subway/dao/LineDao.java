@@ -1,25 +1,26 @@
 package wooteco.subway.dao;
 
 import java.util.List;
+import java.util.Optional;
 import wooteco.subway.domain.Line;
 
 public interface LineDao {
 
-    Long save(Line line);
+    Long save(final Line line);
 
     List<Line> findAll();
 
-    void deleteById(Long lineId);
+    void deleteById(final Long lineId);
 
-    Line findById(Long lineId);
+    Optional<Line> findById(final Long lineId);
 
-    void update(Long lineId, Line line);
+    void update(final Long lineId, final Line line);
 
-    boolean existByName(Line line);
+    boolean existByName(final Line line);
 
-    boolean existByColor(Line line);
+    boolean existByColor(final Line line);
 
-    boolean existByNameExceptSameId(Long lineId, Line line);
+    boolean existByNameExceptSameId(final Long lineId, final Line line);
 
-    boolean existByColorExceptSameId(Long lineId, Line line);
+    boolean existByColorExceptSameId(final Long lineId, final Line line);
 }

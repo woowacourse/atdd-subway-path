@@ -1,7 +1,10 @@
 package wooteco.subway.dao;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import javax.sql.DataSource;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -20,7 +23,7 @@ public class JdbcStationDao implements StationDao {
             resultSet.getString("name")
     );
 
-    public JdbcStationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public JdbcStationDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertActor = new SimpleJdbcInsert(dataSource)
                 .withTableName("STATION")
@@ -28,38 +31,50 @@ public class JdbcStationDao implements StationDao {
     }
 
     @Override
-    public Long save(Station station) {
-        SqlParameterSource parameters = new BeanPropertySqlParameterSource(station);
+    public Long save(final Station station) {
+        final SqlParameterSource parameters = new BeanPropertySqlParameterSource(station);
         return insertActor.executeAndReturnKey(parameters).longValue();
     }
 
     @Override
     public List<Station> findAll() {
-        String sql = "SELECT * FROM STATION";
+        final String sql = "SELECT * FROM STATION";
         return jdbcTemplate.query(sql, stationRowMapper);
     }
 
     @Override
-    public void deleteById(Long stationId) {
-        String sql = "DELETE FROM STATION WHERE id = (?)";
+    public void deleteById(final Long stationId) {
+        final String sql = "DELETE FROM STATION WHERE id = (?)";
         jdbcTemplate.update(sql, stationId);
     }
 
     @Override
-    public Station findById(Long stationId) {
-        String sql = "SELECT * FROM STATION WHERE id = (?)";
-        return jdbcTemplate.queryForObject(sql, stationRowMapper, stationId);
+    public Optional<Station> findById(final Long stationId) {
+        final String sql = "SELECT * FROM STATION WHERE id = (?)";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, stationRowMapper, stationId));
+        } catch (final EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
     @Override
-    public boolean existByName(Station station) {
-        String sql = "SELECT EXISTS (SELECT * FROM STATION WHERE name = (?))";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, station.getName());
+    public boolean existByName(final Station station) {
+        final String sql = "SELECT EXISTS (SELECT * FROM STATION WHERE name = (?) LIMIT 1)";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, station.getName()));
     }
 
     @Override
-    public boolean existById(Long stationId) {
-        String sql = "SELECT EXISTS (SELECT * FROM STATION WHERE id = (?))";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, stationId);
+    public boolean existById(final Long stationId) {
+        final String sql = "SELECT EXISTS (SELECT * FROM STATION WHERE id = (?) LIMIT 1)";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, stationId));
+    }
+
+    @Override
+    public List<Station> findByIds(final List<Long> ids) {
+        final String inSql = String.join(",", Collections.nCopies(ids.size(), "?"));
+        final String sql = String.format("SELECT * FROM STATION WHERE id in (%s)", inSql);
+
+        return jdbcTemplate.query(sql, ids.toArray(), stationRowMapper);
     }
 }

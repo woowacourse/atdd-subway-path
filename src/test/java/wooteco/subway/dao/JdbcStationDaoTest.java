@@ -19,14 +19,14 @@ class JdbcStationDaoTest {
     private final StationDao stationDao;
 
     @Autowired
-    public JdbcStationDaoTest(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public JdbcStationDaoTest(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.stationDao = new JdbcStationDao(jdbcTemplate, dataSource);
     }
 
     @Test
     @DisplayName("지하철 역을 생성한다.")
     void StationCreateTest() {
-        Long stationId = stationDao.save(new Station("선릉역"));
+        stationDao.save(new Station("선릉역"));
 
         assertThat(stationDao.findAll()).hasSize(1)
                 .extracting("name")
@@ -36,7 +36,7 @@ class JdbcStationDaoTest {
     @Test
     @DisplayName("지하철 역을 조회한다.")
     void StationReadTest() {
-        Long stationId = stationDao.save(new Station("잠실역"));
+        stationDao.save(new Station("잠실역"));
 
         List<Station> stations1 = stationDao.findAll();
 
@@ -48,7 +48,7 @@ class JdbcStationDaoTest {
     @Test
     @DisplayName("지하철 역을 삭제한다.")
     void StationDeleteTest() {
-        Long stationId = stationDao.save(new Station("선릉역"));
+        final Long stationId = stationDao.save(new Station("선릉역"));
 
         stationDao.deleteById(stationId);
 

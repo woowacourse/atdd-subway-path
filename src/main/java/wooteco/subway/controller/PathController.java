@@ -13,13 +13,13 @@ public class PathController {
 
     private final PathService pathService;
 
-    public PathController(PathService pathService) {
+    public PathController(final PathService pathService) {
         this.pathService = pathService;
     }
 
     @GetMapping("/paths")
-    public ResponseEntity<PathResponse> findPath(@ModelAttribute PathRequest pathRequest) {
-        PathResponse pathResponse = pathService.findShortestPath(pathRequest);
+    public ResponseEntity<PathResponse> findPath(@ModelAttribute final PathRequest pathRequest) {
+        final PathResponse pathResponse = pathService.findShortestPath(pathRequest);
         return ResponseEntity.ok(pathResponse);
     }
 }
