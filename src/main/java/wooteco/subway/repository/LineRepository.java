@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.line.LineExtraFare;
-import wooteco.subway.domain.line.LineMap;
+import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
 import wooteco.subway.domain.station.Station;
@@ -28,7 +28,7 @@ public class LineRepository {
         this.sectionDao = sectionDao;
     }
 
-    public List<LineMap> findAllLines() {
+    public List<Line> findAllLines() {
         Map<Long, List<Section>> sectionsMap = sectionDao.findAll()
                 .stream()
                 .collect(groupingBy(Section::getLineId));
@@ -38,7 +38,7 @@ public class LineRepository {
                 .collect(Collectors.toList());
     }
 
-    public LineMap findExistingLine(Long id) {
+    public Line findExistingLine(Long id) {
         LineEntity line = lineDao.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionType.LINE_NOT_FOUND));
         Sections sections = new Sections(sectionDao.findAllByLineId(id));
@@ -60,7 +60,7 @@ public class LineRepository {
         return lineDao.findByName(name).isPresent();
     }
 
-    public LineMap saveLine(LineMap line) {
+    public Line saveLine(Line line) {
         String name = line.getName();
         String color = line.getColor();
         int extraFare = line.getExtraFare();
@@ -79,7 +79,7 @@ public class LineRepository {
         }
     }
 
-    public void updateLine(LineMap line) {
+    public void updateLine(Line line) {
         Long id = line.getId();
         String name = line.getName();
         String color = line.getColor();
@@ -89,16 +89,16 @@ public class LineRepository {
         lineDao.update(updatedLine);
     }
 
-    public void deleteLine(LineMap line) {
+    public void deleteLine(Line line) {
         Long id = line.getId();
         lineDao.deleteById(id);
         sectionDao.deleteAllByLineId(id);
     }
 
-    private LineMap toDomain(LineEntity lineEntity, Sections sections) {
+    private Line toDomain(LineEntity lineEntity, Sections sections) {
         Long lineId = lineEntity.getId();
         String color = lineEntity.getColor();
         int extraFare = lineEntity.getExtraFare();
-        return new LineMap(lineId, lineEntity.getName(), color, extraFare, sections);
+        return new Line(lineId, lineEntity.getName(), color, extraFare, sections);
     }
 }

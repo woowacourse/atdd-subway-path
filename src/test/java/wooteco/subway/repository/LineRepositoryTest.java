@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.line.LineExtraFare;
-import wooteco.subway.domain.line.LineMap;
+import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
 import wooteco.subway.domain.station.Station;
@@ -51,16 +51,15 @@ class LineRepositoryTest extends DatabaseUsageTest {
         databaseFixtureUtils.saveSection(3L, 강남역, 잠실역, 10);
         databaseFixtureUtils.saveSection(3L, 잠실역, 선릉역, 10);
 
-        List<LineMap> actual = repository.findAllLines();
-        List<LineMap> expected = List.of(
-                new LineMap(1L, "노선명1", "색깔1", 1000,
+        List<Line> actual = repository.findAllLines();
+        List<Line> expected = List.of(
+                generateLine(1L, "노선명1", "색깔1", 1000,
                         new Section(1L, 강남역, 선릉역, 20)),
-                new LineMap(2L, "노선명2", "색깔2", 0,
-                     new Section(2L, 강남역, 잠실역, 10)),
-                new LineMap(3L, "노선명3", "색깔3", 900,
-                        new Sections(
-                                new Section(3L, 강남역, 잠실역, 10),
-                                new Section(3L, 잠실역, 선릉역, 10))));
+                generateLine(2L, "노선명2", "색깔2", 0,
+                        new Section(2L, 강남역, 잠실역, 10)),
+                generateLine(3L, "노선명3", "색깔3", 900,
+                        new Section(3L, 강남역, 잠실역, 10),
+                        new Section(3L, 잠실역, 선릉역, 10)));
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -86,9 +85,9 @@ class LineRepositoryTest extends DatabaseUsageTest {
             databaseFixtureUtils.saveLine("노선1", "색상", 1000);
             databaseFixtureUtils.saveSection(1L, 강남역, 선릉역);
 
-            LineMap actual = repository.findExistingLine(1L);
-            LineMap expected = new LineMap(1L, "노선1", "색상", 1000,
-                    new Sections(new Section(1L, 강남역, 선릉역, 10)));
+            Line actual = repository.findExistingLine(1L);
+            Line expected = generateLine(1L, "노선1", "색상", 1000,
+                    new Section(1L, 강남역, 선릉역, 10));
 
             assertThat(actual).isEqualTo(expected);
         }
@@ -147,10 +146,10 @@ class LineRepositoryTest extends DatabaseUsageTest {
         @Test
         void 생성된_노선의_도메인을_반환() {
             Section initialSection = new Section(1L, 강남역, 잠실역, 10);
-            LineMap line = new LineMap("노선", "색상", 1000, initialSection);
+            Line line = new Line("노선", "색상", 1000, initialSection);
 
-            LineMap actual = repository.saveLine(line);
-            LineMap expected = new LineMap(1L, "노선", "색상", 1000, initialSection);
+            Line actual = repository.saveLine(line);
+            Line expected = generateLine(1L, "노선", "색상", 1000, initialSection);
 
             assertThat(actual).isEqualTo(expected);
         }
@@ -158,7 +157,7 @@ class LineRepositoryTest extends DatabaseUsageTest {
         @Test
         void 새로운_노선과_구간을_저장() {
             Section initialSection = new Section(1L, 강남역, 잠실역, 10);
-            LineMap line = new LineMap("노선", "색상", 300, initialSection);
+            Line line = new Line("노선", "색상", 300, initialSection);
             repository.saveLine(line);
 
             LineEntity actualLine = lineDao.findById(1L).get();
@@ -176,7 +175,7 @@ class LineRepositoryTest extends DatabaseUsageTest {
         databaseFixtureUtils.saveLine("기존 노선명", "색상", 200);
         databaseFixtureUtils.saveSection(1L, 강남역, 선릉역, 10);
 
-        repository.updateLine(new LineMap(1L, "새로운 노선명", "새로운 색상", 0,
+        repository.updateLine(generateLine(1L, "새로운 노선명", "새로운 색상", 0,
                 new Section(1L, 강남역, 선릉역, 10)));
         LineEntity actual = lineDao.findById(1L).get();
         LineEntity expected = new LineEntity(1L, "새로운 노선명", "새로운 색상", 0);
@@ -189,12 +188,16 @@ class LineRepositoryTest extends DatabaseUsageTest {
         databaseFixtureUtils.saveLine("노선1", "색상", 100);
         databaseFixtureUtils.saveSection(1L, 강남역, 잠실역, 10);
 
-        repository.deleteLine(new LineMap(1L, "노선1", "색상", 100,
+        repository.deleteLine(generateLine(1L, "노선1", "색상", 100,
                 new Section(1L, 강남역, 잠실역, 10)));
         boolean lineExistence = lineDao.findById(1L).isPresent();
         List<Section> existingSections = sectionDao.findAll();
 
         assertThat(lineExistence).isFalse();
         assertThat(existingSections).isEmpty();
+    }
+
+    private Line generateLine(Long id, String name, String color, int extraFare, Section... sections) {
+        return new Line(id, name, color, extraFare, new Sections(sections));
     }
 }

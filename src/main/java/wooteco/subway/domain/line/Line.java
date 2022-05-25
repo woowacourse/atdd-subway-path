@@ -6,7 +6,7 @@ import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
 import wooteco.subway.domain.station.Station;
 
-public class LineMap {
+public class Line {
 
     private final Long id;
     private final String name;
@@ -14,7 +14,7 @@ public class LineMap {
     private final LineExtraFare extraFare;
     private final Sections sections;
 
-    private LineMap(Long id, String name, String color, LineExtraFare extraFare, Sections sections) {
+    private Line(Long id, String name, String color, LineExtraFare extraFare, Sections sections) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -22,15 +22,11 @@ public class LineMap {
         this.sections = sections;
     }
 
-    public LineMap(Long id, String name, String color, int extraFare, Sections sections) {
+    public Line(Long id, String name, String color, int extraFare, Sections sections) {
         this(id, name, color, new LineExtraFare(extraFare), sections);
     }
 
-    public LineMap(Long id, String name, String color, int extraFare, Section section) {
-        this(id, name, color, extraFare, new Sections(section));
-    }
-
-    public LineMap(String name, String color, int extraFare, Section section) {
+    public Line(String name, String color, int extraFare, Section section) {
         this(null, name, color, extraFare, new Sections(section));
     }
 
@@ -70,12 +66,12 @@ public class LineMap {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        LineMap lineMap = (LineMap) o;
-        return Objects.equals(id, lineMap.id)
-                && Objects.equals(name, lineMap.name)
-                && Objects.equals(color, lineMap.color)
-                && Objects.equals(extraFare, lineMap.extraFare)
-                && Objects.equals(sections, lineMap.sections);
+        Line line = (Line) o;
+        return Objects.equals(id, line.id)
+                && Objects.equals(name, line.name)
+                && Objects.equals(color, line.color)
+                && Objects.equals(extraFare, line.extraFare)
+                && Objects.equals(sections, line.sections);
     }
 
     @Override

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.domain.line.LineMap;
+import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
 import wooteco.subway.domain.station.Station;
@@ -37,7 +37,7 @@ public class LineService {
     }
 
     public LineResponse find(Long id) {
-        LineMap line = lineRepository.findExistingLine(id);
+        Line line = lineRepository.findExistingLine(id);
         return LineResponse.of(line);
     }
 
@@ -50,24 +50,24 @@ public class LineService {
         Station downStation = stationRepository.findExistingStation(lineRequest.getDownStationId());
         Section newSection = new Section(upStation, downStation, lineRequest.getDistance());
 
-        LineMap newLine = new LineMap(name, color, extraFare, newSection);
+        Line newLine = new Line(name, color, extraFare, newSection);
         return LineResponse.of(lineRepository.saveLine(newLine));
     }
 
     @Transactional
     public void update(Long id, UpdateLineRequest lineRequest) {
-        LineMap line = lineRepository.findExistingLine(id);
+        Line line = lineRepository.findExistingLine(id);
         String name = validateUniqueLineName(lineRequest.getName());
         String color = lineRequest.getColor();
         int extraFare = lineRequest.getExtraFare();
         Sections sections = line.getSections();
 
-        lineRepository.updateLine(new LineMap(id, name, color, extraFare, sections));
+        lineRepository.updateLine(new Line(id, name, color, extraFare, sections));
     }
 
     @Transactional
     public void delete(Long id) {
-        LineMap line = lineRepository.findExistingLine(id);
+        Line line = lineRepository.findExistingLine(id);
         lineRepository.deleteLine(line);
     }
 
