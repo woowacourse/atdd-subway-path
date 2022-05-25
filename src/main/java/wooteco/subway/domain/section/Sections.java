@@ -1,23 +1,28 @@
 package wooteco.subway.domain.section;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import wooteco.subway.domain.station.Station;
 
-import java.util.*;
-
 public class Sections {
+
     private final List<Section> sections;
     private final CreationStrategy creationStrategy;
     private final DeletionStrategy deletionStrategy;
     private final SortStrategy sortStrategy;
 
-    public Sections(List<Section> sections, CreationStrategy creationStrategy, DeletionStrategy deletionStrategy, SortStrategy sortStrategy) {
+    public Sections(List<Section> sections, CreationStrategy creationStrategy, DeletionStrategy deletionStrategy,
+            SortStrategy sortStrategy) {
         this.sections = sections;
         this.creationStrategy = creationStrategy;
         this.deletionStrategy = deletionStrategy;
         this.sortStrategy = sortStrategy;
     }
 
-    public void save(Section section){
+    public void save(Section section) {
         creationStrategy.save(sections, section);
     }
 
@@ -25,7 +30,7 @@ public class Sections {
         return creationStrategy.fixOverLappedSection(sections, section);
     }
 
-    public void delete(Long lineId, Long stationId){
+    public void delete(Long lineId, Long stationId) {
         deletionStrategy.delete(sections, lineId, stationId);
     }
 
@@ -33,7 +38,7 @@ public class Sections {
         return deletionStrategy.fixDisconnectedSection(sections, lineId, stationId);
     }
 
-    public List<Station> sort(List<Station> stations){
+    public List<Station> sort(List<Station> stations) {
         return sortStrategy.sort(sections, stations);
     }
 

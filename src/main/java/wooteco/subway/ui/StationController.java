@@ -12,6 +12,7 @@ import java.util.List;
 @RequestMapping("/stations")
 @RestController
 public class StationController {
+
     private final StationService stationService;
 
     public StationController(StationService stationService) {

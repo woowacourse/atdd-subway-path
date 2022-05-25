@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Section {
+
     private Long id;
     private final Long lineId;
     private final Long upStationId;
@@ -12,6 +13,7 @@ public class Section {
     private final int distance;
 
     public Section(Long id, Long lineId, Long upStationId, Long downStationId, int distance) {
+        validate(lineId, upStationId, downStationId, distance);
         this.id = id;
         this.lineId = lineId;
         this.upStationId = upStationId;
@@ -21,6 +23,23 @@ public class Section {
 
     public Section(Long lineId, Long upStationId, Long downStationId, int distance) {
         this(null, lineId, upStationId, downStationId, distance);
+    }
+
+    public void validate(Long lineId, Long upStationId, Long downStationId, int distance) {
+        checkNull(lineId, upStationId, downStationId);
+        checkMinimum(distance);
+    }
+
+    private void checkNull(Long lineId, Long upStationId, Long downStationId) {
+        if (lineId == null || upStationId == null || downStationId == null) {
+            throw new IllegalArgumentException("노선 아이디와 역 아이디들에는 빈 값이 올 수 없습니다.");
+        }
+    }
+
+    private void checkMinimum(int distance) {
+        if (distance < 0) {
+            throw new IllegalArgumentException("거리에는 0이상 값만 올 수 있습니다.");
+        }
     }
 
     public Section revisedBy(Section section) {
@@ -40,6 +59,10 @@ public class Section {
         return distance >= section.getDistance();
     }
 
+    public boolean isConnectedTo(Section section) {
+        return isOnSameLine(section) && hasCommonStationWith(section);
+    }
+
     private boolean isOnSameLine(Section section) {
         return lineId.equals(section.getLineId());
     }
@@ -47,10 +70,6 @@ public class Section {
     private boolean hasCommonStationWith(Section section) {
         return !Collections.disjoint(List.of(upStationId, downStationId),
                 List.of(section.getUpStationId(), section.getDownStationId()));
-    }
-
-    public boolean isConnectedTo(Section section) {
-        return isOnSameLine(section) && hasCommonStationWith(section);
     }
 
     public boolean isOverLappedWith(Section section) {

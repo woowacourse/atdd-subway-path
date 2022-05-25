@@ -1,9 +1,8 @@
 package wooteco.subway.dto;
 
+import javax.validation.constraints.Min;
 import org.jetbrains.annotations.NotNull;
 import wooteco.subway.domain.section.Section;
-
-import javax.validation.constraints.Min;
 
 
 public class SectionRequest {
@@ -38,7 +37,7 @@ public class SectionRequest {
         return distance;
     }
 
-    public Section toSection(Long lineId){
+    public Section toSection(Long lineId) {
         return new Section(lineId, upStationId, downStationId, distance);
     }
 }

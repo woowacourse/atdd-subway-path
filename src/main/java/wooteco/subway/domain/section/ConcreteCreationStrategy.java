@@ -22,7 +22,7 @@ public class ConcreteCreationStrategy implements CreationStrategy {
 
     private Section reviseSection(List<Section> sections, Section overLappedSection, Section section) {
         Section revisedSection = overLappedSection.revisedBy(section);
-        sections.remove(section);
+        sections.remove(overLappedSection);
         sections.add(revisedSection);
 
         return revisedSection;

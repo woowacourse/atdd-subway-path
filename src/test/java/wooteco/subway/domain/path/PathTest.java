@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -8,8 +8,6 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.path.DijkstraStrategy;
-import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 
@@ -22,15 +20,15 @@ class PathTest {
     private Long 사당 = 4L;
     private Long 지하철_2호선 = 1L;
 
-    Station 강남역 = new Station(강남, "강남역");
-    Station 선릉역 = new Station(선릉, "선릉역");
-    Station 잠실역 = new Station(잠실, "잠실역");
+    private Station 강남역 = new Station(강남, "강남역");
+    private Station 선릉역 = new Station(선릉, "선릉역");
+    private Station 잠실역 = new Station(잠실, "잠실역");
 
-    Section 강남_선릉_10 = new Section(1L, 지하철_2호선, 강남, 선릉, 10);
-    Section 선릉_잠실_10 = new Section(2L, 지하철_2호선, 선릉, 잠실, 10);
+    private Section 강남_선릉_10 = new Section(1L, 지하철_2호선, 강남, 선릉, 10);
+    private Section 선릉_잠실_10 = new Section(2L, 지하철_2호선, 선릉, 잠실, 10);
 
-    List<Station> stationList = new ArrayList<>(List.of(강남역, 선릉역, 잠실역));
-    List<Section> sectionList = new ArrayList<>(List.of(강남_선릉_10, 선릉_잠실_10));
+    private List<Station> stationList = new ArrayList<>(List.of(강남역, 선릉역, 잠실역));
+    private List<Section> sectionList = new ArrayList<>(List.of(강남_선릉_10, 선릉_잠실_10));
 
     @BeforeEach
     void setPath() {

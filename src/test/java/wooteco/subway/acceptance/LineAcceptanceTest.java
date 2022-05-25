@@ -1,8 +1,15 @@
 package wooteco.subway.acceptance;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,19 +17,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.dto.LineResponse;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 @DisplayName("노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
-    void createStations(){
+    void createStations() {
         Map<String, String> params1 = new HashMap<>();
         params1.put("name", "강남역");
         createStationResponseOf(params1);
@@ -42,6 +41,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         params.put("upStationId", 1L);
         params.put("downStationId", 2L);
         params.put("distance", 10);
+        params.put("extraFare", 900);
 
         // when
         ExtractableResponse<Response> response = createLineResponseOf(params);
@@ -62,6 +62,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         params.put("upStationId", 1L);
         params.put("downStationId", 2L);
         params.put("distance", 10);
+        params.put("extraFare", 900);
 
         createLineResponseOf(params);
 
@@ -83,6 +84,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         params1.put("upStationId", 1L);
         params1.put("downStationId", 2L);
         params1.put("distance", 10);
+        params1.put("extraFare", 900);
 
         ExtractableResponse<Response> createResponse1 = createLineResponseOf(params1);
 
@@ -92,6 +94,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         params2.put("upStationId", 1L);
         params2.put("downStationId", 2L);
         params2.put("distance", 10);
+        params2.put("extraFare", 900);
 
         ExtractableResponse<Response> createResponse2 = createLineResponseOf(params2);
 
@@ -123,6 +126,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         params.put("upStationId", 1L);
         params.put("downStationId", 2L);
         params.put("distance", 10);
+        params.put("extraFare", 900);
 
         ExtractableResponse<Response> createResponse = createLineResponseOf(params);
 
@@ -148,6 +152,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         params.put("upStationId", 1L);
         params.put("downStationId", 2L);
         params.put("distance", 10);
+        params.put("extraFare", 900);
 
         ExtractableResponse<Response> createResponse = createLineResponseOf(params);
 
@@ -176,6 +181,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         params.put("upStationId", 1L);
         params.put("downStationId", 2L);
         params.put("distance", 10);
+        params.put("extraFare", 900);
 
         createLineResponseOf(params);
 
@@ -191,7 +197,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .put("/lines/1")
                 .then().log().all()
                 .extract();
-
 
         ExtractableResponse<Response> findAllResponse = RestAssured.given().log().all()
                 .when()

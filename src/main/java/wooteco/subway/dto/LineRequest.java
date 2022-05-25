@@ -1,10 +1,9 @@
 package wooteco.subway.dto;
 
-import org.jetbrains.annotations.NotNull;
-import wooteco.subway.domain.line.Line;
-
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
+import org.jetbrains.annotations.NotNull;
+import wooteco.subway.domain.line.Line;
 
 public class LineRequest {
 
@@ -12,7 +11,7 @@ public class LineRequest {
     private String name;
 
     @NotNull
-    @Size(max=20)
+    @Size(max = 20)
     private String color;
 
     @NotNull
@@ -24,19 +23,23 @@ public class LineRequest {
     @Min(0)
     private int distance;
 
+    @Min(0)
+    private int extraFare;
+
     public LineRequest() {
     }
 
-    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
+    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance, int extraFare) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+        this.extraFare = extraFare;
     }
 
-    public Line toLine(){
-        return new Line(name, color);
+    public Line toLine() {
+        return new Line(name, color, extraFare);
     }
 
     public String getName() {
@@ -57,5 +60,9 @@ public class LineRequest {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 }

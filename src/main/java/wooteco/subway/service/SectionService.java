@@ -34,7 +34,7 @@ public class SectionService {
         Optional<Section> connectedSection = sections.fixDisconnectedSection(lineId, stationId);
         sections.delete(lineId, stationId);
 
-        sectionDao.delete(lineId, stationId);
+        sectionDao.deleteByLineIdAndStationId(lineId, stationId);
         connectedSection.ifPresent(sectionDao::insert);
     }
 }

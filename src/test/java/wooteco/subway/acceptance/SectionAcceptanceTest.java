@@ -1,24 +1,23 @@
 package wooteco.subway.acceptance;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 @DisplayName("구간 관련 기능")
 public class SectionAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
-    void createStations(){
+    void createStations() {
         Map<String, String> params1 = new HashMap<>();
         params1.put("name", "강남역");
         createStationResponseOf(params1);
