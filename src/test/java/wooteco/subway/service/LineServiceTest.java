@@ -40,9 +40,9 @@ class LineServiceTest extends DatabaseUsageTest {
     @Nested
     class FindMethodsTest {
 
-        private final StationResponse STATION_RESPONSE_1 = new StationResponse(1L, "강남역");
-        private final StationResponse STATION_RESPONSE_2 = new StationResponse(2L, "선릉역");
-        private final StationResponse STATION_RESPONSE_3 = new StationResponse(3L, "잠실역");
+        private final StationResponse 강남역_응답 = new StationResponse(1L, "강남역");
+        private final StationResponse 선릉역_응답 = new StationResponse(2L, "선릉역");
+        private final StationResponse 잠실역_응답 = new StationResponse(3L, "잠실역");
 
         @BeforeEach
         void setup() {
@@ -59,9 +59,9 @@ class LineServiceTest extends DatabaseUsageTest {
             List<LineResponse> actual = service.findAll();
 
             LineResponse expectedLine1 = new LineResponse(1L, "1호선", "색깔", 1000,
-                    List.of(STATION_RESPONSE_1, STATION_RESPONSE_3));
+                    List.of(강남역_응답, 잠실역_응답));
             LineResponse expectedLine2 = new LineResponse(2L, "2호선", "색깔2", 0,
-                    List.of(STATION_RESPONSE_3, STATION_RESPONSE_1, STATION_RESPONSE_2));
+                    List.of(잠실역_응답, 강남역_응답, 선릉역_응답));
             List<LineResponse> expected = List.of(expectedLine1, expectedLine2);
 
             assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
@@ -72,7 +72,7 @@ class LineServiceTest extends DatabaseUsageTest {
             LineResponse actual = service.find(2L);
 
             LineResponse expected = new LineResponse(2L, "2호선", "색깔2", 0,
-                    List.of(STATION_RESPONSE_3, STATION_RESPONSE_1, STATION_RESPONSE_2));
+                    List.of(잠실역_응답, 강남역_응답, 선릉역_응답));
 
             assertThat(actual).isEqualTo(expected);
         }

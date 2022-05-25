@@ -11,34 +11,35 @@ import wooteco.subway.domain.station.Station;
 @SuppressWarnings("NonAsciiCharacters")
 class PathTest {
 
-    private final Station STATION1 = new Station(1L, "역1");
-    private final Station STATION2 = new Station(2L, "역2");
-    private final Station STATION3 = new Station(3L, "역3");
-    private final Station STATION4 = new Station(4L, "역4");
-    private final Station STATION5 = new Station(5L, "역5");
-    private final Station STATION6 = new Station(6L, "역6");
-    private final Navigator NAVIGATOR = new Navigator(List.of(
-            new Section(1L, STATION1, STATION2, 1),
-            new Section(1L, STATION2, STATION3, 100),
-            new Section(2L, STATION2, STATION4, 2),
-            new Section(3L, STATION2, STATION5, 100),
-            new Section(1L, STATION3, STATION6, 6),
-            new Section(2L, STATION4, STATION5, 3),
-            new Section(3L, STATION5, STATION3, 5)));
+    private static final Station 강남역 = new Station(1L, "강남역");
+    private static final Station 선릉역 = new Station(2L, "선릉역");
+    private static final Station 잠실역 = new Station(3L, "잠실역");
+    private static final Station 강변역 = new Station(4L, "강변역");
+    private static final Station 역삼역 = new Station(5L, "역삼역");
+    private static final Station 양재역 = new Station(6L, "양재역");
+    private static final Section 선릉_잠실_먼_구간 = new Section(1L, 선릉역, 잠실역, 100);
+    private static final Section 강남_선릉_가까운_구간 = new Section(1L, 강남역, 선릉역, 1);
+    private static final Section 선릉_강변_가까운_구간 = new Section(2L, 선릉역, 강변역, 2);
+    private static final Section 선릉_역삼_먼_구간 = new Section(3L, 선릉역, 역삼역, 100);
+    private static final Section 잠실_양재_가까운_구간 = new Section(1L, 잠실역, 양재역, 6);
+    private static final Section 강변_역삼_가까운_구간 = new Section(2L, 강변역, 역삼역, 3);
+    private static final Section 역삼_잠실_가까운_구간 = new Section(3L, 역삼역, 잠실역, 5);
+    private static final Navigator NAVIGATOR = new Navigator(List.of(강남_선릉_가까운_구간, 선릉_잠실_먼_구간,
+            선릉_강변_가까운_구간, 선릉_역삼_먼_구간, 잠실_양재_가까운_구간, 강변_역삼_가까운_구간, 역삼_잠실_가까운_구간));
 
     @Test
     void toStations_메서드는_시작점부터_목적지까지의_최단경로에_해당하는_지하철역들을_순서대로_제공() {
-        Path path = getPathOf(STATION2, STATION3);
+        Path path = getPathOf(선릉역, 잠실역, NAVIGATOR);
 
         List<Station> actual = path.toStations();
-        List<Station> expected = List.of(STATION2, STATION4, STATION5, STATION3);
+        List<Station> expected = List.of(선릉역, 강변역, 역삼역, 잠실역);
 
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     void getDistance_메서드는_최단경로의_거리를_반환() {
-        Path path = getPathOf(STATION2, STATION3);
+        Path path = getPathOf(선릉역, 잠실역, NAVIGATOR);
 
         int actual = path.getDistance();
         int expected = 10;
@@ -48,7 +49,7 @@ class PathTest {
 
     @Test
     void getPassingLineIds_메서드는_최단거리의_구간들이_속해있는_모든_노선들의_id를_반환() {
-        Path path = getPathOf(STATION2, STATION3);
+        Path path = getPathOf(선릉역, 잠실역, NAVIGATOR);
 
         List<Long> actual = path.getPassingLineIds();
         List<Long> expected = List.of(2L, 3L);
@@ -58,40 +59,32 @@ class PathTest {
 
     @Test
     void 노선에_구간으로_등록되지_않은_역에_대한_경로를_조회하려는_경우_예외_발생() {
-        Station nonRegisteredStation = new Station(999L, "등록되지 않은 역");
-        Navigator navigator = new Navigator(List.of(
-                new Section(STATION1, STATION2, 10),
-                new Section(STATION2, STATION3, 100),
-                new Section(STATION3, STATION4, 20)));
+        Station 미등록_역 = new Station(999L, "등록되지 않은 역");
+        Navigator navigator = new Navigator(List.of(new Section(강남역, 선릉역, 10),
+                new Section(선릉역, 잠실역, 100), new Section(잠실역, 강변역, 20)));
 
-        assertThatThrownBy(() -> getPathOf(STATION1, nonRegisteredStation, navigator))
+        assertThatThrownBy(() -> getPathOf(강남역, 미등록_역, navigator))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 출발점과_도착점이_동일한_경우_예외_발생() {
-        Navigator navigator = new Navigator(List.of(
-                new Section(STATION1, STATION2, 10)));
+        Navigator navigator = new Navigator(List.of(new Section(강남역, 선릉역, 10)));
 
-        assertThatThrownBy(() -> getPathOf(STATION1, STATION1, navigator))
+        assertThatThrownBy(() -> getPathOf(강남역, 강남역, navigator))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 도달할_수_없는_경로를_조회하려는_경우_예외_발생() {
         Navigator navigator = new Navigator(List.of(
-                new Section(STATION1, STATION2, 10),
-                new Section(STATION3, STATION4, 20)));
+                new Section(강남역, 선릉역, 10), new Section(잠실역, 강변역, 20)));
 
-        assertThatThrownBy(() -> getPathOf(STATION1, STATION3, navigator))
+        assertThatThrownBy(() -> getPathOf(강남역, 잠실역, navigator))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     private Path getPathOf(Station start, Station target, Navigator navigator) {
         return new Path(start, target, navigator);
-    }
-
-    private Path getPathOf(Station start, Station target) {
-        return getPathOf(start, target, NAVIGATOR);
     }
 }

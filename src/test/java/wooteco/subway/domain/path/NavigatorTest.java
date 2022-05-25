@@ -11,80 +11,77 @@ import wooteco.subway.domain.station.Station;
 @SuppressWarnings("NonAsciiCharacters")
 class NavigatorTest {
 
-    private final Station STATION1 = new Station(1L, "역1");
-    private final Station STATION2 = new Station(2L, "역2");
-    private final Station STATION3 = new Station(3L, "역3");
-    private final Station STATION4 = new Station(4L, "역4");
-    private final Station STATION5 = new Station(5L, "역5");
-    private final Station STATION6 = new Station(6L, "역6");
+    private static final Station 강남역 = new Station(1L, "강남역");
+    private static final Station 역삼역 = new Station(2L, "역삼역");
+    private static final Station 잠실역 = new Station(3L, "잠실역");
+    private static final Station 선릉역 = new Station(4L, "선릉역");
+    private static final Station 양재역 = new Station(5L, "양재역");
+    private static final Station 청계산입구역 = new Station(6L, "청계산입구역");
 
     @Test
     void 인접한_두_역_사이가_최단거리인_경우_해당_경로를_그대로_조회() {
-        Section closestSection = new Section(STATION2, STATION3, 1);
-        List<Section> sections = List.of(closestSection,
-                new Section(STATION1, STATION2, 100),
-                new Section(STATION2, STATION4, 100),
-                new Section(STATION4, STATION5, 100),
-                new Section(STATION2, STATION5, 100),
-                new Section(STATION5, STATION3, 100),
-                new Section(STATION3, STATION6, 100));
+        Section 역삼_잠실_가까운_구간 = new Section(역삼역, 잠실역, 1);
+        List<Section> sections = List.of(역삼_잠실_가까운_구간,
+                new Section(강남역, 역삼역, 100),
+                new Section(역삼역, 선릉역, 100),
+                new Section(선릉역, 양재역, 100),
+                new Section(역삼역, 양재역, 100),
+                new Section(양재역, 잠실역, 100),
+                new Section(잠실역, 청계산입구역, 100));
 
         Navigator navigator = new Navigator(sections);
-        List<Section> actual = navigator.calculateShortestPath(STATION2, STATION3);
-        List<Section> expected = List.of(closestSection);
+        List<Section> actual = navigator.calculateShortestPath(역삼역, 잠실역);
+        List<Section> expected = List.of(역삼_잠실_가까운_구간);
 
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     void 인접한_두_역_사이가_최단거리가_아닌_경우_최적의_경로를_계산하여_조회() {
-        Section firstSection = new Section(STATION2, STATION4, 2);
-        Section secondSection = new Section(STATION4, STATION5, 3);
-        Section thirdSection = new Section(STATION5, STATION3, 5);
-        List<Section> sections = List.of(
-                firstSection, secondSection, thirdSection,
-                new Section(STATION1, STATION2, 1),
-                new Section(STATION2, STATION3, 100),
-                new Section(STATION2, STATION5, 100),
-                new Section(STATION3, STATION6, 6));
+        Section 역삼_선릉 = new Section(역삼역, 선릉역, 2);
+        Section 선릉_양재 = new Section(선릉역, 양재역, 3);
+        Section 양재_잠실 = new Section(양재역, 잠실역, 5);
+        List<Section> sections = List.of(역삼_선릉, 선릉_양재, 양재_잠실,
+                new Section(강남역, 역삼역, 1),
+                new Section(역삼역, 잠실역, 100),
+                new Section(역삼역, 양재역, 100),
+                new Section(잠실역, 청계산입구역, 6));
 
         Navigator navigator = new Navigator(sections);
-        List<Section> actual = navigator.calculateShortestPath(STATION2, STATION3);
-        List<Section> expected = List.of(firstSection, secondSection, thirdSection);
+        List<Section> actual = navigator.calculateShortestPath(역삼역, 잠실역);
+        List<Section> expected = List.of(역삼_선릉, 선릉_양재, 양재_잠실);
 
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     void 출발점과_도착점이_반대가_되면_지하철역들의_순서만_반대로_반환() {
-        Section firstSection = new Section(STATION2, STATION4, 2);
-        Section secondSection = new Section(STATION4, STATION5, 3);
-        Section thirdSection = new Section(STATION5, STATION3, 5);
-        List<Section> sections = List.of(
-                firstSection, secondSection, thirdSection,
-                new Section(STATION1, STATION2, 1),
-                new Section(STATION2, STATION3, 100),
-                new Section(STATION2, STATION5, 100),
-                new Section(STATION3, STATION6, 6));
+        Section 역삼_선릉 = new Section(역삼역, 선릉역, 2);
+        Section 선릉_양재 = new Section(선릉역, 양재역, 3);
+        Section 양재_잠실 = new Section(양재역, 잠실역, 5);
+        List<Section> sections = List.of(역삼_선릉, 선릉_양재, 양재_잠실,
+                new Section(강남역, 역삼역, 1),
+                new Section(역삼역, 잠실역, 100),
+                new Section(역삼역, 양재역, 100),
+                new Section(잠실역, 청계산입구역, 6));
 
         Navigator navigator = new Navigator(sections);
-        List<Section> actual1 = navigator.calculateShortestPath(STATION2, STATION3);
-        List<Section> actual2 = navigator.calculateShortestPath(STATION3, STATION2);
-        List<Section> expected1 = List.of(firstSection, secondSection, thirdSection);
-        List<Section> expected2 = List.of(thirdSection, secondSection, firstSection);
+        List<Section> actual = navigator.calculateShortestPath(역삼역, 잠실역);
+        List<Section> actualReversed = navigator.calculateShortestPath(잠실역, 역삼역);
+        List<Section> expected = List.of(역삼_선릉, 선릉_양재, 양재_잠실);
+        List<Section> expectedReversed = List.of(양재_잠실, 선릉_양재, 역삼_선릉);
 
-        assertThat(actual1).isEqualTo(expected1);
-        assertThat(actual2).isEqualTo(expected2);
+        assertThat(actual).isEqualTo(expected);
+        assertThat(actualReversed).isEqualTo(expectedReversed);
     }
 
     @Test
     void 도달할_수_없는_경로를_조회하려는_경우_예외_발생() {
         List<Section> sections = List.of(
-                new Section(STATION1, STATION2, 10),
-                new Section(STATION3, STATION4, 20));
+                new Section(강남역, 역삼역, 10), new Section(잠실역, 선릉역, 20));
 
         Navigator navigator = new Navigator(sections);
-        assertThatThrownBy(() -> navigator.calculateShortestPath(STATION1, STATION3))
+        assertThatThrownBy(() -> navigator.calculateShortestPath(강남역, 잠실역))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

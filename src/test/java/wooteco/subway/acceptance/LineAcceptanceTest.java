@@ -119,9 +119,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         private static final String PATH = "/lines";
 
-        private final StationResponse STATION_RESPONSE1 = new StationResponse(1L, "강남역");
-        private final StationResponse STATION_RESPONSE2 = new StationResponse(2L, "선릉역");
-        private final StationResponse STATION_RESPONSE3 = new StationResponse(3L, "잠실역");
+        private final StationResponse 강남역_응답 = new StationResponse(1L, "강남역");
+        private final StationResponse 선릉역_응답 = new StationResponse(2L, "선릉역");
+        private final StationResponse 잠실역_응답 = new StationResponse(3L, "잠실역");
 
         @Test
         void 성공시_200_OK() {
@@ -135,9 +135,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
             ExtractableResponse<Response> response = HttpUtils.send(HttpMethod.GET, PATH);
             List<LineResponse> actualBody = extractJsonBody(response);
             List<LineResponse> expectedBody = List.of(
-                    new LineResponse(1L, "1호선", "노란색", 1000, List.of(STATION_RESPONSE1, STATION_RESPONSE2,
-                            STATION_RESPONSE3)),
-                    new LineResponse(2L, "2호선", "빨간색", 0, List.of(STATION_RESPONSE1, STATION_RESPONSE3)));
+                    new LineResponse(1L, "1호선", "노란색", 1000, List.of(강남역_응답, 선릉역_응답,
+                            잠실역_응답)),
+                    new LineResponse(2L, "2호선", "빨간색", 0, List.of(강남역_응답, 잠실역_응답)));
 
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
             assertThat(actualBody).isEqualTo(expectedBody);

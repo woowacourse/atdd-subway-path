@@ -15,13 +15,13 @@ import wooteco.subway.domain.station.Station;
 @SuppressWarnings("NonAsciiCharacters")
 class SubwayMapTest {
 
-    private final Line LINE1 = new Line(1L, "노선", "색상", 1000);
-    private final Line LINE2 = new Line(2L, "노선2", "색상", 0);
-    private final Line LINE3 = new Line(3L, "노선2", "색상", 900);
+    private final Line 신분당선 = new Line(1L, "신분당선", "색상", 1000);
+    private final Line 분당선 = new Line(2L, "분당선", "색상", 0);
+    private final Line 수인선 = new Line(3L, "수인선", "색상", 900);
 
-    private final Station STATION1 = new Station(1L, "역1");
-    private final Station STATION2 = new Station(2L, "역2");
-    private final Station STATION3 = new Station(3L, "역3");
+    private final Station 강남역 = new Station(1L, "강남역");
+    private final Station 선릉역 = new Station(2L, "선릉역");
+    private final Station 잠실역 = new Station(3L, "잠실역");
 
     @DisplayName("생성자 유효성 검정 테스트")
     @Nested
@@ -36,9 +36,9 @@ class SubwayMapTest {
 
         @Test
         void 노선_정보에_해당되지_않는_구간이_존재하는_경우_예외_발생() {
-            List<Line> lines = List.of(LINE1);
-            Section line1Section = new Section(1L, STATION1, STATION2, 10);
-            Section line2Section = new Section(2L, STATION1, STATION2, 10);
+            List<Line> lines = List.of(신분당선);
+            Section line1Section = new Section(1L, 강남역, 선릉역, 10);
+            Section line2Section = new Section(2L, 강남역, 선릉역, 10);
             List<Section> lineSections = List.of(line1Section, line2Section);
 
             assertThatThrownBy(() -> SubwayMap.of(lines, lineSections))
@@ -47,8 +47,8 @@ class SubwayMapTest {
 
         @Test
         void 노선_정보들_중_등록된_구간이_전혀_존재하지_않는_경우_예외_발생() {
-            List<Line> lines = List.of(LINE1, LINE2);
-            Section line1Section = new Section(1L, STATION1, STATION2, 10);
+            List<Line> lines = List.of(신분당선, 분당선);
+            Section line1Section = new Section(1L, 강남역, 선릉역, 10);
             List<Section> lineSections = List.of(line1Section);
 
             assertThatThrownBy(() -> SubwayMap.of(lines, lineSections))
@@ -58,19 +58,19 @@ class SubwayMapTest {
 
     @Test
     void toSortedLines_메서드는_노선의_id_순서대로_정렬된_노선들을_반환() {
-        List<Line> lineInfos = List.of(LINE1, LINE2, LINE3);
-        Section line1Section1To2 = new Section(1L, STATION1, STATION2, 10);
-        Section line1Section2To3 = new Section(1L, STATION2, STATION3, 30);
-        Section line2Section1To2 = new Section(2L, STATION1, STATION2, 10);
-        Section line3Section = new Section(3L, STATION2, STATION3, 30);
+        List<Line> lineInfos = List.of(신분당선, 분당선, 수인선);
+        Section line1Section1To2 = new Section(1L, 강남역, 선릉역, 10);
+        Section line1Section2To3 = new Section(1L, 선릉역, 잠실역, 30);
+        Section line2Section1To2 = new Section(2L, 강남역, 선릉역, 10);
+        Section line3Section = new Section(3L, 선릉역, 잠실역, 30);
         List<Section> lineSections = List.of(line2Section1To2, line1Section1To2, line1Section2To3, line3Section);
 
         SubwayMap subwayMap = SubwayMap.of(lineInfos, lineSections);
         List<LineMap> actual = subwayMap.toSortedLines();
         List<LineMap> expected = List.of(
-                new LineMap(LINE1, new Sections(List.of(line1Section1To2, line1Section2To3))),
-                new LineMap(LINE2, new Sections(List.of(line2Section1To2))),
-                new LineMap(LINE3, new Sections(List.of(line3Section))));
+                new LineMap(신분당선, new Sections(List.of(line1Section1To2, line1Section2To3))),
+                new LineMap(분당선, new Sections(List.of(line2Section1To2))),
+                new LineMap(수인선, new Sections(List.of(line3Section))));
 
         assertThat(actual).isEqualTo(expected);
     }

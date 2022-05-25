@@ -29,9 +29,9 @@ class PathServiceTest extends DatabaseUsageTest {
     @Nested
     class FindShortestPathTest {
 
-        private final StationResponse STATION_RESPONSE1 = new StationResponse(1L, "강남역");
-        private final StationResponse STATION_RESPONSE2 = new StationResponse(2L, "선릉역");
-        private final StationResponse STATION_RESPONSE3 = new StationResponse(3L, "잠실역");
+        private final StationResponse 강남역_응답 = new StationResponse(1L, "강남역");
+        private final StationResponse 선릉역_응답 = new StationResponse(2L, "선릉역");
+        private final StationResponse 잠실역_응답 = new StationResponse(3L, "잠실역");
 
         @Test
         void 최단경로에_대해_지하철역들의_목록과_거리_및_요금_정보를_반환() {
@@ -42,7 +42,7 @@ class PathServiceTest extends DatabaseUsageTest {
 
             PathResponse actual = service.findShortestPath(1L, 3L, 25);
             PathResponse expected = new PathResponse(
-                    List.of(STATION_RESPONSE1, STATION_RESPONSE2, STATION_RESPONSE3), 10, 1250);
+                    List.of(강남역_응답, 선릉역_응답, 잠실역_응답), 10, 1250);
 
             assertThat(actual).isEqualTo(expected);
         }
