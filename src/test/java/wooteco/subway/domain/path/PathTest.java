@@ -4,7 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.line.LineExtraFare;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 
@@ -82,6 +84,19 @@ class PathTest {
 
         assertThatThrownBy(() -> getPathOf(강남역, 잠실역, navigator))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("calculateFare 메서드는 [기본요금 + 거리 추가비용 + 노선 추가비용]에 나이 할인을 적용한 요금을 반환한다.")
+    @Test
+    void calculateFare() {
+        Section 거리_12짜리_강남_선릉_구간 = new Section(1L, 강남역, 선릉역, 12);
+        Navigator navigator = new Navigator(List.of(거리_12짜리_강남_선릉_구간));
+        Path path = new Path(강남역, 선릉역, navigator);
+
+        int actual = path.calculateFare(List.of(new LineExtraFare(200)),15);
+        int expected = (int) ((((1250 + 100) + 200) - 350) * 0.8);
+
+        assertThat(actual).isEqualTo(expected);
     }
 
     private Path getPathOf(Station start, Station target, Navigator navigator) {

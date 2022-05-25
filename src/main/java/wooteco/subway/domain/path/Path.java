@@ -3,6 +3,8 @@ package wooteco.subway.domain.path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import wooteco.subway.domain.fare2.Fare;
+import wooteco.subway.domain.line.LineExtraFare;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 
@@ -46,5 +48,14 @@ public class Path {
                 .map(Section::getLineId)
                 .distinct()
                 .collect(Collectors.toList());
+    }
+
+    public int calculateFare(List<LineExtraFare> extraFares, int age) {
+        Fare fare = new Fare();
+        fare = fare.applyDistanceOverFarePolicies(getDistance());
+        fare = fare.applyMaximumLineExtraFare(extraFares);
+        fare = fare.applyAgeDiscountPolicy(age);
+
+        return fare.toInt();
     }
 }
