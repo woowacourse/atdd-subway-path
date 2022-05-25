@@ -43,7 +43,7 @@ public class LineRepository {
         List<SectionDto> sectionDtos = sectionDao.findByLineId(id);
         List<Station> stations = stationDao.findByIdIn(collectStationIds(sectionDtos));
         Sections sections = buildSections(sectionDtos, stations);
-        return new Line(lineDto.getId(), lineDto.getName(), lineDto.getColor(), sections);
+        return new Line(lineDto.getId(), lineDto.getName(), lineDto.getColor(), sections, lineDto.getExtraFare());
     }
 
     private Sections buildSections(List<SectionDto> sectionDtos, List<Station> stations) {

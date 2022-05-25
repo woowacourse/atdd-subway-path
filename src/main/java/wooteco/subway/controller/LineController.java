@@ -1,4 +1,4 @@
-package wooteco.subway.ui;
+package wooteco.subway.controller;
 
 import java.net.URI;
 import java.util.List;
@@ -36,7 +36,7 @@ public class LineController {
     public ResponseEntity<List<LineResponse>> showLines() {
         List<Line> lines = lineService.findAll();
         List<LineResponse> lineResponses = lines.stream()
-                .map(it -> new LineResponse(it.getId(), it.getName(), it.getColor()))
+                .map(LineResponse::from)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(lineResponses);
     }

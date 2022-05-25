@@ -35,7 +35,7 @@ public class LineService {
     public Line save(LineRequest lineRequest) {
         Section section = new Section(stationRepository.findById(lineRequest.getUpStationId()),
                 stationRepository.findById(lineRequest.getDownStationId()), lineRequest.getDistance());
-        Line line = new Line(lineRequest.getName(), lineRequest.getColor(), new Sections(section));
+        Line line = new Line(lineRequest.getName(), lineRequest.getColor(), new Sections(section), lineRequest.getExtraFare());
         try {
             Long lindId = lineRepository.save(line);
             return lineRepository.findById(lindId);

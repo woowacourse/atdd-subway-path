@@ -29,7 +29,10 @@ public class JdbcLineDao implements LineDao {
     @Override
     public LineDto save(LineDto lineDto) {
         Long id = insertActor.executeAndReturnKey(
-                Map.of("name", lineDto.getName(), "color", lineDto.getColor())).longValue();
+                        Map.of("name", lineDto.getName(),
+                                "color", lineDto.getColor(),
+                                "extraFare", lineDto.getExtraFare()))
+                .longValue();
         return findById(id);
     }
 
@@ -50,15 +53,19 @@ public class JdbcLineDao implements LineDao {
                 new LineDto(
                         resultSet.getLong("id"),
                         resultSet.getString("name"),
-                        resultSet.getString("color")
+                        resultSet.getString("color"),
+                        resultSet.getInt("extraFare")
                 );
     }
 
     @Override
     public LineDto update(LineDto lineDto) {
-        String sql = "update LINE set name = :name, color = :color where id = :id";
+        String sql = "update LINE set name = :name, color = :color, extraFare = :extraFare where id = :id ";
         jdbcTemplate.update(sql,
-                Map.of("id", lineDto.getId(), "name", lineDto.getName(), "color", lineDto.getColor()));
+                Map.of("id", lineDto.getId(),
+                        "name", lineDto.getName(),
+                        "color", lineDto.getColor(),
+                        "extraFare", lineDto.getExtraFare()));
 
         return findById(lineDto.getId());
     }

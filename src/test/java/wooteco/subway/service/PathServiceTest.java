@@ -10,6 +10,7 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineDto;
+import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.SectionDto;
 
@@ -52,7 +53,7 @@ public class PathServiceTest {
         SectionDto 잠실_홍대 = sectionDao.save(new SectionDto(삼호선.getId(), 잠실역.getId(), 홍대역.getId(), 5));
 
         //when
-        PathResponse response = pathService.findPath(강남역.getId(), 홍대역.getId(), 10);
+        PathResponse response = pathService.findPath(new PathRequest(강남역.getId(), 홍대역.getId(), 25));
 
         //then
         assertAll(() -> {

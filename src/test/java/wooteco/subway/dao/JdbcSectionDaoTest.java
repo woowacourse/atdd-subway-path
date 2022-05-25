@@ -39,7 +39,7 @@ class JdbcSectionDaoTest {
         Station up = stationDao.save(new Station("합정역"));
         Station down = stationDao.save(new Station("홍대입구역"));
         Section section = new Section(up, down, 1);
-        Line line = new Line("2호선", "green", new Sections(section));
+        Line line = new Line("2호선", "green", new Sections(section), 100);
         LineDto savedId = lineDao.save(LineDto.from(line));
 
         SectionDto expect = SectionDto.of(section, savedId.getId());
@@ -64,7 +64,7 @@ class JdbcSectionDaoTest {
         Section included2 = new Section(홍대입구역, 신촌역, 1);
 
         Line line = new Line("2호선", "green",
-                new Sections(new LinkedList<>(List.of(included1, included2))));
+                new Sections(new LinkedList<>(List.of(included1, included2))), 100);
         LineDto savedLine = lineDao.save(LineDto.from(line));
 
         sectionDao.save(SectionDto.of(included1, savedLine.getId()));
@@ -79,7 +79,7 @@ class JdbcSectionDaoTest {
         Station up = stationDao.save(new Station("합정역"));
         Station down = stationDao.save(new Station("홍대입구역"));
         Section section = new Section(up, down, 1);
-        Line line = new Line("2호선", "green", new Sections(section));
+        Line line = new Line("2호선", "green", new Sections(section), 100);
         LineDto savedId = lineDao.save(LineDto.from(line));
 
         SectionDto savedSection = sectionDao.save(SectionDto.of(section, savedId.getId()));

@@ -8,30 +8,27 @@ public class Line {
     private Long id;
     private String name;
     private String color;
+    private ExtraFare extraFare;
     private Sections sections;
 
     private Line() {
     }
 
-    public Line(String name, String color) {
+    public Line(String name, String color, int extraFare) {
         validateNameNotEmpty(name);
         validateColorNotEmpty(color);
         this.name = name;
         this.color = color;
+        this.extraFare = new ExtraFare(extraFare);
     }
 
-    public Line(Long id, String name, String color) {
-        this(name, color);
-        this.id = id;
-    }
-
-    public Line(String name, String color, Sections sections) {
-        this(name, color);
+    public Line(String name, String color, Sections sections, int extraFare) {
+        this(name, color, extraFare);
         this.sections = sections;
     }
 
-    public Line(Long id, String name, String color, Sections sections) {
-        this(name, color, sections);
+    public Line(Long id, String name, String color, Sections sections, int extraFare) {
+        this(name, color, sections, extraFare);
         this.id = id;
     }
 
@@ -82,6 +79,10 @@ public class Line {
         return color;
     }
 
+    public int getExtraFare() {
+        return extraFare.getExtraFare();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -92,11 +93,48 @@ public class Line {
         }
         Line line = (Line) o;
         return Objects.equals(name, line.name) && Objects.equals(color, line.color)
-                && Objects.equals(sections, line.sections);
+                && Objects.equals(sections, line.sections) && Objects.equals(extraFare, line.extraFare);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, color, sections);
+        return Objects.hash(name, color, sections, extraFare);
+    }
+
+    private static class ExtraFare {
+
+        private int extraFare;
+
+        public ExtraFare(int extraFare) {
+            validateNotUnderZero(extraFare);
+            this.extraFare = extraFare;
+        }
+
+        private void validateNotUnderZero(int extraFare) {
+            if (extraFare < 0) {
+                throw new IllegalArgumentException("추가 요금은 음수가 될 수 없습니다.");
+            }
+        }
+
+        public int getExtraFare() {
+            return extraFare;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            ExtraFare extraFare1 = (ExtraFare) o;
+            return extraFare == extraFare1.extraFare;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(extraFare);
+        }
     }
 }

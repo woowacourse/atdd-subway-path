@@ -27,20 +27,21 @@ public class JdbcLineDaoTest {
     @DisplayName("노선을 저장한다")
     @Test
     void 노선_저장() {
-        Line line = new Line("2호선", "bg-green-600");
+        Line line = new Line("2호선", "bg-green-600", 100);
 
         LineDto result = lineDao.save(LineDto.from(line));
 
         assertAll(
                 () -> assertThat(result.getName()).isEqualTo(line.getName()),
-                () -> assertThat(result.getColor()).isEqualTo(line.getColor())
+                () -> assertThat(result.getColor()).isEqualTo(line.getColor()),
+                () -> assertThat(result.getExtraFare()).isEqualTo(line.getExtraFare())
         );
     }
 
     @DisplayName("중복된 노선을 저장할 경우 예외가 발생한다.")
     @Test
     void 중복된_노선_예외발생() {
-        Line line = new Line("2호선", "bg-green-600");
+        Line line = new Line("2호선", "bg-green-600", 100);
 
         lineDao.save(LineDto.from(line));
 
@@ -58,14 +59,15 @@ public class JdbcLineDaoTest {
     @DisplayName("노선을 수정한다.")
     @Test
     void 노선_수정() {
-        Line line = new Line("2호선", "bg-green-600");
+        Line line = new Line("2호선", "bg-green-600", 100);
         LineDto saved = lineDao.save(LineDto.from(line));
 
-        LineDto updated = lineDao.update(new LineDto(saved.getId(), "2호선", "bg-yellow-600"));
+        LineDto updated = lineDao.update(new LineDto(saved.getId(), "2호선", "bg-yellow-600", 200));
 
         assertAll(
                 () -> assertThat(updated.getName()).isEqualTo("2호선"),
-                () -> assertThat(updated.getColor()).isEqualTo("bg-yellow-600")
+                () -> assertThat(updated.getColor()).isEqualTo("bg-yellow-600"),
+                () -> assertThat(updated.getExtraFare()).isEqualTo(200)
         );
     }
 

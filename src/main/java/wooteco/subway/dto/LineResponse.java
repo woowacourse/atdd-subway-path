@@ -4,35 +4,30 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Station;
 
 public class LineResponse {
     private Long id;
     private String name;
     private String color;
+    private int extraFare;
     private List<StationResponse> stations;
 
     private LineResponse() {
     }
 
-    public LineResponse(Long id, String name, String color, List<StationResponse> stations) {
+    public LineResponse(Long id, String name, String color, int extraFare, List<Station> stations) {
         this.id = id;
         this.name = name;
         this.color = color;
-        this.stations = stations;
-    }
-
-    public LineResponse(Long id, String name, String color) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
-        this.stations = Collections.emptyList();
+        this.extraFare = extraFare;
+        this.stations = stations.stream()
+                .map(StationResponse::from)
+                .collect(Collectors.toList());
     }
 
     public static LineResponse from(Line line) {
-        List<StationResponse> stationResponses = line.getStations().stream()
-                .map(StationResponse::from)
-                .collect(Collectors.toList());
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stationResponses);
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare(), line.getStations());
     }
 
     public Long getId() {
@@ -45,6 +40,10 @@ public class LineResponse {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     public List<StationResponse> getStations() {
