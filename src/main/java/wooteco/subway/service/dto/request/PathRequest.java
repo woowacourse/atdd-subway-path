@@ -1,6 +1,6 @@
 package wooteco.subway.service.dto.request;
 
-import wooteco.subway.domain.Path;
+import wooteco.subway.domain.path.Path;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;

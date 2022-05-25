@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
+import wooteco.subway.domain.fare.Fare;
 
 @DisplayName("Fare 도메인 객체 관련 테스트")
 class FareTest {
