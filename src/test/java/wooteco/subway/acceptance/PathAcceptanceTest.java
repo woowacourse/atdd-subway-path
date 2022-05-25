@@ -3,17 +3,12 @@ package wooteco.subway.acceptance;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import io.restassured.RestAssured;
-import io.restassured.path.json.JsonPath;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-
 import java.util.Map;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
 
+import wooteco.subway.acceptance.fixture.SimpleResponse;
 import wooteco.subway.acceptance.fixture.SimpleRestAssured;
 import wooteco.subway.dto.response.PathResponse;
 
@@ -47,17 +42,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         Map<String, Integer> params = Map.of("source", 1, "target", 3, "age", 25);
 
-        // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .queryParams(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .get("/paths")
-                .then().log().all().extract();
-
-        // then
-        JsonPath jsonPath = response.body().jsonPath();
-        PathResponse pathResponse = jsonPath.getObject(".", PathResponse.class);
+        //when
+        SimpleResponse response = SimpleRestAssured.get("/paths?source=1&target=3&age=25");
+        PathResponse pathResponse = response.toObject(PathResponse.class);
 
         assertAll(
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(0.015),
@@ -93,19 +80,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
                         "distance", "5");
         SimpleRestAssured.post("/lines/1/sections", sectionParams);
 
-        Map<String, Integer> params = Map.of("source", 1, "target", 3, "age", 25);
-
-        // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .queryParams(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .get("/paths")
-                .then().log().all().extract();
-
-        // then
-        JsonPath jsonPath = response.body().jsonPath();
-        PathResponse pathResponse = jsonPath.getObject(".", PathResponse.class);
+        //when
+        SimpleResponse response = SimpleRestAssured.get("/paths?source=1&target=3&age=25");
+        PathResponse pathResponse = response.toObject(PathResponse.class);
 
         assertAll(
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(0.015),
@@ -132,20 +109,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         );
         SimpleRestAssured.post("/lines", lineParams);
 
-        Map<String, Integer> params = Map.of("source", 1, "target", 2, "age", 13);
+        //when
+        SimpleResponse response = SimpleRestAssured.get("/paths?source=1&target=2&age=13");
+        PathResponse pathResponse = response.toObject(PathResponse.class);
 
-        // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .queryParams(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .get("/paths")
-                .then().log().all().extract();
-
-        // then
-        JsonPath jsonPath = response.body().jsonPath();
-        PathResponse pathResponse = jsonPath.getObject(".", PathResponse.class);
-
+        //then
         assertAll(
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(35),
                 () -> assertThat(pathResponse.getFare()).isEqualTo(1120)
