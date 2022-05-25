@@ -9,13 +9,6 @@ public class Fare {
     private static final double FIRST_INTERVAL_UNIT = 5.0;
     private static final double SECOND_INTERVAL_UNIT = 8.0;
 
-    private static final int CHILD_MIN_AGE = 6;
-    private static final int ADOLESCENT_MIN_AGE = 13;
-    private static final int ADULT_MIN_AGE = 19;
-    private static final int BASIC_DISCOUNT_CHARGE = 350;
-    private static final double CHILD_DISCOUNT_RATE = 0.5;
-    private static final double ADOLESCENT_DISCOUNT_RATE = 0.2;
-
     private final int distance;
     private final int extraCharge;
     private final int age;
@@ -27,26 +20,17 @@ public class Fare {
     }
 
     public int calculate() {
+        AgeDiscountPolicy discount = AgeDiscountPolicy.of(age);
         if (distance <= FIRST_ADDITIONAL_INTERVAL) {
-            return discount(BASIC_FARE + extraCharge);
+            return discount.apply(BASIC_FARE + extraCharge);
         }
         if (distance <= SECOND_ADDITIONAL_INTERVAL) {
-            return discount(BASIC_FARE + calculateFareOverFirstDistance(distance) + extraCharge);
+            return discount.apply(BASIC_FARE + calculateFareOverFirstDistance(distance) + extraCharge);
         }
-        return discount(BASIC_FARE
+        return discount.apply(BASIC_FARE
                 + calculateFareOverFirstDistance(SECOND_ADDITIONAL_INTERVAL)
                 + calculateFareOverSecondDistance()
                 + extraCharge);
-    }
-
-    private int discount(int totalCharge) {
-        if (CHILD_MIN_AGE <= age && age < ADOLESCENT_MIN_AGE) {
-            return (int) ((totalCharge - BASIC_DISCOUNT_CHARGE) * (1 - CHILD_DISCOUNT_RATE));
-        }
-        if (age < ADULT_MIN_AGE) {
-            return (int) ((totalCharge - BASIC_DISCOUNT_CHARGE) * (1 - ADOLESCENT_DISCOUNT_RATE));
-        }
-        return totalCharge;
     }
 
     private int calculateFareOverFirstDistance(int distance) {
