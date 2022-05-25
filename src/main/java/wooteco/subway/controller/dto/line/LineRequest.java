@@ -9,19 +9,19 @@ import javax.validation.constraints.PositiveOrZero;
 
 public class LineRequest {
 
-    @NotBlank
-    @Length(max = 255)
+    @NotBlank(message = "[ERROR] 라인 이름은 공백일 수 없습니다.")
+    @Length(max = 255, message = "[ERROR] 라인 이름은 255자 이하입니다.")
     private String name;
-    @NotBlank
-    @Length(max = 20)
+    @NotBlank(message = "[ERROR] 라인 색은 공백일 수 없습니다.")
+    @Length(max = 20, message = "[ERROR] 라인 색은 20자 이하입니다.")
     private String color;
-    @Positive
+    @Positive(message = "[ERROR] 상행선은 양수입니다.")
     private Long upStationId;
-    @Positive
+    @Positive(message = "[ERROR] 하행선은 양수입니다.")
     private Long downStationId;
-    @Positive
+    @Positive(message = "[ERROR] 거리는 양수입니다.")
     private int distance;
-    @PositiveOrZero
+    @PositiveOrZero(message = "[ERROR] 추가요금은 0 이상의 양수입니다.")
     private int extraFare;
 
     public LineRequest() {

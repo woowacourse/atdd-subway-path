@@ -6,11 +6,11 @@ import javax.validation.constraints.Positive;
 
 public class PathRequest {
 
-    @Positive
+    @Positive(message = "[ERROR] 출발 ID는 양수입니다.")
     private Long source;
-    @Positive
+    @Positive(message = "[ERROR] 도착 ID는 양수입니다.")
     private Long target;
-    @Positive
+    @Positive(message = "[ERROR] 나이는 양수입니다.")
     private int age;
 
     private PathRequest() {

@@ -6,11 +6,11 @@ import javax.validation.constraints.Positive;
 
 public class SectionRequest {
 
-    @Positive
+    @Positive(message = "[ERROR] 상행선 ID는 양수입니다.")
     private Long upStationId;
-    @Positive
+    @Positive(message = "[ERROR] 하행선 ID는 양수입니다.")
     private Long downStationId;
-    @Positive
+    @Positive(message = "[ERROR] 거리는 양수입니다.")
     private int distance;
 
     private SectionRequest() {

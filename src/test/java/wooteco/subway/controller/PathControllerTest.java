@@ -65,13 +65,15 @@ class PathControllerTest {
         // then
         assertAll(
                 () -> assertThat(가능한라인응답.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(불가능한라인응답1.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value()),
-                () -> assertThat(불가능한라인응답2.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                () -> assertThat(불가능한라인응답1.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(불가능한라인응답2.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(불가능한라인응답1.body().asString()).isEqualTo("[ERROR] 출발 ID는 양수입니다."),
+                () -> assertThat(불가능한라인응답2.body().asString()).isEqualTo("[ERROR] 도착 ID는 양수입니다.")
         );
     }
 
     @Test
-    @DisplayName("경로 생성의 request의 distance는 양수값이다.")
+    @DisplayName("경로 생성의 request의 나이는 양수값이다.")
     void checkPositiveDistance() {
         //given
         PathRequest 가능한라인 = new PathRequest(1L, 2L, 15);
@@ -82,7 +84,8 @@ class PathControllerTest {
         // then
         assertAll(
                 () -> assertThat(가능한라인응답.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(불가능한라인응답.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                () -> assertThat(불가능한라인응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(불가능한라인응답.body().asString()).isEqualTo("[ERROR] 나이는 양수입니다.")
         );
     }
 }

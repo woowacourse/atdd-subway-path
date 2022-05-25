@@ -63,7 +63,22 @@ class StationControllerTest {
         // then
         assertAll(
                 () -> assertThat(가능한라인응답.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-                () -> assertThat(불가능한라인응답.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                () -> assertThat(불가능한라인응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(불가능한라인응답.body().asString()).isEqualTo("[ERROR] 역 이름은 255자 이하입니다.")
+        );
+    }
+
+    @Test
+    @DisplayName("경로 생성의 request의 name은 공백일 수 없다.")
+    void checkNotBlank() {
+        //given
+        StationRequest 불가능한역 = new StationRequest(" ");
+        //when
+        ExtractableResponse<Response> 불가능한라인응답 = createPostStationResponse(불가능한역);
+        // then
+        assertAll(
+                () -> assertThat(불가능한라인응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(불가능한라인응답.body().asString()).isEqualTo("[ERROR] 역 이름은 공백일 수 없습니다.")
         );
     }
 }

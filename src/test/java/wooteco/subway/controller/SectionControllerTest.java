@@ -54,21 +54,27 @@ class SectionControllerTest {
 
 
     @Test
-    @DisplayName("구간 생성의 request의 stationId는 양수값이다.")
+    @DisplayName("구간 생성의 request의 stationId, 거리는 양수값이다.")
     void checkPositiveId() {
         //given
-        SectionRequest 가능한구간 = new SectionRequest(2L, 3L, 10);
         SectionRequest 불가능한구간1 = new SectionRequest(0L, 3L, 10);
         SectionRequest 불가능한구간2 = new SectionRequest(2L, 0L, 10);
+        SectionRequest 불가능한구간3 = new SectionRequest(2L, 3L, 0);
+        SectionRequest 가능한구간 = new SectionRequest(2L, 3L, 10);
         //when
         ExtractableResponse<Response> 가능한라인응답 = createPostSectionResponse(1L, 가능한구간);
         ExtractableResponse<Response> 불가능한라인응답1 = createPostSectionResponse(1L, 불가능한구간1);
         ExtractableResponse<Response> 불가능한라인응답2 = createPostSectionResponse(1L, 불가능한구간2);
+        ExtractableResponse<Response> 불가능한라인응답3 = createPostSectionResponse(1L, 불가능한구간3);
         // then
         assertAll(
                 () -> assertThat(가능한라인응답.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(불가능한라인응답1.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value()),
-                () -> assertThat(불가능한라인응답2.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                () -> assertThat(불가능한라인응답1.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(불가능한라인응답2.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(불가능한라인응답3.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(불가능한라인응답1.body().asString()).isEqualTo("[ERROR] 상행선 ID는 양수입니다."),
+                () -> assertThat(불가능한라인응답2.body().asString()).isEqualTo("[ERROR] 하행선 ID는 양수입니다."),
+                () -> assertThat(불가능한라인응답3.body().asString()).isEqualTo("[ERROR] 거리는 양수입니다.")
         );
     }
 }

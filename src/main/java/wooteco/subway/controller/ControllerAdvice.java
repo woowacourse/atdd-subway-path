@@ -1,11 +1,14 @@
 package wooteco.subway.controller;
 
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class ControllerAdvice {
@@ -22,6 +25,18 @@ public class ControllerAdvice {
     public ResponseEntity<String> handleNoSuchException(RuntimeException e) {
         return new ResponseEntity<>(
                 e.getMessage(),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<String> MethodArgumentNotValidException(BindException e) {
+        return new ResponseEntity<>(
+                e.getBindingResult()
+                        .getAllErrors()
+                        .stream()
+                        .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                        .collect(Collectors.joining("")),
                 HttpStatus.BAD_REQUEST
         );
     }

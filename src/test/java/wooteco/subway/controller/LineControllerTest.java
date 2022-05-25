@@ -53,34 +53,44 @@ class LineControllerTest {
     }
 
     @Test
-    @DisplayName("라인 생성의 request의 name은 255자 까지 가능하다.")
+    @DisplayName("라인 생성의 request의 name은 255자 까지이며 공백이 불가능하다.")
     void checkNameLine() {
         //given
         LineRequest 가능한라인 = new LineRequest("c".repeat(255), "color1", 1L, 2L, 10);
-        LineRequest 불가능한라인 = new LineRequest("c".repeat(256), "color2", 1L, 2L, 10);
+        LineRequest 불가능한라인1 = new LineRequest("c".repeat(256), "color2", 1L, 2L, 10);
+        LineRequest 불가능한라인2 = new LineRequest(" ", "color2", 1L, 2L, 10);
         //when
         ExtractableResponse<Response> 가능한라인응답 = createPostLineResponse(가능한라인);
-        ExtractableResponse<Response> 불가능한라인응답 = createPostLineResponse(불가능한라인);
+        ExtractableResponse<Response> 불가능한라인응답1 = createPostLineResponse(불가능한라인1);
+        ExtractableResponse<Response> 불가능한라인응답2 = createPostLineResponse(불가능한라인2);
         // then
         assertAll(
                 () -> assertThat(가능한라인응답.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-                () -> assertThat(불가능한라인응답.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                () -> assertThat(불가능한라인응답1.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(불가능한라인응답1.body().asString()).isEqualTo("[ERROR] 라인 이름은 255자 이하입니다."),
+                () -> assertThat(불가능한라인응답2.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(불가능한라인응답2.body().asString()).isEqualTo("[ERROR] 라인 이름은 공백일 수 없습니다.")
         );
     }
 
     @Test
-    @DisplayName("라인 생성의 request의 color은 20자 까지 가능하다.")
+    @DisplayName("라인 생성의 request의 color은 20자 까지가능하며, 공백은 불가능하다.")
     void checkColorLine() {
         //given
         LineRequest 가능한라인 = new LineRequest("name1", "c".repeat(20), 1L, 2L, 10);
-        LineRequest 불가능한라인 = new LineRequest("name2", "c".repeat(21), 1L, 2L, 10);
+        LineRequest 불가능한라인1 = new LineRequest("name2", "c".repeat(21), 1L, 2L, 10);
+        LineRequest 불가능한라인2 = new LineRequest("name2", " ", 1L, 2L, 10);
         //when
         ExtractableResponse<Response> 가능한라인응답 = createPostLineResponse(가능한라인);
-        ExtractableResponse<Response> 불가능한라인응답 = createPostLineResponse(불가능한라인);
+        ExtractableResponse<Response> 불가능한라인응답1 = createPostLineResponse(불가능한라인1);
+        ExtractableResponse<Response> 불가능한라인응답2 = createPostLineResponse(불가능한라인2);
         // then
         assertAll(
                 () -> assertThat(가능한라인응답.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-                () -> assertThat(불가능한라인응답.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                () -> assertThat(불가능한라인응답1.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(불가능한라인응답1.body().asString()).isEqualTo("[ERROR] 라인 색은 20자 이하입니다."),
+                () -> assertThat(불가능한라인응답2.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(불가능한라인응답2.body().asString()).isEqualTo("[ERROR] 라인 색은 공백일 수 없습니다.")
         );
     }
 
@@ -101,8 +111,10 @@ class LineControllerTest {
         assertAll(
                 () -> assertThat(가능한라인응답1.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(가능한라인응답2.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-                () -> assertThat(불가능한라인응답1.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value()),
-                () -> assertThat(불가능한라인응답2.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                () -> assertThat(불가능한라인응답1.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(불가능한라인응답2.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(불가능한라인응답1.body().asString()).isEqualTo("[ERROR] 상행선은 양수입니다."),
+                () -> assertThat(불가능한라인응답2.body().asString()).isEqualTo("[ERROR] 하행선은 양수입니다.")
         );
     }
 
@@ -118,7 +130,8 @@ class LineControllerTest {
         // then
         assertAll(
                 () -> assertThat(가능한라인응답.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-                () -> assertThat(불가능한라인응답.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                () -> assertThat(불가능한라인응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(불가능한라인응답.body().asString()).isEqualTo("[ERROR] 거리는 양수입니다.")
         );
     }
 
