@@ -97,4 +97,19 @@ class PathServiceTest extends DBTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("연결되지 않은 구간입니다.");
     }
+
+    @DisplayName("1살 보다 적은 나이로 최단 경로 조회시 예외를 발생시킨다.")
+    @Test
+    void findShortestPath_exception_ageLowerThanOne() {
+        Integer invalidAgeValue = 0;
+        LineCreationServiceRequest secondLineRequest = new LineCreationServiceRequest(
+                "3호선", "orange", station2.getId(), station4.getId(), 4, 300);
+        lineService.save(secondLineRequest);
+        PathServiceRequest pathServiceRequest =
+                new PathServiceRequest(station1.getId(), station4.getId(), invalidAgeValue);
+
+        assertThatThrownBy(() -> pathService.findShortestPath(pathServiceRequest, DijkstraPath::new))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("나이는 1살 보다 어릴 수 없습니다.");
+    }
 }

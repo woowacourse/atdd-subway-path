@@ -7,13 +7,10 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -115,19 +112,22 @@ class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    @DisplayName("유효하지 범위의 값들로 최단 경로를 조회하려하면 badRequest를 반환한다.")
-    @ParameterizedTest
-    @MethodSource("provideInvalidPathResource")
-    void findShortestPath_badRequest_InvalidRangeResource(Long departureId, Long arrivalId, Integer age) {
+    @DisplayName("1보다 작은 나이로 최단 경로를 조회하려하면 badRequest를 반환한다.")
+    @Test
+    void findShortestPath_badRequest_ageLowerThanOne() {
+        //given
+        requestToCreateLine("3호선", "orange", stationId2, stationId4, 2, 500);
+        Integer invalidAge = 0;
+
         // when
         ExtractableResponse<Response> response = requestToFindShortestPath(
-                String.format(uri, departureId, arrivalId, age));
+                String.format(uri, stationId1, stationId4, invalidAge));
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(exceptionResponse.getErrorMessage()).contains("이(가) 유효하지 않습니다.")
+                () -> assertThat(exceptionResponse.getErrorMessage()).isEqualTo("나이는 1살 보다 어릴 수 없습니다.")
         );
     }
 
@@ -157,13 +157,5 @@ class PathAcceptanceTest extends AcceptanceTest {
                 .get(uri)
                 .then().log().all()
                 .extract();
-    }
-
-    private static Stream<Arguments> provideInvalidPathResource() {
-        return Stream.of(
-                Arguments.of(0L, 2L, 15),
-                Arguments.of(1L, 0L, 15),
-                Arguments.of(1L, 2L, 0)
-        );
     }
 }
