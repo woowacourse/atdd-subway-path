@@ -42,8 +42,10 @@ public class LineRepository {
     }
 
     public List<Line> findAll() {
+        List<SectionEntity> allSectionEntities = sectionDao.findAll();
+
         return lineDao.findAll().stream()
-                .map(lineEntity -> toLine(lineEntity, sectionDao.findByLineId(lineEntity.getId())))
+                .map(lineEntity -> toLine(lineEntity, allSectionEntities))
                 .collect(Collectors.toList());
     }
 
@@ -55,7 +57,11 @@ public class LineRepository {
         lineDao.deleteById(id);
     }
 
-    private Line toLine(LineEntity lineEntity, List<SectionEntity> sectionEntities) {
+    private Line toLine(LineEntity lineEntity, List<SectionEntity> allSectionEntities) {
+        List<SectionEntity> sectionEntities = allSectionEntities.stream()
+                .filter(sectionEntity -> sectionEntity.getLineId().equals(lineEntity.getId()))
+                .collect(Collectors.toList());
+
         List<Station> stations = stationDao.findByIdIn(collectStationIds(sectionEntities));
         Sections sections = toSections(sectionEntities, stations);
         return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), lineEntity.getFare(), sections);
