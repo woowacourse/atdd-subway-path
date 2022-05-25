@@ -2,8 +2,8 @@ package wooteco.subway.domain;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import wooteco.subway.domain.strategy.fare.ExtraFareStrategy;
 import wooteco.subway.domain.strategy.discount.DiscountStrategy;
+import wooteco.subway.domain.strategy.fare.ExtraFareStrategy;
 
 public class Fare {
 
