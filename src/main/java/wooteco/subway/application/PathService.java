@@ -39,7 +39,7 @@ public class PathService {
         List<Long> path = pathFinder.findPath(from, to);
         int distance = pathFinder.findDistance(from, to);
         List<Long> lineIds = getLineList(pathFinder, from, to);
-        int fare = getFare(age, distance, lineIds);
+        int fare = calculateAndGetFinalFare(age, distance, lineIds);
         List<Station> stations = stationDao.findByIdIn(path);
 
         return new PathResponse(stations, distance, fare);
@@ -66,7 +66,7 @@ public class PathService {
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    private int getFare(Integer age, int distance, Collection<Long> lineIds) {
+    private int calculateAndGetFinalFare(Integer age, int distance, Collection<Long> lineIds) {
         Lines lines = new Lines(lineDao.findByIdIn(lineIds));
         int maxExtraFare = lines.maxExtraFare();
         return fareCalculator.calculateFare(distance, age) + maxExtraFare;
