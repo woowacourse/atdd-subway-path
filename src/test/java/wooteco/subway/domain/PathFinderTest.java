@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import wooteco.subway.exception.PathNotFoundException;
 
 @SuppressWarnings("NonAsciiCharacters")
-class PathGraphTest {
+class PathFinderTest {
 
     @DisplayName("findShortestPath 메서드는 최단경로를 찾는다")
     @Nested
@@ -31,10 +31,10 @@ class PathGraphTest {
             line2.addSection(section3);
 
             List<Line> lines = List.of(line1, line2);
-            PathGraph pathGraph = new PathGraph(lines);
+            PathFinder pathFinder = PathFinder.from(lines);
             Path expected = new Path(List.of(강남역, 양재역, 양재시민의숲역), List.of(900, 1000), 6);
 
-            assertThat(pathGraph.findShortestPath(강남역, 양재시민의숲역)).isEqualTo(expected);
+            assertThat(pathFinder.findShortestPath(강남역, 양재시민의숲역)).isEqualTo(expected);
         }
 
         @Test
@@ -45,9 +45,9 @@ class PathGraphTest {
             Line line = new Line("1호선", "파란색", 900);
             line.addSection(section);
 
-            PathGraph pathGraph = new PathGraph(List.of(line));
+            PathFinder pathFinder = PathFinder.from(List.of(line));
 
-            assertThatThrownBy(() -> pathGraph.findShortestPath(강남역, 강남역))
+            assertThatThrownBy(() -> pathFinder.findShortestPath(강남역, 강남역))
                 .isInstanceOf(PathNotFoundException.class);
         }
 
@@ -60,9 +60,9 @@ class PathGraphTest {
             Line line = new Line("1호선", "파란색", 900);
             line.addSection(section);
 
-            PathGraph pathGraph = new PathGraph(List.of(line));
+            PathFinder pathFinder = PathFinder.from(List.of(line));
 
-            assertThatThrownBy(() -> pathGraph.findShortestPath(양재역, 양재시민의숲역))
+            assertThatThrownBy(() -> pathFinder.findShortestPath(양재역, 양재시민의숲역))
                 .isInstanceOf(PathNotFoundException.class);
         }
     }

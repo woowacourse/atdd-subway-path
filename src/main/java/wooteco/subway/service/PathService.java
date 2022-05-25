@@ -7,7 +7,7 @@ import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Path;
-import wooteco.subway.domain.PathGraph;
+import wooteco.subway.domain.PathFinder;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.policy.FarePolicies;
 import wooteco.subway.dto.PathResponse;
@@ -26,7 +26,7 @@ public class PathService {
 
     public PathResponse findShortestPath(Long source, Long target, int age) {
         List<Line> lines = lineDao.findAll();
-        PathGraph pathGraph = new PathGraph(lines);
+        PathFinder pathGraph = PathFinder.from(lines);
 
         Station sourceStation = findStationById(source);
         Station targetStation = findStationById(target);
