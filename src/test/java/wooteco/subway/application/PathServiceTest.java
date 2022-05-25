@@ -4,12 +4,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.application.exception.InvalidAgeException;
 import wooteco.subway.application.exception.NotFoundStationException;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
@@ -160,9 +162,17 @@ class PathServiceTest {
         assertThat(pathResponse.getFare()).isEqualTo(700);
     }
 
+    @DisplayName("탐색할 수 없는 경로 조회 시 예외 발생")
     @Test
     void searchUnreachablePath() {
         assertThatThrownBy(() -> pathService.searchPath(강남역.getId(), 서면역.getId(), 21))
             .isInstanceOf(UnreachablePathException.class);
+    }
+
+    @DisplayName("잘못된 나이로 경로 조회 시 예외 발생")
+    @Test
+    void searchWithInvalidAge() {
+        assertThatThrownBy(() -> pathService.searchPath(강남역.getId(), 서면역.getId(), 0))
+            .isInstanceOf(InvalidAgeException.class);
     }
 }

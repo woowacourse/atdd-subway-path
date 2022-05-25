@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.application.exception.InvalidAgeException;
 import wooteco.subway.application.exception.NotFoundStationException;
 import wooteco.subway.domain.FareCalculator;
 import wooteco.subway.domain.Line;
@@ -36,6 +37,10 @@ public class PathService {
     }
 
     public PathResponse searchPath(Long source, Long target, int age) {
+        if (age <= 0) {
+            throw new InvalidAgeException(age);
+        }
+
         Station sourceStation = stationRepository.findById(source)
             .orElseThrow(() -> new NotFoundStationException(source));
         Station targetStation = stationRepository.findById(target)
