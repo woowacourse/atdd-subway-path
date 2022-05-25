@@ -2,6 +2,7 @@ package wooteco.subway.ui;
 
 import java.net.URI;
 import java.util.List;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ import wooteco.subway.dto.AddSectionRequest;
 import wooteco.subway.dto.DeleteSectionRequest;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
+import wooteco.subway.dto.LineUpdateRequest;
 
 @RestController
 @RequestMapping("/lines")
@@ -33,7 +35,7 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLines(@RequestBody LineRequest lineRequest) {
+    public ResponseEntity<LineResponse> createLines(@Valid @RequestBody LineRequest lineRequest) {
         Line line = lineService.save(lineRequest);
         LineResponse response = lineService.getById(line.getId());
         return ResponseEntity.created(URI.create("/lines/" + response.getId())).body(response);
@@ -53,8 +55,8 @@ public class LineController {
 
     @PutMapping("/{id}")
     public ResponseEntity<LineResponse> updateLine(@PathVariable Long id,
-                                                   @RequestBody LineRequest lineRequest) {
-        lineService.update(id, lineRequest);
+                                                   @Valid @RequestBody LineUpdateRequest request) {
+        lineService.update(id, request);
         LineResponse lineResponse = lineService.getById(id);
         return ResponseEntity.ok(lineResponse);
     }
@@ -67,14 +69,14 @@ public class LineController {
 
     @PostMapping("/{id}/sections")
     public ResponseEntity<Void> addSection(@PathVariable Long id,
-                                           @RequestBody AddSectionRequest request) {
+                                           @Valid @RequestBody AddSectionRequest request) {
         sectionService.addSection(id, request);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}/sections")
     public ResponseEntity<Void> deleteSection(@PathVariable Long id,
-                                              @ModelAttribute DeleteSectionRequest request) {
+                                              @Valid @ModelAttribute DeleteSectionRequest request) {
         sectionService.deleteSection(id, request);
         return ResponseEntity.ok().build();
     }

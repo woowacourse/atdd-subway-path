@@ -18,6 +18,7 @@ public class LineDao {
     public Optional<LineResponse> queryById(Long id, StationResponseSorter sorter) {
         String sql =
             "SELECT l.id AS line_id, l.name AS line_name, l.color AS line_color, "
+                + "l.extra_fare AS line_extra_fare, "
                 + "up.id AS up_station_id, up.name AS up_station_name, "
                 + "down.id AS down_station_id, down.name AS down_station_name "
                 + "FROM LINE AS l JOIN SECTION AS sec ON l.id = sec.line_id "
@@ -36,6 +37,7 @@ public class LineDao {
     public List<LineResponse> queryAll(StationResponseSorter sorter) {
         String sql =
             "SELECT l.id AS line_id, l.name AS line_name, l.color AS line_color, "
+                + "l.extra_fare AS line_extra_fare, "
                 + "up.id AS up_station_id, up.name AS up_station_name, "
                 + "down.id AS down_station_id, down.name AS down_station_name "
                 + "FROM LINE AS l JOIN SECTION AS sec ON l.id = sec.line_id "

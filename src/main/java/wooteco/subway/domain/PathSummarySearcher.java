@@ -2,13 +2,13 @@ package wooteco.subway.domain;
 
 import wooteco.subway.domain.exception.UnreachablePathException;
 
-public class PathSearcher {
+public class PathSummarySearcher {
 
-    private final Graph graph;
+    private final SubwayGraph subwayGraph;
     private final FareCalculator fareCalculator;
 
-    public PathSearcher(Graph graph, FareCalculator fareCalculator) {
-        this.graph = graph;
+    public PathSummarySearcher(SubwayGraph subwayGraph, FareCalculator fareCalculator) {
+        this.subwayGraph = subwayGraph;
         this.fareCalculator = fareCalculator;
     }
 
@@ -17,11 +17,11 @@ public class PathSearcher {
             throw new UnreachablePathException(source, target);
         }
 
-        Path path = graph.search(source, target);
+        Path path = subwayGraph.search(source, target);
         if (path.isEmpty()) {
             throw new UnreachablePathException(source, target);
         }
-        int fare = fareCalculator.calculateFare(path.getDistance());
+        int fare = fareCalculator.calculateFare(path);
         return new PathSummary(path, fare);
     }
 }

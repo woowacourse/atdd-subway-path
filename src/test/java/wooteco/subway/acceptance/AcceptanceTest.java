@@ -53,13 +53,14 @@ public class AcceptanceTest {
 
     protected ExtractableResponse<Response> requestCreateLine(String name, String color,
                                                               Long upStationId, Long downStationId,
-                                                              int distance) {
+                                                              int distance, int extraFare) {
         Map<String, String> params = Map.of(
             "name", name,
             "color", color,
             "upStationId", String.valueOf(upStationId),
             "downStationId", String.valueOf(downStationId),
-            "distance", String.valueOf(distance));
+            "distance", String.valueOf(distance),
+            "extraFare", String.valueOf(extraFare));
 
         return RestAssured.given().log().all()
             .body(params)
@@ -82,5 +83,16 @@ public class AcceptanceTest {
             .body(params)
             .when().post("/lines/" + lineId + "/sections")
             .then().extract();
+    }
+
+    protected ExtractableResponse<Response> requestSearchPath(long source, long target, int age) {
+        return RestAssured.given().log().all()
+            .param("source", source)
+            .param("target", target)
+            .param("age", age)
+            .when()
+            .get("/paths")
+            .then().log().all()
+            .extract();
     }
 }

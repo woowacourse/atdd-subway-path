@@ -1,6 +1,7 @@
 package wooteco.subway.repository;
 
 import java.sql.PreparedStatement;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,7 +18,8 @@ public class LineRepository {
         Long newId = rs.getLong("id");
         String name = rs.getString("name");
         String color = rs.getString("color");
-        return new Line(newId, name, color);
+        int extraFare = rs.getInt("extra_fare");
+        return new Line(newId, name, color, extraFare);
     };
 
     private final JdbcTemplate jdbcTemplate;
@@ -31,20 +33,27 @@ public class LineRepository {
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection
-                .prepareStatement("INSERT INTO LINE(name, color) VALUES(?, ?)", new String[]{"id"});
+                .prepareStatement("INSERT INTO LINE(name, color, extra_fare) VALUES(?, ?, ?)",
+                    new String[]{"id"});
             ps.setString(1, line.getName());
             ps.setString(2, line.getColor());
+            ps.setInt(3, line.getExtraFare());
             return ps;
         }, keyHolder);
 
         Long id = keyHolder.getKey().longValue();
-        return new Line(id, line.getName(), line.getColor());
+        return new Line(id, line.getName(), line.getColor(), line.getExtraFare());
+    }
+
+    public List<Line> findAll() {
+        return jdbcTemplate.query("SELECT id, name, color, extra_fare FROM LINE", ROW_MAPPER);
     }
 
     public Optional<Line> findById(Long id) {
         try {
             Line line = jdbcTemplate
-                .queryForObject("SELECT id, name, color FROM LINE WHERE id = ? ", ROW_MAPPER, id);
+                .queryForObject("SELECT id, name, color, extra_fare FROM LINE WHERE id = ?",
+                    ROW_MAPPER, id);
             return Optional.of(line);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -62,8 +71,9 @@ public class LineRepository {
     }
 
     public Line update(Line line) {
-        jdbcTemplate.update("UPDATE LINE SET name = ?, color = ? WHERE id = ?", line.getName(),
-            line.getColor(), line.getId());
+        jdbcTemplate.update("UPDATE LINE SET name = ?, color = ?, extra_fare = ? WHERE id = ?",
+            line.getName(),
+            line.getColor(), line.getExtraFare(), line.getId());
         return line;
     }
 
@@ -74,5 +84,4 @@ public class LineRepository {
     public void deleteAll() {
         jdbcTemplate.update("DELETE FROM LINE");
     }
-
 }

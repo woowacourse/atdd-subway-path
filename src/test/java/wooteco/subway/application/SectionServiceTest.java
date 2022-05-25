@@ -56,7 +56,7 @@ public class SectionServiceTest {
     @DisplayName("존재하지 않는 상행, 하행역으로 구간 추가 시 예외 발생")
     @Test
     void addSectionWithNotFoundUpAndDownStation() {
-        Line line = lineRepository.save(new Line("신분당선", "bg-red-600"));
+        Line line = lineRepository.save(new Line(null, "신분당선", "bg-red-600", 0));
 
         assertThatThrownBy(() -> sectionService
             .addSection(line.getId(), new AddSectionRequest(1L, 2L, 10))
@@ -69,7 +69,7 @@ public class SectionServiceTest {
         Station upStation = stationRepository.save(new Station("강남역"));
         Station downStation = stationRepository.save(new Station("역삼역"));
         Station newStation = stationRepository.save(new Station("선릉역"));
-        Line line = lineRepository.save(new Line("신분당선", "bg-red-600"));
+        Line line = lineRepository.save(new Line(null, "신분당선", "bg-red-600", 0));
         Section section1 = sectionRepository.save(new Section(line.getId(),
             new SectionEdge(upStation.getId(), downStation.getId(), 10)));
 
@@ -86,7 +86,7 @@ public class SectionServiceTest {
         Station upStation = stationRepository.save(new Station("강남역"));
         Station downStation = stationRepository.save(new Station("역삼역"));
         Station newStation = stationRepository.save(new Station("선릉역"));
-        Line line = lineRepository.save(new Line("신분당선", "bg-red-600"));
+        Line line = lineRepository.save(new Line(null, "신분당선", "bg-red-600", 0));
         Section section = sectionRepository.save(new Section(line.getId(),
             new SectionEdge(upStation.getId(), downStation.getId(), 10)));
 
@@ -102,7 +102,7 @@ public class SectionServiceTest {
     void addSectionWithDuplicateStations() {
         Station upStation = stationRepository.save(new Station("강남역"));
         Station downStation = stationRepository.save(new Station("역삼역"));
-        Line line = lineRepository.save(new Line("신분당선", "bg-red-600"));
+        Line line = lineRepository.save(new Line(null, "신분당선", "bg-red-600", 0));
         Section section = sectionRepository.save(new Section(line.getId(),
             new SectionEdge(upStation.getId(), downStation.getId(), 10)));
 
@@ -120,7 +120,7 @@ public class SectionServiceTest {
         Station upStation = stationRepository.save(new Station("강남역"));
         Station downStation = stationRepository.save(new Station("역삼역"));
         Station newStation = stationRepository.save(new Station("선릉역"));
-        Line line = lineRepository.save(new Line("신분당선", "bg-red-600"));
+        Line line = lineRepository.save(new Line(null, "신분당선", "bg-red-600", 0));
         sectionRepository.save(new Section(line.getId(),
             new SectionEdge(upStation.getId(), downStation.getId(), 10)));
 
@@ -141,7 +141,7 @@ public class SectionServiceTest {
         Station upStation = stationRepository.save(new Station("강남역"));
         Station downStation = stationRepository.save(new Station("역삼역"));
         Station newStation = stationRepository.save(new Station("선릉역"));
-        Line line = lineRepository.save(new Line("신분당선", "bg-red-600"));
+        Line line = lineRepository.save(new Line(null, "신분당선", "bg-red-600", 0));
         sectionRepository.save(new Section(line.getId(),
             new SectionEdge(upStation.getId(), downStation.getId(), 10)));
 
@@ -162,7 +162,7 @@ public class SectionServiceTest {
         Station upStation = stationRepository.save(new Station("강남역"));
         Station downStation = stationRepository.save(new Station("역삼역"));
         Station newStation = stationRepository.save(new Station("선릉역"));
-        Line line = lineRepository.save(new Line("신분당선", "bg-red-600"));
+        Line line = lineRepository.save(new Line(null, "신분당선", "bg-red-600", 0));
         sectionRepository.save(new Section(line.getId(),
             new SectionEdge(upStation.getId(), downStation.getId(), 10)));
 
@@ -184,7 +184,7 @@ public class SectionServiceTest {
         Station downStation = stationRepository.save(new Station("역삼역"));
         Station notFoundStation1 = stationRepository.save(new Station("선릉역"));
         Station notFoundStation2 = stationRepository.save(new Station("잠실역"));
-        Line line = lineRepository.save(new Line("신분당선", "bg-red-600"));
+        Line line = lineRepository.save(new Line(null, "신분당선", "bg-red-600", 0));
         sectionRepository.save(new Section(line.getId(),
             new SectionEdge(upStation.getId(), downStation.getId(), 10)));
 
@@ -212,7 +212,7 @@ public class SectionServiceTest {
     @DisplayName("존재하지 않는 역으로 구간 삭제 시 예외 발생")
     @Test
     void deleteSectionWithNotFoundUpAndDownStation() {
-        Line line = lineRepository.save(new Line("신분당선", "bg-red-600"));
+        Line line = lineRepository.save(new Line(null, "신분당선", "bg-red-600", 0));
 
         assertThatThrownBy(
             () -> sectionService.deleteSection(line.getId(), new DeleteSectionRequest(1L))
@@ -225,7 +225,7 @@ public class SectionServiceTest {
         Station upStation = stationRepository.save(new Station("강남역"));
         Station downStation = stationRepository.save(new Station("역삼역"));
         Station notFoundStation = stationRepository.save(new Station("선릉역"));
-        Line line = lineRepository.save(new Line("신분당선", "bg-red-600"));
+        Line line = lineRepository.save(new Line(null, "신분당선", "bg-red-600", 0));
         sectionRepository.save(new Section(line.getId(),
             new SectionEdge(upStation.getId(), downStation.getId(), 10)));
 
@@ -245,7 +245,7 @@ public class SectionServiceTest {
     void deleteOnlyOneSection() {
         Station upStation = stationRepository.save(new Station("강남역"));
         Station downStation = stationRepository.save(new Station("역삼역"));
-        Line line = lineRepository.save(new Line("신분당선", "bg-red-600"));
+        Line line = lineRepository.save(new Line(null, "신분당선", "bg-red-600", 0));
         sectionRepository.save(new Section(line.getId(),
             new SectionEdge(upStation.getId(), downStation.getId(), 10)));
 
@@ -266,7 +266,7 @@ public class SectionServiceTest {
         Station station1 = stationRepository.save(new Station("강남역"));
         Station station2 = stationRepository.save(new Station("역삼역"));
         Station station3 = stationRepository.save(new Station("잠실역"));
-        Line line = lineRepository.save(new Line("신분당선", "bg-red-600"));
+        Line line = lineRepository.save(new Line(null, "신분당선", "bg-red-600", 0));
         sectionRepository.save(new Section(line.getId(),
             new SectionEdge(station1.getId(), station2.getId(), 10)));
         sectionRepository.save(new Section(line.getId(),
@@ -287,7 +287,7 @@ public class SectionServiceTest {
         Station station1 = stationRepository.save(new Station("강남역"));
         Station station2 = stationRepository.save(new Station("역삼역"));
         Station station3 = stationRepository.save(new Station("잠실역"));
-        Line line = lineRepository.save(new Line("신분당선", "bg-red-600"));
+        Line line = lineRepository.save(new Line(null, "신분당선", "bg-red-600", 0));
         sectionRepository.save(new Section(line.getId(),
             new SectionEdge(station1.getId(), station2.getId(), 10)));
         sectionRepository.save(new Section(line.getId(),
@@ -308,7 +308,7 @@ public class SectionServiceTest {
         Station station1 = stationRepository.save(new Station("강남역"));
         Station station2 = stationRepository.save(new Station("역삼역"));
         Station station3 = stationRepository.save(new Station("잠실역"));
-        Line line = lineRepository.save(new Line("신분당선", "bg-red-600"));
+        Line line = lineRepository.save(new Line(null, "신분당선", "bg-red-600", 0));
         sectionRepository.save(new Section(line.getId(),
             new SectionEdge(station1.getId(), station2.getId(), 10)));
         sectionRepository.save(new Section(line.getId(),

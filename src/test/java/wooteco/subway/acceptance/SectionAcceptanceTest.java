@@ -29,7 +29,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     void addSectionWithNotFoundStation() {
         long upStationId = requestCreateStation("강남역").jsonPath().getLong("id");
         long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
-        long lineId = requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10)
+
+        long lineId = requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10, 0)
             .jsonPath().getLong("id");
 
         ExtractableResponse<Response> response = requestAddSection(lineId, upStationId,
@@ -43,7 +44,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     void addSectionToLastUpStation() {
         long upStationId = requestCreateStation("강남역").jsonPath().getLong("id");
         long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
-        long lineId = requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10)
+
+        long lineId = requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10, 0)
             .jsonPath().getLong("id");
         long newStationId = requestCreateStation("선릉역").jsonPath().getLong("id");
 
@@ -58,13 +60,15 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     void addSectionByDuplicateSection() {
         long upStationId = requestCreateStation("강남역").jsonPath().getLong("id");
         long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
-        long lineId = requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10)
+
+        long lineId = requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10, 0)
             .jsonPath().getLong("id");
 
         ExtractableResponse<Response> response = requestAddSection(lineId, downStationId,
             upStationId, 8);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isNotBlank();
     }
 
     @DisplayName("정상적인 구간 추가")
@@ -73,7 +77,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         long upStationId = requestCreateStation("강남역").jsonPath().getLong("id");
         long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
         long newStationId = requestCreateStation("선릉역").jsonPath().getLong("id");
-        long lineId = requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10)
+
+        long lineId = requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10, 0)
             .jsonPath().getLong("id");
 
         ExtractableResponse<Response> response = requestAddSection(lineId, upStationId,
@@ -88,13 +93,15 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         long upStationId = requestCreateStation("강남역").jsonPath().getLong("id");
         long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
         long newStationId = requestCreateStation("선릉역").jsonPath().getLong("id");
-        long lineId = requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10)
+
+        long lineId = requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10, 0)
             .jsonPath().getLong("id");
 
         ExtractableResponse<Response> response = requestAddSection(lineId, upStationId,
             newStationId, 10);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isNotBlank();
     }
 
     @DisplayName("노선에 추가되지 않은 상행, 하행 지하철역을 구간으로 사용 시 실패")
@@ -104,13 +111,15 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
         long notFoundStationId1 = requestCreateStation("선릉역").jsonPath().getLong("id");
         long notFoundStationId2 = requestCreateStation("잠실역").jsonPath().getLong("id");
-        long lineId = requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10)
+
+        long lineId = requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10, 0)
             .jsonPath().getLong("id");
 
         ExtractableResponse<Response> response = requestAddSection(lineId, notFoundStationId1,
             notFoundStationId2, 3);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isNotBlank();
     }
 
     @DisplayName("동일한 상행, 하행 역으로 구간 등록 시 실패")
@@ -119,13 +128,15 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         long upStationId = requestCreateStation("강남역").jsonPath().getLong("id");
         long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
         long newStationId = requestCreateStation("선릉역").jsonPath().getLong("id");
-        long lineId = requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10)
+
+        long lineId = requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10, 0)
             .jsonPath().getLong("id");
 
         ExtractableResponse<Response> response = requestAddSection(lineId, newStationId,
             newStationId, 3);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isNotBlank();
     }
 
     @DisplayName("구간 삭제 시 지하철 노선이 존재하지 않는 경우")
@@ -145,7 +156,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     void deleteSectionWithNotFoundStation() {
         long upStationId = requestCreateStation("강남역").jsonPath().getLong("id");
         long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
-        long lineId = requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10)
+
+        long lineId = requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10, 0)
             .jsonPath().getLong("id");
         long notFoundStationId = Math.max(upStationId, downStationId) + 1;
 
@@ -162,7 +174,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         long upStationId = requestCreateStation("강남역").jsonPath().getLong("id");
         long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
         long notFoundStationId = requestCreateStation("선릉역").jsonPath().getLong("id");
-        long lineId = requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10)
+
+        long lineId = requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10, 0)
             .jsonPath().getLong("id");
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -170,6 +183,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
             .then().extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isNotBlank();
     }
 
     @DisplayName("구간 한 개만 있는 노선에서는 구간 삭제 실패")
@@ -177,7 +191,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     void deleteOnlyOneSection() {
         long upStationId = requestCreateStation("강남역").jsonPath().getLong("id");
         long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
-        long lineId = requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10)
+
+        long lineId = requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10, 0)
             .jsonPath().getLong("id");
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -185,6 +200,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
             .then().extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isNotBlank();
     }
 
     @DisplayName("상행 종점 구간 제거")
@@ -193,7 +209,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         long stationId1 = requestCreateStation("강남역").jsonPath().getLong("id");
         long stationId2 = requestCreateStation("역삼역").jsonPath().getLong("id");
         long stationId3 = requestCreateStation("잠실역").jsonPath().getLong("id");
-        long lineId = requestCreateLine("신분당선", "bg-red-600", stationId1, stationId2, 10)
+
+        long lineId = requestCreateLine("신분당선", "bg-red-600", stationId1, stationId2, 10, 0)
             .jsonPath().getLong("id");
         requestAddSection(lineId, stationId2, stationId3, 5);
 
@@ -210,7 +227,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         long stationId1 = requestCreateStation("강남역").jsonPath().getLong("id");
         long stationId2 = requestCreateStation("역삼역").jsonPath().getLong("id");
         long stationId3 = requestCreateStation("잠실역").jsonPath().getLong("id");
-        long lineId = requestCreateLine("신분당선", "bg-red-600", stationId1, stationId2, 10)
+
+        long lineId = requestCreateLine("신분당선", "bg-red-600", stationId1, stationId2, 10, 0)
             .jsonPath().getLong("id");
         requestAddSection(lineId, stationId2, stationId3, 5);
 
@@ -227,7 +245,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         long stationId1 = requestCreateStation("강남역").jsonPath().getLong("id");
         long stationId2 = requestCreateStation("역삼역").jsonPath().getLong("id");
         long stationId3 = requestCreateStation("잠실역").jsonPath().getLong("id");
-        long lineId = requestCreateLine("신분당선", "bg-red-600", stationId1, stationId2, 10)
+
+        long lineId = requestCreateLine("신분당선", "bg-red-600", stationId1, stationId2, 10, 0)
             .jsonPath().getLong("id");
         requestAddSection(lineId, stationId2, stationId3, 5);
 

@@ -1,5 +1,7 @@
 package wooteco.subway.domain;
 
+import java.util.Map;
+
 public class FareCalculator {
 
     private static final int PRIMARY_BASIC_DISTANCE = 10;
@@ -7,8 +9,20 @@ public class FareCalculator {
     private static final int COUNT_PER_OVER_FARE = 100;
     private static final int BASIC_FARE = 1250;
 
-    public int calculateFare(int distance) {
-        return BASIC_FARE + overDistanceFare(distance);
+    private final Map<Long, Integer> extraFares;
+    private final Passenger passenger;
+
+    public FareCalculator(Map<Long, Integer> extraFares, Passenger passenger) {
+        this.extraFares = extraFares;
+        this.passenger = passenger;
+    }
+
+    public int calculateFare(Path path) {
+        return passenger.calculateFare(BASIC_FARE + extraFare(path));
+    }
+
+    private int extraFare(Path path) {
+        return overDistanceFare(path.getDistance()) + maxExtraLineFare(path);
     }
 
     private int overDistanceFare(int distance) {
@@ -50,5 +64,13 @@ public class FareCalculator {
             count++;
         }
         return COUNT_PER_OVER_FARE * count;
+    }
+
+    private int maxExtraLineFare(Path path) {
+        return path.getSections().stream()
+            .map(Section::getLineId)
+            .mapToInt(extraFares::get)
+            .max()
+            .orElse(0);
     }
 }

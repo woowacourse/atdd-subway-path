@@ -12,6 +12,7 @@ import wooteco.subway.domain.SectionEdge;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
+import wooteco.subway.dto.LineUpdateRequest;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
 
@@ -42,7 +43,8 @@ public class LineService {
 
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line line = lineRepository.save(new Line(request.getName(), request.getColor()));
+        Line line = lineRepository
+            .save(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         SectionEdge edge = new SectionEdge(upStation.getId(), downStation.getId(),
             request.getDistance());
         Section section = new Section(line.getId(), edge);
@@ -56,14 +58,15 @@ public class LineService {
     }
 
     @Transactional
-    public Line update(Long id, LineRequest request) {
+    public Line update(Long id, LineUpdateRequest request) {
         Line line = findById(id);
 
         if (isDuplicateName(line, request.getName())) {
             throw new DuplicateLineNameException(request.getName());
         }
 
-        return lineRepository.update(new Line(id, request.getName(), request.getColor()));
+        return lineRepository
+            .update(new Line(id, request.getName(), request.getColor(), request.getExtraFare()));
     }
 
     private boolean isDuplicateName(Line line, String name) {

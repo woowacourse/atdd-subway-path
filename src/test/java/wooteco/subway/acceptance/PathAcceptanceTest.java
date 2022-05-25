@@ -2,7 +2,6 @@ package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
@@ -15,13 +14,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("역이 없는 경우에 404 에러를 발생시킨다.")
     @Test
     void searchPathByNotFoundStation() {
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .param("source", 1L)
-            .param("target", 2L)
-            .when()
-            .get("/paths")
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = requestSearchPath(1L, 2L, 21);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
@@ -31,47 +24,37 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void searchPathBySourceSameAsTarget() {
         long upStationId = requestCreateStation("강남역").jsonPath().getLong("id");
         long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
-        requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10);
+        requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10, 0);
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .param("source", upStationId)
-            .param("target", upStationId)
-            .when()
-            .get("/paths")
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = requestSearchPath(upStationId, upStationId, 21);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isNotBlank();
     }
 
     @DisplayName("지하철 경로 탐색")
     @Test
     void searchPath() {
-        long station1 = requestCreateStation("강남역").jsonPath().getLong("id");
-        long station2 = requestCreateStation("역삼역").jsonPath().getLong("id");
-        long station3 = requestCreateStation("잠실역").jsonPath().getLong("id");
-        long station4 = requestCreateStation("선릉역").jsonPath().getLong("id");
-        long line1 = requestCreateLine("신분당선", "bg-red-600", station1, station2, 10).jsonPath()
-            .getLong("id");
-        long line2 = requestCreateLine("1호선", "bg-blue-600", station1, station4, 10).jsonPath()
-            .getLong("id");
-        requestAddSection(line1, station2, station3, 10);
-        requestAddSection(line2, station3, station1, 5);
+        long 강남역_id = requestCreateStation("강남역").jsonPath().getLong("id");
+        long 역삼역_id = requestCreateStation("역삼역").jsonPath().getLong("id");
+        long 잠실역_id = requestCreateStation("잠실역").jsonPath().getLong("id");
+        long 선릉역_id = requestCreateStation("선릉역").jsonPath().getLong("id");
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .param("source", station4)
-            .param("target", station2)
-            .when()
-            .get("/paths")
-            .then().log().all()
-            .extract();
+        long 신분당선_id = requestCreateLine("신분당선", "bg-red-600", 강남역_id, 역삼역_id, 10, 0).jsonPath()
+            .getLong("id");
+        long 일호선_id = requestCreateLine("1호선", "bg-blue-600", 강남역_id, 선릉역_id, 10, 0).jsonPath()
+            .getLong("id");
+        requestAddSection(신분당선_id, 역삼역_id, 잠실역_id, 10);
+        requestAddSection(일호선_id, 잠실역_id, 강남역_id, 5);
+
+        ExtractableResponse<Response> response = requestSearchPath(선릉역_id, 역삼역_id, 21);
 
         List<Long> actualStationIds = response.jsonPath().getList("stations.id", Long.class);
         int distance = response.jsonPath().getObject("distance", Integer.class);
         int fare = response.jsonPath().getObject("fare", Integer.class);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(actualStationIds).containsExactly(station4, station1, station2);
+        assertThat(actualStationIds).containsExactly(선릉역_id, 강남역_id, 역삼역_id);
         assertThat(distance).isEqualTo(20);
         assertThat(fare).isEqualTo(1450);
     }
@@ -79,23 +62,82 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("source에서 target으로 가는 경로가 없는 경우 400 에러를 반환한다.")
     @Test
     void searchUnreachablePath() {
-        long station1 = requestCreateStation("강남역").jsonPath().getLong("id");
-        long station2 = requestCreateStation("역삼역").jsonPath().getLong("id");
-        long station3 = requestCreateStation("부산역").jsonPath().getLong("id");
-        long station4 = requestCreateStation("서면역").jsonPath().getLong("id");
+        long 강남역_id = requestCreateStation("강남역").jsonPath().getLong("id");
+        long 역삼역_id = requestCreateStation("역삼역").jsonPath().getLong("id");
+        long 부산역_id = requestCreateStation("부산역").jsonPath().getLong("id");
+        long 서면역_id = requestCreateStation("서면역").jsonPath().getLong("id");
+        requestCreateLine("신분당선", "bg-red-600", 강남역_id, 역삼역_id, 10, 0);
+        requestCreateLine("1호선", "bg-blue-600", 부산역_id, 서면역_id, 10, 0);
 
-        requestCreateLine("신분당선", "bg-red-600", station1, station2, 10);
-        requestCreateLine("1호선", "bg-blue-600", station3, station4, 10);
-
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .param("source", station1)
-            .param("target", station4)
-            .when()
-            .get("/paths")
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = requestSearchPath(강남역_id, 서면역_id, 21);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isNotBlank();
     }
 
+    @DisplayName("추가 요금이 있는 지하철 노선 경로 탐색")
+    @Test
+    void searchPathHasExtraFareLine() {
+        long 강남역_id = requestCreateStation("강남역").jsonPath().getLong("id");
+        long 역삼역_id = requestCreateStation("역삼역").jsonPath().getLong("id");
+        long 잠실역_id = requestCreateStation("잠실역").jsonPath().getLong("id");
+        long 선릉역_id = requestCreateStation("선릉역").jsonPath().getLong("id");
+        long 신분당선_id = requestCreateLine("신분당선", "bg-red-600", 강남역_id, 역삼역_id, 10, 1000).jsonPath()
+            .getLong("id");
+        long 일호선_id = requestCreateLine("1호선", "bg-blue-600", 강남역_id, 선릉역_id, 10, 900).jsonPath()
+            .getLong("id");
+        requestAddSection(신분당선_id, 역삼역_id, 잠실역_id, 10);
+        requestAddSection(일호선_id, 잠실역_id, 강남역_id, 5);
+
+        ExtractableResponse<Response> response = requestSearchPath(선릉역_id, 역삼역_id, 21);
+
+        List<Long> actualStationIds = response.jsonPath().getList("stations.id", Long.class);
+        int distance = response.jsonPath().getObject("distance", Integer.class);
+        int fare = response.jsonPath().getObject("fare", Integer.class);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actualStationIds).containsExactly(선릉역_id, 강남역_id, 역삼역_id);
+        assertThat(distance).isEqualTo(20);
+        assertThat(fare).isEqualTo(2450);
+    }
+
+    @DisplayName("청소년 지하철 경로 탐색")
+    @Test
+    void searchPathByYouth() {
+        long 강남역_id = requestCreateStation("강남역").jsonPath().getLong("id");
+        long 역삼역_id = requestCreateStation("역삼역").jsonPath().getLong("id");
+        long 잠실역_id = requestCreateStation("잠실역").jsonPath().getLong("id");
+        long 선릉역_id = requestCreateStation("선릉역").jsonPath().getLong("id");
+
+        long 신분당선_id = requestCreateLine("신분당선", "bg-red-600", 강남역_id, 역삼역_id, 10, 0).jsonPath()
+            .getLong("id");
+        long 일호선_id = requestCreateLine("1호선", "bg-blue-600", 강남역_id, 선릉역_id, 10, 0).jsonPath()
+            .getLong("id");
+        requestAddSection(신분당선_id, 역삼역_id, 잠실역_id, 10);
+        requestAddSection(일호선_id, 잠실역_id, 강남역_id, 5);
+
+        ExtractableResponse<Response> response = requestSearchPath(선릉역_id, 역삼역_id, 15);
+
+        List<Long> actualStationIds = response.jsonPath().getList("stations.id", Long.class);
+        int distance = response.jsonPath().getObject("distance", Integer.class);
+        int fare = response.jsonPath().getObject("fare", Integer.class);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actualStationIds).containsExactly(선릉역_id, 강남역_id, 역삼역_id);
+        assertThat(distance).isEqualTo(20);
+        assertThat(fare).isEqualTo(880);
+    }
+
+    @DisplayName("잘못된 나이로 경로 탐색 요청 시 400 반환")
+    @Test
+    void searchPathInvalidAge() {
+        long 강남역_id = requestCreateStation("강남역").jsonPath().getLong("id");
+        long 역삼역_id = requestCreateStation("역삼역").jsonPath().getLong("id");
+        requestCreateLine("신분당선", "bg-red-600", 강남역_id, 역삼역_id, 10, 0);
+
+        ExtractableResponse<Response> response = requestSearchPath(강남역_id, 역삼역_id, 0);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.body().jsonPath().getString("message")).isNotBlank();
+    }
 }

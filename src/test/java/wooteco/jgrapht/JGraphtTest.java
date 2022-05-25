@@ -45,7 +45,9 @@ public class JGraphtTest {
         assertThat(path.getPathWeight("v1", "v4")).isNotFinite();
     }
 
-    private static class CustomEdge extends DefaultWeightedEdge { }
+    private static class CustomEdge extends DefaultWeightedEdge {
+
+    }
 
     @Test
     void usingCustomEdge() {
