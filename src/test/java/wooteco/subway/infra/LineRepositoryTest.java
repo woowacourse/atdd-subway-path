@@ -19,6 +19,7 @@ import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.vo.LineColor;
+import wooteco.subway.domain.vo.LineId;
 import wooteco.subway.domain.vo.LineName;
 import wooteco.subway.infra.dao.LineDao;
 import wooteco.subway.infra.dao.SectionDao;
@@ -92,7 +93,7 @@ class LineRepositoryTest {
         final Line saved = lineRepository.save(line);
 
         // when
-        final Line newLine = new Line(saved.getId(), LineName.from("3호선"), LineColor.from("bg-700-blue"));
+        final Line newLine = new Line(LineId.from(saved.getId()), LineName.from("3호선"), LineColor.from("bg-700-blue"));
         final long affectedRow = lineRepository.update(newLine);
         final Optional<Line> updated = lineRepository.findById(saved.getId());
 

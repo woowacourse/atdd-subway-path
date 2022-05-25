@@ -1,17 +1,20 @@
 package wooteco.subway.domain;
 
 import java.util.Objects;
+import wooteco.subway.domain.vo.LineId;
 import wooteco.subway.domain.vo.SectionDistance;
+import wooteco.subway.domain.vo.SectionId;
+import wooteco.subway.domain.vo.StationId;
 
 public class Section implements Comparable<Section> {
 
-    private final Long id;
-    private final Long lineId;
+    private final SectionId id;
+    private final LineId lineId;
     private Station upStation;
     private Station downStation;
     private SectionDistance distance;
 
-    public Section(Long id, Long lineId, Station upStation, Station downStation, SectionDistance distance) {
+    public Section(SectionId id, LineId lineId, Station upStation, Station downStation, SectionDistance distance) {
         this.id = id;
         this.lineId = lineId;
         this.upStation = upStation;
@@ -19,7 +22,7 @@ public class Section implements Comparable<Section> {
         this.distance = distance;
     }
 
-    public Section(Long lineId, Station upStation, Station downStation, SectionDistance distance) {
+    public Section(LineId lineId, Station upStation, Station downStation, SectionDistance distance) {
         this(null, lineId, upStation, downStation, distance);
     }
 
@@ -27,7 +30,7 @@ public class Section implements Comparable<Section> {
         this(null, null, upStation, downStation, distance);
     }
 
-    public boolean isSameLineId(Long lineId) {
+    public boolean isSameLineId(LineId lineId) {
         return Objects.equals(this.lineId, lineId);
     }
 
@@ -55,7 +58,7 @@ public class Section implements Comparable<Section> {
         return Objects.equals(this.downStation, other.upStation);
     }
 
-    public boolean hasStationById(Long stationId) {
+    public boolean hasStationById(StationId stationId) {
         return upStation.isSameId(stationId) || downStation.isSameId(stationId);
     }
 
@@ -70,11 +73,11 @@ public class Section implements Comparable<Section> {
     }
 
     public Long getId() {
-        return id;
+        return id.getId();
     }
 
     public Long getLineId() {
-        return lineId;
+        return lineId.getId();
     }
 
     public Station getUpStation() {

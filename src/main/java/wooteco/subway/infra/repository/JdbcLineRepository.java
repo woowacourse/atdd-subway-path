@@ -9,6 +9,7 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.vo.LineColor;
 import wooteco.subway.domain.vo.LineExtraFare;
+import wooteco.subway.domain.vo.LineId;
 import wooteco.subway.domain.vo.LineName;
 import wooteco.subway.exception.SubwayUnknownException;
 import wooteco.subway.exception.SubwayValidationException;
@@ -37,8 +38,13 @@ public class JdbcLineRepository implements LineRepository {
         final Section section = sections.get(0);
         sectionRepository.save(savedLine.getId(), section);
 
-        return new Line(savedLine.getId(), LineName.from(savedLine.getName()), LineColor.from(savedLine.getColor()),
-                sectionInput);
+        return new Line
+                (
+                        LineId.from(savedLine.getId()),
+                        LineName.from(savedLine.getName()),
+                        LineColor.from(savedLine.getColor()),
+                        sectionInput
+                );
     }
 
     @Override
@@ -56,7 +62,7 @@ public class JdbcLineRepository implements LineRepository {
                 .stream()
                 .map(entity -> new Line
                         (
-                                entity.getId(),
+                                LineId.from(entity.getId()),
                                 LineName.from(entity.getName()),
                                 LineColor.from(entity.getColor()),
                                 LineExtraFare.from(entity.getExtraFare())
@@ -66,7 +72,7 @@ public class JdbcLineRepository implements LineRepository {
 
     private Line findLineBySections(List<Line> lines, Sections oneSections) {
         return lines.stream()
-                .filter(line -> oneSections.isSameLineId(line.getId()))
+                .filter(line -> oneSections.isSameLineId(LineId.from(line.getId())))
                 .findAny()
                 .orElseThrow(() -> new SubwayUnknownException("구간에 해당하는 노선을 찾지 못헀습니다"));
     }
@@ -83,7 +89,12 @@ public class JdbcLineRepository implements LineRepository {
     }
 
     private Line toLine(LineEntity entity) {
-        return new Line(entity.getId(), LineName.from(entity.getName()), LineColor.from(entity.getColor()));
+        return new Line
+                (
+                        LineId.from(entity.getId()),
+                        LineName.from(entity.getName()),
+                        LineColor.from(entity.getColor())
+                );
     }
 
     @Override

@@ -9,6 +9,7 @@ import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.vo.LineColor;
 import wooteco.subway.domain.vo.LineExtraFare;
+import wooteco.subway.domain.vo.LineId;
 import wooteco.subway.domain.vo.LineName;
 import wooteco.subway.domain.vo.SectionDistance;
 import wooteco.subway.exception.notfound.NotFoundLineException;
@@ -85,7 +86,7 @@ public class SpringLineService implements LineService {
 
     @Override
     public void update(Long id, LineServiceRequest lineServiceRequest) {
-        final Line updateRequest = new Line(id, LineName.from(lineServiceRequest.getName()),
+        final Line updateRequest = new Line(LineId.from(id), LineName.from(lineServiceRequest.getName()),
                 LineColor.from(lineServiceRequest.getColor()));
         validate(id, lineServiceRequest);
 

@@ -6,17 +6,18 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import wooteco.subway.domain.vo.LineColor;
 import wooteco.subway.domain.vo.LineExtraFare;
+import wooteco.subway.domain.vo.LineId;
 import wooteco.subway.domain.vo.LineName;
 
 public class Line {
 
-    private final Long id;
+    private final LineId id;
     private final LineName name;
     private final LineColor color;
     private final LineExtraFare extraFare;
     private final Sections sections;
 
-    public Line(Long id, LineName name, LineColor color, LineExtraFare extraFare, Sections sections) {
+    public Line(LineId id, LineName name, LineColor color, LineExtraFare extraFare, Sections sections) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -24,15 +25,15 @@ public class Line {
         this.sections = sections;
     }
 
-    public Line(Long id, LineName name, LineColor color, Sections sections) {
+    public Line(LineId id, LineName name, LineColor color, Sections sections) {
         this(id, name, color, LineExtraFare.from(0L), sections);
     }
 
-    public Line(Long id, LineName name, LineColor color, LineExtraFare extraFare) {
+    public Line(LineId id, LineName name, LineColor color, LineExtraFare extraFare) {
         this(id, name, color, extraFare, null);
     }
 
-    public Line(Long id, LineName name, LineColor color) {
+    public Line(LineId id, LineName name, LineColor color) {
         this(id, name, color, LineExtraFare.from(0L), null);
     }
 
@@ -45,7 +46,7 @@ public class Line {
     }
 
     public static Line of(Line line, Sections sections) {
-        return new Line(line.getId(), LineName.from(line.getName()), LineColor.from(line.getColor()),
+        return new Line(LineId.from(line.getId()), LineName.from(line.getName()), LineColor.from(line.getColor()),
                 LineExtraFare.from(line.getExtraFare()), sections);
     }
 
@@ -62,7 +63,7 @@ public class Line {
     }
 
     public Long getId() {
-        return id;
+        return id.getId();
     }
 
     public String getName() {

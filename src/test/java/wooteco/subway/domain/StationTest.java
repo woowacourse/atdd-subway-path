@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import wooteco.subway.domain.vo.StationId;
 import wooteco.subway.domain.vo.StationName;
 
 class StationTest {
@@ -27,10 +28,10 @@ class StationTest {
     @Test
     void isSameId() {
         // given
-        final Station station = new Station(1L, StationName.from("삼성역"));
+        final Station station = new Station(StationId.from(1L), StationName.from("삼성역"));
 
         // when
-        final boolean actual = station.isSameId(1L);
+        final boolean actual = station.isSameId(StationId.from(1L));
 
         // then
         assertThat(actual).isTrue();
@@ -41,7 +42,7 @@ class StationTest {
     void getId() {
         // given
         final long expected = 1L;
-        final Station station = new Station(expected, StationName.from("삼성역"));
+        final Station station = new Station(StationId.from(expected), StationName.from("삼성역"));
 
         // when
         final Long actual = station.getId();
@@ -54,7 +55,7 @@ class StationTest {
     @Test
     void getName() {
         final String expected = "삼성역";
-        final Station station = new Station(1L, StationName.from(expected));
+        final Station station = new Station(StationId.from(1L), StationName.from(expected));
 
         // when
         final String actual = station.getName();
@@ -67,8 +68,8 @@ class StationTest {
     @Test
     void testEquals() {
         // given
-        final Station station = new Station(1L, StationName.from("삼성역"));
-        final Station stationWithSameName = new Station(2L, StationName.from("삼성역"));
+        final Station station = new Station(StationId.from(1L), StationName.from("삼성역"));
+        final Station stationWithSameName = new Station(StationId.from(2L), StationName.from("삼성역"));
 
         // when
         final boolean actual = station.equals(stationWithSameName);
@@ -81,8 +82,8 @@ class StationTest {
     @Test
     void testHashCode() {
         // given
-        final Station station = new Station(1L, StationName.from("삼성역"));
-        final Station stationWithSameName = new Station(2L, StationName.from("삼성역"));
+        final Station station = new Station(StationId.from(1L), StationName.from("삼성역"));
+        final Station stationWithSameName = new Station(StationId.from(2L), StationName.from("삼성역"));
 
         // when
         final int actual = Stream.of(station, stationWithSameName)

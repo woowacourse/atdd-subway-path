@@ -18,7 +18,6 @@ import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.TestConstructor.AutowireMode;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.domain.Line;
-import wooteco.subway.exception.notfound.NotFoundLineException;
 import wooteco.subway.exception.validation.LineColorDuplicateException;
 import wooteco.subway.exception.validation.LineNameDuplicateException;
 import wooteco.subway.infra.dao.LineDao;
@@ -180,8 +179,8 @@ class SpringLineServiceTest {
 
             //  when & then
             assertThatThrownBy(() -> lineService.update(notExistId, updateReuqest))
-                    .isInstanceOf(NotFoundLineException.class)
-                    .hasMessage("요청한 노선이 존재하지 않습니다 : " + notExistId);
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("노선 아이디는 1 이상이어야 합니다 : " + notExistId);
         }
 
         @Test
