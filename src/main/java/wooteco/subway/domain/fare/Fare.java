@@ -1,24 +1,27 @@
 package wooteco.subway.domain.fare;
 
-import wooteco.subway.domain.fare.farestrategy.FareStrategy;
+import wooteco.subway.domain.fare.farestrategy.ChargeStrategy;
+import wooteco.subway.domain.fare.farestrategy.DiscountStrategy;
 
 public class Fare {
 
-    private final Long feeAmount;
+    private final Long fareAmount;
 
-    public Fare(Long feeAmount) {
-        this.feeAmount = feeAmount;
+    public Fare(Long fareAmount) {
+        this.fareAmount = fareAmount;
     }
 
-    public static Fare calculateOf(FareStrategy... strategies) {
-        long fareAmount = 0;
-        for (FareStrategy strategy : strategies) {
-            fareAmount = strategy.calculate(fareAmount);
-        }
+    public Fare chargeOf(ChargeStrategy chargeStrategy) {
+        long fareAmount = chargeStrategy.calculate(this.fareAmount);
+        return new Fare(fareAmount);
+    }
+
+    public Fare discountOf(DiscountStrategy discountStrategy) {
+        long fareAmount = discountStrategy.calculate(this.fareAmount);
         return new Fare(fareAmount);
     }
 
     public Long getValue() {
-        return feeAmount;
+        return fareAmount;
     }
 }

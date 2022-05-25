@@ -19,6 +19,7 @@ public enum ExceptionMessage {
     SECTIONS_ROTATE("구간이 순환되고 있습니다."),
     UNDER_MIN_DISTANCE("최소 거리보다 적습니다."),
     INVALID_AGE("잘못된 연령대 입니다."),
+    INVALID_DISTANCE("잘못된 거리입니다."),
 
     NOT_FOUND_STATION("해당 역을 찾지 못했습니다."),
     NOT_FOUND_LINE("해당 노선을 찾지 못했습니다."),

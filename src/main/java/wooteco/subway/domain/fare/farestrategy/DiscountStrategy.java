@@ -1,6 +1,5 @@
 package wooteco.subway.domain.fare.farestrategy;
 
-public interface FareStrategy {
-
+public interface DiscountStrategy {
     long calculate(long fare);
 }

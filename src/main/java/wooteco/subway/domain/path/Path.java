@@ -3,8 +3,9 @@ package wooteco.subway.domain.path;
 import java.util.List;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.fare.Fare;
-import wooteco.subway.domain.fare.farestrategy.AgeStrategy;
-import wooteco.subway.domain.fare.farestrategy.DistanceStrategy;
+import wooteco.subway.domain.fare.farestrategy.charge.DistanceStandard;
+import wooteco.subway.domain.fare.farestrategy.discount.AgeStandard;
+import wooteco.subway.domain.fare.farestrategy.charge.DistanceStrategy;
 import wooteco.subway.exception.ExceptionMessage;
 import wooteco.subway.exception.NotFoundException;
 
@@ -31,11 +32,10 @@ public class Path {
     }
 
     public Fare calculateFare(int age) {
-        return Fare.calculateOf(
-                new DistanceStrategy(distance),
-                x -> x + extraFare,
-                new AgeStrategy(age)
-        );
+        return new Fare(1250L)
+                .chargeOf(DistanceStandard.findStrategy(distance))
+                .chargeOf(x -> x + extraFare)
+                .discountOf(AgeStandard.findStrategy(age));
     }
 
     public List<Station> getStations() {
