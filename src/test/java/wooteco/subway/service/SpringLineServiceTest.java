@@ -33,7 +33,7 @@ import wooteco.subway.infra.repository.StationRepository;
 import wooteco.subway.service.dto.request.LineServiceRequest;
 
 @DisplayName("노선 서비스")
-@Sql("ㅌ/truncate.sql")
+@Sql("/truncate.sql")
 @TestConstructor(autowireMode = AutowireMode.ALL)
 @JdbcTest
 class SpringLineServiceTest {
