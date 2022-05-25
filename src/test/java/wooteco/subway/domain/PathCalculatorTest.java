@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.factory.SectionFactory;
 import wooteco.subway.domain.factory.StationFactory;
+import wooteco.subway.infrastructure.PathCalculatorDijkstra;
 
 @DisplayName("PathCalculator 는")
 class PathCalculatorTest {
@@ -26,7 +27,7 @@ class PathCalculatorTest {
     void setUp() {
         final Sections sections = new Sections(List.of(SectionFactory.from(AB3), SectionFactory.from(BC3)));
         final Line line = new Line(1L, "신분당선", "bg-red-600", sections, 1L, 0);
-        pathCalculator = new PathCalculator(List.of(line));
+        pathCalculator = new PathCalculatorDijkstra(List.of(line));
     }
 
     @DisplayName("지하철 최단 경로 목록을 조회한다.")
