@@ -14,16 +14,16 @@ public class FareCalculator {
     }
     private Integer findFareByAge(Integer fare, int age) {
         return Arrays.stream(AgeFarePolicy.values())
-                .filter(it -> it.condition().test(age))
-                .map(it -> it.calculator().applyAsInt(fare))
+                .filter(AgeFarePolicy -> AgeFarePolicy.condition().test(age))
+                .map(AgeFarePolicy -> AgeFarePolicy.calculator().applyAsInt(fare))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("연령을 잘못 입력하였습니다."));
     }
 
     private Integer findFareByDistance(int distance) {
         return Arrays.stream(DistanceFarePolicy.values())
-                .filter(it -> it.condition().test(distance))
-                .map(it -> it.calculator().applyAsInt(distance))
+                .filter(distanceFarePolicy -> distanceFarePolicy.condition().test(distance))
+                .map(distanceFarePolicy -> distanceFarePolicy.calculator().applyAsInt(distance))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("거리를 잘못 입력하였습니다."));
     }

@@ -51,7 +51,7 @@ public class DbStationDao implements StationDao {
     @Override
     public List<Station> findByIdIn(Collection<Long> sortedStationIds) {
         String sortedStationsIdsString = sortedStationIds.stream()
-                .map(it -> String.valueOf(it))
+                .map(sortedStationId -> String.valueOf(sortedStationId))
                 .collect(Collectors.joining(", "));
         String selectInClauseQuery = String.format("SELECT id, name FROM STATION WHERE id IN (%s)", sortedStationsIdsString);
 

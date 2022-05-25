@@ -67,7 +67,7 @@ public class DbLineDao implements LineDao {
     @Override
     public List<Line> findByIdIn(Collection<Long> lineIds) {
         String idsString = lineIds.stream()
-                .map(it -> String.valueOf(it))
+                .map(lineId -> String.valueOf(lineId))
                 .collect(Collectors.joining(", "));
         String selectInClauseQuery = String.format("SELECT * FROM LINE WHERE id IN (%s)", idsString);
 

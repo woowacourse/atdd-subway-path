@@ -32,7 +32,7 @@ public class MemoryStationDao implements StationDao {
     @Override
     public List<Station> findByIdIn(Collection<Long> sortedStationIds) {
         LinkedList<Station> stations = this.stations.stream()
-                .filter(it -> sortedStationIds.contains(it.getId()))
+                .filter(sortedStationId -> sortedStationIds.contains(sortedStationId.getId()))
                 .collect(Collectors.toCollection(LinkedList::new));
 
         return sort(sortedStationIds, stations);

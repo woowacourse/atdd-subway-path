@@ -26,7 +26,7 @@ public class MemoryLineDao implements LineDao {
     @Override
     public List<Line> findByIdIn(Collection<Long> lineIds) {
         return this.lines.stream()
-                .filter(it -> lineIds.contains(it.getId()))
+                .filter(line -> lineIds.contains(line.getId()))
                 .collect(Collectors.toList());
     }
 
