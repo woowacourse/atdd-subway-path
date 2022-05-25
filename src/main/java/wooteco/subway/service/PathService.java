@@ -47,10 +47,9 @@ public class PathService {
     }
 
     private List<Long> getStationIds() {
-        List<Long> stationIds = stationService.findStations().stream()
+        return stationService.findStations().stream()
                 .map(StationResponse::getId)
                 .collect(Collectors.toList());
-        return stationIds;
     }
 
     private int makeFare(PathRequestDto pathRequestDto, Path path) {
