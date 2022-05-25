@@ -1,28 +1,41 @@
 package wooteco.subway.domain.fare;
 
-public class Fare {
+import java.util.Arrays;
+import java.util.function.BiFunction;
+import java.util.function.Predicate;
+
+public enum Fare {
+
+    DEFAULT(distance -> distance <= 10, (distance, fare) -> fare),
+    FIRST_RANGE_ADDED_EXTRA(
+            distance -> distance > 10 && distance <= 50,
+            (distance, fare) -> fare + addExtraFare(distance, 5, 10)
+    ),
+    SECOND_RANGE_ADDED_EXTRA(
+            distance -> distance > 50,
+            (distance, fare) ->
+                    fare + addExtraFare(50, 5, 10) + addExtraFare(distance, 8, 50)
+    )
+    ;
 
     private static final double DEFAULT_FARE = 1250;
-    private static final double MAXIMUM_DISTANCE_OF_DEFAULT_FARE = 10;
-    private static final double MINIMUM_DISTANCE_OF_MAXIMUM_FARE = 50;
-    private static final double DISTANCE_UNIT_UNDER_50 = 5;
-    private static final double DISTANCE_UNIT_OVER_50 = 8;
     private static final double ADDITIONAL_AMOUNT = 100;
 
-    private Fare() {
+    private final Predicate<Double> condition;
+    private final BiFunction<Double, Double, Double> calculate;
+
+    Fare(final Predicate<Double> condition, final BiFunction<Double, Double, Double> calculate) {
+        this.condition = condition;
+        this.calculate = calculate;
     }
 
     public static double calculate(final double distance, final int extraFare) {
-        double fare = DEFAULT_FARE + extraFare;
-        if (distance <= MAXIMUM_DISTANCE_OF_DEFAULT_FARE) {
-            return fare;
-        }
-        if (distance <= MINIMUM_DISTANCE_OF_MAXIMUM_FARE) {
-            return fare + addExtraFare(distance, DISTANCE_UNIT_UNDER_50, MAXIMUM_DISTANCE_OF_DEFAULT_FARE);
-        }
-        return fare
-                + addExtraFare(MINIMUM_DISTANCE_OF_MAXIMUM_FARE, DISTANCE_UNIT_UNDER_50, MAXIMUM_DISTANCE_OF_DEFAULT_FARE)
-                + addExtraFare(distance, DISTANCE_UNIT_OVER_50, MINIMUM_DISTANCE_OF_MAXIMUM_FARE);
+        return Arrays.stream(Fare.values())
+                .filter(fare -> fare.condition.test(distance))
+                .map(fare -> fare.calculate.apply(distance, DEFAULT_FARE))
+                .map(fare -> fare + extraFare)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("거리 정보가 올바르지 않습니다."));
     }
 
     private static double addExtraFare(final double distance, final double distanceUnit, final double limit) {
