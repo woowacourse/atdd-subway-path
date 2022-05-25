@@ -12,7 +12,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Station;
 
 @Repository
 public class LineDao {
@@ -21,7 +20,8 @@ public class LineDao {
         return new Line(
                 resultSet.getLong("id"),
                 resultSet.getString("name"),
-                resultSet.getString("color")
+                resultSet.getString("color"),
+                resultSet.getInt("extraFare")
         );
     };
 
@@ -32,13 +32,14 @@ public class LineDao {
     }
 
     public long save(final Line line) {
-        final String sql = "insert into LINE (name, color) values (?, ?)";
+        final String sql = "insert into LINE (name, color, extraFare) values (?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement preparedStatement = connection.prepareStatement(sql, new String[]{"id"});
             preparedStatement.setString(1, line.getName());
             preparedStatement.setString(2, line.getColor());
+            preparedStatement.setInt(3, line.getExtraFare());
             return preparedStatement;
         }, keyHolder);
 
@@ -61,12 +62,12 @@ public class LineDao {
     }
 
     public List<Line> findAll() {
-        final String sql = "select id, name, color from LINE";
+        final String sql = "select id, name, color, extraFare from LINE";
         return jdbcTemplate.query(sql, LINE_ROW_MAPPER);
     }
 
     public Optional<Line> find(final Long id) {
-        final String sql = "select id, name, color from LINE where id = ?";
+        final String sql = "select id, name, color, extraFare from LINE where id = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, LINE_ROW_MAPPER, id));
         } catch (EmptyResultDataAccessException exception) {
@@ -75,8 +76,8 @@ public class LineDao {
     }
 
     public void update(final long id, final Line line) {
-        final String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, line.getName(), line.getColor(), id);
+        final String sql = "update LINE set name = ?, color = ?, extraFare = ? where id = ?";
+        jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getExtraFare(), id);
     }
 
     public void delete(final Long id) {
