@@ -8,6 +8,7 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineExtraFare;
 import wooteco.subway.domain.line.LineMap;
+import wooteco.subway.domain.line.SubwayMap;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
 import wooteco.subway.domain.station.Station;
@@ -20,14 +21,13 @@ public class LineRepository {
     private final LineDao lineDao;
     private final SectionDao sectionDao;
 
-    public LineRepository(LineDao lineDao,
-                          SectionDao sectionDao) {
+    public LineRepository(LineDao lineDao, SectionDao sectionDao) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
     }
 
-    public List<Line> findAllLines() {
-        return lineDao.findAll();
+    public SubwayMap findAllLines() {
+        return SubwayMap.of(lineDao.findAll(), sectionDao.findAll());
     }
 
     public LineMap findExistingLine(Long id) {

@@ -14,6 +14,7 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineExtraFare;
 import wooteco.subway.domain.line.LineMap;
+import wooteco.subway.domain.line.SubwayMap;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
 import wooteco.subway.domain.station.Station;
@@ -42,16 +43,25 @@ class LineRepositoryTest extends DatabaseUsageTest {
     }
 
     @Test
-    void findAllLines_메서드는_모든_노선_정보들을_조회하여_도메인들의_리스트로_반환() {
+    void findAllLines_메서드는_모든_노선_정보들을_조회하여_도메인으로_반환() {
         databaseFixtureUtils.saveLine("노선명1", "색깔1", 1000);
+        databaseFixtureUtils.saveSection(1L, 강남역, 선릉역, 20);
         databaseFixtureUtils.saveLine("노선명2", "색깔2", 0);
+        databaseFixtureUtils.saveSection(2L, 강남역, 잠실역, 10);
         databaseFixtureUtils.saveLine("노선명3", "색깔3", 900);
+        databaseFixtureUtils.saveSection(3L, 강남역, 잠실역, 10);
+        databaseFixtureUtils.saveSection(3L, 잠실역, 선릉역, 10);
 
-        List<Line> actual = repository.findAllLines();
-        List<Line> expected = List.of(
-                new Line(1L, "노선명1", "색깔1", 1000),
-                new Line(2L, "노선명2", "색깔2", 0),
-                new Line(3L, "노선명3", "색깔3", 900));
+        SubwayMap actual = repository.findAllLines();
+        SubwayMap expected = new SubwayMap(List.of(
+                new LineMap(new Line(1L, "노선명1", "색깔1", 1000),
+                        new Sections(List.of(new Section(1L, 강남역, 선릉역, 20)))),
+                new LineMap(new Line(2L, "노선명2", "색깔2", 0),
+                        new Sections(List.of(new Section(2L, 강남역, 잠실역, 10)))),
+                new LineMap(new Line(3L, "노선명3", "색깔3", 900),
+                        new Sections(List.of(
+                                new Section(3L, 강남역, 잠실역, 10),
+                                new Section(3L, 잠실역, 선릉역, 10))))));
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -182,7 +192,7 @@ class LineRepositoryTest extends DatabaseUsageTest {
         databaseFixtureUtils.saveSection(1L, 강남역, 잠실역, 10);
 
         repository.deleteLine(new LineMap(new Line(1L, "노선1", "색상", 100),
-                new Sections(List.of(new Section(1L,  강남역, 잠실역, 10)))));
+                new Sections(List.of(new Section(1L, 강남역, 잠실역, 10)))));
         boolean lineExistence = lineDao.findById(1L).isPresent();
         List<Section> existingSections = sectionDao.findAll();
 

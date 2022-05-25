@@ -2,6 +2,7 @@ package wooteco.subway.domain.line;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
@@ -12,7 +13,7 @@ public class SubwayMap {
 
     private final List<LineMap> value;
 
-    private SubwayMap(List<LineMap> value) {
+    public SubwayMap(List<LineMap> value) {
         this.value = value;
     }
 
@@ -58,5 +59,22 @@ public class SubwayMap {
 
     public List<LineMap> toSortedLines() {
         return value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SubwayMap subwayMap = (SubwayMap) o;
+        return Objects.equals(value, subwayMap.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 }
