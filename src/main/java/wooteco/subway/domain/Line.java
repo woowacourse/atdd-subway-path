@@ -23,7 +23,7 @@ public class Line {
 
     private void validateExtraFare(Integer extraFare) {
         if (extraFare < EXTRA_FARE_MIN_VALUE) {
-            throw new IllegalArgumentException("최소 추가 금액은 100원입니다.");
+            throw new IllegalArgumentException("노선의 최소 추가 금액은 100원입니다.");
         }
     }
 

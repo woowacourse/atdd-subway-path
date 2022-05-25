@@ -134,7 +134,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         //then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(exceptionResponse.getErrorMessage()).isEqualTo("최소 추가 금액은 100원입니다.")
+                () -> assertThat(exceptionResponse.getErrorMessage()).isEqualTo("노선의 최소 추가 금액은 100원입니다.")
         );
     }
 

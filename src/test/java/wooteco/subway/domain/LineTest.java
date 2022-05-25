@@ -12,6 +12,6 @@ class LineTest {
     void create_exception_extraFareLowerThanMinValue() {
         assertThatThrownBy(() -> new Line("2호선", "green", 99))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("최소 추가 금액은 100원입니다.");
+                .hasMessage("노선의 최소 추가 금액은 100원입니다.");
     }
 }

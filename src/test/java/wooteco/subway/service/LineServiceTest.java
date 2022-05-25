@@ -73,7 +73,7 @@ class LineServiceTest extends DBTest {
 
         assertThatThrownBy(() -> lineService.save(lineCreationServiceRequest))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("최소 추가 금액은 100원입니다.");
+                .hasMessage("노선의 최소 추가 금액은 100원입니다.");
     }
 
     @DisplayName("모든 지하철 노선을 조회한다.")
