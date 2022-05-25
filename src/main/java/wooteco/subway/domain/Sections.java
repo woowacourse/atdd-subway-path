@@ -1,6 +1,5 @@
 package wooteco.subway.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -142,35 +141,5 @@ public class Sections {
 
     public boolean hasUpStationId(Long upStationId) {
         return getUpStationIds().contains(upStationId);
-    }
-
-    public List<Section> getShortestSections(List<Long> shortestPath) {
-        List<Section> shortestSections = new ArrayList<>();
-        for (int i = 0; i < shortestPath.size() - 1; i++) {
-            Long upStationId = shortestPath.get(i);
-            Long downStationId = shortestPath.get(i + 1);
-            List<Section> findSections = sections.stream()
-                    .filter(it -> (it.containStationId(upStationId, downStationId)))
-                    .collect(Collectors.toList());
-            if (findSections.isEmpty()) {
-                continue;
-            }
-            if (findSections.size() == 1) {
-                shortestSections.addAll(findSections);
-                continue;
-            }
-            addShortestSections(shortestSections, findSections);
-        }
-        return shortestSections;
-    }
-
-    private void addShortestSections(List<Section> shortestSections, List<Section> findSections) {
-        Section shortestSection = findSections.get(0);
-        for (Section section : findSections) {
-            if (shortestSection.getDistance() > section.getDistance()){
-                shortestSection = section;
-            }
-        }
-        shortestSections.add(shortestSection);
     }
 }

@@ -5,10 +5,12 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
-import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.Section;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class PathFactory {
@@ -20,14 +22,14 @@ public class PathFactory {
         GraphPath<Long, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
         validateExistPath(path);
 
-        List<Long> shortestPath = path.getVertexList();
+        List<Long> shortestPathByStationId = path.getVertexList();
         int totalDistance = (int) path.getWeight();
-        Sections shortestSections = new Sections(sections.getShortestSections(shortestPath));
-        return new Path(shortestPath, totalDistance, shortestSections);
+        Sections shortestSections = getShortestSections(sections, shortestPathByStationId);
+        return new Path(shortestPathByStationId, totalDistance, shortestSections);
     }
 
     private void validateExistStationId(Long source, Long target, List<Long> stationIds) {
-        if (isNotContains(source, target, stationIds)){
+        if (isNotContains(source, target, stationIds)) {
             throw new IllegalArgumentException("[ERROR] 역을 찾을 수 없습니다");
         }
     }
@@ -55,10 +57,39 @@ public class PathFactory {
         }
     }
 
-
     private void validateExistPath(GraphPath<Long, DefaultWeightedEdge> path) {
         if (path == null) {
             throw new IllegalArgumentException("[ERROR] 경로를 찾을 수 없습니다");
         }
+    }
+
+    private Sections getShortestSections(Sections sections, List<Long> shortestPath) {
+        List<Section> shortestSections = new ArrayList<>();
+        for (int i = 0; i < shortestPath.size() - 1; i++) {
+            Long upStationId = shortestPath.get(i);
+            Long downStationId = shortestPath.get(i + 1);
+            List<Section> findSections = sections.getSections().stream()
+                    .filter(it -> (it.containStationId(upStationId, downStationId)))
+                    .collect(Collectors.toList());
+            if (findSections.isEmpty()) {
+                continue;
+            }
+            if (findSections.size() == 1) {
+                shortestSections.addAll(findSections);
+                continue;
+            }
+            addShortestSections(shortestSections, findSections);
+        }
+        return new Sections(shortestSections);
+    }
+
+    private void addShortestSections(List<Section> shortestSections, List<Section> findSections) {
+        Section shortestSection = findSections.get(0);
+        for (Section section : findSections) {
+            if (shortestSection.getDistance() > section.getDistance()) {
+                shortestSection = section;
+            }
+        }
+        shortestSections.add(shortestSection);
     }
 }

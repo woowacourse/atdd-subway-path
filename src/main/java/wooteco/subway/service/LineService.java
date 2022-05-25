@@ -132,7 +132,7 @@ public class LineService {
                 });
     }
 
-    public int getExtraFareById(Long id){
+    public int getExtraFareById(Long id) {
         return lineDao.findById(id).getExtraFare();
     }
 }

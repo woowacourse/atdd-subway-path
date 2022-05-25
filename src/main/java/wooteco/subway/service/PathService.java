@@ -12,7 +12,6 @@ import wooteco.subway.service.dto.path.PathResponse;
 import wooteco.subway.service.dto.station.StationResponse;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
