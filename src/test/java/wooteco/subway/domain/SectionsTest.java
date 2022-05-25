@@ -6,209 +6,153 @@ import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.exception.IllegalSectionException;
 
+@SuppressWarnings("InnerClassMayBeStatic")
+@DisplayName("Sections 클래스")
 class SectionsTest {
 
-    @DisplayName("새로 등록할 구간의 상행역과 하행역 중 노선에 이미 등록되어있는 역을 기준으로 새로운 구간을 추가한다.")
-    @Test
-    public void addNewSection() {
-        // given
-        List<Section> sectionList = new ArrayList<>();
-        sectionList.add(new Section(1L, 2L, 3L, 1));
-        final Sections sections = new Sections(sectionList);
+    @Nested
+    @DisplayName("add 메서드는")
+    class Describe_add {
+        private final Section givenSection = new Section(1L, 2L, 3L, 2);
+        private final List<Section> sectionList = new ArrayList<>(Arrays.asList(givenSection));
+        private final Sections sections = new Sections(sectionList);
 
-        // when & then
-        final Section section = new Section(1L, 1L, 2L, 1);
-        assertDoesNotThrow(() -> sections.add(section));
-    }
-    
-    @DisplayName("하나의 노선에는 갈래길이 허용되지 않기 때문에 새로운 구간이 추가되기 전에 갈래길이 생기지 않도록 상행역을 기준으로 기존 구간을 변경한다.")
-    @Test
-    public void forkRodeSameUpStation() {
-        // given
-        List<Section> sectionList = new ArrayList<>();
-        sectionList.add(new Section(1L, 1L, 3L, 7));
-        final Sections sections = new Sections(sectionList);
 
-        // when
-        final Section section = new Section(1L, 1L, 2L, 4);
-        final List<Section> addSections = sections.add(section);
+        @Nested
+        @DisplayName("새로 등록할 구간의 하행역이 이미 등록된 구간의 상행역으로 존재한다면")
+        class Context_with_up_section {
+            @Test
+            @DisplayName("구간을 추가한다.")
+            void it_does_not_throw_exception() {
+                assertDoesNotThrow(() -> sections.add(new Section(1L, 1L, 2L, 1)));
+            }
+        }
 
-        // then
-        assertThat(addSections)
-                .hasSize(2)
-                .extracting("distance")
-                .containsExactly(4, 3);
-    }
+        @Nested
+        @DisplayName("새로 등록할 구간의 상행역이 이미 등록된 구간의 하행역으로 존재한다면")
+        class Context_with_down_section {
+            @Test
+            @DisplayName("구간을 추가한다.")
+            void it_does_not_throw_exception() {
+                assertDoesNotThrow(() -> sections.add(new Section(1L, 3L, 4L, 1)));
+            }
+        }
 
-    @DisplayName("하나의 노선에는 갈래길이 허용되지 않기 때문에 새로운 구간이 추가되기 전에 갈래길이 생기지 않도록 하행역을 기준으로 기존 구간을 변경한다.")
-    @Test
-    public void forkRodeSameDownStation() {
-        // given
-        List<Section> sectionList = new ArrayList<>();
-        sectionList.add(new Section(1L, 1L, 3L, 7));
-        final Sections sections = new Sections(sectionList);
+        @Nested
+        @DisplayName("두 역이 이미 존재한다면")
+        class Context_with_existed_section {
+            @Test
+            @DisplayName("예외가 발생한다.")
+            void it_does_throw_exception() {
+                assertThatThrownBy(() -> sections.add(new Section(1L, 3L, 2L, 1)))
+                        .isInstanceOf(IllegalSectionException.class)
+                        .hasMessage(("이미 동일한 구간이 등록되어 있습니다."));
+            }
+        }
 
-        // when
-        final Section section = new Section(1L, 2L, 3L, 4);
-        final List<Section> addSections = sections.add(section);
+        @Nested
+        @DisplayName("기존 구간 사이에 새로운 구간이 추가된다면")
+        class Context_with_between_add_section {
 
-        // then
-        assertThat(addSections)
-                .hasSize(2)
-                .extracting("distance")
-                .containsExactly(3, 4);
-    }
+            @Test
+            @DisplayName("추가될 거리가 더 작을 때 두 구간으로 나뉜다.")
+            void it_divided_two_section() {
+                sections.add(new Section(1L, 2L, 1L, 1));
+                assertThat(sections.getSections()).hasSize(2)
+                        .extracting("distance")
+                        .containsExactly(1, 1);
+            }
 
-    @DisplayName("역 사이에 새로운 역을 등록할 경우 기존 역 사이 길이보다 크거나 같으면 등록을 할 수 없다.")
-    @Test
-    public void checkDistance() {
-        // given
-        List<Section> sectionList = new ArrayList<>();
-        sectionList.add(new Section(1L, 1L, 1L, 3L, 7));
-        final Sections sections = new Sections(sectionList);
+            @Test
+            @DisplayName("추가될 구간의 거리가 같거나 더 클 때 예외가 발생한다.")
+            void it_does_throw_exception() {
+                assertThatThrownBy(() -> sections.add(new Section(1L, 2L, 1L, 2)))
+                        .isInstanceOf(IllegalSectionException.class)
+                        .hasMessage(("등록하려는 구간 길이가 기존 구간의 길이와 같거나 더 길 수 없습니다."));
+            }
+        }
 
-        // when & then
-        final Section section = new Section(2L, 1L, 1L, 2L, 7);
-        assertThatThrownBy(() -> sections.add(section))
-                        .isInstanceOf(IllegalSectionException.class);
-    }
-
-    @DisplayName("상행역과 하행역이 이미 노선에 모두 등록되어 있다면 추가할 수 없다.")
-    @Test
-    public void sameSection() {
-        // given
-        List<Section> sectionList = new ArrayList<>();
-        sectionList.add(new Section(1L, 1L, 1L, 3L, 7));
-        final Sections sections = new Sections(sectionList);
-
-        // when & then
-        final Section section = new Section(2L,1L, 1L, 3L, 7);
-        assertThatThrownBy(() -> sections.add(section))
-                .isInstanceOf(IllegalSectionException.class);
+        @Nested
+        @DisplayName("기존 구간에 존재하지 않는 역이 추가될 때")
+        class Context_with_no_existed_section {
+            @Test
+            @DisplayName("예외가 발생한다.")
+            void it_does_throw_exception() {
+                assertThatThrownBy(() -> sections.add(new Section(1L, 4L, 5L, 2)))
+                        .isInstanceOf(IllegalSectionException.class)
+                        .hasMessage(("등록할 구간의 적어도 하나의 역은 등록되어 있어야 합니다."));
+            }
+        }
     }
 
-    @DisplayName("상행역과 하행역 둘 중 하나도 포함되어 있지 않으면 추가할 수 없다.")
-    @Test
-    public void IllegalAddSection() {
-        // given
-        List<Section> sectionList = new ArrayList<>();
-        sectionList.add(new Section(1L, 2L, 3L, 4));
-        sectionList.add(new Section(1L, 1L, 2L, 3));
-        final Sections sections = new Sections(sectionList);
+    @Nested
+    @DisplayName("delete 메서드는")
+    class Describe_delete {
+        private final Section givenSection1 = new Section(1L, 2L, 3L, 2);
+        private final List<Section> sectionList = new ArrayList<>(Arrays.asList(givenSection1));
+        private final Sections sections = new Sections(sectionList);
 
-        // when & then
-        final Section section = new Section(1L, 4L, 5L, 7);
-        assertThatThrownBy(() -> sections.add(section))
-                .isInstanceOf(IllegalSectionException.class);
-        assertThat(sections.getSections().size()).isEqualTo(2);
+        @Nested
+        @DisplayName("stationId가 주어지면")
+        class Context_with_stationId {
+            private final Long stationId = 3L;
+
+            @Test
+            @DisplayName("구간이 하나 이상 존재하면 구간을 삭제한다.")
+            void it_delete_section() {
+                sections.add(new Section(1L, 3L, 4L, 3));
+                sections.delete(stationId);
+                assertThat(sections.getSections()).hasSize(1)
+                        .extracting("upStationId", "downStationId", "distance")
+                        .contains(
+                                tuple(2L, 4L, 5)
+                        );
+            }
+
+            @Test
+            @DisplayName("구간이 하나라면 구간을 삭제할 수 없다.")
+            void it_can_not_delete_section() {
+                assertThatThrownBy(() -> sections.delete(stationId)).isInstanceOf(IllegalSectionException.class)
+                        .hasMessage("노선이 구간을 하나는 가져야하므로 구간을 제거할 수 없습니다.");
+            }
+        }
     }
 
-    @DisplayName("Station을 받아 구간을 제거할 수 있다.")
-    @Test
-    public void deleteSection() {
-        // given
-        List<Section> sectionList = new ArrayList<>();
-        sectionList.add(new Section(1L, 1L, 2L, 3));
-        sectionList.add(new Section(1L, 2L, 3L, 4));
-        final Sections sections = new Sections(sectionList);
+    @Nested
+    @DisplayName("getSortedSections 메서드는")
+    class Describe_getSortedSections {
 
-        // when
-        final Station station = new Station(2L, "중간역");
-        sections.delete(station.getId());
+        @Nested
+        @DisplayName("호출했을 때")
+        class Context_with_sections {
 
-        // then
-        assertThat(sections.getSections().size()).isEqualTo(1);
-        final Section section = sections.getSections().get(0);
-        assertThat(section.getDistance()).isEqualTo(7);
-        assertThat(section.getUpStationId()).isEqualTo(1L);
-        assertThat(section.getDownStationId()).isEqualTo(3L);
-    }
+            private final Section givenSection1 = new Section(1L, 2L, 3L, 3);
+            private final Section givenSection2 = new Section(1L, 3L, 4L, 3);
+            private final Section givenSection3 = new Section(1L, 4L, 5L, 3);
+            private final Section givenSection4 = new Section(1L, 5L, 6L, 3);
+            private final List<Section> sectionList = new ArrayList<>(
+                    Arrays.asList(givenSection1, givenSection2, givenSection3, givenSection4));
+            private final Sections sections = new Sections(sectionList);
 
-    @DisplayName("구간이 하나인 노선에서 마지막 구간을 제거할 수 없다.")
-    @Test
-    public void IllegalDeleteSection() {
-        // given
-        List<Section> sectionList = new ArrayList<>();
-        sectionList.add(new Section(1L, 1L, 3L, 7));
-        final Sections sections = new Sections(sectionList);
-
-        // when & then
-        final Station station = new Station(1L, "상행역");
-        assertThatThrownBy(() -> sections.delete(station.getId()))
-                .isInstanceOf(IllegalSectionException.class);
-    }
-
-    @DisplayName("첫번째 역을 삭제할 수 있다.")
-    @Test
-    public void deleteFirstSection() {
-        // given
-        List<Section> sectionList = new ArrayList<>();
-        sectionList.add(new Section(1L, 1L, 2L, 7));
-        sectionList.add(new Section(1L, 2L, 3L, 7));
-        final Sections sections = new Sections(sectionList);
-
-        final Station deleteStation = new Station(1L, "첫번째역");
-
-        // when
-        sections.delete(deleteStation.getId());
-
-        //then
-        assertThat(sections.getSections().size()).isEqualTo(1);
-        final Section section = sections.getSections().get(0);
-        assertThat(section.getDistance()).isEqualTo(7);
-        assertThat(section.getUpStationId()).isEqualTo(2L);
-        assertThat(section.getDownStationId()).isEqualTo(3L);
-    }
-
-    @DisplayName("마지막 순서의 역을 삭제할 수 있다.")
-    @Test
-    public void deleteLastSection() {
-        // given
-        List<Section> sectionList = new ArrayList<>();
-        sectionList.add(new Section(1L, 1L, 2L, 7));
-        sectionList.add(new Section(1L, 2L, 3L, 7));
-        final Sections sections = new Sections(sectionList);
-
-        final Station deleteStation = new Station(3L, "마지막역");
-
-        // when
-        sections.delete(deleteStation.getId());
-
-        //then
-        assertThat(sections.getSections().size()).isEqualTo(1);
-        final Section section = sections.getSections().get(0);
-        assertThat(section.getDistance()).isEqualTo(7);
-        assertThat(section.getUpStationId()).isEqualTo(1L);
-        assertThat(section.getDownStationId()).isEqualTo(2L);
-    }
-
-    @DisplayName("상행부터 하행의 순서로 정렬된 구간들을 구할 수 있다.")
-    @Test
-    public void sortedSection() {
-        //given
-        List<Section> sectionList = new ArrayList<>();
-        sectionList.add(new Section(1L, 4L, 5L, 3));
-        sectionList.add(new Section(1L, 1L, 2L, 3));
-        sectionList.add(new Section(1L, 3L, 4L, 4));
-        sectionList.add(new Section(1L, 2L, 3L, 4));
-        final Sections sections = new Sections(sectionList);
-
-        //when
-        final List<Section> sortedSections = sections.getSortedSections();
-
-        //then
-        assertThat(sortedSections).hasSize(4)
-                .extracting("upStationId", "downStationId")
-                .containsExactly(
-                        tuple(1L, 2L),
-                        tuple(2L, 3L),
-                        tuple(3L, 4L),
-                        tuple(4L, 5L)
-                );
+            @Test
+            @DisplayName("순서를 정렬한 구간들을 출력한다.")
+            void it_get_sorted_sections() {
+                assertThat(sections.getSortedSections())
+                        .extracting("upStationId", "downStationId", "distance")
+                        .containsExactly(
+                                tuple(2L, 3L, 3),
+                                tuple(3L, 4L, 3),
+                                tuple(4L, 5L, 3),
+                                tuple(5L, 6L, 3)
+                        );
+            }
+        }
     }
 }
