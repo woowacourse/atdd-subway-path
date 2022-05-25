@@ -13,7 +13,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.http.HttpStatus;
 
 public class PathAcceptanceTest extends AcceptanceTest {
-
     @DisplayName("역이 없는 경우에 404 에러를 발생시킨다.")
     @Test
     void searchPathByNotFoundStation() {
@@ -32,13 +31,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("source와 target이 같은 경우 400에러를 발생시킨다.")
     @Test
     void searchPathBySourceSameAsTarget() {
-        long upStationId = requestCreateStation("강남역").jsonPath().getLong("id");
-        long downStationId = requestCreateStation("역삼역").jsonPath().getLong("id");
-        requestCreateLine("신분당선", "bg-red-600", upStationId, downStationId, 10, 900);
+        long 강남역 = requestCreateStation("강남역").jsonPath().getLong("id");
+        long 역삼역 = requestCreateStation("역삼역").jsonPath().getLong("id");
+        requestCreateLine("신분당선", "bg-red-600", 강남역, 역삼역, 10, 900);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .param("source", upStationId)
-                .param("target", upStationId)
+                .param("source", 강남역)
+                .param("target", 강남역)
                 .param("age", 20)
                 .when()
                 .get("/paths")
@@ -174,148 +173,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(actualStationIds).containsExactly(강남역, 역삼역);
         assertThat(distance).isEqualTo(20);
         assertThat(fare).isEqualTo(1450 + 900);
-    }
-
-    @DisplayName("나이가 청소년인 경우 경로 탐색")
-    @ParameterizedTest
-    @CsvSource({"13", "15", "18"})
-    void searchPathInCaseOfYouth(int age) {
-        long 강남역 = requestCreateStation("강남역").jsonPath().getLong("id");
-        long 역삼역 = requestCreateStation("역삼역").jsonPath().getLong("id");
-
-        requestCreateLine("2호선", "bg-red-600", 강남역, 역삼역, 8, 0);
-
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .param("source", 강남역)
-                .param("target", 역삼역)
-                .param("age", age)
-                .when()
-                .get("/paths")
-                .then().log().all()
-                .extract();
-
-        List<Long> actualStationIds = response.jsonPath().getList("stations.id", Long.class);
-        int distance = response.jsonPath().getObject("distance", Integer.class);
-        int actualFare = response.jsonPath().getObject("fare", Integer.class);
-        int expectedFare = (int) ((1250 - 350) * 0.8);
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(actualStationIds).containsExactly(강남역, 역삼역);
-        assertThat(distance).isEqualTo(8);
-        assertThat(actualFare).isEqualTo(expectedFare);
-    }
-
-    @DisplayName("나이가 어린이인 경우 경로 탐색")
-    @CsvSource({"6", "9", "12"})
-    void searchPathInCaseOfAChild(int age) {
-        long 강남역 = requestCreateStation("강남역").jsonPath().getLong("id");
-        long 역삼역 = requestCreateStation("역삼역").jsonPath().getLong("id");
-
-        requestCreateLine("2호선", "bg-red-600", 강남역, 역삼역, 8, 0);
-
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .param("source", 강남역)
-                .param("target", 역삼역)
-                .param("age", age)
-                .when()
-                .get("/paths")
-                .then().log().all()
-                .extract();
-
-        List<Long> actualStationIds = response.jsonPath().getList("stations.id", Long.class);
-        int distance = response.jsonPath().getObject("distance", Integer.class);
-        int actualFare = response.jsonPath().getObject("fare", Integer.class);
-        int expectedFare = 0;
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(actualStationIds).containsExactly(강남역, 역삼역);
-        assertThat(distance).isEqualTo(8);
-        assertThat(actualFare).isEqualTo(expectedFare);
-    }
-
-    @DisplayName("나이가 유아인 경우 경로 탐색")
-    @CsvSource({"5", "3", "1"})
-    void searchPathInCaseOfAInfant(int age) {
-        long 강남역 = requestCreateStation("강남역").jsonPath().getLong("id");
-        long 역삼역 = requestCreateStation("역삼역").jsonPath().getLong("id");
-
-        requestCreateLine("2호선", "bg-red-600", 강남역, 역삼역, 8, 0);
-
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .param("source", 강남역)
-                .param("target", 역삼역)
-                .param("age", age)
-                .when()
-                .get("/paths")
-                .then().log().all()
-                .extract();
-
-        List<Long> actualStationIds = response.jsonPath().getList("stations.id", Long.class);
-        int distance = response.jsonPath().getObject("distance", Integer.class);
-        int actualFare = response.jsonPath().getObject("fare", Integer.class);
-        int expectedFare = 0;
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(actualStationIds).containsExactly(강남역, 역삼역);
-        assertThat(distance).isEqualTo(8);
-        assertThat(actualFare).isEqualTo(expectedFare);
-    }
-
-    @DisplayName("나이가 노약자인 경우 경로 탐색")
-    @CsvSource({"65", "85", "100", "150"})
-    void searchPathInCaseOfElderlyLikeMyGrandfather(int age) {
-        long 강남역 = requestCreateStation("강남역").jsonPath().getLong("id");
-        long 역삼역 = requestCreateStation("역삼역").jsonPath().getLong("id");
-
-        requestCreateLine("2호선", "bg-red-600", 강남역, 역삼역, 8, 0);
-
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .param("source", 강남역)
-                .param("target", 역삼역)
-                .param("age", age)
-                .when()
-                .get("/paths")
-                .then().log().all()
-                .extract();
-
-        List<Long> actualStationIds = response.jsonPath().getList("stations.id", Long.class);
-        int distance = response.jsonPath().getObject("distance", Integer.class);
-        int actualFare = response.jsonPath().getObject("fare", Integer.class);
-        int expectedFare = 0;
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(actualStationIds).containsExactly(강남역, 역삼역);
-        assertThat(distance).isEqualTo(8);
-        assertThat(actualFare).isEqualTo(expectedFare);
-    }
-
-    @DisplayName("나이가 청소년이고 노선 추가 요금이 있을 경우 경로 탐색")
-    @ParameterizedTest
-    @CsvSource({"13", "15", "18"})
-    void searchPathInCaseOfYouthWithExtraFare(int age) {
-        long 강남역 = requestCreateStation("강남역").jsonPath().getLong("id");
-        long 역삼역 = requestCreateStation("역삼역").jsonPath().getLong("id");
-
-        requestCreateLine("신분당선", "bg-red-600", 강남역, 역삼역, 20, 900);
-
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .param("source", 강남역)
-                .param("target", 역삼역)
-                .param("age", age)
-                .when()
-                .get("/paths")
-                .then().log().all()
-                .extract();
-
-        List<Long> actualStationIds = response.jsonPath().getList("stations.id", Long.class);
-        int distance = response.jsonPath().getObject("distance", Integer.class);
-        int actualFare = response.jsonPath().getObject("fare", Integer.class);
-        int expectedFare = (int) ((1450 + 900 - 350) * 0.8);
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(actualStationIds).containsExactly(강남역, 역삼역);
-        assertThat(distance).isEqualTo(20);
-        assertThat(actualFare).isEqualTo(expectedFare);
     }
 
     @DisplayName("source가 null일 떄")
