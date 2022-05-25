@@ -1,4 +1,4 @@
-package wooteco.subway.domain.fare.policy;
+package wooteco.subway.domain.path.fare.policy;
 
 public class TeenagerDiscountPolicy implements DiscountPolicy {
 

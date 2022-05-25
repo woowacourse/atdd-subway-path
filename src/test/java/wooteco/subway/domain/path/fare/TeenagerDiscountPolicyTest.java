@@ -1,11 +1,11 @@
-package wooteco.subway.domain.fare;
+package wooteco.subway.domain.path.fare;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.fare.policy.DiscountPolicy;
-import wooteco.subway.domain.fare.policy.TeenagerDiscountPolicy;
+import wooteco.subway.domain.path.fare.policy.DiscountPolicy;
+import wooteco.subway.domain.path.fare.policy.TeenagerDiscountPolicy;
 
 public class TeenagerDiscountPolicyTest {
 

@@ -1,4 +1,4 @@
-package wooteco.subway.domain.fare.vo;
+package wooteco.subway.domain.path.fare.vo;
 
 import java.util.Objects;
 
@@ -56,7 +56,4 @@ public class Age {
         return Objects.hash(value);
     }
 
-    public int getValue() {
-        return value;
-    }
 }

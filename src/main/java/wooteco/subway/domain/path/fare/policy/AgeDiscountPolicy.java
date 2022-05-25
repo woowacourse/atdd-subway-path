@@ -1,6 +1,6 @@
-package wooteco.subway.domain.fare.policy;
+package wooteco.subway.domain.path.fare.policy;
 
-import wooteco.subway.domain.fare.vo.Age;
+import wooteco.subway.domain.path.fare.vo.Age;
 
 public enum AgeDiscountPolicy {
     CHILDREN(new ChildrenDiscountPolicy()),

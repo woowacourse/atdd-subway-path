@@ -1,4 +1,4 @@
-package wooteco.subway.domain.fare;
+package wooteco.subway.domain.path.fare;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -6,8 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import wooteco.subway.domain.fare.policy.AgeDiscountPolicy;
-import wooteco.subway.domain.fare.vo.Age;
+import wooteco.subway.domain.path.fare.policy.AgeDiscountPolicy;
+import wooteco.subway.domain.path.fare.vo.Age;
 
 class AgeDiscountPolicyTest {
 

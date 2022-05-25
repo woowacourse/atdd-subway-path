@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -31,11 +31,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import wooteco.subway.domain.fare.SubwayFare;
-import wooteco.subway.domain.fare.vo.Age;
+import wooteco.subway.domain.path.fare.vo.Age;
+import wooteco.subway.domain.line.Section;
 import wooteco.subway.domain.path.ShortestPath;
+import wooteco.subway.domain.path.SubwayMap;
+import wooteco.subway.domain.station.Station;
 
-public class SubwayGraphTest {
+public class SubwayMapTest {
 
     /*
      * 2호선 :  강남---10---삼성---15---건대---20---성수
@@ -44,7 +46,7 @@ public class SubwayGraphTest {
     @Test
     @DisplayName("최단 경로를 구한다. 삼성 -> 성수")
     void route() {
-        SubwayGraph graph = new SubwayGraph(List.of(강남_삼성, 삼성_건대, 건대_성수, 왕십리_합정, 합정_성수, 성수_강남));
+        SubwayMap graph = new SubwayMap(List.of(강남_삼성, 삼성_건대, 건대_성수, 왕십리_합정, 합정_성수, 성수_강남));
 
         ShortestPath shortestPath = graph.getShortestPath(삼성, 성수);
 
@@ -58,7 +60,7 @@ public class SubwayGraphTest {
     @Test
     @DisplayName("최단 경로의 거리를 구한다. 삼성 -> 성수")
     void distance() {
-        SubwayGraph graph = new SubwayGraph(List.of(강남_삼성, 삼성_건대, 건대_성수, 왕십리_합정, 합정_성수, 성수_강남));
+        SubwayMap graph = new SubwayMap(List.of(강남_삼성, 삼성_건대, 건대_성수, 왕십리_합정, 합정_성수, 성수_강남));
 
         ShortestPath shortestPath = graph.getShortestPath(삼성, 성수);
 
@@ -68,30 +70,30 @@ public class SubwayGraphTest {
     @Test
     @DisplayName("추가요금을 포함하여 요금을 계산한다.")
     void extraFare() {
-        SubwayGraph graph = new SubwayGraph(List.of(강남_삼성, 삼성_건대, 건대_성수, 왕십리_합정, 합정_성수, 성수_강남));
+        SubwayMap graph = new SubwayMap(List.of(강남_삼성, 삼성_건대, 건대_성수, 왕십리_합정, 합정_성수, 성수_강남));
 
-        SubwayFare fare = graph.getFare(삼성, 성수);
+        ShortestPath fare = graph.getShortestPath(삼성, 성수);
 
-        assertThat(fare.calculate(new Age(20))).isEqualTo(1450 + 1000);
+        assertThat(fare.calculateFare(new Age(20))).isEqualTo(1450 + 1000);
     }
 
     @Test
     @DisplayName("추가요금이 있는 노선중 가장 높은 노선의 금액으로 기본 금액에 추가한다.")
     void compareExtraFare() {
-        SubwayGraph graph = new SubwayGraph(List.of(성수_강남, 강남_건대));
+        SubwayMap graph = new SubwayMap(List.of(성수_강남, 강남_건대));
 
-        SubwayFare fare = graph.getFare(성수, 건대);
+        ShortestPath fare = graph.getShortestPath(성수, 건대);
 
-        assertThat(fare.calculate(new Age(20))).isEqualTo(1450 + 2000);
+        assertThat(fare.calculateFare(new Age(20))).isEqualTo(1450 + 2000);
     }
 
     @Test
     @DisplayName("경로가 존재하지 않는 경우 예외가 발생한다.")
     void notFoundRoute() {
         List<Section> 구간들 = List.of(강남_삼성, 삼성_건대, 건대_성수, 왕십리_합정, 합정_성수, 성수_강남, 창동_당고개);
-        SubwayGraph subwayGraph = new SubwayGraph(구간들);
+        SubwayMap subwayMap = new SubwayMap(구간들);
 
-        assertThatThrownBy(() -> subwayGraph.getShortestPath(강남, 창동))
+        assertThatThrownBy(() -> subwayMap.getShortestPath(강남, 창동))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("해당 경로가 존재하지 않습니다.");
     }
@@ -100,9 +102,9 @@ public class SubwayGraphTest {
     @DisplayName("존재하지 않는 역으로 조회할 시 예외가 발생한다.")
     void notFoundStation() {
         List<Section> 구간들 = List.of(강남_삼성, 삼성_건대, 건대_성수, 왕십리_합정, 합정_성수, 성수_강남);
-        SubwayGraph subwayGraph = new SubwayGraph(구간들);
+        SubwayMap subwayMap = new SubwayMap(구간들);
 
-        assertThatThrownBy(() -> subwayGraph.getShortestPath(강남, 창동))
+        assertThatThrownBy(() -> subwayMap.getShortestPath(강남, 창동))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하지 않는 역입니다.");
     }
@@ -111,11 +113,11 @@ public class SubwayGraphTest {
     @MethodSource("getSections")
     @DisplayName("요금을 반환한다.")
     void getFare(Station source, Station target, int fare) {
-        SubwayGraph subwayGraph = new SubwayGraph(
+        SubwayMap subwayMap = new SubwayMap(
                 List.of(강남_삼성, 삼성_건대, 건대_성수, 합정_왕십리, 합정_성수, 창동_당고개, 왕십리_당고개, 사당_당고개, 잠실_당고개));
 
-        SubwayFare subwayFare = subwayGraph.getFare(source, target);
-        assertThat(subwayFare.calculate(new Age(20))).isEqualTo(fare);
+        ShortestPath shortestPath = subwayMap.getShortestPath(source, target);
+        assertThat(shortestPath.calculateFare(new Age(20))).isEqualTo(fare);
     }
 
     private static List<Arguments> getSections() {

@@ -1,4 +1,4 @@
-package wooteco.subway.domain.fare.vo;
+package wooteco.subway.domain.path.fare.vo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import wooteco.subway.domain.path.fare.vo.Age;
 
 class AgeTest {
 
