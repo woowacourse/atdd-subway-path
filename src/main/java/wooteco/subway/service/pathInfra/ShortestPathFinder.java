@@ -3,7 +3,6 @@ package wooteco.subway.service.pathInfra;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
-import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.PathFinder;
 import wooteco.subway.domain.Section;
@@ -13,46 +12,31 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ShortestPathFinder implements PathFinder {
-    private final StationDao stationDao;
+    private final WeightedMultigraph<Station, ShortestPathEdge> graph;
 
-    public ShortestPathFinder(StationDao stationDao) {
-        this.stationDao = stationDao;
+    public ShortestPathFinder() {
+        this.graph = new WeightedMultigraph<>(ShortestPathEdge.class);
     }
 
     @Override
-    public Path findShortestPath(List<Section> sections, Long sourceId, Long targetId) {
-        final WeightedMultigraph<Station, ShortestPathEdge> graph
-                = new WeightedMultigraph<>(ShortestPathEdge.class);
-        addAllStations(graph);
-        addAllSections(graph, sections);
-
-        final Station source = findStation(sourceId);
-        final Station target = findStation(targetId);
+    public Path findShortestPathByGraph(Station source, Station target) {
         final GraphPath<Station, ShortestPathEdge> graphPath = new DijkstraShortestPath<>(graph).getPath(source, target);
         validatePathExist(graphPath);
         return makePath(graphPath);
     }
 
-    private void addAllStations(WeightedMultigraph<Station, ShortestPathEdge> graph) {
-        List<Station> stations = stationDao.findAll();
+    @Override
+    public void addVertex(List<Station> stations) {
         for (Station station : stations) {
             graph.addVertex(station);
         }
     }
 
-    private void addAllSections(WeightedMultigraph<Station, ShortestPathEdge> graph, List<Section> sections) {
-        for (Section section : sections) {
-            final Station upStation = findStation(section.getUpStationId());
-            final Station downStation = findStation(section.getDownStationId());
-            final Long lineId = section.getLineId();
-            final int distance = section.getDistance();
-            graph.addEdge(upStation, downStation, new ShortestPathEdge(lineId, distance));
-        }
-    }
-
-    private Station findStation(Long id) {
-        return stationDao.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 역이 존재하지 않습니다."));
+    @Override
+    public void addEdge(Station upStation, Station downStation, Section section) {
+        final Long lineId = section.getLineId();
+        final int distance = section.getDistance();
+        graph.addEdge(upStation, downStation, new ShortestPathEdge(lineId, distance));
     }
 
     private void validatePathExist(GraphPath<Station, ShortestPathEdge> graphPath) {

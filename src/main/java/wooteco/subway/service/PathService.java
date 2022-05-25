@@ -40,9 +40,25 @@ public class PathService {
     }
 
     private Path makePath(Long source, Long target) {
-        final PathFinder pathFinder = new ShortestPathFinder(stationDao);
+        final PathFinder pathFinder = new ShortestPathFinder();
+        final List<Station> stations = stationDao.findAll();
         final List<Section> sections = sectionDao.findAll();
-        return pathFinder.findShortestPath(sections, source, target);
+        makeGraph(pathFinder, stations, sections);
+        return pathFinder.findShortestPathByGraph(findStation(source), findStation(target));
+    }
+
+    private void makeGraph(PathFinder pathFinder, List<Station> stations, List<Section> sections) {
+        pathFinder.addVertex(stations);
+        for (Section section : sections) {
+            final Station upStation = findStation(section.getUpStationId());
+            final Station downStation = findStation(section.getDownStationId());
+            pathFinder.addEdge(upStation, downStation, section);
+        }
+    }
+
+    private Station findStation(Long id) {
+        return stationDao.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 역이 존재하지 않습니다."));
     }
 
     private void validateNotSameStations(Long source, Long target) {
