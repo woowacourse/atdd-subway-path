@@ -19,13 +19,13 @@ public class ExceptionController {
     }
 
     @ExceptionHandler(DuplicatedException.class)
-    public ResponseEntity<ErrorResponse> subwayException(DuplicatedException exception) {
+    public ResponseEntity<ErrorResponse> duplicatedException(DuplicatedException exception) {
         return ResponseEntity.badRequest().body(new ErrorResponse(exception.getMessage()));
     }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> runtimeExceptionHandler(RuntimeException e) {
-        return ResponseEntity.badRequest().body(new ErrorResponse("서버 에러가 발생했습니다."));
+        return ResponseEntity.badRequest().body(new ErrorResponse("예기치 못한 에러가 발생했습니다."));
     }
 
     @ExceptionHandler(Exception.class)
