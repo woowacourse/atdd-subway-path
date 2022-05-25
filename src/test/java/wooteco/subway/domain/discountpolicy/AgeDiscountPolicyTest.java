@@ -20,7 +20,7 @@ class AgeDiscountPolicyTest {
     @ParameterizedTest(name = "{index} {displayName} age={0} expectedFare={1}")
     @CsvSource(value = {"5, 0", "6, 625", "13, 1000", "19, 1250"})
     void discountFare(final int age, final int expectedFare) {
-        final Fare fare = new Fare(AgeDiscountFactory.from(age));
+        final Fare fare = new Fare(AgeDiscountFactory.from(AgeRange.from(age)));
         final Sections sections = new Sections(List.of(SectionFactory.from(SectionFactory.AB3),
                 SectionFactory.from(SectionFactory.BC3)));
         final List<Station> stations = List.of(StationFactory.from(StationFactory.A),

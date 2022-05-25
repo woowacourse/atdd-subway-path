@@ -8,8 +8,8 @@ public class AgeDiscountFactory {
 
     private static final Map<AgeRange, Supplier<AgeDiscountPolicy>> cache = AgeRange.generateCache();
 
-    public static AgeDiscountPolicy from(final int age) {
-        final Supplier<AgeDiscountPolicy> supplier = Optional.ofNullable(cache.get(AgeRange.from(age)))
+    public static AgeDiscountPolicy from(final AgeRange ageRange) {
+        final Supplier<AgeDiscountPolicy> supplier = Optional.ofNullable(cache.get(ageRange))
                 .orElseThrow(IllegalAccessError::new);
         return supplier.get();
     }
