@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import wooteco.subway.domain.property.Distance;
-import wooteco.subway.domain.property.Fare;
 import wooteco.subway.domain.station.Station;
 
 public class PathResponse {
@@ -19,13 +18,15 @@ public class PathResponse {
         this.fare = fare;
     }
 
-    public static PathResponse of(List<Station> paths, Distance distance, Fare calculatedFare) {
+    public PathResponse() {
+        this(null, null, null);
+    }
+
+    public static PathResponse of(List<Station> paths, Distance distance, int fare) {
         final List<StationResponse> stations = paths.stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
-        final int distanceValue = distance.getValue();
-        final int fareAmount = calculatedFare.getAmount();
-        return new PathResponse(stations, distanceValue, fareAmount);
+        return new PathResponse(stations, distance.getValue(), fare);
     }
 
     public List<StationResponse> getStations() {

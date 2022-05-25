@@ -21,7 +21,8 @@ public class JdbcLineDao implements LineDao {
     private static final RowMapper<LineEntity> LINE_ROW_MAPPER = (resultSet, rowNum) -> new LineEntity(
             resultSet.getLong("id"),
             resultSet.getString("name"),
-            resultSet.getString("color")
+            resultSet.getString("color"),
+            resultSet.getInt("extraFare")
     );
 
     private final SimpleJdbcInsert jdbcInsert;
@@ -66,10 +67,6 @@ public class JdbcLineDao implements LineDao {
         return entity.getId();
     }
 
-    private boolean isUpdated(int updatedCount) {
-        return updatedCount != 0;
-    }
-
     @Override
     public Long delete(Long id) {
         final String sql = "DELETE FROM line WHERE id = ?";
@@ -80,4 +77,7 @@ public class JdbcLineDao implements LineDao {
         return id;
     }
 
+    private boolean isUpdated(int updatedCount) {
+        return updatedCount != 0;
+    }
 }

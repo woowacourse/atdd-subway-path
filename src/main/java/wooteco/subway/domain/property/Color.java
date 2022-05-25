@@ -21,10 +21,4 @@ public class Color {
         return value;
     }
 
-    @Override
-    public String toString() {
-        return "Color{" +
-                "value='" + value + '\'' +
-                '}';
-    }
 }

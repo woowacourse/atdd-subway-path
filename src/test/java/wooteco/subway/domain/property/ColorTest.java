@@ -16,7 +16,8 @@ class ColorTest {
         String value = null;
         // then
         assertThatExceptionOfType(InvalidRequestException.class)
-                .isThrownBy(() -> new Color(value));
+                .isThrownBy(() -> new Color(value))
+                .withMessageContaining("이름은 필수 입력값입니다.");
     }
 
     @Test
@@ -26,6 +27,7 @@ class ColorTest {
         String value = "";
         // then
         assertThatExceptionOfType(InvalidRequestException.class)
-                .isThrownBy(() -> new Color(value));
+                .isThrownBy(() -> new Color(value))
+                .withMessageContaining("이름은 필수 입력값입니다.");
     }
 }

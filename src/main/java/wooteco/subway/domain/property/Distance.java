@@ -31,6 +31,14 @@ public class Distance {
         return this.value > other.value;
     }
 
+    public boolean isShorterThan(int other) {
+        return value < other;
+    }
+
+    public int minusAndDivide(int minus, int unit) {
+        return (int) (Math.ceil((value - minus - 1) / unit) + 1);
+    }
+
     public int getValue() {
         return value;
     }
