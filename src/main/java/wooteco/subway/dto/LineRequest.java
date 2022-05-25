@@ -28,6 +28,11 @@ public class LineRequest {
         this.extraFare = extraFare;
     }
 
+    public LineRequest(String name, String color) {
+        this.name = name;
+        this.color = color;
+    }
+
     public String getName() {
         return name;
     }
