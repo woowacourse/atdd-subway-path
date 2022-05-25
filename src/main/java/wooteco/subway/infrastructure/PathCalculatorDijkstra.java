@@ -1,12 +1,12 @@
 package wooteco.subway.infrastructure;
 
 import java.util.List;
-import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.PathCalculator;
+import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.path.PathCalculator;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 
@@ -38,7 +38,7 @@ public class PathCalculatorDijkstra implements PathCalculator {
     }
 
     @Override
-    public GraphPath<Station, DefaultWeightedEdge> findShortestPath(final Station source, final Station target) {
-        return dijkstraShortestPath.getPath(source, target);
+    public Path findShortestPath(final Station source, final Station target) {
+        return new SubwayPath(dijkstraShortestPath.getPath(source, target));
     }
 }

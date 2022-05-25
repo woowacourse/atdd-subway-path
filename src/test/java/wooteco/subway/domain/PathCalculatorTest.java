@@ -12,6 +12,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.factory.SectionFactory;
 import wooteco.subway.domain.factory.StationFactory;
+import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.path.PathCalculator;
 import wooteco.subway.infrastructure.PathCalculatorDijkstra;
 
 @DisplayName("PathCalculator 는")
@@ -33,7 +35,7 @@ class PathCalculatorTest {
     @DisplayName("지하철 최단 경로 목록을 조회한다.")
     @Test
     void findShortestPath() {
-        GraphPath<Station, DefaultWeightedEdge> path = pathCalculator.findShortestPath(STATION_A, STATION_C);
+        Path path = pathCalculator.findShortestPath(STATION_A, STATION_C);
         assertThat(path.getVertexList())
                 .isEqualTo(List.of(STATION_A, STATION_B, STATION_C));
     }
@@ -41,8 +43,8 @@ class PathCalculatorTest {
     @DisplayName("지하철 최단 경로 거리를 구한다.")
     @Test
     void findShortestDistance() {
-        GraphPath<Station, DefaultWeightedEdge> path = pathCalculator.findShortestPath(STATION_A, STATION_C);
-        assertThat((int) path.getWeight())
+        Path path = pathCalculator.findShortestPath(STATION_A, STATION_C);
+        assertThat(path.getWeight())
                 .isEqualTo(6);
     }
 }
