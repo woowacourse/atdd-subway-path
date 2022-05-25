@@ -1,8 +1,8 @@
 package wooteco.subway.domain.fare;
 
-public class FareCalculator {
+public class Fare {
 
-    public FareCalculator() {
+    public Fare() {
     }
 
     public int calculateFare(int distance, int extraFare, int age) {

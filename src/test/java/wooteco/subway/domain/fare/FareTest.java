@@ -8,14 +8,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class FareCalculatorTest {
+class FareTest {
 
     @DisplayName("거리별 요금테스트")
     @ParameterizedTest
     @MethodSource("provideParameters1")
     void calculateFarePerDistance(int distance, int extraFare, int age, int expected) {
-        FareCalculator fareCalculator = new FareCalculator();
-        int actual = fareCalculator.calculateFare(distance, extraFare, age);
+        Fare fare = new Fare();
+        int actual = fare.calculateFare(distance, extraFare, age);
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -39,8 +39,8 @@ class FareCalculatorTest {
     @ParameterizedTest
     @MethodSource("provideParameters2")
     void calculateFarePerAge(int distance, int extraFare, int age, int expected) {
-        FareCalculator fareCalculator = new FareCalculator();
-        int actual = fareCalculator.calculateFare(distance, extraFare, age);
+        Fare fare = new Fare();
+        int actual = fare.calculateFare(distance, extraFare, age);
 
         assertThat(actual).isEqualTo(expected);
     }
