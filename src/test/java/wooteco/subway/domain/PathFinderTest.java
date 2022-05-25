@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import wooteco.subway.exception.PathNotFoundException;
 
 @SuppressWarnings("NonAsciiCharacters")
-class PathGraphTest {
+class PathFinderTest {
 
     @DisplayName("findShortestPath 메서드는 최단경로를 찾는다")
     @Nested
@@ -24,17 +24,17 @@ class PathGraphTest {
             Section section1 = new Section(강남역, 양재시민의숲역, 10);
             Section section2 = new Section(강남역, 양재역, 3);
             Section section3 = new Section(양재역, 양재시민의숲역, 3);
-            Line line1 = new Line("1호선", "파란색");
-            Line line2 = new Line("2호선", "초록색");
+            Line line1 = new Line("1호선", "파란색", 900);
+            Line line2 = new Line("2호선", "초록색", 1000);
             line1.addSection(section1);
             line2.addSection(section2);
             line2.addSection(section3);
 
             List<Line> lines = List.of(line1, line2);
-            PathGraph pathGraph = new PathGraph(lines);
-            Path expected = new Path(List.of(강남역, 양재역, 양재시민의숲역), 6);
+            PathFinder pathFinder = PathFinder.from(lines);
+            Path expected = new Path(List.of(강남역, 양재역, 양재시민의숲역), List.of(900, 1000), 6);
 
-            assertThat(pathGraph.findShortestPath(강남역, 양재시민의숲역)).isEqualTo(expected);
+            assertThat(pathFinder.findShortestPath(강남역, 양재시민의숲역)).isEqualTo(expected);
         }
 
         @Test
@@ -42,12 +42,12 @@ class PathGraphTest {
             Station 강남역 = new Station("강남역");
             Station 양재역 = new Station("양재역");
             Section section = new Section(강남역, 양재역, 10);
-            Line line = new Line("1호선", "파란색");
+            Line line = new Line("1호선", "파란색", 900);
             line.addSection(section);
 
-            PathGraph pathGraph = new PathGraph(List.of(line));
+            PathFinder pathFinder = PathFinder.from(List.of(line));
 
-            assertThatThrownBy(() -> pathGraph.findShortestPath(강남역, 강남역))
+            assertThatThrownBy(() -> pathFinder.findShortestPath(강남역, 강남역))
                 .isInstanceOf(PathNotFoundException.class);
         }
 
@@ -57,12 +57,12 @@ class PathGraphTest {
             Station 양재역 = new Station("양재역");
             Station 양재시민의숲역 = new Station("양재시민의숲역");
             Section section = new Section(강남역, 양재시민의숲역, 10);
-            Line line = new Line("1호선", "파란색");
+            Line line = new Line("1호선", "파란색", 900);
             line.addSection(section);
 
-            PathGraph pathGraph = new PathGraph(List.of(line));
+            PathFinder pathFinder = PathFinder.from(List.of(line));
 
-            assertThatThrownBy(() -> pathGraph.findShortestPath(양재역, 양재시민의숲역))
+            assertThatThrownBy(() -> pathFinder.findShortestPath(양재역, 양재시민의숲역))
                 .isInstanceOf(PathNotFoundException.class);
         }
     }

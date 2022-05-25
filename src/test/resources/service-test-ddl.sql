@@ -8,10 +8,10 @@ VALUES (1, '복정역'),
        (7, '모란역'),
        (8, '수서역');
 
-INSERT INTO line(id, name, color)
-VALUES (1, '분당선', '노란색'),
-       (2, '2호선', '초록색'),
-       (3, '3호선', '주황색');
+INSERT INTO line(id, name, color, extraFare)
+VALUES (1, '분당선', '노란색', 900),
+       (2, '2호선', '초록색', 1000),
+       (3, '3호선', '주황색', 1100);
 
 INSERT INTO section(id, line_id, up_station_id, down_station_id, distance)
 VALUES (1, 1, 1, 2, 10),

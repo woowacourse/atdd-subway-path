@@ -45,11 +45,12 @@ public class SimpleRestAssured {
             .extract();
     }
 
-    public static HashMap<String, Object> makeLineJson(String name, String color, Long upStationId,
+    public static HashMap<String, Object> makeLineJson(String name, String color, int extraFare, Long upStationId,
         Long downStationId, int distance) {
         return new HashMap<>() {{
             put("name", name);
             put("color", color);
+            put("extraFare", extraFare);
             put("upStationId", upStationId);
             put("downStationId", downStationId);
             put("distance", distance);
