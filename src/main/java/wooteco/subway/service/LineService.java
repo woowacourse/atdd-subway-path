@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineMap;
 import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Sections;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.request.CreateLineRequest;
 import wooteco.subway.dto.request.UpdateLineRequest;
@@ -43,24 +43,26 @@ public class LineService {
 
     @Transactional
     public LineResponse save(CreateLineRequest lineRequest) {
-        validateUniqueLineName(lineRequest.getName());
+        String name = validateUniqueLineName(lineRequest.getName());
+        String color = lineRequest.getColor();
+        int extraFare = lineRequest.getExtraFare();
         Station upStation = stationRepository.findExistingStation(lineRequest.getUpStationId());
         Station downStation = stationRepository.findExistingStation(lineRequest.getDownStationId());
         Section newSection = new Section(upStation, downStation, lineRequest.getDistance());
 
-        Line line = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
-        LineMap newLine = LineMap.of(line, newSection);
+        LineMap newLine = new LineMap(name, color, extraFare, newSection);
         return LineResponse.of(lineRepository.saveLine(newLine));
     }
 
     @Transactional
     public void update(Long id, UpdateLineRequest lineRequest) {
         LineMap line = lineRepository.findExistingLine(id);
-        String name = lineRequest.getName();
-        validateUniqueLineName(name);
+        String name = validateUniqueLineName(lineRequest.getName());
+        String color = lineRequest.getColor();
+        int extraFare = lineRequest.getExtraFare();
+        Sections sections = line.getSections();
 
-        Line updatedLine = new Line(id, name, lineRequest.getColor(), lineRequest.getExtraFare());
-        lineRepository.updateLine(new LineMap(updatedLine, line.getSections()));
+        lineRepository.updateLine(new LineMap(id, name, color, extraFare, sections));
     }
 
     @Transactional
@@ -69,10 +71,11 @@ public class LineService {
         lineRepository.deleteLine(line);
     }
 
-    private void validateUniqueLineName(String name) {
+    private String validateUniqueLineName(String name) {
         boolean isDuplicateName = lineRepository.checkExistingLineName(name);
         if (isDuplicateName) {
             throw new IllegalArgumentException(DUPLICATE_LINE_NAME_EXCEPTION_MESSAGE);
         }
+        return name;
     }
 }

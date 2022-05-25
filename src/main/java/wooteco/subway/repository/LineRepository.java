@@ -34,7 +34,7 @@ public class LineRepository {
                 .collect(groupingBy(Section::getLineId));
         return lineDao.findAll()
                 .stream()
-                .map(lineEntity -> new LineMap(lineEntity, new Sections(sectionsMap.get(lineEntity.getId()))))
+                .map(line -> toDomain(line, new Sections(sectionsMap.get(line.getId()))))
                 .collect(Collectors.toList());
     }
 
@@ -42,7 +42,7 @@ public class LineRepository {
         Line line = lineDao.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionType.LINE_NOT_FOUND));
         Sections sections = new Sections(sectionDao.findAllByLineId(id));
-        return new LineMap(line, sections);
+        return new LineMap(id, line.getName(), line.getColor(), line.getExtraFare(), sections);
     }
 
     public List<LineExtraFare> findLineExtraFaresByIds(List<Long> ids) {
@@ -67,7 +67,7 @@ public class LineRepository {
 
         Line savedLine = lineDao.save(new Line(name, color, extraFare));
         saveSections(savedLine.getId(), line.toSectionList());
-        return new LineMap(savedLine, line.getSections());
+        return toDomain(savedLine, line.getSections());
     }
 
     private void saveSections(Long lineId, List<Section> sections) {
@@ -93,5 +93,12 @@ public class LineRepository {
         Long id = line.getId();
         lineDao.deleteById(id);
         sectionDao.deleteAllByLineId(id);
+    }
+
+    private LineMap toDomain(Line lineEntity, Sections sections) {
+        Long lineId = lineEntity.getId();
+        String color = lineEntity.getColor();
+        int extraFare = lineEntity.getExtraFare();
+        return new LineMap(lineId, lineEntity.getName(), color, extraFare, sections);
     }
 }
