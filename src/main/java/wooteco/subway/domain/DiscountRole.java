@@ -30,8 +30,11 @@ public enum DiscountRole {
     private DiscountStrategy strategy;
 
     public static DiscountStrategy findDiscountStrategy(int age) {
-        return Arrays.stream(values()).filter(role -> role.predicate.test(age)).findAny()
-                .orElseThrow(() -> new IllegalArgumentException("전략을 찾을 수 없습니다.")).getStrategy();
+        return Arrays.stream(values())
+                .filter(role -> role.predicate.test(age))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("전략을 찾을 수 없습니다."))
+                .getStrategy();
     }
 
     DiscountRole(Predicate<Integer> predicate, DiscountStrategy strategy) {

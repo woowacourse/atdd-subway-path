@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS station
     id   BIGINT auto_increment NOT NULL,
     name VARCHAR (255) NOT NULL UNIQUE,
     PRIMARY KEY ( id )
-    );
+);
 
 CREATE TABLE IF NOT EXISTS line
 (
@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS line
     color VARCHAR (20) NOT NULL UNIQUE,
     extraFare INT,
     PRIMARY KEY ( id )
-    );
+);
 
 CREATE TABLE IF NOT EXISTS section
 (
@@ -22,4 +22,4 @@ CREATE TABLE IF NOT EXISTS section
     down_station_id BIGINT NOT NULL,
     distance        INT,
     PRIMARY KEY ( id )
-    );
+);
