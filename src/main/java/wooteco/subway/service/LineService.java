@@ -28,7 +28,7 @@ public class LineService {
 
     private static final String DUPLICATED_NAME_ERROR_MESSAGE = "중복된 이름이 존재합니다.\n-> {name : %s}";
     private static final String NONE_LINE_ERROR_MESSAGE = "해당 ID의 노선은 존재하지 않습니다.\n-> {id : %d}";
-    private static final String NONE_SECTION_ERROR_MESSAGE = "존재하지 않는 역입니다.\n-> {id : %d}";
+    private static final String NONE_STATION_ERROR_MESSAGE = "존재하지 않는 역입니다.";
 
     private final LineDao lineDao;
     private final SectionDao sectionDao;
@@ -46,10 +46,7 @@ public class LineService {
 
         Long lineId = lineDao.save(line.toEntity());
 
-        SectionRequest sectionRequest = SectionRequest.from(line);
-        sectionDao.save(sectionRequest.toEntity(lineId
-                , stationDao.findById(sectionRequest.getUpStationId())
-                , stationDao.findById(sectionRequest.getDownStationId())));
+        sectionDao.save(toSectionEntity(line, lineId));
 
         List<StationResponse> stations = generateStationResponses(line.getDownStationId(), line.getUpStationId());
         return new LineResponse(lineId, line.getName(), line.getColor(), line.getExtraFare(), stations);
@@ -62,14 +59,9 @@ public class LineService {
     }
 
     private void validStations(Long... ids) {
-        for (Long id : ids) {
-            validStation(id);
-        }
-    }
-
-    private void validStation(Long id) {
-        if (!stationDao.existsById(id)) {
-            throw new IllegalArgumentException(String.format(NONE_SECTION_ERROR_MESSAGE, id));
+        List<Long> idList = Arrays.stream(ids).collect(Collectors.toList());
+        if (!stationDao.existsByIds(idList)) {
+            throw new IllegalArgumentException(NONE_STATION_ERROR_MESSAGE);
         }
     }
 
@@ -77,6 +69,13 @@ public class LineService {
         return Arrays.stream(ids)
                 .map(id -> StationResponse.from(stationDao.findById(id)))
                 .collect(Collectors.toUnmodifiableList());
+    }
+
+    private Section toSectionEntity(LineCreateRequest line, Long lineId) {
+        SectionRequest sectionRequest = SectionRequest.from(line);
+        return sectionRequest.toEntity(lineId
+                , stationDao.findById(sectionRequest.getUpStationId())
+                , stationDao.findById(sectionRequest.getDownStationId()));
     }
 
     public void update(Long id, LineRequest lineRequest) {

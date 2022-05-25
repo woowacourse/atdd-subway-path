@@ -38,9 +38,9 @@ public class StationDao {
         return Objects.requireNonNull(jdbcTemplate.queryForObject(sql, source, Boolean.class));
     }
 
-    public boolean existsById(Long id) {
-        String sql = "select exists (select 1 from STATION where id = :id)";
-        SqlParameterSource source = new MapSqlParameterSource("id", id);
+    public boolean existsByIds(List<Long> ids) {
+        String sql = "select exists (select 1 from STATION where id in (:ids))";
+        SqlParameterSource source = new MapSqlParameterSource("ids", ids);
         return Objects.requireNonNull(jdbcTemplate.queryForObject(sql, source, Boolean.class));
     }
 

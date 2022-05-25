@@ -75,7 +75,7 @@ class StationDaoTest {
         // given
 
         // when
-        boolean result = stationDao.existsById(station1.getId());
+        boolean result = stationDao.existsByIds(List.of(station1.getId()));
 
         // then
         assertThat(result).isTrue();
