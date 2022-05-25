@@ -7,9 +7,10 @@ create table if not exists station
 
 create table if not exists line
 (
-    id    bigint auto_increment not null,
-    name  varchar(255)          not null unique,
-    color varchar(20)           not null,
+    id         bigint auto_increment not null,
+    name       varchar(255)          not null unique,
+    color      varchar(20)           not null,
+    extra_fare int                   not null,
     primary key(id)
 );
 

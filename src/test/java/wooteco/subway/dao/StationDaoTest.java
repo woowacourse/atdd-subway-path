@@ -14,6 +14,10 @@ import wooteco.subway.domain.Station;
 @JdbcTest
 class StationDaoTest {
 
+    private static final Station 강남역 = new Station("강남역");
+    private static final Station 선릉역 = new Station("선릉역");
+    private static final Station 잠실역 = new Station("잠실역");
+
     private final StationDao stationDao;
 
     @Autowired
@@ -24,34 +28,26 @@ class StationDaoTest {
     @DisplayName("지하철 역을 저장한다.")
     @Test
     void save() {
-        Station station = new Station("선릉역");
+        final Station station = stationDao.save(강남역);
 
-        Station savedStation = stationDao.save(station);
-
-        assertThat(savedStation.getName()).isEqualTo(station.getName());
+        assertThat(station.getName()).isEqualTo(강남역.getName());
     }
 
     @DisplayName("같은 이름의 지하철 역을 저장하는 경우 예외가 발생한다.")
     @Test
     void saveExistingName() {
-        Station station = new Station("선릉역");
+        stationDao.save(강남역);
 
-        stationDao.save(station);
-
-        assertThatThrownBy(() -> stationDao.save(station))
+        assertThatThrownBy(() -> stationDao.save(강남역))
                 .isInstanceOf(DuplicateKeyException.class);
     }
 
     @DisplayName("모든 지하철 역을 조회한다.")
     @Test
     void findAll() {
-        Station station1 = new Station("선릉역");
-        Station station2 = new Station("잠실역");
-        Station station3 = new Station("사우역");
-
-        stationDao.save(station1);
-        stationDao.save(station2);
-        stationDao.save(station3);
+        stationDao.save(강남역);
+        stationDao.save(선릉역);
+        stationDao.save(잠실역);
 
         assertThat(stationDao.findAll().size()).isEqualTo(3);
     }
@@ -59,20 +55,17 @@ class StationDaoTest {
     @DisplayName("id로 지하철 역을 조회한다.")
     @Test
     void findById() {
-        Station station = new Station("선릉역");
+        final Station station = stationDao.save(강남역);
 
-        Station savedStation = stationDao.save(station);
-
-        assertThat(stationDao.findById(savedStation.getId()).getName()).isEqualTo("선릉역");
+        assertThat(stationDao.findById(station.getId()).getName()).isEqualTo(강남역.getName());
     }
 
     @DisplayName("지하철 역을 삭제한다.")
     @Test
     void deleteById() {
-        Station station = new Station("선릉역");
-        Station savedStation = stationDao.save(station);
+        final Station station = stationDao.save(강남역);
 
-        stationDao.deleteById(savedStation.getId());
+        stationDao.deleteById(station.getId());
 
         assertThat(stationDao.findAll().size()).isZero();
     }

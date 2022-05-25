@@ -5,18 +5,21 @@ import java.util.stream.Collectors;
 import wooteco.subway.service.dto.LineServiceResponse;
 
 public class LineResponse {
+
     private Long id;
     private String name;
     private String color;
+    private int extraFare;
     private List<StationResponse> stations;
 
-    public LineResponse() {
+    private LineResponse() {
     }
 
     public LineResponse(LineServiceResponse lineServiceResponse) {
         this.id = lineServiceResponse.getId();
         this.name = lineServiceResponse.getName();
         this.color = lineServiceResponse.getColor();
+        this.extraFare = lineServiceResponse.getExtraFare();
         this.stations = lineServiceResponse.getStations()
                 .stream()
                 .map(StationResponse::new)
@@ -33,6 +36,10 @@ public class LineResponse {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     public List<StationResponse> getStations() {

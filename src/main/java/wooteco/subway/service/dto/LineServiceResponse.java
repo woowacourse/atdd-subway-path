@@ -9,12 +9,14 @@ public class LineServiceResponse {
     private final Long id;
     private final String name;
     private final String color;
+    private int extraFare;
     private final List<StationServiceResponse> stations;
 
     public LineServiceResponse(Line line, List<Station> stations) {
         this.id = line.getId();
         this.name = line.getName();
         this.color = line.getColor();
+        this.extraFare = line.getExtraFare();
         this.stations = stations.stream()
                 .map(StationServiceResponse::new)
                 .collect(Collectors.toList());
@@ -30,6 +32,10 @@ public class LineServiceResponse {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     public List<StationServiceResponse> getStations() {

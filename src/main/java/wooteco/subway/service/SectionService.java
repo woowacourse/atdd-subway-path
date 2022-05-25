@@ -32,7 +32,7 @@ public class SectionService {
 
     public void connect(SectionServiceRequest sectionServiceRequest) {
         validate(sectionServiceRequest);
-        Long lineId = sectionServiceRequest.getLindId();
+        Long lineId = sectionServiceRequest.getLineId();
         Long upStationId = sectionServiceRequest.getUpStationId();
         Long downStationId = sectionServiceRequest.getDownStationId();
         Section newSection = new Section(lineId, upStationId, downStationId, sectionServiceRequest.getDistance());
@@ -45,7 +45,7 @@ public class SectionService {
     }
 
     private void validate(SectionServiceRequest sectionServiceRequest) {
-        List<Long> stationIds = stationService.findAllByLineId(sectionServiceRequest.getLindId())
+        List<Long> stationIds = stationService.findAllByLineId(sectionServiceRequest.getLineId())
                 .stream()
                 .map(Station::getId)
                 .collect(Collectors.toList());
@@ -63,7 +63,7 @@ public class SectionService {
     private void insert(Section section, Section newSection) {
         sectionDao.deleteById(section.getId());
         List<Section> sections = section.split(newSection);
-        sections.forEach(sectionDao::save);
+        sectionDao.saveAll(sections);
     }
 
     private void extend(Section newSection) {

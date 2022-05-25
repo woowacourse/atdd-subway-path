@@ -27,7 +27,8 @@ public class LineService {
 
     @Transactional
     public LineServiceResponse save(LineServiceRequest lineServiceRequest) {
-        Line savedLine = lineDao.save(new Line(lineServiceRequest.getName(), lineServiceRequest.getColor()));
+        Line savedLine = lineDao.save(new Line(lineServiceRequest.getName(), lineServiceRequest.getColor(),
+                lineServiceRequest.getExtraFare()));
         Station upStation = stationService.findById(lineServiceRequest.getUpStationId());
         Station downStation = stationService.findById(lineServiceRequest.getDownStationId());
         Section section = new Section(savedLine.getId(), upStation.getId(), downStation.getId(),
@@ -56,8 +57,8 @@ public class LineService {
     }
 
     @Transactional
-    public void update(Long id, String name, String color) {
-        lineDao.updateById(id, new Line(name, color));
+    public void update(Long id, String name, String color, int extraFare) {
+        lineDao.updateById(id, new Line(name, color, extraFare));
     }
 
     @Transactional

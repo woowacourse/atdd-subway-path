@@ -7,6 +7,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         Station station2 = createStation(stationRequest2).as(Station.class);
         Station station3 = createStation(stationRequest3).as(Station.class);
 
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station3.getId(), 10);
+        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station3.getId(), 10, 0);
         long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
 
         // when
@@ -55,7 +56,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         Station station2 = createStation(stationRequest2).as(Station.class);
         Station station3 = createStation(stationRequest3).as(Station.class);
 
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station3.getId(), 10);
+        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station3.getId(), 10, 0);
         long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
 
         // when
@@ -78,7 +79,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         Station station2 = createStation(stationRequest2).as(Station.class);
         Station station3 = createStation(stationRequest3).as(Station.class);
 
-        LineRequest lineRequest = new LineRequest("2호선", "green", station2.getId(), station3.getId(), 10);
+        LineRequest lineRequest = new LineRequest("2호선", "green", station2.getId(), station3.getId(), 10, 0);
         long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
 
         // when
@@ -101,7 +102,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         Station station2 = createStation(stationRequest2).as(Station.class);
         Station station3 = createStation(stationRequest3).as(Station.class);
 
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
+        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10, 0);
         long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
 
         // when
@@ -124,7 +125,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         Station station2 = createStation(stationRequest2).as(Station.class);
         Station station3 = createStation(stationRequest3).as(Station.class);
 
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station3.getId(), 10);
+        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station3.getId(), 10, 0);
         long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
 
         // when
@@ -154,7 +155,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         Station station3 = createStation(stationRequest3).as(Station.class);
         Station station4 = createStation(stationRequest4).as(Station.class);
 
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station3.getId(), 10);
+        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station3.getId(), 10, 0);
         long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
 
         // when
@@ -181,7 +182,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         Station station1 = createStation(stationRequest1).as(Station.class);
         Station station2 = createStation(stationRequest2).as(Station.class);
 
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
+        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10, 0);
         long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
 
         // when
@@ -207,7 +208,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         Station station1 = createStation(stationRequest1).as(Station.class);
         Station station2 = createStation(stationRequest2).as(Station.class);
 
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
+        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10, 0);
         long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
 
         // when
@@ -235,19 +236,19 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         Station station2 = createStation(stationRequest2).as(Station.class);
         Station station3 = createStation(stationRequest3).as(Station.class);
 
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
+        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10, 0);
         long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
 
         // when
         SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 0);
         ExtractableResponse<Response> response = createSection(lineId, sectionRequest);
-        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+        Map<String, String> exceptionResponse = response.as(Map.class);
 
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(exceptionResponse.getErrorMessage())
-                        .isEqualTo("역간의 거리는 1 이상이어야 합니다.")
+                () -> assertThat(exceptionResponse.get("distance"))
+                        .isEqualTo("거리는 1 이상이어야 합니다.")
         );
     }
 
@@ -263,7 +264,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         Station station2 = createStation(stationRequest2).as(Station.class);
         Station station3 = createStation(stationRequest3).as(Station.class);
 
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
+        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10, 0);
         long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
 
         SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
@@ -297,7 +298,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         Station station2 = createStation(stationRequest2).as(Station.class);
         Station station3 = createStation(stationRequest3).as(Station.class);
 
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
+        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10, 0);
         long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
 
         SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
@@ -332,7 +333,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         Station station2 = createStation(stationRequest2).as(Station.class);
         Station station3 = createStation(stationRequest3).as(Station.class);
 
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
+        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10, 0);
         long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
 
         SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
@@ -364,7 +365,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         Station station1 = createStation(stationRequest1).as(Station.class);
         Station station2 = createStation(stationRequest2).as(Station.class);
 
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
+        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10, 0);
         long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
 
         // when
@@ -393,7 +394,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         Station station3 = createStation(stationRequest3).as(Station.class);
         Station station4 = createStation(stationRequest4).as(Station.class);
 
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
+        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10, 0);
         long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
 
         SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);

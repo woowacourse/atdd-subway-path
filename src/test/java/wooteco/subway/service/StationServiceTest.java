@@ -17,7 +17,9 @@ import wooteco.subway.service.dto.StationServiceResponse;
 @SpringBootTest
 class StationServiceTest extends ServiceTest {
 
-    private static final String SEOLLEUNG = "선릉역";
+    private static final String 강남역 = "강남역";
+    private static final String 선릉역 = "선릉역";
+    private static final String 잠실역 = "잠실역";
 
     private final StationService stationService;
 
@@ -29,32 +31,28 @@ class StationServiceTest extends ServiceTest {
     @DisplayName("지하철 역을 저장한다.")
     @Test
     void save() {
-        String stationName = "선릉역";
-        StationServiceResponse stationServiceResponse = stationService.save(stationName);
+        final StationServiceResponse stationServiceResponse = stationService.save(강남역);
 
-        assertThat(stationServiceResponse.getName()).isEqualTo(stationName);
+        assertThat(stationServiceResponse.getName()).isEqualTo(강남역);
     }
 
     @DisplayName("같은 이름의 지하철 역을 저장하는 경우 예외가 발생한다.")
     @Test
     void saveExistingName() {
-        stationService.save(SEOLLEUNG);
+        stationService.save(강남역);
 
-        assertThatThrownBy(() -> stationService.save(SEOLLEUNG))
+        assertThatThrownBy(() -> stationService.save(강남역))
                 .isInstanceOf(DuplicateKeyException.class);
     }
 
     @DisplayName("모든 지하철 역을 조회한다.")
     @Test
     void findAll() {
-        String stationName1 = "선릉역";
-        String stationName2 = "잠실역";
-        String stationName3 = "사우역";
-        StationServiceResponse station1 = stationService.save(stationName1);
-        StationServiceResponse station2 = stationService.save(stationName2);
-        StationServiceResponse station3 = stationService.save(stationName3);
+        final StationServiceResponse station1 = stationService.save(강남역);
+        final StationServiceResponse station2 = stationService.save(선릉역);
+        final StationServiceResponse station3 = stationService.save(잠실역);
 
-        List<StationServiceResponse> stations = stationService.findAll();
+        final List<StationServiceResponse> stations = stationService.findAll();
 
         assertAll(
                 () -> assertThat(stations.get(0).getId()).isEqualTo(station1.getId()),
@@ -70,17 +68,17 @@ class StationServiceTest extends ServiceTest {
     @Test
     @Sql("classpath:lineStations.sql")
     void findAllByLineId() {
-        List<Station> stationIds = stationService.findAllByLineId(1L);
+        final List<Station> stationIds = stationService.findAllByLineId(1L);
         assertThat(stationIds).containsExactly(
-                new Station(1L, "강남역"),
-                new Station(2L, "역삼역"),
-                new Station(3L, "교대역"));
+                new Station(1L, 강남역),
+                new Station(2L, 선릉역),
+                new Station(3L, 잠실역));
     }
 
     @DisplayName("지하철 역을 삭제한다.")
     @Test
     void deleteById() {
-        StationServiceResponse stationServiceResponse = stationService.save(SEOLLEUNG);
+        final StationServiceResponse stationServiceResponse = stationService.save(선릉역);
 
         stationService.deleteById(stationServiceResponse.getId());
 

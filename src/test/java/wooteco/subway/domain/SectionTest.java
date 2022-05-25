@@ -10,10 +10,12 @@ import org.junit.jupiter.api.Test;
 
 class SectionTest {
 
+    private static final Section SECTION_1_2 = new Section(1L, 1L, 2L, 10);
+
     @DisplayName("같은 역간의 구간 생성 시 예외가 발생한다.")
     @Test
     void constructor_SameStation_ThrowsException() {
-        assertThatThrownBy(() -> new Section(1L, 1L, 1L, 1L, 10))
+        assertThatThrownBy(() -> new Section(1L, 1L, 1L, 10))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("상행 종점과 하행 종점은 같을 수 없습니다.");
     }
@@ -21,7 +23,7 @@ class SectionTest {
     @DisplayName("거리가 1 미만인 구간 생성 시 예외가 발생한다.")
     @Test
     void constructor_InvalidDistance_ThrowsException() {
-        assertThatThrownBy(() -> new Section(1L, 1L, 1L, 2L, 0))
+        assertThatThrownBy(() -> new Section(1L, 1L, 2L, 0))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("역간의 거리는 1 이상이어야 합니다.");
     }
@@ -29,8 +31,7 @@ class SectionTest {
     @DisplayName("구간을 나눈다.")
     @Test
     void split() {
-        Section section = new Section(1L, 1L, 1L, 2L, 10);
-        List<Section> sections = section.split(new Section(2L, 1L, 1L, 3L, 5));
+        final List<Section> sections = SECTION_1_2.split(new Section(1L, 1L, 3L, 5));
 
         assertAll(
                 () -> assertThat(sections.size()).isEqualTo(2),
@@ -46,16 +47,14 @@ class SectionTest {
     @DisplayName("나누려는 새로운 구간의 길이가 기존 길이보다 클 경우 예외가 발생한다.")
     @Test
     void split_InvalidDistance_ThrowsException() {
-        Section section = new Section(1L, 1L, 1L, 2L, 10);
-        assertThatThrownBy(() -> section.split(new Section(2L, 1L, 1L, 3L, 15)))
+        assertThatThrownBy(() -> SECTION_1_2.split(new Section(1L, 1L, 3L, 15)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("전방 구간에 후방 구간을 합친다.")
     @Test
     void mergeForward() {
-        Section section = new Section(1L, 1L, 1L, 2L, 10);
-        Section mergedSection = section.merge(new Section(2L, 1L, 2L, 3L, 10));
+        final Section mergedSection = SECTION_1_2.merge(new Section(1L, 2L, 3L, 10));
 
         assertAll(
                 () -> assertThat(mergedSection.getDistance()).isEqualTo(20),
@@ -67,13 +66,12 @@ class SectionTest {
     @DisplayName("후방 구간에 전방 구간을 합친다.")
     @Test
     void mergeBackward() {
-        Section section = new Section(1L, 1L, 2L, 3L, 10);
-        Section mergedSection = section.merge(new Section(2L, 1L, 1L, 2L, 10));
+        final Section mergedSection = SECTION_1_2.merge(new Section(1L, 0L, 1L, 10));
 
         assertAll(
                 () -> assertThat(mergedSection.getDistance()).isEqualTo(20),
-                () -> assertThat(mergedSection.getUpStationId()).isEqualTo(1L),
-                () -> assertThat(mergedSection.getDownStationId()).isEqualTo(3L)
+                () -> assertThat(mergedSection.getUpStationId()).isEqualTo(0L),
+                () -> assertThat(mergedSection.getDownStationId()).isEqualTo(2L)
         );
     }
 }
