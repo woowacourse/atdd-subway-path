@@ -66,6 +66,7 @@ class LineServiceTest {
         assertAll(
                 () -> assertThat(lineResponse.getName()).isEqualTo("신분당선"),
                 () -> assertThat(lineResponse.getColor()).isEqualTo("bg-red-600"),
+                () -> assertThat(lineResponse.getExtraFare()).isEqualTo(0),
                 () -> assertThat(stationNames).contains("강남역", "역삼역")
         );
     }
