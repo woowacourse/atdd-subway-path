@@ -44,7 +44,7 @@ class LineServiceTest {
 
         long upStationId = stationDao.save(new Station("출발역"));
         long downStationId = stationDao.save(new Station("도착역"));
-        LINE_SAVE_REQUEST = new LineSaveRequest("신분당선", "bg-red-600", upStationId, downStationId, 10);
+        LINE_SAVE_REQUEST = new LineSaveRequest("신분당선", "bg-red-600", upStationId, downStationId, 10, 0);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -53,7 +53,7 @@ class LineServiceTest {
         // given
         long station1Id = stationDao.save(new Station(1L, "강남역"));
         long station2Id = stationDao.save(new Station(2L, "역삼역"));
-        LineSaveRequest lineSaveRequest = new LineSaveRequest("신분당선", "bg-red-600", station1Id, station2Id, 10);
+        LineSaveRequest lineSaveRequest = new LineSaveRequest("신분당선", "bg-red-600", station1Id, station2Id, 10, 0);
 
         // when
         LineResponse lineResponse = lineService.save(lineSaveRequest);
@@ -78,7 +78,7 @@ class LineServiceTest {
 
         // when & then
         assertThatThrownBy(
-                () -> lineService.save(new LineSaveRequest("신분당선", "bg-green-600", 1L, 2L, 10))
+                () -> lineService.save(new LineSaveRequest("신분당선", "bg-green-600", 1L, 2L, 10, 0))
         ).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("지하철 노선 이름이 중복됩니다.");
     }
@@ -91,7 +91,7 @@ class LineServiceTest {
 
         // when & then
         assertThatThrownBy(
-                () -> lineService.save(new LineSaveRequest("다른분당선", "bg-red-600", 1L, 2L, 10))
+                () -> lineService.save(new LineSaveRequest("다른분당선", "bg-red-600", 1L, 2L, 10, 0))
         ).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("지하철 노선 색상이 중복됩니다.");
     }

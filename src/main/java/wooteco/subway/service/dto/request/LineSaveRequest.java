@@ -24,19 +24,22 @@ public class LineSaveRequest {
     @Positive(message = "구간 거리는 1 이상이어야 합니다.")
     private int distance;
 
+    private int extraFare;
+
     private LineSaveRequest() {
     }
 
-    public LineSaveRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
+    public LineSaveRequest(String name, String color, Long upStationId, Long downStationId, int distance, int extraFare) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+        this.extraFare = extraFare;
     }
 
     public Line toLine() {
-        return new Line(getName(), getColor());
+        return new Line(getName(), getColor(), getExtraFare());
     }
 
     public Section convertSection() {
@@ -61,5 +64,9 @@ public class LineSaveRequest {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 }
