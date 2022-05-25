@@ -38,8 +38,6 @@ class PathServiceTest {
     private StationRepository stationRepository;
     private PathService pathService;
 
-    
-    
     @BeforeEach
     void setUp() {
         StationDao stationDao = new JdbcStationDao(jdbcTemplate);
