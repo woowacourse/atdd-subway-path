@@ -1,61 +1,58 @@
 package wooteco.subway.domain.path;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.WeightedMultigraph;
-import wooteco.subway.domain.section.Section;
-import wooteco.subway.exception.SubwayException;
+import wooteco.subway.domain.fare.AgeDiscountPolicy;
 
 public class Path {
+    private static final int OVER_FARE = 100;
+    private static final int BASIC_FARE = 1250;
+    private static final int FIRST_ADDITIONAL_INTERVAL = 10;
+    private static final int SECOND_ADDITIONAL_INTERVAL = 50;
+    private static final double FIRST_INTERVAL_UNIT = 5.0;
+    private static final double SECOND_INTERVAL_UNIT = 8.0;
 
-    private final DijkstraShortestPath<Long, ShortestPathEdge> dijkstraShortestPath;
+    private final int distance;
+    private final Set<Long> lineIds;
+    private final List<Long> stationIds;
 
-    private Path(DijkstraShortestPath<Long, ShortestPathEdge> dijkstraShortestPath) {
-        this.dijkstraShortestPath = dijkstraShortestPath;
+    public Path(int distance, Set<Long> lineIds, List<Long> stationIds) {
+        this.distance = distance;
+        this.lineIds = lineIds;
+        this.stationIds = stationIds;
     }
 
-    public static Path of(List<Section> sections, List<Long> stationIds) {
-        WeightedMultigraph<Long, ShortestPathEdge> graph = new WeightedMultigraph<>(ShortestPathEdge.class);
-        addVertexes(stationIds, graph);
-        setEdgeWeights(sections, graph);
-
-        return new Path(new DijkstraShortestPath<>(graph));
-    }
-
-    private static void addVertexes(List<Long> stationIds, WeightedMultigraph<Long, ShortestPathEdge> graph) {
-        for (Long stationId : stationIds) {
-            graph.addVertex(stationId);
+    public int calculateFare(int age, int extraCharge) {
+        AgeDiscountPolicy discount = AgeDiscountPolicy.of(age);
+        if (distance <= FIRST_ADDITIONAL_INTERVAL) {
+            return discount.apply(BASIC_FARE + extraCharge);
         }
-    }
-
-    private static void setEdgeWeights(List<Section> sections, WeightedMultigraph<Long, ShortestPathEdge> graph) {
-        for (Section section : sections) {
-            graph.addEdge(section.getUpStationId(), section.getDownStationId(),
-                    new ShortestPathEdge(section.getLineId(), section.getDistance()));
+        if (distance <= SECOND_ADDITIONAL_INTERVAL) {
+            return discount.apply(BASIC_FARE + calculateFareOverFirstDistance(distance) + extraCharge);
         }
+        return discount.apply(BASIC_FARE
+                + calculateFareOverFirstDistance(SECOND_ADDITIONAL_INTERVAL)
+                + calculateFareOverSecondDistance()
+                + extraCharge);
     }
 
-    public List<Long> findPath(Long source, Long target) {
-        return getPath(source, target).getVertexList();
+    private int calculateFareOverFirstDistance(int distance) {
+        return (int) (Math.ceil((distance - FIRST_ADDITIONAL_INTERVAL) / FIRST_INTERVAL_UNIT) * OVER_FARE);
     }
 
-    public Set<Long> getLineIds(Long source, Long target) {
-        return getPath(source, target).getEdgeList()
-                .stream()
-                .map(ShortestPathEdge::getLineId)
-                .collect(Collectors.toSet());
+    private int calculateFareOverSecondDistance() {
+        return (int) (Math.ceil((distance - SECOND_ADDITIONAL_INTERVAL) / SECOND_INTERVAL_UNIT) * OVER_FARE);
     }
 
-    public int findDistance(Long source, Long target) {
-        return (int) getPath(source, target).getWeight();
+    public int getDistance() {
+        return distance;
     }
 
-    private GraphPath<Long, ShortestPathEdge> getPath(Long source, Long target) {
-        return Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
-                .orElseThrow(() -> new SubwayException("경로가 존재하지 않습니다."));
+    public Set<Long> getLineIds() {
+        return lineIds;
+    }
+
+    public List<Long> getStationIds() {
+        return stationIds;
     }
 }

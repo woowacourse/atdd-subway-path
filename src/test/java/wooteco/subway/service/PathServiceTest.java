@@ -18,6 +18,7 @@ import wooteco.subway.dao.section.SectionDao;
 import wooteco.subway.dao.station.JdbcStationDao;
 import wooteco.subway.dao.station.StationDao;
 import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.path.ShortestPathFinder;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.path.PathResponse;
@@ -62,7 +63,7 @@ class PathServiceTest {
         StationService stationService = new StationService(stationDao);
         SectionService sectionService = new SectionService(sectionDao, stationService);
         LineService lineService = new LineService(lineDao, sectionService);
-        pathService = new PathService(stationService, sectionService, lineService);
+        pathService = new PathService(stationService, sectionService, lineService, new ShortestPathFinder());
     }
 
     @DisplayName("추가 요금이 없는 경로를 조회한다.")

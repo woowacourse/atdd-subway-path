@@ -1,56 +1,52 @@
 package wooteco.subway.domain.path;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.section.Section;
-import wooteco.subway.exception.SubwayException;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class PathTest {
 
-    private final List<Section> sections = List.of(
-            new Section(1L, 1L, 1L, 2L, 2),
-            new Section(2L, 1L, 2L, 3L, 2),
-            new Section(3L, 1L, 3L, 4L, 7),
-            new Section(4L, 2L, 2L, 5L, 3),
-            new Section(5L, 2L, 5L, 4L, 4)
-    );
-    private final List<Long> stationIds = List.of(1L, 2L, 3L, 4L, 5L);
+    @DisplayName("추가 요금이 없는 경우의 운임 요금을 계산한다.")
+    @CsvSource(value = {"9:1250", "10:1250", "11:1350", "33:1750", "50:2050", "58:2150"}, delimiter = ':')
+    @ParameterizedTest
+    void calculate(int distance, int expected) {
+        Path path = new Path(distance, Set.of(1L, 2L), List.of(1L, 2L, 3L));
+        int fare = path.calculateFare(20, 0);
 
-    @DisplayName("최단 거리 경로를 구한다.")
-    @Test
-    void findShortestPath() {
-        Path path = Path.of(sections, stationIds);
-
-        assertThat(path.findPath(1L, 4L)).containsExactly(1L, 2L, 5L, 4L);
+        assertThat(fare).isEqualTo(expected);
     }
 
-    @DisplayName("최단 거리를 구한다.")
-    @Test
-    void findShortestDistance() {
-        Path path = Path.of(sections, stationIds);
+    @DisplayName("추가 요금이 있는 경우, 운임 요금에 추가하여 계산한다.")
+    @CsvSource(value = {"9:1750", "10:1750", "11:1850", "33:2250", "50:2550", "58:2650"}, delimiter = ':')
+    @ParameterizedTest
+    void calculateWithExtraCharge(int distance, int expected) {
+        Path path = new Path(distance, Set.of(1L, 2L), List.of(1L, 2L, 3L));
+        int fare = path.calculateFare(20, 500);
 
-        assertThat(path.findDistance(1L, 4L)).isEqualTo(9);
+        assertThat(fare).isEqualTo(expected);
     }
 
-    @DisplayName("경로가 존재하지 않는 경우 예외가 발생한다.")
-    @Test
-    void notExistPath() {
-        List<Section> sections = List.of(
-                new Section(1L, 1L, 1L, 2L, 2),
-                new Section(2L, 1L, 2L, 3L, 2),
-                new Section(3L, 1L, 3L, 4L, 7),
-                new Section(4L, 2L, 5L, 6L, 3)
-        );
-        List<Long> stationIds = List.of(1L, 2L, 3L, 4L, 5L, 6L);
+    @DisplayName("6세 이상, 13세 미만의 어린이는 운임에서 350원을 공제한 금액의 50%가 할인된다.")
+    @CsvSource(value = {"6:700", "7:700", "12:700"}, delimiter = ':')
+    @ParameterizedTest
+    void calculateChildCharge(int age, int expected) {
+        Path path = new Path(9, Set.of(1L, 2L), List.of(1L, 2L, 3L));
+        int fare = path.calculateFare(age, 500);
 
-        Path path = Path.of(sections, stationIds);
+        assertThat(fare).isEqualTo(expected);
+    }
 
-        assertThatThrownBy(() -> path.findPath(1L, 5L))
-                .isInstanceOf(SubwayException.class)
-                .hasMessage("경로가 존재하지 않습니다.");
+    @DisplayName("13세 이상, 19세 미만의 청소년은 운임에서 350원을 공제한 금액의 20%가 할인된다.")
+    @CsvSource(value = {"13:1120", "14:1120", "18:1120", "19:1750"}, delimiter = ':')
+    @ParameterizedTest
+    void calculateAdolescentCharge(int age, int expected) {
+        Path path = new Path(9, Set.of(1L, 2L), List.of(1L, 2L, 3L));
+        int fare = path.calculateFare(age, 500);
+
+        assertThat(fare).isEqualTo(expected);
     }
 }

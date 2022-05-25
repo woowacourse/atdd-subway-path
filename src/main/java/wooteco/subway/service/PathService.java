@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.path.PathFinder;
 import wooteco.subway.domain.station.Stations;
 import wooteco.subway.dto.path.PathResponse;
 import wooteco.subway.dto.station.StationResponse;
@@ -19,22 +19,25 @@ public class PathService {
     private final StationService stationService;
     private final LineService lineService;
     private final SectionService sectionService;
+    private final PathFinder pathFinder;
 
-    public PathService(StationService stationService, SectionService sectionService, LineService lineService) {
+    public PathService(StationService stationService, SectionService sectionService, LineService lineService,
+                       PathFinder pathFinder) {
         this.stationService = stationService;
         this.sectionService = sectionService;
         this.lineService = lineService;
+        this.pathFinder = pathFinder;
     }
 
     public PathResponse findPath(Long source, Long target, int age) {
         Stations stations = stationService.findAll();
         validateStation(stations, source, target);
 
-        Path path = Path.of(sectionService.findAll(), stations.getStationIds());
-        List<Long> shortestPath = path.findPath(source, target);
-        Set<Long> lineIds = path.getLineIds(source, target);
-        int distance = path.findDistance(source, target);
-        return getPathResponse(stations, shortestPath, lineIds, distance, age);
+        Path path = pathFinder.find(stations.getStationIds(), sectionService.findAll(), source, target);
+        List<StationResponse> stationResponses = getStationsResponses(stations, path.getStationIds());
+        int fare = path.calculateFare(age, getExtraCharge(path.getLineIds()));
+
+        return new PathResponse(stationResponses, path.getDistance(), fare);
     }
 
     private void validateStation(Stations stations, Long source, Long target) {
@@ -55,21 +58,19 @@ public class PathService {
         }
     }
 
-    private PathResponse getPathResponse(Stations stations, List<Long> shortestPath, Set<Long> lineIds, int distance,
-                                         int age) {
-        List<StationResponse> stationsResponses = getStationsResponses(stations, shortestPath);
-        List<Line> lines = lineService.findByIds(lineIds);
-        int extraCharge = lines.stream().distinct().mapToInt(Line::getExtraFare).max()
-                .orElse(0);
-
-        Fare fare = new Fare(distance, extraCharge, age);
-        return new PathResponse(stationsResponses, distance, fare.calculate());
-    }
-
     private List<StationResponse> getStationsResponses(Stations stations, List<Long> shortestPath) {
         return shortestPath.stream()
                 .map(stations::findStationById)
                 .map(StationResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    private int getExtraCharge(Set<Long> lineIds) {
+        List<Line> lines = lineService.findByIds(lineIds);
+        return lines.stream()
+                .distinct()
+                .mapToInt(Line::getExtraFare)
+                .max()
+                .orElse(0);
     }
 }
