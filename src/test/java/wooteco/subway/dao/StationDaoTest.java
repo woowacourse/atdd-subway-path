@@ -35,7 +35,7 @@ class StationDaoTest {
         final Long id = stationDao.save(new StationEntity(HYEHWA));
 
         // then
-        assertThat(stationDao.findById(id).getName()).isEqualTo(HYEHWA);
+        assertThat(stationDao.getById(id).getName()).isEqualTo(HYEHWA);
     }
 
     @Test
@@ -45,7 +45,7 @@ class StationDaoTest {
         final long id = stationDao.save(new StationEntity(HYEHWA));
 
         // when
-        final StationEntity foundStation = stationDao.findById(id);
+        final StationEntity foundStation = stationDao.getById(id);
 
         // then
         assertThat(foundStation.getName()).isEqualTo(HYEHWA);
@@ -55,7 +55,7 @@ class StationDaoTest {
     @DisplayName("존재하지 않는 Id 조회 시, 예외를 발생한다.")
     void findNotExistId() {
         // when & then
-        assertThatThrownBy(() -> stationDao.findById(1L))
+        assertThatThrownBy(() -> stationDao.getById(1L))
                 .isInstanceOf(NotFoundStationException.class);
     }
 

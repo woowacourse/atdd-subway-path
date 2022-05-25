@@ -21,7 +21,7 @@ public class StationRepository {
     }
 
     public Station findById(final Long id) {
-        final StationEntity entity = stationDao.findById(id);
+        final StationEntity entity = stationDao.getById(id);
         return entity.toStation();
     }
 

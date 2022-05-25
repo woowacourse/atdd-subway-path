@@ -46,7 +46,7 @@ public class SectionDaoTest {
         final SectionEntity SectionEntity = new SectionEntity(lineId, upStationId, downStationId, 10);
 
         final Long id = sectionDao.save(SectionEntity);
-        final SectionEntity savedSection = sectionDao.findById(id);
+        final SectionEntity savedSection = sectionDao.getById(id);
 
         assertAll(() -> {
             assertThat(savedSection.getId()).isNotNull();
@@ -69,7 +69,7 @@ public class SectionDaoTest {
 
         // when
         sectionDao.batchSave(sections);
-        final List<SectionEntity> savedSections = sectionDao.findAllByLineId(lineId);
+        final List<SectionEntity> savedSections = sectionDao.getAllByLineId(lineId);
 
         // then
         assertThat(savedSections).hasSize(2);
@@ -88,7 +88,7 @@ public class SectionDaoTest {
         sectionDao.save(section1);
         sectionDao.save(section2);
 
-        final List<SectionEntity> sections = sectionDao.findAllByLineId(lineId);
+        final List<SectionEntity> sections = sectionDao.getAllByLineId(lineId);
 
         assertThat(sections).hasSize(2);
     }
@@ -104,7 +104,7 @@ public class SectionDaoTest {
         final Long id = sectionDao.save(SectionEntity);
 
         // when
-        final SectionEntity savedSection = sectionDao.findById(id);
+        final SectionEntity savedSection = sectionDao.getById(id);
 
         // then
         assertAll(() -> {
@@ -128,7 +128,7 @@ public class SectionDaoTest {
         sectionDao.deleteById(sectionId);
 
         // then
-        assertThat(sectionDao.findAllByLineId(lineId)).hasSize(0);
+        assertThat(sectionDao.getAllByLineId(lineId)).hasSize(0);
     }
 
     @Test
@@ -144,7 +144,7 @@ public class SectionDaoTest {
 
         // when
         sectionDao.batchDeleteById(List.of(sectionId1, sectionId2));
-        final List<SectionEntity> savedSections = sectionDao.findAllByLineId(lineId);
+        final List<SectionEntity> savedSections = sectionDao.getAllByLineId(lineId);
 
         // then
         assertThat(savedSections).hasSize(0);

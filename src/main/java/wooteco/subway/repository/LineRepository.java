@@ -34,7 +34,7 @@ public class LineRepository {
     }
 
     public Line find(final Long id) {
-        final LineEntity entity = lineDao.findById(id);
+        final LineEntity entity = lineDao.getById(id);
         final Sections sections = sectionRepository.findAllByLineId(id);
         return entity.toLine(sections);
     }

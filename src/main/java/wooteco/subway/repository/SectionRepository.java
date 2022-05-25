@@ -43,7 +43,7 @@ public class SectionRepository {
     }
 
     public Sections findAllByLineId(final Long id) {
-        final List<SectionEntity> entities = sectionDao.findAllByLineId(id);
+        final List<SectionEntity> entities = sectionDao.getAllByLineId(id);
         return new Sections(entities.stream()
                 .map(e -> {
                     final Station upStation = stationRepository.findById(e.getUpStationId());
@@ -53,7 +53,7 @@ public class SectionRepository {
     }
 
     public Section findById(final Long id) {
-        final SectionEntity entity = sectionDao.findById(id);
+        final SectionEntity entity = sectionDao.getById(id);
         final Station upStation = stationRepository.findById(entity.getUpStationId());
         final Station downStation = stationRepository.findById(entity.getDownStationId());
         return new Section(entity.getId(), upStation, downStation, entity.getDistance());

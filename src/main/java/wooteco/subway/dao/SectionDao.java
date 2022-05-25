@@ -52,7 +52,7 @@ public class SectionDao {
         return jdbcTemplate.query(sql, ROW_MAPPER);
     }
 
-    public List<SectionEntity> findAllByLineId(final Long id) {
+    public List<SectionEntity> getAllByLineId(final Long id) {
         try {
             final String sql = "SELECT * FROM SECTION WHERE line_id = :id";
             return jdbcTemplate.query(sql, Map.of("id", id), ROW_MAPPER);
@@ -61,7 +61,7 @@ public class SectionDao {
         }
     }
 
-    public SectionEntity findById(final Long id) {
+    public SectionEntity getById(final Long id) {
         try {
             final String sql = "SELECT * FROM SECTION WHERE id = :id";
             return jdbcTemplate.queryForObject(sql, Map.of("id", id), ROW_MAPPER);

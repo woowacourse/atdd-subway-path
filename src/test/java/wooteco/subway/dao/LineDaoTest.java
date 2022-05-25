@@ -39,7 +39,7 @@ public class LineDaoTest {
         final Long id = lineDao.save(new LineEntity(LINE_2, SKY_BLUE, 900));
 
         // then
-        final LineEntity savedLine = lineDao.findById(id);
+        final LineEntity savedLine = lineDao.getById(id);
         assertAll(
                 () -> assertThat(savedLine.getId()).isNotNull(),
                 () -> assertThat(savedLine.getName()).isEqualTo(LINE_2),
@@ -90,7 +90,7 @@ public class LineDaoTest {
         final Long id = lineDao.save(new LineEntity(LINE_2, SKY_BLUE, 900));
 
         // when
-        final LineEntity foundLine = lineDao.findById(id);
+        final LineEntity foundLine = lineDao.getById(id);
 
         // then
         assertAll(
@@ -104,7 +104,7 @@ public class LineDaoTest {
     @DisplayName("존재하지 않는 Id 조회 시, 예외를 발생한다.")
     void findNotExistId() {
         // when & then
-        assertThatThrownBy(() -> lineDao.findById(1L))
+        assertThatThrownBy(() -> lineDao.getById(1L))
                 .isInstanceOf(NotFoundLineException.class);
     }
 
@@ -118,7 +118,7 @@ public class LineDaoTest {
         lineDao.updateById(new LineEntity(id, LINE_4, GREEN, 800));
 
         // then
-        final LineEntity updatedLine = lineDao.findById(id);
+        final LineEntity updatedLine = lineDao.getById(id);
         assertAll(
                 () -> assertThat(updatedLine.getName()).isEqualTo(LINE_4),
                 () -> assertThat(updatedLine.getColor()).isEqualTo(GREEN),

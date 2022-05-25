@@ -42,7 +42,7 @@ public class LineDao {
         return jdbcTemplate.query(sql, ROW_MAPPER);
     }
 
-    public LineEntity findById(final Long id) {
+    public LineEntity getById(final Long id) {
         try {
             final String sql = "SELECT * FROM LINE WHERE id = :id";
             return jdbcTemplate.queryForObject(sql, Map.of("id", id), ROW_MAPPER);
