@@ -1,19 +1,26 @@
 package wooteco.subway.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.dto.response.ErrorResponse;
-import wooteco.subway.exception.SubwayException;
+import wooteco.subway.exception.DuplicatedException;
+import wooteco.subway.exception.NotFoundException;
 
 @ControllerAdvice
 @Repository
 public class ExceptionController {
 
-    @ExceptionHandler(SubwayException.class)
-    public ResponseEntity<ErrorResponse> subwayException(SubwayException exception) {
-        return ResponseEntity.status(exception.getHttpStatus()).body(new ErrorResponse(exception.getMessage()));
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorResponse> notFoundException(NotFoundException exception) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(exception.getMessage()));
+    }
+
+    @ExceptionHandler(DuplicatedException.class)
+    public ResponseEntity<ErrorResponse> subwayException(DuplicatedException exception) {
+        return ResponseEntity.badRequest().body(new ErrorResponse(exception.getMessage()));
     }
 
     @ExceptionHandler(RuntimeException.class)
