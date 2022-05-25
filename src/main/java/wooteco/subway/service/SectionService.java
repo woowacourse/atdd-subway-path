@@ -1,32 +1,36 @@
 package wooteco.subway.service;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.SectionRequest;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SectionService {
 
     private final SectionDao sectionDao;
     private final StationDao stationDao;
+    private final LineDao lineDao;
 
-    public SectionService(final SectionDao sectionDao, final StationDao stationDao) {
+    public SectionService(final SectionDao sectionDao, final StationDao stationDao, final LineDao lineDao) {
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
+        this.lineDao = lineDao;
     }
 
     @Transactional
     public Section create(long lineId, SectionRequest sectionRequest) {
         final Section section = sectionRequest.toEntity();
-        final Section newSection = new Section(findUpStation(section), findDownStation(section), section.getDistance(), lineId);
+        final Section newSection = new Section(findUpStation(section), findDownStation(section), section.getDistance(), getLine(lineId));
 
         final List<Section> lineSections = sectionDao.findAllByLineId(lineId);
         final Sections sections = new Sections(lineSections);
@@ -36,6 +40,11 @@ public class SectionService {
         modify(sections, lineSections);
 
         return sectionDao.save(newSection);
+    }
+
+    private Line getLine(long lineId) {
+        return lineDao.findById(lineId)
+                .orElseThrow(() -> new IllegalArgumentException("등록된 라인이 없습니다."));
     }
 
     private void modify(final Sections sections, final List<Section> lineSections) {

@@ -33,7 +33,7 @@ abstract public class AcceptanceTest {
 
     protected LineResponse createLine(String name, String color, Long upStationId, Long downStationId, int distance) {
         final ExtractableResponse<Response> response = AcceptanceTestFixture.post("/lines",
-                new LineRequest(name, color, upStationId, downStationId, distance));
+                new LineRequest(name, color, upStationId, downStationId, distance, 0));
         return response.jsonPath().getObject(".", LineResponse.class);
     }
 

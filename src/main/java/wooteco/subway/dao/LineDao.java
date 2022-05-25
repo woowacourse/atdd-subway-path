@@ -1,10 +1,5 @@
 package wooteco.subway.dao;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -14,6 +9,8 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Line;
 
+import java.util.*;
+
 @Repository
 public class LineDao {
 
@@ -22,7 +19,8 @@ public class LineDao {
     private final RowMapper<Line> resultMapper = (rs, rowNum) -> new Line(
             rs.getLong("id"),
             rs.getString("name"),
-            rs.getString("color")
+            rs.getString("color"),
+            rs.getInt("extraFare")
     );
 
     public LineDao(final NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
@@ -30,26 +28,26 @@ public class LineDao {
     }
 
     public Line save(final Line line) {
-        final String sql = "insert into LINE (name, color) values (:name, :color)";
+        final String sql = "insert into LINE (name, color, extraFare) values (:name, :color, :extraFare)";
 
         final Map<String, Object> params = new HashMap<>();
         params.put("name", line.getName());
         params.put("color", line.getColor());
+        params.put("extraFare", line.getExtraFare());
 
         final KeyHolder keyHolder = new GeneratedKeyHolder();
         namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource(params), keyHolder);
-        return new Line(Objects.requireNonNull(keyHolder.getKey()).longValue(), line.getName(), line.getColor());
+        return new Line(Objects.requireNonNull(keyHolder.getKey()).longValue(), line.getName(), line.getColor(), line.getExtraFare());
     }
 
     public List<Line> findAll() {
-        final String sql = "select * from LINE";
+        final String sql = "select id, name, color, extraFare from LINE";
 
-        return namedParameterJdbcTemplate.query(sql,
-                (rs, rowNum) -> new Line(rs.getLong("id"), rs.getString("name"), rs.getString("color")));
+        return namedParameterJdbcTemplate.query(sql, resultMapper);
     }
 
     public Optional<Line> findById(final Long id) {
-        final String sql = "select * from LINE where id=:id";
+        final String sql = "select id, name, color, extraFare from LINE where id=:id";
 
         final Map<String, Object> params = new HashMap<>();
         params.put("id", id);
@@ -60,7 +58,7 @@ public class LineDao {
     }
 
     public Optional<Line> findByName(final String name) {
-        final String sql = "select * from LINE where name=:name";
+        final String sql = "select id, name, color, extraFare from LINE where name=:name";
 
         final Map<String, Object> params = new HashMap<>();
         params.put("name", name);
@@ -71,12 +69,13 @@ public class LineDao {
     }
 
     public int update(final Long id, final Line newLine) {
-        final String sql = "update LINE set name=:name, color=:color where id=:id";
+        final String sql = "update LINE set name=:name, color=:color, extraFare=:extraFare where id=:id";
 
         final Map<String, Object> params = new HashMap<>();
         params.put("id", id);
         params.put("name", newLine.getName());
         params.put("color", newLine.getColor());
+        params.put("extraFare", newLine.getExtraFare());
 
         return namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource(params));
     }

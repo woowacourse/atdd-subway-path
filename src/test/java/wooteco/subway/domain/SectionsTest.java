@@ -1,22 +1,24 @@
 package wooteco.subway.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
-import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 class SectionsTest {
 
     private final Station upStation = new Station(1L, "아차산역");
     private final Station downStation = new Station(2L, "군자역");
-    private final Section section = new Section(1L, upStation, downStation, 10, 1L);
+    private final Line line = new Line(1L, "5호선", "purple", 0);
+    private final Section section = new Section(1L, upStation, downStation, 10, line);
     private Sections sections;
 
     @BeforeEach
@@ -30,7 +32,7 @@ class SectionsTest {
 
         final Station newStation1 = new Station(3L, "여의도역");
         final Station newStation2 = new Station(4L, "마장역");
-        final Section newSection = new Section(newStation1, newStation2, 5, 1L);
+        final Section newSection = new Section(newStation1, newStation2, 5, line);
 
         assertThatThrownBy(() -> sections.add(newSection))
                 .isInstanceOf(IllegalStateException.class)
@@ -40,7 +42,7 @@ class SectionsTest {
     @DisplayName("추가하려는 구간의 역들이 기존 구간에 모두 존재하면 예외를 발생한다.")
     @Test
     void add_throwsAllStationExistException() {
-        final Section newSection = new Section(upStation, downStation, 5, 1L);
+        final Section newSection = new Section(upStation, downStation, 5, line);
 
         assertThatThrownBy(() -> sections.add(newSection))
                 .isInstanceOf(IllegalStateException.class)
@@ -53,7 +55,7 @@ class SectionsTest {
     void add_throwsUpSectionDistanceException(final int distance) {
         final Station newStation1 = new Station(1L, "아차산역");
         final Station newStation2 = new Station(3L, "군자역");
-        final Section newSection = new Section(newStation1, newStation2, distance, 1L);
+        final Section newSection = new Section(newStation1, newStation2, distance, line);
 
         assertThatThrownBy(() -> sections.add(newSection))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -66,7 +68,7 @@ class SectionsTest {
     void add_throwsDownSectionDistanceException(final int distance) {
         final Station newStation1 = new Station(3L, "마장역");
         final Station newStation2 = new Station(2L, "군자역");
-        final Section newSection = new Section(newStation1, newStation2, distance, 1L);
+        final Section newSection = new Section(newStation1, newStation2, distance, line);
 
         assertThatThrownBy(() -> sections.add(newSection))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -78,7 +80,7 @@ class SectionsTest {
     void addUpStation() {
         final Station newStation1 = new Station(3L, "광나루역");
         final Station newStation2 = new Station(1L, "아차산역");
-        final Section newSection = new Section(newStation1, newStation2, 5, 1L);
+        final Section newSection = new Section(newStation1, newStation2, 5, line);
 
         sections.add(newSection);
 
@@ -95,7 +97,7 @@ class SectionsTest {
     void addDoDwnStation() {
         final Station newStation1 = new Station(2L, "군자역");
         final Station newStation2 = new Station(3L, "장한평역");
-        final Section newSection = new Section(newStation1, newStation2, 5, 1L);
+        final Section newSection = new Section(newStation1, newStation2, 5, line);
 
         sections.add(newSection);
 
@@ -112,7 +114,7 @@ class SectionsTest {
     void addBranchedUpSection() {
         final Station newStation1 = new Station(3L, "어린이대공원역");
         final Station newStation2 = new Station(2L, "군자역");
-        final Section newSection = new Section(newStation1, newStation2, 5, 1L);
+        final Section newSection = new Section(newStation1, newStation2, 5, line);
 
         sections.add(newSection);
 
@@ -142,7 +144,7 @@ class SectionsTest {
     void addBranchedDownSection() {
         final Station newStation1 = new Station(1L, "아차산역");
         final Station newStation2 = new Station(3L, "어린이대공원역");
-        final Section newSection = new Section(newStation1, newStation2, 5, 1L);
+        final Section newSection = new Section(newStation1, newStation2, 5, line);
 
         sections.add(newSection);
 
@@ -172,7 +174,7 @@ class SectionsTest {
     void delete_throwsNotFoundException() {
         final Station newStation1 = new Station(1L, "아차산역");
         final Station newStation2 = new Station(3L, "어린이대공원역");
-        final Section newSection = new Section(newStation1, newStation2, 5, 1L);
+        final Section newSection = new Section(newStation1, newStation2, 5, line);
         final Sections newSections = new Sections(List.of(section, newSection));
         final long stationId = 4L;
 
@@ -194,7 +196,7 @@ class SectionsTest {
     @ValueSource(longs = {2, 3})
     void deleteEndSection(final long stationId) {
         final Station station = new Station(3L, "광나루역");
-        final Section newSection = new Section(2L, station, upStation, 10, 1L);
+        final Section newSection = new Section(2L, station, upStation, 10, line);
         final Sections newSections = new Sections(List.of(section, newSection));
 
         newSections.pop(stationId);
@@ -206,7 +208,7 @@ class SectionsTest {
     @Test
     void deleteBranchedSection() {
         final Station station = new Station(3L, "광나루역");
-        final Section newSection = new Section(2L, station, upStation, 10, 1L);
+        final Section newSection = new Section(2L, station, upStation, 10, line);
         final Sections newSections = new Sections(List.of(section, newSection));
         // 광나루 - 아차산 - 군자
         newSections.pop(1L);

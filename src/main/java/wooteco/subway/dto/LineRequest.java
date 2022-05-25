@@ -1,9 +1,11 @@
 package wooteco.subway.dto;
 
-import javax.validation.constraints.NotBlank;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+
+import javax.validation.constraints.NotBlank;
 
 public class LineRequest {
 
@@ -19,28 +21,28 @@ public class LineRequest {
 
     private final int distance;
 
-    public LineRequest() {
-        this(null, null, null, null, 0);
-    }
+    private final int extraFare;
 
     public LineRequest(final String name, final String color) {
-        this(name, color, null, null, 0);
+        this(name, color, null, null, 0, 0);
     }
 
+    @JsonCreator
     public LineRequest(final String name,
                        final String color,
                        final Long upStationId,
                        final Long downStationId,
-                       final int distance) {
+                       final int distance, int extraFare) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+        this.extraFare = extraFare;
     }
 
     public Line toEntity() {
-        return new Line(name, color);
+        return new Line(name, color, extraFare);
     }
 
     public Section toSectionEntity() {
@@ -86,5 +88,9 @@ public class LineRequest {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 }

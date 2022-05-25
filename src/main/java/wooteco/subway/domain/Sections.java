@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -122,9 +123,9 @@ public class Sections {
                 .findAny();
     }
 
-    private Optional<Section> findUpSection(final Section other) {
+    private Optional<Section> findUpSection(final Section section) {
         return value.stream()
-                .filter(it -> it.getUpStation().equals(other.getUpStation()))
+                .filter(it -> it.getUpStation().equals(section.getUpStation()))
                 .findAny();
     }
 
@@ -158,5 +159,26 @@ public class Sections {
 
     public List<Section> getSections() {
         return value;
+    }
+
+    public Section findConnectedSection(final Station source, final Station target, final int distance) {
+        return value.stream()
+                .filter(section -> section.isSameValue(source, target, distance)
+                        || section.isSameValue(target, source, distance))
+                .min(Comparator.comparingInt(o -> o.getLine().getExtraFare()))
+                .orElseThrow(() -> new IllegalArgumentException("구간이 존재하지 않습니다."));
+    }
+
+    public int getTotalDistance() {
+        return value.stream()
+                .mapToInt(Section::getDistance)
+                .sum();
+    }
+
+    public List<Line> getLines() {
+        return value.stream()
+                .distinct()
+                .map(Section::getLine)
+                .collect(Collectors.toList());
     }
 }

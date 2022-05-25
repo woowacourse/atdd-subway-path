@@ -1,15 +1,16 @@
 package wooteco.subway.dao;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
-import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import wooteco.subway.domain.Line;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @JdbcTest
 class LineDaoTest {
@@ -24,7 +25,7 @@ class LineDaoTest {
     @DisplayName("라인을 저장한다.")
     @Test
     void lineSaveTest() {
-        Line savedLine = lineDao.save(new Line("신분당선", "bg-red-600"));
+        Line savedLine = lineDao.save(new Line("신분당선", "bg-red-600", 900));
         assertThat(savedLine.getId()).isNotZero();
     }
 
@@ -38,12 +39,13 @@ class LineDaoTest {
     @DisplayName("특정 라인을 조회한다.")
     @Test
     void findById() {
-        Line savedLine = lineDao.save(new Line("신분당선", "bg-red-600"));
+        Line savedLine = lineDao.save(new Line("신분당선", "bg-red-600", 900));
         Optional<Line> wrappedLine = lineDao.findById(savedLine.getId());
         assert (wrappedLine).isPresent();
         assertAll(
                 () -> assertThat(wrappedLine.get().getName()).isEqualTo("신분당선"),
-                () -> assertThat(wrappedLine.get().getColor()).isEqualTo("bg-red-600")
+                () -> assertThat(wrappedLine.get().getColor()).isEqualTo("bg-red-600"),
+                () -> assertThat(wrappedLine.get().getExtraFare()).isEqualTo(900)
         );
     }
 
@@ -51,19 +53,20 @@ class LineDaoTest {
     @Test
     void updateLine() {
         Line savedLine = lineDao.save(new Line("신분당선", "bg-red-600"));
-        lineDao.update(savedLine.getId(), new Line("경의중앙선", "bg-mint-600"));
+        lineDao.update(savedLine.getId(), new Line("경의중앙선", "bg-mint-600", 300));
         Optional<Line> wrappedLine = lineDao.findById(savedLine.getId());
         assert (wrappedLine).isPresent();
         assertAll(
                 () -> assertThat(wrappedLine.get().getName()).isEqualTo("경의중앙선"),
-                () -> assertThat(wrappedLine.get().getColor()).isEqualTo("bg-mint-600")
+                () -> assertThat(wrappedLine.get().getColor()).isEqualTo("bg-mint-600"),
+                () -> assertThat(wrappedLine.get().getExtraFare()).isEqualTo(300)
         );
     }
 
     @DisplayName("특정 라인을 삭제한다.")
     @Test
     void deleteLine() {
-        Line savedLine = lineDao.save(new Line("신분당선", "bg-red-600"));
+        Line savedLine = lineDao.save(new Line("신분당선", "bg-red-600", 500));
         lineDao.deleteById(savedLine.getId());
         Optional<Line> wrappedLine = lineDao.findById(savedLine.getId());
         assertThat(wrappedLine).isEmpty();

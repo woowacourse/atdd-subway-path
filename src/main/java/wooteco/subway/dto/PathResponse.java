@@ -1,8 +1,9 @@
 package wooteco.subway.dto;
 
+import wooteco.subway.domain.ShortestPath;
+
 import java.util.List;
 import java.util.stream.Collectors;
-import wooteco.subway.domain.ShortestPath;
 
 public class PathResponse {
 
