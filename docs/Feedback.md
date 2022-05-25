@@ -39,7 +39,7 @@
 - [x] `DiscountPolicyFactory` / `FareFactory`
     - [x] 현재 구조 상으로 조건이 추가될 경우 분기문이 추가됨. 개선 필요
         - hint : 각 할인 정책이 할인 조건을 알고 있다면?
-- [ ] `Fare` / `DiscountPolicy`
+- [x] `Fare` / `DiscountPolicy`
     - 각각의 구현 클래스별로 테스트 코드를 별도로 가지고 있도록 수정
 - [ ] `AcceptanceTest`
     - `dao`가 아닌 `RestAssured`를 이용한 테스트  
