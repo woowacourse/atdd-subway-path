@@ -1,11 +1,8 @@
 package wooteco.subway.service;
 
+import java.util.List;
 import org.springframework.stereotype.Service;
-import wooteco.subway.domain.fare.AgeDiscountFare;
-import wooteco.subway.domain.fare.BasicFare;
-import wooteco.subway.domain.fare.DistanceOverFare;
-import wooteco.subway.domain.fare.ExtraFare;
-import wooteco.subway.domain.fare.Fare;
+import wooteco.subway.domain.line.LineExtraFare;
 import wooteco.subway.domain.path.Navigator;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.station.Station;
@@ -21,7 +18,8 @@ public class PathService {
     private final SectionRepository sectionRepository;
     private final StationRepository stationRepository;
 
-    public PathService(LineRepository lineRepository, SectionRepository sectionRepository,
+    public PathService(LineRepository lineRepository,
+                       SectionRepository sectionRepository,
                        StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.sectionRepository = sectionRepository;
@@ -32,13 +30,11 @@ public class PathService {
         Station startStation = stationRepository.findExistingStation(sourceStationId);
         Station endStation = stationRepository.findExistingStation(targetStationId);
 
-        Navigator navigator = new Navigator(sectionRepository.findAllSections());
-        Path path = new Path(startStation, endStation, navigator);
-        int distance = path.getDistance();
+        Path path = new Path(startStation, endStation, new Navigator(sectionRepository.findAllSections()));
+        List<Long> passingLineIds = path.getPassingLineIds();
+        List<LineExtraFare> lineExtraFares = lineRepository.findLineExtraFaresByIds(passingLineIds);
+        int fare = path.calculateFare(lineExtraFares, age);
 
-        Fare fare = new DistanceOverFare(new BasicFare(), distance);
-        fare = new ExtraFare(fare, lineRepository.findLineExtraFaresByIds(path.getPassingLineIds()));
-        fare = new AgeDiscountFare(fare, age);
-        return PathResponse.of(path, fare.calculate());
+        return PathResponse.of(path, fare);
     }
 }

@@ -1,4 +1,4 @@
-package wooteco.subway.domain.fare2;
+package wooteco.subway.domain.fare;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
