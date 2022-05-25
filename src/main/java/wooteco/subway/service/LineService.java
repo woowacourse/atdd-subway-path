@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
@@ -18,33 +17,20 @@ import wooteco.subway.dto.service.response.LineServiceResponse;
 
 @Service
 public class LineService {
-    private static final String ERROR_MESSAGE_NOT_EXISTS_STATION = "존재하지 않는 역을 지나는 노선은 만들 수 없습니다.";
-
     private final LineRepository lineRepository;
-    private final StationDao stationDao;
 
-    public LineService(LineRepository lineRepository, StationDao stationDao) {
-        this.stationDao = stationDao;
+    public LineService(LineRepository lineRepository) {
         this.lineRepository = lineRepository;
     }
 
     @Transactional
     public LineServiceResponse save(LineServiceRequest lineInfo) {
-        long upStationId = lineInfo.getUpStationId();
-        long downStationId = lineInfo.getDownStationId();
-
-        validateBeforeSave(upStationId, downStationId);
-
         Line lineToAdd = new Line(lineInfo.getName(), lineInfo.getColor(), lineInfo.getExtraFare());
-        Line resultLine = lineRepository.save(lineToAdd, upStationId, downStationId, lineInfo.getDistance());
+        Line resultLine = lineRepository.save(lineToAdd, lineInfo.getUpStationId(), lineInfo.getDownStationId(),
+            lineInfo.getDistance());
 
         return new LineServiceResponse(resultLine.getId(), resultLine.getName(), resultLine.getColor(),
             resultLine.getExtraFare(), convertStationToInfo(resultLine.getStations()));
-    }
-
-    private void validateBeforeSave(Long upStationId, Long downStationId) {
-        validateNotExistStation(upStationId);
-        validateNotExistStation(downStationId);
     }
 
     public List<LineServiceResponse> findAll() {
@@ -71,11 +57,8 @@ public class LineService {
     }
 
     public void update(LineUpdateRequest lineUpdateRequest) {
-        Long id = lineUpdateRequest.getId();
-        String name = lineUpdateRequest.getName();
-        int extraFare = lineUpdateRequest.getExtraFare();
-
-        Line line = new Line(id, name, lineUpdateRequest.getColor(), extraFare);
+        Line line = new Line(lineUpdateRequest.getId(), lineUpdateRequest.getName(), lineUpdateRequest.getColor(),
+            lineUpdateRequest.getExtraFare());
         lineRepository.update(line);
     }
 
@@ -84,9 +67,4 @@ public class LineService {
         lineRepository.delete(id);
     }
 
-    private void validateNotExistStation(Long stationId) {
-        if (!stationDao.existById(stationId)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_NOT_EXISTS_STATION);
-        }
-    }
 }

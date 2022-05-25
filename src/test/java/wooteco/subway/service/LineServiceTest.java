@@ -24,8 +24,7 @@ public class LineServiceTest {
         fakeLineDao = new FakeLineDao();
         fakeSectionDao = new FakeSectionDao();
         fakeStationDao = new FakeStationDao();
-        lineService = new LineService(new LineRepositoryWithDao(fakeLineDao, fakeSectionDao, fakeStationDao),
-            fakeStationDao);
+        lineService = new LineService(new LineRepositoryWithDao(fakeLineDao, fakeSectionDao, fakeStationDao));
 
         fakeStationDao.save(new Station("강남역"));
         fakeStationDao.save(new Station("선릉역"));
