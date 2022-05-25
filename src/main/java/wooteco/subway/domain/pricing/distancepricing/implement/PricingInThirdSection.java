@@ -16,10 +16,7 @@ public final class PricingInThirdSection implements PricingBySection {
         if (distance == 0) {
             return 0;
         }
-        if (distance % UNIT_DISTANCE == 0) {
-            return (distance / UNIT_DISTANCE) * UNIT_MONEY;
-        }
-        return (distance / UNIT_DISTANCE) * UNIT_MONEY + UNIT_MONEY;
+        return UNIT_MONEY * (distance / UNIT_DISTANCE + distance % UNIT_DISTANCE);
     }
 
     private int adjustDistance(int distance) {
