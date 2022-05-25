@@ -264,7 +264,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         @Test
         void 성공시_204_OK() {
+            databaseFixtureUtils.saveStations(강남역, 선릉역);
             databaseFixtureUtils.saveLine("존재하는 노선", "노란색");
+            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역);
 
             ExtractableResponse<Response> response = HttpUtils.send(HttpMethod.DELETE, toPath(1L));
 

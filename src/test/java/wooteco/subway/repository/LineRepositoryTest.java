@@ -14,6 +14,7 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineMap;
 import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Sections;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.fixture.DatabaseUsageTest;
@@ -75,8 +76,12 @@ class LineRepositoryTest extends DatabaseUsageTest {
         @Test
         void id에_대응되는_노선이_존재하는_경우_도메인으로_반환() {
             databaseFixtureUtils.saveLine("노선1", "색상", 1000);
-            Line actual = repository.findExistingLine(1L);
-            Line expected = new Line(1L, "노선1", "색상", 1000);
+            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역);
+
+            LineMap actual = repository.findExistingLine(1L);
+            LineMap expected = new LineMap(
+                    new Line(1L, "노선1", "색상", 1000),
+                    new Sections(List.of(new Section(1L, 강남역, 선릉역, 10))));
 
             assertThat(actual).isEqualTo(expected);
         }
@@ -175,9 +180,9 @@ class LineRepositoryTest extends DatabaseUsageTest {
     void deleteLine_메서드는_노선과_등록된_구간들을_제거() {
         databaseFixtureUtils.saveLine("노선1", "색상", 100);
         databaseFixtureUtils.saveSection(1L, 강남역, 잠실역, 10);
-        databaseFixtureUtils.saveSection(1L, 잠실역, 선릉역, 15);
 
-        repository.deleteLine(new Line(1L, "노선1", "색상", 100));
+        repository.deleteLine(new LineMap(new Line(1L, "노선1", "색상", 100),
+                new Sections(List.of(new Section(1L,  강남역, 잠실역, 10)))));
         boolean lineExistence = lineDao.findById(1L).isPresent();
         List<Section> existingSections = sectionDao.findAll();
 

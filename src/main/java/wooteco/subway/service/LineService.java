@@ -4,11 +4,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.domain.line.LineMap;
 import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.LineMap;
 import wooteco.subway.domain.line.SubwayMap;
 import wooteco.subway.domain.section.Section;
-import wooteco.subway.domain.section.Sections;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.request.CreateLineRequest;
 import wooteco.subway.dto.request.UpdateLineRequest;
@@ -43,9 +42,8 @@ public class LineService {
     }
 
     public LineResponse find(Long id) {
-        Line line = lineRepository.findExistingLine(id);
-        Sections sections = new Sections(sectionRepository.findAllSectionsByLineId(id));
-        return LineResponse.of(new LineMap(line, sections));
+        LineMap line = lineRepository.findExistingLine(id);
+        return LineResponse.of(line);
     }
 
     @Transactional
@@ -69,7 +67,7 @@ public class LineService {
 
     @Transactional
     public void delete(Long id) {
-        Line line = lineRepository.findExistingLine(id);
+        LineMap line = lineRepository.findExistingLine(id);
         lineRepository.deleteLine(line);
     }
 

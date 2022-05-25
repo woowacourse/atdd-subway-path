@@ -7,6 +7,7 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineMap;
 import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Sections;
 import wooteco.subway.exception.ExceptionType;
 import wooteco.subway.exception.NotFoundException;
 
@@ -30,9 +31,11 @@ public class LineRepository {
         return lineDao.findAllByIds(ids);
     }
 
-    public Line findExistingLine(Long id) {
-        return lineDao.findById(id)
+    public LineMap findExistingLine(Long id) {
+        Line line = lineDao.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionType.LINE_NOT_FOUND));
+        Sections sections = new Sections(sectionDao.findAllByLineId(id));
+        return new LineMap(line, sections);
     }
 
     public boolean checkExistingLine(Long id) {
@@ -63,7 +66,7 @@ public class LineRepository {
         lineDao.update(updatedLine);
     }
 
-    public void deleteLine(Line line) {
+    public void deleteLine(LineMap line) {
         Long id = line.getId();
         lineDao.deleteById(id);
         sectionDao.deleteAllByLineId(id);
