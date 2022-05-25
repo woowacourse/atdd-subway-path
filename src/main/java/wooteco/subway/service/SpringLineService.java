@@ -87,7 +87,7 @@ public class SpringLineService implements LineService {
     @Override
     public void update(Long id, LineServiceRequest lineServiceRequest) {
         final Line updateRequest = new Line(LineId.from(id), LineName.from(lineServiceRequest.getName()),
-                LineColor.from(lineServiceRequest.getColor()));
+                LineColor.from(lineServiceRequest.getColor()), LineExtraFare.from(lineServiceRequest.getExtraFare()));
         validate(id, lineServiceRequest);
 
         final long affectedRow = lineRepository.update(updateRequest);

@@ -43,6 +43,7 @@ public class JdbcLineRepository implements LineRepository {
                         LineId.from(savedLine.getId()),
                         LineName.from(savedLine.getName()),
                         LineColor.from(savedLine.getColor()),
+                        LineExtraFare.from(savedLine.getExtraFare()),
                         sectionInput
                 );
     }
@@ -93,7 +94,8 @@ public class JdbcLineRepository implements LineRepository {
                 (
                         LineId.from(entity.getId()),
                         LineName.from(entity.getName()),
-                        LineColor.from(entity.getColor())
+                        LineColor.from(entity.getColor()),
+                        LineExtraFare.from(entity.getExtraFare())
                 );
     }
 
@@ -119,7 +121,8 @@ public class JdbcLineRepository implements LineRepository {
 
     @Override
     public long update(Line line) {
-        final LineEntity lineEntity = new LineEntity(line.getId(), line.getName(), line.getColor());
+        final LineEntity lineEntity = new LineEntity(line.getId(), line.getName(), line.getColor(),
+                line.getExtraFare());
         return lineDao.updateById(lineEntity);
     }
 
