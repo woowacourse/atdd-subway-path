@@ -68,7 +68,7 @@ public class PathService {
                 .stream()
                 .collect(Collectors.toMap(Station::getId, station -> station));
 
-        return path.getShortestPath().stream()
+        return path.getShortestPathByStationId().stream()
                 .map(stations::get)
                 .map(StationResponse::new)
                 .collect(Collectors.toList());

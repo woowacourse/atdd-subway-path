@@ -7,18 +7,18 @@ import java.util.List;
 
 public class Path {
 
-    private final List<Long> shortestPath;
+    private final List<Long> shortestPathByStationId;
     private final int totalDistance;
-    private final Sections sections;
+    private final Sections shortestSections;
 
-    public Path(List<Long> shortestPath, int totalDistance, Sections sections) {
-        this.shortestPath = shortestPath;
+    public Path(List<Long> shortestPathByStationId, int totalDistance, Sections shortestSections) {
+        this.shortestPathByStationId = shortestPathByStationId;
         this.totalDistance = totalDistance;
-        this.sections = sections;
+        this.shortestSections = shortestSections;
     }
 
-    public List<Long> getShortestPath() {
-        return shortestPath;
+    public List<Long> getShortestPathByStationId() {
+        return shortestPathByStationId;
     }
 
     public int getTotalDistance() {
@@ -26,6 +26,6 @@ public class Path {
     }
 
     public List<Section> getShortestSections() {
-        return sections.getShortestSections(shortestPath);
+        return shortestSections.getSections();
     }
 }

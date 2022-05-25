@@ -26,7 +26,7 @@ class PathTest {
         sections.add(new Section(1L, 1L, 4L, 5L, 10));
         Path path = makePath(1L, 5L, stationIds, new Sections(sections));
         //when
-        List<Long> actualPath = path.getShortestPath();
+        List<Long> actualPath = path.getShortestPathByStationId();
         int actualTotalDistance = path.getTotalDistance();
         //then
         assertAll(
@@ -48,7 +48,7 @@ class PathTest {
         sections.add(new Section(1L, 1L, 4L, 5L, 10));
         Path path = makePath(1L, 5L, stationIds, new Sections(sections));
         //when
-        List<Long> actualPath = path.getShortestPath();
+        List<Long> actualPath = path.getShortestPathByStationId();
         int actualTotalDistance = path.getTotalDistance();
         //then
         assertAll(
