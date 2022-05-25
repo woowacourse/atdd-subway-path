@@ -32,15 +32,19 @@ public enum DistanceRange {
         return distance >= min && distance <= max;
     }
 
-    public int getFareByDistance(int distance) {
+    public int calcFareByDistance(int distance) {
         if (this == UNTIL_9) {
             return basicFare;
         }
+        return basicFare + calcAdditionalFare(distance);
+    }
+
+    private int calcAdditionalFare(int distance) {
         int fare = 0;
         fare += ((distance - min) / chargeUnit) * 100;
         if ((distance - min) % chargeUnit > 0 || ((distance - min) / chargeUnit == 0)) {
             fare += 100;
         }
-        return basicFare + fare;
+        return fare;
     }
 }

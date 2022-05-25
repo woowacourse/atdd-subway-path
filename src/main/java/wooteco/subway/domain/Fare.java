@@ -38,7 +38,7 @@ public class Fare {
     }
 
     public int calculateFare() {
-        int fare = DistanceRange.findRange(distance).getFareByDistance(distance) + extraFare;
+        int fare = DistanceRange.findRange(distance).calcFareByDistance(distance) + extraFare;
         return (int) (fare * findRange(age).getDiscountRate());
     }
 }
