@@ -1,14 +1,13 @@
 package wooteco.subway.domain.strategy.fare;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class NonExtraFareTest {
+class NonExtraFareStrategyTest {
 
-    private ExtraFareStrategy strategy = new NonExtraFare();
+    private ExtraFareStrategy strategy = new NonExtraFareStrategy();
 
     @DisplayName("10Km 이하는 초과요금이 없다.")
     @Test

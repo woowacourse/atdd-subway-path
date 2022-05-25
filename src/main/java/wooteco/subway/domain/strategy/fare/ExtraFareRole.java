@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 
 public enum ExtraFareRole {
 
-    NON(distance -> Constants.NO_EXTRA_STANDARD_DISTANCE >= distance, new NonExtraFare()),
+    NON(distance -> Constants.NO_EXTRA_STANDARD_DISTANCE >= distance, new NonExtraFareStrategy()),
     BASIC(distance -> Constants.NO_EXTRA_STANDARD_DISTANCE < distance
             && Constants.BASIC_EXTRA_FARE_MAX_DISTANCE >= distance, new BasicExtraFareStrategy()),
     SPECIAL(distance -> Constants.BASIC_EXTRA_FARE_MAX_DISTANCE < distance, new SpecialExtraFareStrategy());

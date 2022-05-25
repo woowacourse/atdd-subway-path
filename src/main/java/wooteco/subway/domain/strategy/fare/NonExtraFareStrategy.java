@@ -1,6 +1,6 @@
 package wooteco.subway.domain.strategy.fare;
 
-public class NonExtraFare implements ExtraFareStrategy {
+public class NonExtraFareStrategy implements ExtraFareStrategy {
 
     @Override
     public int calculate(int distance) {
