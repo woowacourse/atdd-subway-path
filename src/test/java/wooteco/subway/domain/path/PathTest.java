@@ -17,7 +17,7 @@ class PathTest {
     private final Station STATION4 = new Station(4L, "역4");
     private final Station STATION5 = new Station(5L, "역5");
     private final Station STATION6 = new Station(6L, "역6");
-    private final Navigator<Station, Section> NAVIGATOR = new NavigatorJgraphtAdapter(List.of(
+    private final Navigator NAVIGATOR = new Navigator(List.of(
             new Section(1L, STATION1, STATION2, 1),
             new Section(1L, STATION2, STATION3, 100),
             new Section(2L, STATION2, STATION4, 2),
@@ -59,7 +59,7 @@ class PathTest {
     @Test
     void 노선에_구간으로_등록되지_않은_역에_대한_경로를_조회하려는_경우_예외_발생() {
         Station nonRegisteredStation = new Station(999L, "등록되지 않은 역");
-        Navigator<Station, Section> navigator = new NavigatorJgraphtAdapter(List.of(
+        Navigator navigator = new Navigator(List.of(
                 new Section(STATION1, STATION2, 10),
                 new Section(STATION2, STATION3, 100),
                 new Section(STATION3, STATION4, 20)));
@@ -70,7 +70,7 @@ class PathTest {
 
     @Test
     void 출발점과_도착점이_동일한_경우_예외_발생() {
-        Navigator<Station, Section> navigator = new NavigatorJgraphtAdapter(List.of(
+        Navigator navigator = new Navigator(List.of(
                 new Section(STATION1, STATION2, 10)));
 
         assertThatThrownBy(() -> getPathOf(STATION1, STATION1, navigator))
@@ -79,7 +79,7 @@ class PathTest {
 
     @Test
     void 도달할_수_없는_경로를_조회하려는_경우_예외_발생() {
-        Navigator<Station, Section> navigator = new NavigatorJgraphtAdapter(List.of(
+        Navigator navigator = new Navigator(List.of(
                 new Section(STATION1, STATION2, 10),
                 new Section(STATION3, STATION4, 20)));
 
@@ -87,7 +87,7 @@ class PathTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    private Path getPathOf(Station start, Station target, Navigator<Station, Section> navigator) {
+    private Path getPathOf(Station start, Station target, Navigator navigator) {
         return new Path(start, target, navigator);
     }
 

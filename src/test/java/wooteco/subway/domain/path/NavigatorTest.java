@@ -9,7 +9,7 @@ import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 
 @SuppressWarnings("NonAsciiCharacters")
-class NavigatorJgraphtAdapterTest {
+class NavigatorTest {
 
     private final Station STATION1 = new Station(1L, "역1");
     private final Station STATION2 = new Station(2L, "역2");
@@ -29,7 +29,7 @@ class NavigatorJgraphtAdapterTest {
                 new Section(STATION5, STATION3, 100),
                 new Section(STATION3, STATION6, 100));
 
-        Navigator<Station, Section> navigator = new NavigatorJgraphtAdapter(sections);
+        Navigator navigator = new Navigator(sections);
         List<Section> actual = navigator.calculateShortestPath(STATION2, STATION3);
         List<Section> expected = List.of(closestSection);
 
@@ -48,7 +48,7 @@ class NavigatorJgraphtAdapterTest {
                 new Section(STATION2, STATION5, 100),
                 new Section(STATION3, STATION6, 6));
 
-        Navigator<Station, Section> navigator = new NavigatorJgraphtAdapter(sections);
+        Navigator navigator = new Navigator(sections);
         List<Section> actual = navigator.calculateShortestPath(STATION2, STATION3);
         List<Section> expected = List.of(firstSection, secondSection, thirdSection);
 
@@ -67,7 +67,7 @@ class NavigatorJgraphtAdapterTest {
                 new Section(STATION2, STATION5, 100),
                 new Section(STATION3, STATION6, 6));
 
-        Navigator<Station, Section> navigator = new NavigatorJgraphtAdapter(sections);
+        Navigator navigator = new Navigator(sections);
         List<Section> actual1 = navigator.calculateShortestPath(STATION2, STATION3);
         List<Section> actual2 = navigator.calculateShortestPath(STATION3, STATION2);
         List<Section> expected1 = List.of(firstSection, secondSection, thirdSection);
@@ -83,7 +83,7 @@ class NavigatorJgraphtAdapterTest {
                 new Section(STATION1, STATION2, 10),
                 new Section(STATION3, STATION4, 20));
 
-        Navigator<Station, Section> navigator = new NavigatorJgraphtAdapter(sections);
+        Navigator navigator = new Navigator(sections);
         assertThatThrownBy(() -> navigator.calculateShortestPath(STATION1, STATION3))
                 .isInstanceOf(IllegalArgumentException.class);
     }

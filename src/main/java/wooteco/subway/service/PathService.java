@@ -9,14 +9,13 @@ import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.fare.LineOverFare;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.path.Navigator;
-import wooteco.subway.domain.path.NavigatorJgraphtAdapter;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.response.PathResponse;
+import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
-import wooteco.subway.repository.LineRepository;
 
 @Service
 public class PathService {
@@ -37,7 +36,7 @@ public class PathService {
         Station endStation = stationRepository.findExistingStation(targetStationId);
         List<Section> sections = sectionRepository.findAllSections();
 
-        Navigator<Station, Section> navigator = new NavigatorJgraphtAdapter(sections);
+        Navigator navigator = new Navigator(sections);
         Path path = new Path(startStation, endStation, navigator);
         int distance = path.getDistance();
         List<Line> lines = lineRepository.findAllLinesByIds(path.getPassingLineIds());
