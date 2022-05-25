@@ -15,7 +15,7 @@ public class RequestFormAssembler {
 
     public LineRequest lineRequest(LineRequestForm lineRequestForm) {
         return new LineRequest(List.of(sectionRequest(lineRequestForm)),
-                lineRequestForm.getName(), lineRequestForm.getColor());
+                lineRequestForm.getName(), lineRequestForm.getColor(), lineRequestForm.getExtraFare());
     }
 
     private SectionRequest sectionRequest(LineRequestForm lineRequestForm) {
@@ -24,8 +24,8 @@ public class RequestFormAssembler {
     }
 
     public LineRequest lineRequest(LineUpdateRequestForm lineUpdateRequestForm) {
-        return new LineRequest(Collections.emptyList(),
-                lineUpdateRequestForm.getName(), lineUpdateRequestForm.getColor());
+        return new LineRequest(Collections.emptyList(), lineUpdateRequestForm.getName(),
+                lineUpdateRequestForm.getColor(), lineUpdateRequestForm.getExtraFare());
     }
 
     public SectionRequest sectionRequest(SectionRequestForm sectionRequestForm) {

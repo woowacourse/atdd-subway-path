@@ -195,6 +195,7 @@ class LineAcceptanceTest extends AcceptanceTest {
                 "color", color,
                 "upStationId", String.valueOf(upStationId),
                 "downStationId", String.valueOf(downStationId),
-                "distance", String.valueOf(10));
+                "distance", String.valueOf(10),
+                "extraFare", String.valueOf(100));
     }
 }

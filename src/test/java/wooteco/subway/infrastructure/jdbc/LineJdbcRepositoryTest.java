@@ -34,7 +34,8 @@ class LineJdbcRepositoryTest {
     private static final List<Section> SECTIONS = List.of(강남_역삼, 역삼_선릉);
     private static final String LINE_NAME = "2호선";
     private static final String LINE_COLOR = "green";
-    private static final Line DEFAULT_LINE = new Line(SECTIONS, LINE_NAME, LINE_COLOR);
+    private static final long LINE_EXTRA_FARE = 0L;
+    private static final Line DEFAULT_LINE = new Line(SECTIONS, LINE_NAME, LINE_COLOR, LINE_EXTRA_FARE);
 
     @Autowired
     private DataSource dataSource;
@@ -50,7 +51,7 @@ class LineJdbcRepositoryTest {
     @DisplayName("지하철노선을 생성한다.")
     @Test
     void save() {
-        Line line = new Line(SECTIONS, LINE_NAME, LINE_COLOR);
+        Line line = new Line(SECTIONS, LINE_NAME, LINE_COLOR, LINE_EXTRA_FARE);
         Line actual = lineRepository.save(line);
 
         assertAll(
@@ -68,7 +69,7 @@ class LineJdbcRepositoryTest {
     @ValueSource(ints = {3})
     void getAll(int expected) {
         IntStream.rangeClosed(1, expected)
-                .mapToObj(id -> new Line(SECTIONS, "호선" + id, "색상" + id))
+                .mapToObj(id -> new Line(SECTIONS, "호선" + id, "색상" + id, LINE_EXTRA_FARE))
                 .forEach(lineRepository::save);
 
         List<Line> actual = lineRepository.getAll();
@@ -78,7 +79,7 @@ class LineJdbcRepositoryTest {
     @DisplayName("지하철노선을 조회한다.")
     @Test
     void getById() {
-        Line expected = new Line(SECTIONS, "신분당선", "color");
+        Line expected = new Line(SECTIONS, "신분당선", "color", LINE_EXTRA_FARE);
         long lineId = lineRepository.save(expected).getId();
 
         Line actual = lineRepository.getById(lineId);
@@ -98,8 +99,8 @@ class LineJdbcRepositoryTest {
     @DisplayName("지하철노선을 수정한다.")
     @Test
     void update() {
-        Line expected = lineRepository.save(new Line(SECTIONS, "신분당선", "color1"));
-        expected.update("분당선", "color2");
+        Line expected = lineRepository.save(new Line(SECTIONS, "신분당선", "color1", LINE_EXTRA_FARE));
+        expected.update("분당선", "color2", 300);
 
         Line actual = lineRepository.update(expected);
         assertThat(actual).usingRecursiveComparison()
@@ -109,7 +110,7 @@ class LineJdbcRepositoryTest {
     @DisplayName("존재하지 않는 지하철노선을 수정한다.")
     @Test
     void updateNonExistentLine() {
-        assertThatThrownBy(() -> lineRepository.update(new Line(1L, SECTIONS, "신분당선", "color")))
+        assertThatThrownBy(() -> lineRepository.update(new Line(1L, SECTIONS, "신분당선", "color", LINE_EXTRA_FARE)))
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessageContaining("지하철노선을 찾을 수 없습니다.");
     }
@@ -119,7 +120,8 @@ class LineJdbcRepositoryTest {
     void updateSections() {
         Line line = lineRepository.save(DEFAULT_LINE);
         List<Section> expected = List.of(강남_역삼, 역삼_선릉, 선릉_삼성);
-        lineRepository.updateSections(new Line(line.getId(), expected, line.getName(), line.getColor()));
+        lineRepository.updateSections(
+                new Line(line.getId(), expected, line.getName(), line.getColor(), LINE_EXTRA_FARE));
 
         List<Section> actual = lineRepository.getById(line.getId()).getSections();
         assertThat(actual).usingRecursiveComparison()

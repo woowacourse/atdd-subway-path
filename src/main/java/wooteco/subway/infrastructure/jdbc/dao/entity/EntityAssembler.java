@@ -13,11 +13,12 @@ public class EntityAssembler {
     }
 
     public static LineEntity lineEntity(Line line) {
-        return new LineEntity(line.getId(), line.getName(), line.getColor());
+        return new LineEntity(line.getId(), line.getName(), line.getColor(), line.getExtraFare());
     }
 
     public static Line line(LineEntity lineEntity, List<Section> sections) {
-        return new Line(lineEntity.getId(), sections, lineEntity.getName(), lineEntity.getColor());
+        return new Line(lineEntity.getId(), sections,
+                lineEntity.getName(), lineEntity.getColor(), lineEntity.getExtraFare());
     }
 
     public static List<SectionEntity> sectionEntities(long lineId, Line line) {

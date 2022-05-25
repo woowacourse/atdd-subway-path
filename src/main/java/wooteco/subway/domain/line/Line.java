@@ -13,25 +13,28 @@ public class Line {
     private final OrderedSections sections;
     private LineName name;
     private LineColor color;
+    private Fare extraFare;
 
-    public Line(Id id, List<Section> sections, LineName name, LineColor color) {
+    public Line(Id id, List<Section> sections, LineName name, LineColor color, Fare extraFare) {
         this.id = id;
         this.sections = new OrderedSections(sections, new SectionSorter());
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
     }
 
-    public Line(long id, List<Section> sections, String name, String color) {
-        this(new Id(id), sections, new LineName(name), new LineColor(color));
+    public Line(long id, List<Section> sections, String name, String color, long extraFare) {
+        this(new Id(id), sections, new LineName(name), new LineColor(color), new Fare(extraFare));
     }
 
-    public Line(List<Section> sections, String name, String color) {
-        this(Id.temporary(), sections, new LineName(name), new LineColor(color));
+    public Line(List<Section> sections, String name, String color, long extraFare) {
+        this(Id.temporary(), sections, new LineName(name), new LineColor(color), new Fare(extraFare));
     }
 
-    public void update(String name, String color) {
+    public void update(String name, String color, long extraFare) {
         this.name = new LineName(name);
         this.color = new LineColor(color);
+        this.extraFare = new Fare(extraFare);
     }
 
     public void appendSection(Section section) {
@@ -56,5 +59,9 @@ public class Line {
 
     public String getColor() {
         return color.getColor();
+    }
+
+    public long getExtraFare() {
+        return extraFare.getFare();
     }
 }

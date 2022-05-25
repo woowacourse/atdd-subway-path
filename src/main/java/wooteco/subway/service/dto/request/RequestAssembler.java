@@ -13,7 +13,8 @@ import wooteco.subway.domain.station.Station;
 public class RequestAssembler {
 
     public Line temporaryLine(LineRequest lineRequest) {
-        return new Line(sections(lineRequest.getSectionRequests()), lineRequest.getName(), lineRequest.getColor());
+        return new Line(sections(lineRequest.getSectionRequests()),
+                lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
     }
 
     private List<Section> sections(List<SectionRequest> sectionRequests) {

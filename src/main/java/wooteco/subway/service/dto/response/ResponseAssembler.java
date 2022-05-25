@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.section.Section;
-import wooteco.subway.domain.path.Fare;
+import wooteco.subway.domain.line.Fare;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.station.Station;
 
@@ -21,7 +21,8 @@ public class ResponseAssembler {
     }
 
     public LineResponse lineResponse(Line line) {
-        return new LineResponse(line.getId(), sectionResponses(line.getSections()), line.getName(), line.getColor());
+        return new LineResponse(line.getId(), sectionResponses(line.getSections()),
+                line.getName(), line.getColor(), line.getExtraFare());
     }
 
     private List<SectionResponse> sectionResponses(List<Section> sections) {
@@ -53,7 +54,7 @@ public class ResponseAssembler {
 
     private Line line(LineResponse lineResponse) {
         return new Line(lineResponse.getId(), sections(lineResponse.getSectionResponses()),
-                lineResponse.getName(), lineResponse.getColor());
+                lineResponse.getName(), lineResponse.getColor(), lineResponse.getExtraFare());
     }
 
     private List<Section> sections(List<SectionResponse> sectionResponses) {

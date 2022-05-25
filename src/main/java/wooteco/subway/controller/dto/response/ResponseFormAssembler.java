@@ -14,7 +14,7 @@ public class ResponseFormAssembler {
 
     public LineResponseForm lineResponseForm(LineResponse lineResponse, List<StationResponse> stationResponses) {
         return new LineResponseForm(lineResponse.getId(),
-                lineResponse.getName(), lineResponse.getColor(),
+                lineResponse.getName(), lineResponse.getColor(), lineResponse.getExtraFare(),
                 stationResponseForms(stationResponses));
     }
 

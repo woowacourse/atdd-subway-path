@@ -1,4 +1,4 @@
-package wooteco.subway.infrastructure.jdbc.path;
+package wooteco.subway.domain.path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import wooteco.subway.domain.path.Fare;
+import wooteco.subway.domain.line.Fare;
 import wooteco.subway.domain.path.Path;
 
 class PathTest {

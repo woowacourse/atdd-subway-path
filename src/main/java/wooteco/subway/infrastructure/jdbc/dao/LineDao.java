@@ -22,7 +22,8 @@ public class LineDao {
             (resultSet, rowNum) -> new LineEntity(
                     resultSet.getLong("id"),
                     resultSet.getString("name"),
-                    resultSet.getString("color")
+                    resultSet.getString("color"),
+                    resultSet.getLong("extraFare")
             );
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
@@ -42,12 +43,12 @@ public class LineDao {
     }
 
     public List<LineEntity> findAll() {
-        String query = "SELECT id, name, color from Line";
+        String query = "SELECT id, name, color, extraFare from Line";
         return jdbcTemplate.query(query, ROW_MAPPER);
     }
 
     public Optional<LineEntity> findById(long id) {
-        String query = "SELECT id, name, color from Line WHERE id=(:id)";
+        String query = "SELECT id, name, color, extraFare from Line WHERE id=(:id)";
         try {
             SqlParameterSource parameters = new MapSqlParameterSource("id", id);
             return Optional.ofNullable(jdbcTemplate.queryForObject(query, parameters, ROW_MAPPER));
@@ -78,10 +79,11 @@ public class LineDao {
     }
 
     public void update(LineEntity lineEntity) {
-        String query = "UPDATE Line SET name=(:name), color=(:color) WHERE id=(:id)";
+        String query = "UPDATE Line SET name=(:name), color=(:color), extraFare=(:extraFare) WHERE id=(:id)";
         SqlParameterSource parameters = new MapSqlParameterSource("id", lineEntity.getId())
                 .addValue("name", lineEntity.getName())
-                .addValue("color", lineEntity.getColor());
+                .addValue("color", lineEntity.getColor())
+                .addValue("extraFare", lineEntity.getExtraFare());
         jdbcTemplate.update(query, parameters);
     }
 

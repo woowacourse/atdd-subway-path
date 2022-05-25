@@ -7,11 +7,13 @@ public class LineRequest {
     private final List<SectionRequest> sectionRequests;
     private final String name;
     private final String color;
+    private final Long extraFare;
 
-    public LineRequest(List<SectionRequest> sectionRequests, String name, String color) {
+    public LineRequest(List<SectionRequest> sectionRequests, String name, String color, Long extraFare) {
         this.sectionRequests = sectionRequests;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
     }
 
     public List<SectionRequest> getSectionRequests() {
@@ -24,5 +26,9 @@ public class LineRequest {
 
     public String getColor() {
         return color;
+    }
+
+    public Long getExtraFare() {
+        return extraFare;
     }
 }

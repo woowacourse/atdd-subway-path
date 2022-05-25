@@ -80,7 +80,7 @@ public class LineService {
         validateLineNameNotDuplicated(lineRequest.getName());
         validateLineColorNotDuplicated(lineRequest.getColor());
 
-        line.update(lineRequest.getName(), lineRequest.getColor());
+        line.update(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         lineRepository.update(line);
     }
 

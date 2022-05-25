@@ -33,6 +33,7 @@ class SubwayJGraphTest {
     private static final long LINE_ID = 1;
     private static final String LINE_NAME = "2호선";
     private static final String LINE_COLOR = "green";
+    private static final long LINE_EXTRA_FARE = 0L;
 
     private SubwayGraph subwayGraph;
 
@@ -45,7 +46,8 @@ class SubwayJGraphTest {
     @Test
     void calculateShortestRoute() {
         Path shortestRoute = subwayGraph.calculateShortestPath(
-                List.of(new Line(LINE_ID, List.of(강남_역삼, 역삼_선릉), LINE_NAME, LINE_COLOR)), 강남역_ID, 선릉역_ID);
+                List.of(new Line(LINE_ID, List.of(강남_역삼, 역삼_선릉), LINE_NAME, LINE_COLOR, LINE_EXTRA_FARE)),
+                강남역_ID, 선릉역_ID);
 
         assertAll(
                 () -> assertThat(shortestRoute.getPath()).containsExactly(강남역_ID, 역삼역_ID, 선릉역_ID),
@@ -70,19 +72,21 @@ class SubwayJGraphTest {
         private Stream<Arguments> provideForCalculateWithNonConnectedStation() {
             return Stream.of(
                     Arguments.of(List.of(
-                            new Line(LINE_ID, List.of(역삼_선릉), LINE_NAME, LINE_COLOR),
-                            new Line(LINE_ID, List.of(선릉_삼성), LINE_NAME, LINE_COLOR)), 강남역_ID, 삼성역_ID),
+                            new Line(LINE_ID, List.of(역삼_선릉), LINE_NAME, LINE_COLOR, LINE_EXTRA_FARE),
+                            new Line(LINE_ID, List.of(선릉_삼성), LINE_NAME, LINE_COLOR, LINE_EXTRA_FARE)),
+                            강남역_ID, 삼성역_ID),
                     Arguments.of(List.of(
-                            new Line(LINE_ID, List.of(강남_역삼), LINE_NAME, LINE_COLOR),
-                            new Line(LINE_ID, List.of(역삼_선릉), LINE_NAME, LINE_COLOR)), 강남역_ID, 삼성역_ID));
+                            new Line(LINE_ID, List.of(강남_역삼), LINE_NAME, LINE_COLOR, LINE_EXTRA_FARE),
+                            new Line(LINE_ID, List.of(역삼_선릉), LINE_NAME, LINE_COLOR, LINE_EXTRA_FARE)),
+                            강남역_ID, 삼성역_ID));
         }
 
         @DisplayName("출발지부터 도착지까지의 경로가 끊어져 있는 경우")
         @Test
         void calculateWithNonConnectedSections() {
             List<Line> lines = List.of(
-                    new Line(LINE_ID, List.of(강남_역삼), LINE_NAME, LINE_COLOR),
-                    new Line(LINE_ID, List.of(선릉_삼성), LINE_NAME, LINE_COLOR));
+                    new Line(LINE_ID, List.of(강남_역삼), LINE_NAME, LINE_COLOR, LINE_EXTRA_FARE),
+                    new Line(LINE_ID, List.of(선릉_삼성), LINE_NAME, LINE_COLOR, LINE_EXTRA_FARE));
             assertThatThrownBy(() -> subwayGraph.calculateShortestPath(lines, 강남역_ID, 삼성역_ID))
                     .isInstanceOf(IllegalStateException.class)
                     .hasMessage("출발지부터 도착지까지 이어지는 경로가 존재하지 않습니다.");

@@ -26,7 +26,8 @@ class LineDaoTest {
 
     private static final String LINE_NAME = "신분당선";
     private static final String LINE_COLOR = "red";
-    private static final LineEntity LINE_ENTITY = new LineEntity(1L, LINE_NAME, LINE_COLOR);
+    private static final long LINE_EXTRA_FARE = 0L;
+    private static final LineEntity LINE_ENTITY = new LineEntity(1L, LINE_NAME, LINE_COLOR, LINE_EXTRA_FARE);
 
     @Autowired
     private DataSource dataSource;
@@ -49,7 +50,7 @@ class LineDaoTest {
     @ValueSource(ints = {5})
     void findAll(int expected) {
         LongStream.rangeClosed(1, expected)
-                .mapToObj(id -> new LineEntity(id, "호선" + id, "색상" + id))
+                .mapToObj(id -> new LineEntity(id, "호선" + id, "색상" + id, LINE_EXTRA_FARE))
                 .forEach(lineDao::save);
 
         assertThat(lineDao.findAll()).hasSize(expected);
@@ -122,7 +123,7 @@ class LineDaoTest {
     void update(String lineName, String lineColor) {
         long lineId = lineDao.save(LINE_ENTITY);
 
-        LineEntity expected = new LineEntity(lineId, lineName, lineColor);
+        LineEntity expected = new LineEntity(lineId, lineName, lineColor, LINE_EXTRA_FARE);
         lineDao.update(expected);
 
         Optional<LineEntity> actual = lineDao.findById(lineId);
