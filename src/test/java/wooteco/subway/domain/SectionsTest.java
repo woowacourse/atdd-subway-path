@@ -8,11 +8,15 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 import static wooteco.subway.SubwayFixtures.STATION_FIXTURE1;
 import static wooteco.subway.SubwayFixtures.STATION_FIXTURE2;
 import static wooteco.subway.SubwayFixtures.강남역;
+import static wooteco.subway.SubwayFixtures.대림에서_서초_구간;
 import static wooteco.subway.SubwayFixtures.대림역;
 import static wooteco.subway.SubwayFixtures.삼성역;
+import static wooteco.subway.SubwayFixtures.서초에서_강남_구간;
 import static wooteco.subway.SubwayFixtures.서초역;
+import static wooteco.subway.SubwayFixtures.선릉에서_성담빌딩_구간;
 import static wooteco.subway.SubwayFixtures.선릉역;
 import static wooteco.subway.SubwayFixtures.성담빌딩;
+import static wooteco.subway.SubwayFixtures.역삼에서_선릉_구간;
 import static wooteco.subway.SubwayFixtures.역삼역;
 
 import java.util.List;
@@ -22,7 +26,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
-import wooteco.subway.SubwayFixtures;
 import wooteco.subway.exception.validation.SectionDuplicateException;
 import wooteco.subway.exception.validation.SectionNotSuitableException;
 
@@ -151,7 +154,7 @@ class SectionsTest {
         return Stream.of(
                 dynamicTest("역삼-강남 에 선릉-역삼 을 추가하면 선릉-역삼-강남 이 된다", () -> {
                     // given
-                    final Section input = SubwayFixtures.YEOKSAM_TO_SUNNEUNG;
+                    final Section input = 역삼에서_선릉_구간;
 
                     // when
                     final SectionResult result = sections.add(input);
@@ -166,7 +169,7 @@ class SectionsTest {
 
                 dynamicTest("선릉-역삼-강남 에 강남-서초 를 추가하면 선릉-역삼-강남-서초 가 된다", () -> {
                     // given
-                    final Section input = SubwayFixtures.SEOCHO_TO_GANGNAM;
+                    final Section input = 서초에서_강남_구간;
 
                     // when
                     final SectionResult result = sections.add(input);
@@ -181,7 +184,7 @@ class SectionsTest {
 
                 dynamicTest("선릉-역삼-강남-서초 에 서초-대림 을 추가하면 선릉-역삼-강남-서초-대림 이 된다", () -> {
                     // given
-                    final Section input = SubwayFixtures.DAELIM_TO_SEOCHO;
+                    final Section input = 대림에서_서초_구간;
 
                     // when
                     final SectionResult result = sections.add(input);
@@ -196,7 +199,7 @@ class SectionsTest {
 
                 dynamicTest("선릉-역삼-강남-서초-대림 에 성담빌딩-선릉 을 추가하면 성담빌딩-선릉-역삼-강남-서초-대림 이 된다", () -> {
                     // given
-                    final Section input = SubwayFixtures.SUNNEUNG_TO_SUNGDAM;
+                    final Section input = 선릉에서_성담빌딩_구간;
 
                     // when
                     final SectionResult result = sections.add(input);

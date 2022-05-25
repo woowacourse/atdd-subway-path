@@ -2,12 +2,12 @@ package wooteco.subway.infra;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.SubwayFixtures.GANGNAM_TO_YEOKSAM;
-import static wooteco.subway.SubwayFixtures.SUNNEUNG_TO_SUNGDAM;
-import static wooteco.subway.SubwayFixtures.YEOKSAM_TO_SUNNEUNG;
+import static wooteco.subway.SubwayFixtures.강남에서_역삼_구간;
 import static wooteco.subway.SubwayFixtures.강남역;
+import static wooteco.subway.SubwayFixtures.선릉에서_성담빌딩_구간;
 import static wooteco.subway.SubwayFixtures.선릉역;
 import static wooteco.subway.SubwayFixtures.성담빌딩;
+import static wooteco.subway.SubwayFixtures.역삼에서_선릉_구간;
 import static wooteco.subway.SubwayFixtures.역삼역;
 
 import java.util.List;
@@ -45,13 +45,13 @@ class SectionRepositoryTest {
     @Test
     void saveSections() {
         // given
-        final Sections sections = new Sections(List.of(GANGNAM_TO_YEOKSAM, YEOKSAM_TO_SUNNEUNG, SUNNEUNG_TO_SUNGDAM));
+        final Sections sections = new Sections(List.of(강남에서_역삼_구간, 역삼에서_선릉_구간, 선릉에서_성담빌딩_구간));
         final int expectedSize = sections.getSections().size();
         final List<Section> expectedSections = sections.getSections();
 
         // when
         sectionRepository.save(sections);
-        final Sections sectionsByLineId = sectionRepository.findByLineId(GANGNAM_TO_YEOKSAM.getLineId());
+        final Sections sectionsByLineId = sectionRepository.findByLineId(강남에서_역삼_구간.getLineId());
 
         // then
         final List<Section> savedSections = sectionsByLineId.getSections();
@@ -86,7 +86,7 @@ class SectionRepositoryTest {
     @Test
     void findAll() {
         // given
-        final Sections sections = new Sections(List.of(GANGNAM_TO_YEOKSAM, SUNNEUNG_TO_SUNGDAM, YEOKSAM_TO_SUNNEUNG));
+        final Sections sections = new Sections(List.of(강남에서_역삼_구간, 선릉에서_성담빌딩_구간, 역삼에서_선릉_구간));
         sectionRepository.save(sections);
 
         // when
@@ -100,7 +100,7 @@ class SectionRepositoryTest {
         assertAll(
                 () -> assertThat(allSectionsSaved.size()).isOne(),
                 () -> assertThat(sectionsFound).containsExactly(
-                        SUNNEUNG_TO_SUNGDAM, YEOKSAM_TO_SUNNEUNG, GANGNAM_TO_YEOKSAM
+                        선릉에서_성담빌딩_구간, 역삼에서_선릉_구간, 강남에서_역삼_구간
                 ),
                 () -> assertThat(stations).containsExactly(성담빌딩, 선릉역, 역삼역, 강남역)
         );
@@ -110,11 +110,11 @@ class SectionRepositoryTest {
     @Test
     void findByLineId() {
         // given
-        final Sections sections = new Sections(List.of(GANGNAM_TO_YEOKSAM, SUNNEUNG_TO_SUNGDAM, YEOKSAM_TO_SUNNEUNG));
+        final Sections sections = new Sections(List.of(강남에서_역삼_구간, 선릉에서_성담빌딩_구간, 역삼에서_선릉_구간));
         sectionRepository.save(sections);
 
         // when
-        final Sections sectionsByLineId = sectionRepository.findByLineId(GANGNAM_TO_YEOKSAM.getLineId());
+        final Sections sectionsByLineId = sectionRepository.findByLineId(강남에서_역삼_구간.getLineId());
 
         // then
         final List<Section> sectionsFound = sectionsByLineId.getSections();
@@ -122,7 +122,7 @@ class SectionRepositoryTest {
 
         assertAll(
                 () -> assertThat(sectionsFound).containsExactly(
-                        SUNNEUNG_TO_SUNGDAM, YEOKSAM_TO_SUNNEUNG, GANGNAM_TO_YEOKSAM
+                        선릉에서_성담빌딩_구간, 역삼에서_선릉_구간, 강남에서_역삼_구간
                 ),
                 () -> assertThat(stations).containsExactly(성담빌딩, 선릉역, 역삼역, 강남역)
         );

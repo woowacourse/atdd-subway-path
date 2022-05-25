@@ -20,16 +20,16 @@ public class SubwayFixtures {
     public static final Station 청담역 = new Station(8L, StationName.from("청담역"));
     public static final Station 압구정역 = new Station(9L, StationName.from("압구정역"));
 
-    public static Section YEOKSAM_TO_SUNNEUNG = new Section(1L, 2L, 선릉역, 역삼역, 10L);
-    public static Section GANGNAM_TO_YEOKSAM = new Section(2L, 2L, 역삼역, 강남역, 10L);
-    public static final Section SEOCHO_TO_GANGNAM = new Section(6L, 2L, 강남역, 서초역, 10L);
-    public static final Section DAELIM_TO_SEOCHO = new Section(7L, 2L, 서초역, 대림역, 10L);
-    public static final Section SUNNEUNG_TO_SUNGDAM = new Section(8L, 2L, 성담빌딩, 선릉역, 10L);
+    public static Section 역삼에서_선릉_구간 = new Section(1L, 2L, 선릉역, 역삼역, 10L);
+    public static Section 강남에서_역삼_구간 = new Section(2L, 2L, 역삼역, 강남역, 10L);
+    public static final Section 서초에서_강남_구간 = new Section(6L, 2L, 강남역, 서초역, 10L);
+    public static final Section 대림에서_서초_구간 = new Section(7L, 2L, 서초역, 대림역, 10L);
+    public static final Section 선릉에서_성담빌딩_구간 = new Section(8L, 2L, 성담빌딩, 선릉역, 10L);
 
-    public static final StationRequest GANGNAM_REQUEST = new StationRequest("강남역");
-    public static final StationRequest YEOKSAM_REQUEST = new StationRequest("역삼역");
-    public static final LineRequest BOONDANGLINE_REQUEST = new LineRequest("신분당선", "bg-red-600", 1L, 2L, 10L, 10000L);
-    public static final LineRequest SECONDLINE_REQUEST = new LineRequest("2호선", "bg-green-600", 2L, 3L, 10L, 20000L);
+    public static final StationRequest 강남역_요청 = new StationRequest("강남역");
+    public static final StationRequest 역삼역_요청 = new StationRequest("역삼역");
+    public static final LineRequest 신분당선_요청 = new LineRequest("신분당선", "bg-red-600", 1L, 2L, 10L, 10000L);
+    public static final LineRequest 이호선_요청 = new LineRequest("2호선", "bg-green-600", 2L, 3L, 10L, 20000L);
 
     public static final String STATIONS_URI = "/stations";
     public static final String LINES_URI = "/lines";

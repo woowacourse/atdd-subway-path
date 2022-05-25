@@ -2,7 +2,7 @@ package wooteco.subway.infra;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.SubwayFixtures.GANGNAM_TO_YEOKSAM;
+import static wooteco.subway.SubwayFixtures.강남에서_역삼_구간;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -31,7 +31,7 @@ import wooteco.subway.infra.repository.SectionRepository;
 @JdbcTest
 class LineRepositoryTest {
 
-    private static final Sections SECTIONS = new Sections(List.of(GANGNAM_TO_YEOKSAM));
+    private static final Sections SECTIONS = new Sections(List.of(강남에서_역삼_구간));
 
     private final LineRepository lineRepository;
 

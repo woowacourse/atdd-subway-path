@@ -3,16 +3,16 @@ package wooteco.subway.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.SubwayFixtures.DAELIM_TO_SEOCHO;
-import static wooteco.subway.SubwayFixtures.GANGNAM_TO_YEOKSAM;
-import static wooteco.subway.SubwayFixtures.SEOCHO_TO_GANGNAM;
-import static wooteco.subway.SubwayFixtures.SUNNEUNG_TO_SUNGDAM;
-import static wooteco.subway.SubwayFixtures.YEOKSAM_TO_SUNNEUNG;
+import static wooteco.subway.SubwayFixtures.강남에서_역삼_구간;
 import static wooteco.subway.SubwayFixtures.강남역;
+import static wooteco.subway.SubwayFixtures.대림에서_서초_구간;
 import static wooteco.subway.SubwayFixtures.대림역;
+import static wooteco.subway.SubwayFixtures.서초에서_강남_구간;
+import static wooteco.subway.SubwayFixtures.선릉에서_성담빌딩_구간;
 import static wooteco.subway.SubwayFixtures.선릉역;
 import static wooteco.subway.SubwayFixtures.성담빌딩;
 import static wooteco.subway.SubwayFixtures.압구정역;
+import static wooteco.subway.SubwayFixtures.역삼에서_선릉_구간;
 import static wooteco.subway.SubwayFixtures.역삼역;
 import static wooteco.subway.SubwayFixtures.청담역;
 
@@ -30,7 +30,7 @@ class JGraphTPathFinderTest {
 
     private final PathFinder pathFinder = new JGraphTPathFinder();
     private List<Section> sections = List.of(
-            YEOKSAM_TO_SUNNEUNG, GANGNAM_TO_YEOKSAM, SEOCHO_TO_GANGNAM, DAELIM_TO_SEOCHO, SUNNEUNG_TO_SUNGDAM
+            역삼에서_선릉_구간, 강남에서_역삼_구간, 서초에서_강남_구간, 대림에서_서초_구간, 선릉에서_성담빌딩_구간
     );
 
     @DisplayName("역삼-선릉, 강남-역삼, 서초-강남, 대림-서초, 선릉-성담 구간 에서 강남-성담빌딩 경로조회를 시도하면 강남-역삼-선릉-성담빌딩 이 나온다")
@@ -47,7 +47,7 @@ class JGraphTPathFinderTest {
         // then
         assertAll(
                 () -> assertThat(distance).isEqualTo(
-                        Stream.of(GANGNAM_TO_YEOKSAM, YEOKSAM_TO_SUNNEUNG, SUNNEUNG_TO_SUNGDAM)
+                        Stream.of(강남에서_역삼_구간, 역삼에서_선릉_구간, 선릉에서_성담빌딩_구간)
                                 .mapToLong(Section::getDistance)
                                 .sum()),
                 () -> assertThat(stations).isEqualTo(expectedStations)
@@ -58,7 +58,7 @@ class JGraphTPathFinderTest {
     @Test
     void findShortedPathReverse() {
         // given
-        final long expectedDistanceSum = Stream.of(GANGNAM_TO_YEOKSAM, YEOKSAM_TO_SUNNEUNG, SUNNEUNG_TO_SUNGDAM)
+        final long expectedDistanceSum = Stream.of(강남에서_역삼_구간, 역삼에서_선릉_구간, 선릉에서_성담빌딩_구간)
                 .mapToLong(Section::getDistance)
                 .sum();
         final List<Station> expectedStations = List.of(성담빌딩, 선릉역, 역삼역, 강남역);
@@ -92,7 +92,7 @@ class JGraphTPathFinderTest {
     @Test
     void pathFindingShouldFailIfSourceToTargetIsNotLinked() {
         // given
-        final List<Section> sections = List.of(DAELIM_TO_SEOCHO, SEOCHO_TO_GANGNAM, YEOKSAM_TO_SUNNEUNG);
+        final List<Section> sections = List.of(대림에서_서초_구간, 서초에서_강남_구간, 역삼에서_선릉_구간);
         final Station source = 대림역;
         final Station target = 선릉역;
 
