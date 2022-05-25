@@ -2,6 +2,7 @@ package wooteco.subway.domain.age;
 
 import java.util.Arrays;
 import wooteco.subway.domain.Fare;
+import wooteco.subway.exception.IllegalInputException;
 
 public enum FareByAgePolicy {
 
@@ -22,7 +23,7 @@ public enum FareByAgePolicy {
         return Arrays.stream(values())
                 .filter(it -> it.ageType.equals(ageType))
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalInputException("해당하는 나이 타입을 찾을 수 없습니다."));
     }
 
     public Fare applyDiscount(final Fare fare) {
