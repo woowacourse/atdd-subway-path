@@ -24,12 +24,12 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findPath(final FindPathRequest findPathRequest) {
+    public PathResponse findPath(final FindPathRequest request) {
         final PathFinder pathFinder = createPathFinder();
-        final Station source = stationRepository.getById(findPathRequest.getSource());
-        final Station target = stationRepository.getById(findPathRequest.getTarget());
+        final Station source = stationRepository.getById(request.getSource());
+        final Station target = stationRepository.getById(request.getTarget());
         final Path path = pathFinder.find(source, target);
-        return PathResponse.of(path.getRouteStations(), path.getDistance(), path.calculateFare(findPathRequest.getAge()));
+        return PathResponse.of(path.getRouteStations(), path.getDistance(), path.calculateFare(request.getAge()));
     }
 
     private PathFinder createPathFinder() {
