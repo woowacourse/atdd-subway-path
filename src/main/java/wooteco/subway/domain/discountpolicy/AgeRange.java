@@ -1,4 +1,4 @@
-package wooteco.subway.domain.farepolicy;
+package wooteco.subway.domain.discountpolicy;
 
 import java.util.Arrays;
 

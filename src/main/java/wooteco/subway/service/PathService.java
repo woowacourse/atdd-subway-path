@@ -3,10 +3,11 @@ package wooteco.subway.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import wooteco.subway.domain.FareCalculator;
+import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.discountpolicy.DiscountPolicyFactory;
 import wooteco.subway.domain.farepolicy.FarePolicyFactory;
 import wooteco.subway.service.dto.LineServiceResponse;
 import wooteco.subway.service.dto.PathServiceRequest;
@@ -55,7 +56,7 @@ public class PathService {
                 .max()
                 .orElse(0);
 
-        FareCalculator fareCalculator = new FareCalculator(FarePolicyFactory.from(age));
-        return fareCalculator.calculate(distance, extraFare);
+        Fare fare = new Fare(FarePolicyFactory.from(distance), DiscountPolicyFactory.from(age));
+        return fare.calculate(distance, extraFare);
     }
 }
