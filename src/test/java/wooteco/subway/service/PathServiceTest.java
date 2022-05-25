@@ -62,7 +62,7 @@ class PathServiceTest {
         sectionRepository.save(new Section(line.getId(), saved_동묘앞역, saved_창신역, STANDARD_DISTANCE));
 
         PathResponse pathResponse = pathService.calculateShortestPath(
-                new PathRequest(saved_신당역.getId(), saved_창신역.getId(), 10));
+                new PathRequest(saved_신당역.getId(), saved_창신역.getId(), 25));
         List<StationResponse> stations = pathResponse.getStations();
 
         assertAll(() -> {
@@ -91,7 +91,7 @@ class PathServiceTest {
         sectionRepository.save(new Section(lineId3, saved_한티역, saved_선릉역, 1));
 
         PathResponse response = pathService.calculateShortestPath(
-                new PathRequest(saved_한티역.getId(), saved_동묘앞역.getId(), 20));
+                new PathRequest(saved_한티역.getId(), saved_동묘앞역.getId(), 25));
 
         assertThat(response.getFare()).isEqualTo(STANDARD_FARE + 500);
     }

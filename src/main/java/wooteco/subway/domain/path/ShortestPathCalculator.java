@@ -1,14 +1,17 @@
 package wooteco.subway.domain.path;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
+import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.exception.SectionNotFoundException;
 
 @Component
@@ -24,11 +27,23 @@ public class ShortestPathCalculator {
         }
     }
 
-    public Path findPath(final Station startStation, final Station endStation, final Sections sections) {
+    public Path findPath(final Station startStation, final Station endStation, final Sections sections,
+            final List<Line> lines, final int age) {
         final DijkstraShortestPath<Station, ShortestPathEdge> graphPath = createDijkstraGraph(sections);
-        final int distance = calculateMinDistance(startStation, endStation, graphPath);
         final List<Station> shortestStations = findShortestStations(startStation, endStation, graphPath);
-        return new Path(shortestStations, distance);
+
+        final int distance = calculateMinDistance(startStation, endStation, graphPath);
+        final int extraLineFare = findMaxExtraLineFare(lines);
+        final Fare fare = Fare.of(distance, extraLineFare, age);
+
+        return new Path(shortestStations, distance, fare);
+    }
+
+    private int findMaxExtraLineFare(final List<Line> lines) {
+        return lines.stream()
+                .map(Line::getExtraFare)
+                .max(Comparator.comparingInt(o -> o))
+                .orElse(0);
     }
 
     private DijkstraShortestPath<Station, ShortestPathEdge> createDijkstraGraph(final Sections sections) {

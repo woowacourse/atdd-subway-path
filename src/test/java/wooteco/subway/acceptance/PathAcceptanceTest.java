@@ -48,7 +48,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         sectionRepository.save(new Section(lineId, saved_동묘앞역, saved_창신역, STANDARD_DISTANCE));
 
         ExtractableResponse<Response> response = get(
-                "/paths?source=" + saved_신당역.getId() + "&target=" + saved_창신역.getId() + "&age=15");
+                "/paths?source=" + saved_신당역.getId() + "&target=" + saved_창신역.getId() + "&age=25");
 
         PathResponse pathResponse = response.jsonPath()
                 .getObject(".", PathResponse.class);

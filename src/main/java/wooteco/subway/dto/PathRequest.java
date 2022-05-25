@@ -2,9 +2,9 @@ package wooteco.subway.dto;
 
 public class PathRequest {
 
-    private Long source;
-    private Long target;
-    private int age;
+    private final Long source;
+    private final Long target;
+    private final int age;
 
     public PathRequest(Long source, Long target, int age) {
         this.source = source;
@@ -18,5 +18,9 @@ public class PathRequest {
 
     public Long getTarget() {
         return target;
+    }
+
+    public int getAge() {
+        return age;
     }
 }
