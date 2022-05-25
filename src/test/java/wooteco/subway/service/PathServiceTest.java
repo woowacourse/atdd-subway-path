@@ -5,27 +5,35 @@ import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
 
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import wooteco.subway.domain.Distance;
-import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Name;
+import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.path.PathResponse;
+import wooteco.subway.domain.fare.Fare;
 
 class PathServiceTest extends ServiceTest {
 
     @InjectMocks
     private PathService pathService;
 
-    @Test
+    @Mock
+    private LineService lineService;
+
+    @Mock
+    private StationService stationService;
+
+    @ParameterizedTest
     @DisplayName("출발역과 도착역의 최단 경로에 대한 정보를 조회한다.")
-    void Find() {
+    @CsvSource(value = {"6:700", "12:700", "13:1120", "18:1120", "19:1750"}, delimiter = ':')
+    void Find(final int age, final int expectedFare) {
         // given
         final Station gangnam = new Station(1L, "강남역");
         final Station yeoksam = new Station(2L, "역삼역");
@@ -39,42 +47,42 @@ class PathServiceTest extends ServiceTest {
         final Station geumho = new Station(8L, "금호역");
         final Station oksu = new Station(9L, "옥수역");
 
-        Line greenLine = null;
+        Line greenLine = new Line(1L, new Name("2호선"), "green", 100);
         final Section greenSectionA = new Section(greenLine, gangnam, yeoksam, new Distance(10));
         final Section greenSectionB = new Section(greenLine, yeoksam, seolleung, new Distance(7));
         final Section greenSectionC = new Section(greenLine, seolleung, samsung, new Distance(11));
-        greenLine = new Line(1L, new Name("2호선"), "green", new Sections(List.of(
+        greenLine = greenLine.addSections(new Sections(List.of(
                 greenSectionA,
                 greenSectionB,
                 greenSectionC
         )));
 
-        Line yellowLine = null;
+        Line yellowLine = new Line(2L, new Name("수인분당선"), "yellow", 300);
         final Section yellowSectionA = new Section(yellowLine, seolleung, seoulForest, new Distance(3));
         final Section yellowSectionB = new Section(yellowLine, seoulForest, wangsimni, new Distance(8));
-        yellowLine = new Line(2L, new Name("수인분당선"), "yellow", new Sections(List.of(
+        yellowLine = yellowLine.addSections(new Sections(List.of(
                 yellowSectionA,
                 yellowSectionB
         )));
 
-        Line orangeLine = null;
+        Line orangeLine = new Line(3L, new Name("3호선"), "orange", 500);
         final Section orangeSectionA = new Section(orangeLine, yacksu, geumho, new Distance(12));
         final Section orangeSectionB = new Section(orangeLine, geumho, oksu, new Distance(6));
-        orangeLine = new Line(2L, new Name("3호선"), "orange", new Sections(List.of(
+        orangeLine = orangeLine.addSections(new Sections(List.of(
                 orangeSectionA,
                 orangeSectionB
         )));
 
-        given(stationDao.findById(any(Long.class)))
-                .willReturn(Optional.of(gangnam))
-                .willReturn(Optional.of(seoulForest));
+        given(stationService.findById(any(Long.class)))
+                .willReturn(gangnam)
+                .willReturn(seoulForest);
 
         final List<Line> lines = List.of(
                 greenLine,
                 yellowLine,
                 orangeLine
         );
-        given(lineDao.findAll())
+        given(lineService.findAll())
                 .willReturn(lines);
 
         final List<Station> expectedStations = List.of(
@@ -84,10 +92,14 @@ class PathServiceTest extends ServiceTest {
                 seoulForest
         );
         final Distance expectedDistance = new Distance(20);
-        final PathResponse expected = PathResponse.of(expectedStations, expectedDistance, new Fare(1450));
+        final Path expected = new Path(
+                expectedStations,
+                expectedDistance,
+                Fare.from(expectedFare - 1250)
+        );
 
         // when
-        final PathResponse actual = pathService.find(gangnam.getId(), seoulForest.getId());
+        final Path actual = pathService.find(gangnam.getId(), seoulForest.getId(), age);
 
         // then
         assertThat(actual).isEqualTo(expected);

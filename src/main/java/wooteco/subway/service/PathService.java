@@ -3,48 +3,43 @@ package wooteco.subway.service;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.dao.LineDao;
-import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Distance;
-import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.SubwayMap;
-import wooteco.subway.dto.path.PathResponse;
-import wooteco.subway.exception.station.NoSuchStationException;
+import wooteco.subway.domain.fare.Fare;
+import wooteco.subway.domain.subwaymap.SubwayMap;
 
 @Service
 @Transactional
 public class PathService {
 
-    private final LineDao lineDao;
-    private final StationDao stationDao;
+    private final LineService lineService;
+    private final StationService stationService;
 
-    public PathService(final LineDao lineDao, final StationDao stationDao) {
-        this.lineDao = lineDao;
-        this.stationDao = stationDao;
+    public PathService(final LineService lineService, final StationService stationService) {
+        this.lineService = lineService;
+        this.stationService = stationService;
     }
 
     @Transactional(readOnly = true)
-    public PathResponse find(final Long sourceStationId, final Long targetStationId) {
+    public Path find(final Long sourceStationId, final Long targetStationId, final int age) {
         final SubwayMap subwayMap = toSubwayMap();
-        final Station sourceStation = findStationById(sourceStationId);
-        final Station targetStation = findStationById(targetStationId);
+        final Station sourceStation = stationService.findById(sourceStationId);
+        final Station targetStation = stationService.findById(targetStationId);
 
         final List<Station> stations = subwayMap.searchPath(sourceStation, targetStation);
         final Distance distance = subwayMap.searchDistance(sourceStation, targetStation);
-        final Fare fare = distance.calculateFare();
+        final int extraFare = subwayMap.calculateMaxExtraFare(sourceStation, targetStation);
+        final Fare fare = Fare.from(extraFare)
+                .addExtraFareByDistance(distance)
+                .discountByAge(age);
 
-        return PathResponse.of(stations, distance, fare);
+        return new Path(stations, distance, fare);
     }
 
     private SubwayMap toSubwayMap() {
-        final List<Line> lines = lineDao.findAll();
+        final List<Line> lines = lineService.findAll();
         return new SubwayMap(lines);
-    }
-
-    private Station findStationById(final Long stationId) {
-        return stationDao.findById(stationId)
-                .orElseThrow(NoSuchStationException::new);
     }
 }

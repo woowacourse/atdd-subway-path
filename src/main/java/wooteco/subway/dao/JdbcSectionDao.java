@@ -1,6 +1,7 @@
 package wooteco.subway.dao;
 
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -8,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -64,6 +66,26 @@ public class JdbcSectionDao implements SectionDao {
         } catch (final DuplicateKeyException e) {
             return null;
         }
+    }
+
+    @Override
+    public void insertAll(final List<Section> sections) {
+        final String sql = "INSERT INTO section (line_id, up_station_id, down_station_id, distance) VALUES (?, ?, ?, ?)";
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(final PreparedStatement ps, final int i) throws SQLException {
+                final Section section = sections.get(i);
+                ps.setLong(1, section.getLineId());
+                ps.setLong(2, section.getUpStationId());
+                ps.setLong(3, section.getDownStationId());
+                ps.setInt(4, section.getDistance());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return sections.size();
+            }
+        });
     }
 
     public boolean existStation(final long stationId) {

@@ -11,9 +11,9 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.station.StationRequest;
-import wooteco.subway.dto.station.StationResponse;
 import wooteco.subway.exception.IllegalInputException;
 import wooteco.subway.exception.station.DuplicateStationException;
 
@@ -21,6 +21,9 @@ class StationServiceTest extends ServiceTest {
 
     @InjectMocks
     private StationService stationService;
+
+    @Mock
+    private SectionService sectionService;
 
     @Test
     @DisplayName("역을 생성한다.")
@@ -35,7 +38,7 @@ class StationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(expected));
 
         // when
-        final StationResponse actual = stationService.create(request);
+        final Station actual = stationService.create(request);
 
         // then
         assertThat(actual.getName()).isEqualTo(expected.getName());
@@ -69,7 +72,7 @@ class StationServiceTest extends ServiceTest {
                 .willReturn(expected);
 
         // when
-        final List<StationResponse> actual = stationService.findAll();
+        final List<Station> actual = stationService.findAll();
 
         // then
         assertThat(actual).hasSameSizeAs(expected);
@@ -79,7 +82,7 @@ class StationServiceTest extends ServiceTest {
     @DisplayName("id에 해당하는 역을 삭제한다.")
     void Delete() {
         // given
-        given(sectionDao.existStation(any(Long.class)))
+        given(sectionService.existStation(any(Long.class)))
                 .willReturn(false);
         given(stationDao.deleteById(any(Long.class)))
                 .willReturn(1);
@@ -93,7 +96,7 @@ class StationServiceTest extends ServiceTest {
     @DisplayName("id에 해당하는 역이 구간에 등록되어 있으면 삭제할 수 없다.")
     void Delete_RegisteredInSection_ExceptionThrown() {
         // given
-        given(sectionDao.existStation(any(Long.class)))
+        given(sectionService.existStation(any(Long.class)))
                 .willReturn(true);
 
         // then
