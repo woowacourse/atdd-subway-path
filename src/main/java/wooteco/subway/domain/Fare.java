@@ -9,14 +9,8 @@ public class Fare {
 
     public static int chargeFare(Path path, int age) {
         double distance = path.calculateShortestDistance();
-        int fare = 0;
-        Optional<FarePolicy> farePolicy = Optional.of(FarePolicy.DEFAULT);
+        int fare = FarePolicy.findFare(distance);
 
-        while (farePolicy.isPresent()) {
-            FarePolicy presentPolicy = farePolicy.get();
-            fare += presentPolicy.calculate(distance);
-            farePolicy = presentPolicy.update();
-        }
         return calculateFareByAge(age, fare + findExtraLineFare(path));
     }
 
