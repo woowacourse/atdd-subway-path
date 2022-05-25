@@ -55,13 +55,13 @@ class LineRepositoryTest extends DatabaseUsageTest {
         SubwayMap actual = repository.findAllLines();
         SubwayMap expected = new SubwayMap(List.of(
                 new LineMap(new Line(1L, "노선명1", "색깔1", 1000),
-                        new Sections(List.of(new Section(1L, 강남역, 선릉역, 20)))),
+                        new Sections(new Section(1L, 강남역, 선릉역, 20))),
                 new LineMap(new Line(2L, "노선명2", "색깔2", 0),
-                        new Sections(List.of(new Section(2L, 강남역, 잠실역, 10)))),
+                        new Sections(new Section(2L, 강남역, 잠실역, 10))),
                 new LineMap(new Line(3L, "노선명3", "색깔3", 900),
-                        new Sections(List.of(
+                        new Sections(
                                 new Section(3L, 강남역, 잠실역, 10),
-                                new Section(3L, 잠실역, 선릉역, 10))))));
+                                new Section(3L, 잠실역, 선릉역, 10)))));
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -90,7 +90,7 @@ class LineRepositoryTest extends DatabaseUsageTest {
             LineMap actual = repository.findExistingLine(1L);
             LineMap expected = new LineMap(
                     new Line(1L, "노선1", "색상", 1000),
-                    new Sections(List.of(new Section(1L, 강남역, 선릉역, 10))));
+                    new Sections(new Section(1L, 강남역, 선릉역, 10)));
 
             assertThat(actual).isEqualTo(expected);
         }
@@ -192,7 +192,7 @@ class LineRepositoryTest extends DatabaseUsageTest {
         databaseFixtureUtils.saveSection(1L, 강남역, 잠실역, 10);
 
         repository.deleteLine(new LineMap(new Line(1L, "노선1", "색상", 100),
-                new Sections(List.of(new Section(1L, 강남역, 잠실역, 10)))));
+                new Sections(new Section(1L, 강남역, 잠실역, 10))));
         boolean lineExistence = lineDao.findById(1L).isPresent();
         List<Section> existingSections = sectionDao.findAll();
 

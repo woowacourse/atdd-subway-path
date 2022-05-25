@@ -63,7 +63,7 @@ class SectionsTest {
             Section 강남_역삼 = new Section(강남역, 역삼역, 10);
             Section 역삼_잠실 = new Section(역삼역, 잠실역, 10);
             Section 잠실_선릉 = new Section(잠실역, 선릉역, 10);
-            Sections sections = new Sections(List.of(역삼_잠실, 잠실_선릉));
+            Sections sections = new Sections(역삼_잠실, 잠실_선릉);
 
             boolean actual = sections.isNewEndSection(강남_역삼);
 
@@ -75,7 +75,7 @@ class SectionsTest {
             Section 강남_역삼 = new Section(강남역, 역삼역, 10);
             Section 역삼_잠실 = new Section(역삼역, 잠실역, 10);
             Section 잠실_선릉 = new Section(잠실역, 선릉역, 10);
-            Sections sections = new Sections(List.of(강남_역삼, 역삼_잠실));
+            Sections sections = new Sections(강남_역삼, 역삼_잠실);
 
             boolean actual = sections.isNewEndSection(잠실_선릉);
 
@@ -86,7 +86,7 @@ class SectionsTest {
         void 노선의_끝에_등록할_수_없는_구간인_경우_거짓_반환() {
             Section 강남_잠실 = new Section(강남역, 잠실역, 10);
             Section 잠실_양재 = new Section(잠실역, 양재역, 10);
-            Sections sections = new Sections(List.of(강남_잠실, 잠실_양재));
+            Sections sections = new Sections(강남_잠실, 잠실_양재);
             Section 역삼_잠실 = new Section(역삼역, 잠실역, 5);
 
             boolean actual = sections.isNewEndSection(역삼_잠실);
@@ -103,7 +103,7 @@ class SectionsTest {
         void 특정_지하철이_등록된_상행_노선이_존재하면_조회하여_반환() {
             Section 강남_역삼 = new Section(강남역, 역삼역, 10);
             Section 역삼_잠실 = new Section(역삼역, 잠실역, 10);
-            Sections sections = new Sections(List.of(강남_역삼, 역삼_잠실));
+            Sections sections = new Sections(강남_역삼, 역삼_잠실);
 
             Section actual = sections.findUpperSectionOfStation(역삼역);
 
@@ -112,7 +112,7 @@ class SectionsTest {
 
         @Test
         void 데이터가_존재하지_않는_경우_예외발생() {
-            Sections sections = new Sections(List.of(new Section(강남역, 역삼역, 10)));
+            Sections sections = new Sections(new Section(강남역, 역삼역, 10));
 
             assertThatThrownBy(() -> sections.findUpperSectionOfStation(강남역))
                     .isInstanceOf(IllegalArgumentException.class);
@@ -127,7 +127,7 @@ class SectionsTest {
         void 특정_지하철이_등록된_하행_노선이_존재하면_조회하여_반환() {
             Section 강남_역삼 = new Section(강남역, 역삼역, 10);
             Section 역삼_잠실 = new Section(역삼역, 잠실역, 10);
-            Sections sections = new Sections(List.of(강남_역삼, 역삼_잠실));
+            Sections sections = new Sections(강남_역삼, 역삼_잠실);
 
             Section actual = sections.findLowerSectionOfStation(역삼역);
 
@@ -136,7 +136,7 @@ class SectionsTest {
 
         @Test
         void 데이터가_존재하지_않는_경우_예외발생() {
-            Sections sections = new Sections(List.of(new Section(강남역, 역삼역, 10)));
+            Sections sections = new Sections(new Section(강남역, 역삼역, 10));
 
             assertThatThrownBy(() -> sections.findLowerSectionOfStation(역삼역))
                     .isInstanceOf(IllegalArgumentException.class);
@@ -149,7 +149,7 @@ class SectionsTest {
 
         @Test
         void 등록된_지하철역인_경우_참_반환() {
-            Sections sections = new Sections(List.of(new Section(강남역, 잠실역, 10)));
+            Sections sections = new Sections(new Section(강남역, 잠실역, 10));
 
             boolean actual = sections.isRegistered(잠실역);
 
@@ -158,7 +158,7 @@ class SectionsTest {
 
         @Test
         void 등록되지_않은_지하철역인_경우_거짓_반환() {
-            Sections sections = new Sections(List.of(new Section(강남역, 잠실역, 10)));
+            Sections sections = new Sections(new Section(강남역, 잠실역, 10));
 
             boolean actual = sections.checkMiddleStation(역삼역);
 
@@ -172,9 +172,9 @@ class SectionsTest {
 
         @Test
         void 등록되었으나_종점은_아닌_지하철역인_경우_참_반환() {
-            Sections sections = new Sections(List.of(
+            Sections sections = new Sections(
                     new Section(강남역, 잠실역, 10),
-                    new Section(잠실역, 선릉역, 10)));
+                    new Section(잠실역, 선릉역, 10));
 
            boolean actual = sections.checkMiddleStation(잠실역);
 
@@ -183,7 +183,7 @@ class SectionsTest {
 
         @Test
         void 종점으로_등록된_경우_거짓_반환() {
-            Sections sections = new Sections(List.of(new Section(강남역, 잠실역, 10)));
+            Sections sections = new Sections(new Section(강남역, 잠실역, 10));
 
             boolean actual = sections.checkMiddleStation(강남역);
 
@@ -192,7 +192,7 @@ class SectionsTest {
 
         @Test
         void 등록되지_않은_경우_예외가_발생하지_않고_거짓_반환() {
-            Sections sections = new Sections(List.of(new Section(강남역, 잠실역, 10)));
+            Sections sections = new Sections(new Section(강남역, 잠실역, 10));
 
             boolean actual = sections.checkMiddleStation(역삼역);
 
@@ -202,10 +202,10 @@ class SectionsTest {
 
     @Test
     void toSortedStations_메서드는_상행종점부터_하행종점까지_정렬된_지하철역들의_리스트를_반환() {
-        Sections sections = new Sections(List.of(
+        Sections sections = new Sections(
                 new Section(강남역, 잠실역, 10),
                 new Section(잠실역, 선릉역, 10),
-                new Section(선릉역, 양재역, 10)));
+                new Section(선릉역, 양재역, 10));
 
         List<Station> actual = sections.toSortedStations();
         List<Station> expected = List.of(강남역, 잠실역, 선릉역, 양재역);

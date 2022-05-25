@@ -59,18 +59,18 @@ class SubwayMapTest {
     @Test
     void toSortedLines_메서드는_노선의_id_순서대로_정렬된_노선들을_반환() {
         List<Line> lineInfos = List.of(신분당선, 분당선, 수인선);
-        Section line1Section1To2 = new Section(1L, 강남역, 선릉역, 10);
-        Section line1Section2To3 = new Section(1L, 선릉역, 잠실역, 30);
-        Section line2Section1To2 = new Section(2L, 강남역, 선릉역, 10);
-        Section line3Section = new Section(3L, 선릉역, 잠실역, 30);
-        List<Section> lineSections = List.of(line2Section1To2, line1Section1To2, line1Section2To3, line3Section);
+        Section 신분당선_강남_선릉 = new Section(1L, 강남역, 선릉역, 10);
+        Section 신분당선_선릉_잠실 = new Section(1L, 선릉역, 잠실역, 30);
+        Section 분당선_강남_선릉 = new Section(2L, 강남역, 선릉역, 10);
+        Section 수인선_선릉_잠실 = new Section(3L, 선릉역, 잠실역, 30);
+        List<Section> lineSections = List.of(분당선_강남_선릉, 신분당선_강남_선릉, 신분당선_선릉_잠실, 수인선_선릉_잠실);
 
         SubwayMap subwayMap = SubwayMap.of(lineInfos, lineSections);
         List<LineMap> actual = subwayMap.toSortedLines();
         List<LineMap> expected = List.of(
-                new LineMap(신분당선, new Sections(List.of(line1Section1To2, line1Section2To3))),
-                new LineMap(분당선, new Sections(List.of(line2Section1To2))),
-                new LineMap(수인선, new Sections(List.of(line3Section))));
+                new LineMap(신분당선, new Sections(신분당선_강남_선릉, 신분당선_선릉_잠실)),
+                new LineMap(분당선, new Sections(분당선_강남_선릉)),
+                new LineMap(수인선, new Sections(수인선_선릉_잠실)));
 
         assertThat(actual).isEqualTo(expected);
     }

@@ -17,7 +17,7 @@ public class LineMap {
     }
 
     public static LineMap of(Line line, Section section) {
-        return new LineMap(line, new Sections(List.of(section)));
+        return new LineMap(line, new Sections(section));
     }
 
     public Long getId() {

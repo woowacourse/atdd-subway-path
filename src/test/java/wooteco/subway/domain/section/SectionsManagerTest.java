@@ -30,7 +30,7 @@ class SectionsManagerTest {
             SectionsManager sectionsManager = createSectionsManager(existingSection);
 
             Sections actual = sectionsManager.save(newUpperSection);
-            Sections expected = new Sections(List.of(newUpperSection, existingSection));
+            Sections expected = new Sections(newUpperSection, existingSection);
 
             assertThat(actual).isEqualTo(expected);
         }
@@ -42,7 +42,7 @@ class SectionsManagerTest {
             SectionsManager sectionsManager = createSectionsManager(existingSection);
 
             Sections actual = sectionsManager.save(newLowerSection);
-            Sections expected = new Sections(List.of(existingSection, newLowerSection));
+            Sections expected = new Sections(existingSection, newLowerSection);
 
             assertThat(actual).isEqualTo(expected);
         }
@@ -54,9 +54,9 @@ class SectionsManagerTest {
             Section inBetweenSection = new Section(강남역, 선릉역, 3);
 
             Sections actual = sectionsManager.save(inBetweenSection);
-            Sections expected = new Sections(List.of(
+            Sections expected = new Sections(
                     new Section(강남역, 선릉역, 3),
-                    new Section(선릉역, 잠실역, 7)));
+                    new Section(선릉역, 잠실역, 7));
 
             assertThat(actual).isEqualTo(expected);
         }
@@ -138,7 +138,7 @@ class SectionsManagerTest {
             SectionsManager sectionsManager = createSectionsManager(강남_선릉_구간, 선릉_잠실_구간);
 
             Sections actual = sectionsManager.delete(강남역);
-            Sections expected = new Sections(List.of(선릉_잠실_구간));
+            Sections expected = new Sections(선릉_잠실_구간);
 
             assertThat(actual).isEqualTo(expected);
         }
@@ -150,7 +150,7 @@ class SectionsManagerTest {
             SectionsManager sectionsManager = createSectionsManager(강남_선릉_구간, 선릉_잠실_구간);
 
             Sections actual = sectionsManager.delete(잠실역);
-            Sections expected = new Sections(List.of(강남_선릉_구간));
+            Sections expected = new Sections(강남_선릉_구간);
 
             assertThat(actual).isEqualTo(expected);
         }
@@ -162,7 +162,7 @@ class SectionsManagerTest {
             SectionsManager sectionsManager = createSectionsManager(강남_선릉_구간, 선릉_잠실_구간);
 
             Sections actual = sectionsManager.delete(선릉역);
-            Sections expected = new Sections(List.of(new Section(강남역, 잠실역, 15)));
+            Sections expected = new Sections(new Section(강남역, 잠실역, 15));
 
             assertThat(actual).isEqualTo(expected);
         }
@@ -200,7 +200,7 @@ class SectionsManagerTest {
             SectionsManager sectionsManager = createSectionsManager(강남_선릉_구간, 선릉_청계산_구간);
             Section 선릉_잠실_신규_구간 = new Section(선릉역, 잠실역, 5);
             Section 잠실_청계산_신규_구간 = new Section(잠실역, 청계산입구역, 5);
-            Sections updatedSections = new Sections(List.of(강남_선릉_구간, 선릉_잠실_신규_구간, 잠실_청계산_신규_구간));
+            Sections updatedSections = new Sections(강남_선릉_구간, 선릉_잠실_신규_구간, 잠실_청계산_신규_구간);
 
             SectionUpdates actual = sectionsManager.compareDifference(updatedSections);
             List<Section> expectedNewSections = List.of(선릉_잠실_신규_구간, 잠실_청계산_신규_구간);
@@ -213,7 +213,7 @@ class SectionsManagerTest {
         @Test
         void 생성된_구간만_존재하는_경우_제거된_구간들의_정보에는_빈_리스트_반환() {
             SectionsManager sectionsManager = createSectionsManager(강남_선릉_구간, 선릉_청계산_구간);
-            Sections 종점이_추가된_구간들 = new Sections(List.of(강남_선릉_구간, 선릉_청계산_구간, 청계산_역삼_구간));
+            Sections 종점이_추가된_구간들 = new Sections(강남_선릉_구간, 선릉_청계산_구간, 청계산_역삼_구간);
 
             SectionUpdates actual = sectionsManager.compareDifference(종점이_추가된_구간들);
             List<Section> expectedNewSections = List.of(청계산_역삼_구간);
@@ -226,7 +226,7 @@ class SectionsManagerTest {
         @Test
         void 제거된_구간만_존재하는_경우_새로운_구간들의_정보에는_빈_리스트_반환() {
             SectionsManager sectionsManager = createSectionsManager(강남_선릉_구간, 선릉_청계산_구간, 청계산_역삼_구간);
-            Sections 종점이_제거된_구간들 = new Sections(List.of(강남_선릉_구간, 선릉_청계산_구간));
+            Sections 종점이_제거된_구간들 = new Sections(강남_선릉_구간, 선릉_청계산_구간);
 
             SectionUpdates actual = sectionsManager.compareDifference(종점이_제거된_구간들);
             List<Section> expectedNewSections = List.of();
