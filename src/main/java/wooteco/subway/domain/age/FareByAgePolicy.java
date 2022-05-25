@@ -1,6 +1,7 @@
 package wooteco.subway.domain.age;
 
 import java.util.Arrays;
+import wooteco.subway.domain.Fare;
 
 public enum FareByAgePolicy {
 
@@ -24,7 +25,7 @@ public enum FareByAgePolicy {
                 .orElseThrow();
     }
 
-    public int applyDiscount(final int fare) {
+    public Fare applyDiscount(final Fare fare) {
         return discountPolicy.apply(fare);
     }
 }

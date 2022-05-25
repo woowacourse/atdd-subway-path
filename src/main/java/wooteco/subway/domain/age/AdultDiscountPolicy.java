@@ -1,9 +1,11 @@
 package wooteco.subway.domain.age;
 
+import wooteco.subway.domain.Fare;
+
 public class AdultDiscountPolicy implements DiscountByAgePolicy {
 
     @Override
-    public int apply(final int fare) {
+    public Fare apply(final Fare fare) {
         return fare;
     }
 }

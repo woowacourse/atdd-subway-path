@@ -183,7 +183,7 @@ public class FareTest {
     }
 
     @ParameterizedTest
-    @DisplayName("50km 초과 거리에 대한 요금을 계산한다.")
+    @DisplayName("50km 초과 거리에 대한 성인 요금을 계산한다.")
     @CsvSource(value = {"51:2450", "58:2450", "59:2550"}, delimiter = ':')
     void NewFare_MoreThan50WithAdult_ExtraFareReturned(final int distanceValue, final int expected) {
         // given

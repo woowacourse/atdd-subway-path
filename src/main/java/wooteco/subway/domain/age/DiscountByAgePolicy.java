@@ -1,6 +1,8 @@
 package wooteco.subway.domain.age;
 
+import wooteco.subway.domain.Fare;
+
 public interface DiscountByAgePolicy {
 
-    int apply(final int fare);
+    Fare apply(final Fare fare);
 }

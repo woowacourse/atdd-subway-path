@@ -28,8 +28,8 @@ public class Distance {
         return new Distance(value + distance.value);
     }
 
-    public boolean isLessThanOrEqualByValue(final int standardValue) {
-        return value <= standardValue;
+    public boolean isBetween(final int minValue, final int maxValue) {
+        return value >= minValue && value <= maxValue;
     }
 
     public boolean isLessThanOrEqual(final Distance distance) {

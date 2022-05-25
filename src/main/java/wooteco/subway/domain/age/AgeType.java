@@ -6,8 +6,8 @@ public enum AgeType {
 
     BABY(1, 5),
     KIDS(6, 12),
-    TEENAGER(13, 19),
-    ADULT(20, Integer.MAX_VALUE);
+    TEENAGER(13, 18),
+    ADULT(19, Integer.MAX_VALUE);
 
     private final int minValue;
     private final int maxValue;

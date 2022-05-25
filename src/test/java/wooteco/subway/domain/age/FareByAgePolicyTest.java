@@ -8,6 +8,7 @@ import static wooteco.subway.domain.age.FareByAgePolicy.TEENAGER_POLICY;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.Fare;
 
 public class FareByAgePolicyTest {
 
@@ -55,11 +56,11 @@ public class FareByAgePolicyTest {
     @DisplayName("BABY 이면 요금은 0 원이다.")
     void ApplyDiscount_BABY_ZeroFareReturned() {
         //given
-        int fare = 1200;
-        int expected = 0;
+        Fare fare = new Fare(1200);
+        Fare expected = new Fare(0);
 
         //when
-        int actual = BABY_POLICY.applyDiscount(fare);
+        Fare actual = BABY_POLICY.applyDiscount(fare);
 
         //then
         assertThat(actual).isEqualTo(expected);
@@ -69,11 +70,11 @@ public class FareByAgePolicyTest {
     @DisplayName("KIDS 이면 운임에서 350원을 공제한 금액의 50% 할인된다.")
     void ApplyDiscount_KIDS_DiscountFareReturned() {
         //given
-        int fare = 1200;
-        int expected = 425;
+        Fare fare = new Fare(1200);
+        Fare expected = new Fare(425);
 
         //when
-        int actual = KIDS_POLICY.applyDiscount(fare);
+        Fare actual = KIDS_POLICY.applyDiscount(fare);
 
         //then
         assertThat(actual).isEqualTo(expected);
@@ -83,11 +84,11 @@ public class FareByAgePolicyTest {
     @DisplayName("TEENAGER 이면 운임에서 350원을 공제한 금액의 20% 할인된다.")
     void ApplyDiscount_TEENAGER_DiscountFareReturned() {
         //given
-        int fare = 1200;
-        int expected = 680;
+        Fare fare = new Fare(1200);
+        Fare expected = new Fare(680);
 
         //when
-        int actual = TEENAGER_POLICY.applyDiscount(fare);
+        Fare actual = TEENAGER_POLICY.applyDiscount(fare);
 
         //then
         assertThat(actual).isEqualTo(expected);
@@ -97,11 +98,11 @@ public class FareByAgePolicyTest {
     @DisplayName("ADULT 이면 운임에서 할인되지 않는다.")
     void ApplyDiscount_ADULT_OriginFareReturned() {
         //given
-        int fare = 1200;
-        int expected = 1200;
+        Fare fare = new Fare(1200);
+        Fare expected = new Fare(1200);
 
         //when
-        int actual = ADULT_POLICY.applyDiscount(fare);
+        Fare actual = ADULT_POLICY.applyDiscount(fare);
 
         //then
         assertThat(actual).isEqualTo(expected);

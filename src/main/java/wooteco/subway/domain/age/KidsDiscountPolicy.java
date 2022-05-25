@@ -1,9 +1,11 @@
 package wooteco.subway.domain.age;
 
+import wooteco.subway.domain.Fare;
+
 public class KidsDiscountPolicy implements DiscountByAgePolicy {
 
     @Override
-    public int apply(final int fare) {
-        return (int) Math.ceil((fare - 350) * 0.5);
+    public Fare apply(final Fare fare) {
+        return fare.minus(350).discount(0.5);
     }
 }
