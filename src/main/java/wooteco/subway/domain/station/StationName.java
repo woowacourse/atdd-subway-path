@@ -18,9 +18,4 @@ public class StationName {
     public String getName() {
         return name;
     }
-
-    @Override
-    public String toString() {
-        return "StationName{'" + name + "'}";
-    }
 }

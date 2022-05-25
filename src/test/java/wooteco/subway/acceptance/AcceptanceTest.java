@@ -9,7 +9,7 @@ import io.restassured.RestAssured;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class AcceptanceTest {
+public class AcceptanceTest {
 
     @LocalServerPort
     int port;

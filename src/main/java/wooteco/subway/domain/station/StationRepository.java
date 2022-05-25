@@ -4,11 +4,15 @@ import java.util.List;
 
 public interface StationRepository {
 
-    Station saveStation(Station station);
+    Station save(Station station);
 
-    List<Station> findStations();
+    List<Station> getAll();
 
-    Station findStationById(Long stationId);
+    Station getById(long stationId);
 
-    void removeStation(Long stationId);
+    void remove(long stationId);
+
+    boolean existsById(long stationID);
+
+    boolean existsByName(String name);
 }

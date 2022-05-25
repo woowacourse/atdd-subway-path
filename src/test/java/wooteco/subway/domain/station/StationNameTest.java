@@ -1,6 +1,5 @@
 package wooteco.subway.domain.station;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
@@ -17,13 +16,5 @@ class StationNameTest {
         assertThatThrownBy(() -> new StationName(name))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("지하철역 이름은 공백이 될 수 없습니다.");
-    }
-
-    @DisplayName("이름을 반환한다.")
-    @ParameterizedTest
-    @ValueSource(strings = {"강남역", "선릉역"})
-    void getName(String expected) {
-        String actual = (new StationName(expected)).getName();
-        assertThat(actual).isEqualTo(expected);
     }
 }

@@ -13,32 +13,45 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import wooteco.subway.repository.exception.DuplicateStationNameException;
+import wooteco.subway.controller.dto.request.RequestFormAssembler;
+import wooteco.subway.controller.dto.request.StationRequestForm;
+import wooteco.subway.controller.dto.response.ResponseFormAssembler;
+import wooteco.subway.controller.dto.response.StationResponseForm;
+import wooteco.subway.exception.DuplicateStationNameException;
 import wooteco.subway.service.StationService;
-import wooteco.subway.service.dto.station.StationRequest;
-import wooteco.subway.service.dto.station.StationResponse;
+import wooteco.subway.service.dto.request.StationRequest;
+import wooteco.subway.service.dto.response.StationResponse;
 
 @RestController
 @RequestMapping("/stations")
 public class StationController {
 
     private final StationService stationService;
+    private final RequestFormAssembler requestFormAssembler;
+    private final ResponseFormAssembler responseFormAssembler;
 
-    public StationController(StationService stationService) {
+    public StationController(StationService stationService,
+                             RequestFormAssembler requestFormAssembler,
+                             ResponseFormAssembler responseFormAssembler) {
         this.stationService = stationService;
+        this.requestFormAssembler = requestFormAssembler;
+        this.responseFormAssembler = responseFormAssembler;
     }
 
     @PostMapping
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
-        StationResponse stationResponse = stationService.create(stationRequest.getName());
-        URI redirectUri = URI.create("/stations/" + stationResponse.getId());
-        return ResponseEntity.created(redirectUri).body(stationResponse);
+    public ResponseEntity<StationResponseForm> create(@RequestBody StationRequestForm stationRequestForm) {
+        StationRequest stationRequest = requestFormAssembler.stationRequest(stationRequestForm);
+        StationResponse stationResponse = stationService.create(stationRequest);
+        StationResponseForm stationResponseForm = responseFormAssembler.stationResponseForm(stationResponse);
+        URI redirectUri = URI.create("/stations/" + stationResponseForm.getId());
+        return ResponseEntity.created(redirectUri).body(stationResponseForm);
     }
 
     @GetMapping
-    public ResponseEntity<List<StationResponse>> showStations() {
+    public ResponseEntity<List<StationResponseForm>> showStations() {
         List<StationResponse> stationResponses = stationService.findAll();
-        return ResponseEntity.ok(stationResponses);
+        List<StationResponseForm> stationResponseForms = responseFormAssembler.stationResponseForms(stationResponses);
+        return ResponseEntity.ok(stationResponseForms);
     }
 
     @DeleteMapping("/{stationId}")
