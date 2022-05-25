@@ -1,8 +1,8 @@
-package wooteco.subway.dto.service.response;
+package wooteco.subway.service.dto.response;
 
 import java.util.List;
 
-import wooteco.subway.dto.service.StationDto;
+import wooteco.subway.service.dto.StationDto;
 
 public class LineServiceResponse {
     private final long id;

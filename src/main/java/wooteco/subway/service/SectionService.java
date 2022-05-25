@@ -8,8 +8,8 @@ import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
-import wooteco.subway.dto.service.request.SectionCreateRequest;
-import wooteco.subway.dto.service.request.SectionDeleteRequest;
+import wooteco.subway.service.dto.request.SectionCreateRequest;
+import wooteco.subway.service.dto.request.SectionDeleteRequest;
 
 @Service
 public class SectionService {

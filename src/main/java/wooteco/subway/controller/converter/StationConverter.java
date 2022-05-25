@@ -1,8 +1,8 @@
 package wooteco.subway.controller.converter;
 
-import wooteco.subway.dto.controller.request.StationRequest;
-import wooteco.subway.dto.controller.response.StationResponse;
-import wooteco.subway.dto.service.StationDto;
+import wooteco.subway.controller.dto.request.StationRequest;
+import wooteco.subway.controller.dto.response.StationResponse;
+import wooteco.subway.service.dto.StationDto;
 
 public class StationConverter {
     public static StationDto toInfo(StationRequest stationRequest) {

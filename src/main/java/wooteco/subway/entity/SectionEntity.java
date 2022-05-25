@@ -1,4 +1,4 @@
-package wooteco.subway.dto;
+package wooteco.subway.entity;
 
 public class SectionEntity {
     private final long id;

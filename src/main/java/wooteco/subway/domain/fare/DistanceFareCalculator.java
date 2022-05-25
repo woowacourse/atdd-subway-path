@@ -5,13 +5,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public enum DistanceFareCalculator {
-    OVER_FIFTY((distance) -> distance > 50, (distance) -> getFare(distance - 50, 8)),
-    OVER_TEN((distance) -> distance > 10, (distance) -> {
-        if (distance > 50) {
-            distance = 50;
-        }
-        return getFare(distance - 10, 5);
-    }),
+    OVER_FIFTY((distance) -> distance > 50, (distance) -> getExtraFare(distance - 50, 8)),
+    OVER_TEN((distance) -> distance > 10, (distance) -> getExtraFare(distance, 5, 50, 10)),
     OVER_ZERO((distance) -> distance > 0, (distance) -> 1250);
 
     private final Predicate<Integer> condition;
@@ -23,13 +18,20 @@ public enum DistanceFareCalculator {
         this.calculate = calculate;
     }
 
-    private static int getFare(int distance, int unitDistance) {
+    private static int getExtraFare(int distance, int unitDistance) {
         int fare = 0;
         fare += distance / unitDistance * 100;
         if (distance % unitDistance > 0) {
             fare += 100;
         }
         return fare;
+    }
+
+    private static int getExtraFare(int distance, int unitDistance, int overStandard, int standard) {
+        if (distance > overStandard) {
+            distance = overStandard;
+        }
+        return getExtraFare(distance - standard, unitDistance);
     }
 
     public static int calculateFare(int distance) {

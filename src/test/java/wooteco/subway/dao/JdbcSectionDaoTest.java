@@ -13,7 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
-import wooteco.subway.dto.SectionEntity;
+import wooteco.subway.entity.SectionEntity;
 
 @JdbcTest
 public class JdbcSectionDaoTest {

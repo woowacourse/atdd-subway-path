@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.controller.converter.SectionConverter;
-import wooteco.subway.dto.controller.request.SectionRequest;
+import wooteco.subway.controller.dto.request.SectionRequest;
 import wooteco.subway.service.SectionService;
 
 @RestController

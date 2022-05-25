@@ -7,9 +7,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import wooteco.subway.domain.station.Station;
-import wooteco.subway.dto.service.request.LineServiceRequest;
-import wooteco.subway.dto.service.request.LineUpdateRequest;
-import wooteco.subway.dto.service.response.LineServiceResponse;
+import wooteco.subway.service.dto.request.LineServiceRequest;
+import wooteco.subway.service.dto.request.LineUpdateRequest;
+import wooteco.subway.service.dto.response.LineServiceResponse;
 import wooteco.subway.service.repository.LineRepositoryWithDao;
 
 public class LineServiceTest {

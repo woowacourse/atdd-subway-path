@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
-import wooteco.subway.dto.service.StationDto;
+import wooteco.subway.service.dto.StationDto;
 
 @Service
 public class StationService {

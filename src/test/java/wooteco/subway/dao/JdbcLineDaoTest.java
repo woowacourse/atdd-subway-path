@@ -10,7 +10,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import wooteco.subway.domain.line.Line;
-import wooteco.subway.dto.LineEntity;
+import wooteco.subway.entity.LineEntity;
 
 @JdbcTest
 public class JdbcLineDaoTest {

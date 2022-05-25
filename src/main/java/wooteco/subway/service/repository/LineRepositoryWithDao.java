@@ -13,8 +13,8 @@ import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
-import wooteco.subway.dto.LineEntity;
-import wooteco.subway.dto.SectionEntity;
+import wooteco.subway.entity.LineEntity;
+import wooteco.subway.entity.SectionEntity;
 
 @Repository
 public class LineRepositoryWithDao implements LineRepository {

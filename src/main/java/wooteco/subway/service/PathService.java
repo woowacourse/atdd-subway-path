@@ -13,9 +13,9 @@ import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.PathFindingStrategy;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
-import wooteco.subway.dto.service.StationDto;
-import wooteco.subway.dto.service.request.PathServiceRequest;
-import wooteco.subway.dto.service.response.PathServiceResponse;
+import wooteco.subway.service.dto.StationDto;
+import wooteco.subway.service.dto.request.PathServiceRequest;
+import wooteco.subway.service.dto.response.PathServiceResponse;
 
 @Service
 public class PathService {

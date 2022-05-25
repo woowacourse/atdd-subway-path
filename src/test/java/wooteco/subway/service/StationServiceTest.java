@@ -10,7 +10,7 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.domain.station.StationRepository;
-import wooteco.subway.dto.service.StationDto;
+import wooteco.subway.service.dto.StationDto;
 import wooteco.subway.service.repository.StationRepositoryWithDao;
 
 public class StationServiceTest {

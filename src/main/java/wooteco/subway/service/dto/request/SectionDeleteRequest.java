@@ -1,4 +1,4 @@
-package wooteco.subway.dto.service.request;
+package wooteco.subway.service.dto.request;
 
 public class SectionDeleteRequest {
     private final long lineId;

@@ -10,7 +10,7 @@ import org.springframework.util.ReflectionUtils;
 
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.section.Section;
-import wooteco.subway.dto.SectionEntity;
+import wooteco.subway.entity.SectionEntity;
 
 public class FakeSectionDao implements SectionDao {
     private Map<Section, Long> sections = new HashMap<>();

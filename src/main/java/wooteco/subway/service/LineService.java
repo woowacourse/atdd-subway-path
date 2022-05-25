@@ -10,10 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.station.Station;
-import wooteco.subway.dto.service.StationDto;
-import wooteco.subway.dto.service.request.LineServiceRequest;
-import wooteco.subway.dto.service.request.LineUpdateRequest;
-import wooteco.subway.dto.service.response.LineServiceResponse;
+import wooteco.subway.service.dto.StationDto;
+import wooteco.subway.service.dto.request.LineServiceRequest;
+import wooteco.subway.service.dto.request.LineUpdateRequest;
+import wooteco.subway.service.dto.response.LineServiceResponse;
 
 @Service
 public class LineService {
