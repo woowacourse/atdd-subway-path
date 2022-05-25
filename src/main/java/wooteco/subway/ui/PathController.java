@@ -21,11 +21,7 @@ public class PathController {
 
     @GetMapping
     public ResponseEntity<PathResponse> createPath(@Valid final PathRequest pathRequest) {
-        final PathResponse response = pathService.createPath(
-                pathRequest.getSource(),
-                pathRequest.getTarget(),
-                pathRequest.getAge()
-        );
+        final PathResponse response = pathService.createPath(pathRequest.toPathServiceRequest());
 
         return ResponseEntity.ok().body(response);
     }

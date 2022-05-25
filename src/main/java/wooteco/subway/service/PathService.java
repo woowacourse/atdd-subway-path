@@ -11,6 +11,7 @@ import wooteco.subway.exception.DataNotFoundException;
 import wooteco.subway.exception.DuplicatedSourceAndTargetException;
 import wooteco.subway.exception.PathNotExistsException;
 import wooteco.subway.exception.SectionNotExistException;
+import wooteco.subway.service.dto.PathServiceRequest;
 import java.util.List;
 
 @Service
@@ -27,7 +28,11 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse createPath(final long sourceId, final long targetId, final int age) {
+    public PathResponse createPath(final PathServiceRequest request) {
+        final Long sourceId = request.getSource();
+        final Long targetId = request.getTarget();
+        final int age = request.getAge();
+
         validateDuplicatedSourceAndTarget(sourceId, targetId);
         final Station source = findStationById(sourceId);
         final Station target = findStationById(targetId);

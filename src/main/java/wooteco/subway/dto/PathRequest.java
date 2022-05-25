@@ -1,5 +1,6 @@
 package wooteco.subway.dto;
 
+import wooteco.subway.service.dto.PathServiceRequest;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -15,13 +16,17 @@ public class PathRequest {
     @Min(value = 0, message = "나이는 공백이거나 음수일 수 없습니다.")
     private int age;
 
-    public PathRequest() {
+    private PathRequest() {
     }
 
     public PathRequest(final Long source, final Long target, final int age) {
         this.source = source;
         this.target = target;
         this.age = age;
+    }
+
+    public PathServiceRequest toPathServiceRequest() {
+        return new PathServiceRequest(source, target, age);
     }
 
     public Long getSource() {
