@@ -6,9 +6,13 @@ import java.util.function.UnaryOperator;
 
 public enum AgeDiscountPolicy {
     INFANT(age -> 1 <= age && age < 6, fare -> 0.0),
-    CHILD(age -> 6 <= age && age < 13, fare -> (fare - 350) * 0.5),
-    ADOLESCENT(age -> 13 <= age && age < 19, fare -> (fare - 350) * 0.8),
+    CHILD(age -> 6 <= age && age < 13, AgeDiscountPolicy::discountChildFare),
+    ADOLESCENT(age -> 13 <= age && age < 19, AgeDiscountPolicy::discountAdolescentFare),
     ADULT(age -> 19 <= age, fare -> fare);
+
+    private static final int BASIC_DISCOUNT_CHARGE = 350;
+    private static final double CHILD_DISCOUNT_RATE = 0.5;
+    private static final double ADOLESCENT_DISCOUNT_RATE = 0.2;
 
     private final Predicate<Integer> ageCondition;
     private final UnaryOperator<Double> discountPolicy;
@@ -16,6 +20,14 @@ public enum AgeDiscountPolicy {
     AgeDiscountPolicy(Predicate<Integer> ageCondition, UnaryOperator<Double> discountPolicy) {
         this.ageCondition = ageCondition;
         this.discountPolicy = discountPolicy;
+    }
+
+    private static double discountChildFare(Double fare) {
+        return (fare - BASIC_DISCOUNT_CHARGE) * (1 - CHILD_DISCOUNT_RATE);
+    }
+
+    private static double discountAdolescentFare(Double fare) {
+        return (fare - BASIC_DISCOUNT_CHARGE) * (1 - ADOLESCENT_DISCOUNT_RATE);
     }
 
     public static AgeDiscountPolicy of(int age) {
