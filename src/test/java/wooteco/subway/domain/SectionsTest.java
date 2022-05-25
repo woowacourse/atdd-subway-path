@@ -108,11 +108,15 @@ class SectionsTest {
             @DisplayName("구간이 하나 이상 존재하면 구간을 삭제한다.")
             void it_delete_section() {
                 sections.add(new Section(1L, 3L, 4L, 3));
+                sections.add(new Section(1L, 4L, 5L, 3));
+                sections.add(new Section(1L, 5L, 6L, 3));
                 sections.delete(stationId);
-                assertThat(sections.getSections()).hasSize(1)
+                assertThat(sections.getSections()).hasSize(3)
                         .extracting("upStationId", "downStationId", "distance")
                         .contains(
-                                tuple(2L, 4L, 5)
+                                tuple(2L, 4L, 5),
+                                tuple(4L, 5L, 3),
+                                tuple(5L, 6L, 3)
                         );
             }
 
