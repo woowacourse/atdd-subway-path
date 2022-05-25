@@ -1,10 +1,10 @@
 package wooteco.subway.repository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.section.Section;
-import wooteco.subway.domain.station.Station;
 
 @Repository
 public class SectionRepository {
@@ -28,17 +28,16 @@ public class SectionRepository {
     }
 
     public void saveSections(Long lineId, List<Section> sections) {
-        for (Section section : sections) {
-            sectionDao.save(new Section(lineId, section));
-        }
+        List<Section> newSections = sections.stream()
+                .map(section -> new Section(lineId, section))
+                .collect(Collectors.toList());
+        sectionDao.save(newSections);
     }
 
     public void deleteSections(Long lineId, List<Section> sections) {
-        for (Section section : sections) {
-            Station upStation = section.getUpStation();
-            Station downStation = section.getDownStation();
-            int distance = section.getDistance();
-            sectionDao.delete(new Section(lineId, upStation, downStation, distance));
-        }
+        List<Section> oldSections = sections.stream()
+                .map(section -> new Section(lineId, section))
+                .collect(Collectors.toList());
+        sectionDao.delete(oldSections);
     }
 }

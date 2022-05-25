@@ -2,11 +2,10 @@ package wooteco.subway.dao;
 
 import java.util.List;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
@@ -68,20 +67,18 @@ public class SectionDao {
         return jdbcTemplate.query(sql, paramSource, ROW_MAPPER);
     }
 
-    public void save(Section sectionEntity) {
+    public void save(List<Section> sectionEntities) {
         final String sql = "INSERT INTO section(line_id, up_station_id, down_station_id, distance) "
                 + "VALUES(:lineId, :upStationId, :downStationId, :distance)";
-        SqlParameterSource paramSource = new BeanPropertySqlParameterSource(sectionEntity);
 
-        jdbcTemplate.update(sql, paramSource);
+        jdbcTemplate.batchUpdate(sql, SqlParameterSourceUtils.createBatch(sectionEntities));
     }
 
-    public void delete(Section sectionEntity) {
+    public void delete(List<Section> sectionEntities) {
         final String sql = "DELETE FROM section WHERE line_id = :lineId "
                 + "AND (up_station_id = :upStationId OR down_station_id = :downStationId)";
-        SqlParameterSource paramSource = new BeanPropertySqlParameterSource(sectionEntity);
 
-        jdbcTemplate.update(sql, paramSource);
+        jdbcTemplate.batchUpdate(sql, SqlParameterSourceUtils.createBatch(sectionEntities));
     }
 
     public void deleteAllByLineId(Long lineId) {

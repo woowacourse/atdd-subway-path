@@ -77,19 +77,19 @@ class SectionDaoTest extends DatabaseUsageTest {
         }
     }
 
-    @DisplayName("save 메서드는 데이터를 저장한다")
+    @DisplayName("save 메서드는 복수의 데이터를 저장한다")
     @Nested
     class SaveTest {
 
         @Test
         void 중복되지_않는_정보인_경우_데이터_생성() {
-            dao.save(new Section(1L, 강남역, 잠실역, 10));
+            dao.save(List.of(new Section(1L, 강남역, 잠실역, 10),
+                    new Section(1L, 잠실역, 강변역, 20)));
 
-            boolean created = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM section "
-                    + "WHERE id = 1 AND line_id = 1 AND up_station_id = 1 "
-                    + "AND down_station_id = 3 AND distance = 10", Integer.class) > 0;
+            int createdData = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM section "
+                    + "WHERE line_id = 1", Integer.class);
 
-            assertThat(created).isTrue();
+            assertThat(createdData).isEqualTo(2);
         }
 
         @Test
@@ -97,31 +97,32 @@ class SectionDaoTest extends DatabaseUsageTest {
             databaseFixtureUtils.saveSection(1L, 강남역, 선릉역, 10);
 
             Section existingSection = new Section(1L, 강남역, 선릉역, 10);
-            assertThatThrownBy(() -> dao.save(existingSection))
+            assertThatThrownBy(() -> dao.save(List.of(existingSection)))
                     .isInstanceOf(DataAccessException.class);
         }
     }
 
-    @DisplayName("delete 메서드는 데이터를 삭제한다")
+    @DisplayName("delete 메서드는 복수의 데이터를 삭제한다")
     @Nested
     class DeleteTest {
 
         @Test
-        void delete_메서드는_노선과_상행역_하행역에_부합하는_데이터를_삭제() {
+        void delete_메서드는_노선과_상행역_하행역에_부합하는_데이터들을_삭제() {
             databaseFixtureUtils.saveSection(1L, 강남역, 잠실역, 10);
+            databaseFixtureUtils.saveSection(1L, 잠실역, 강변역, 10);
 
-            dao.delete(new Section(1L, 강남역, 잠실역, 10));
-            boolean exists = jdbcTemplate.queryForObject(
-                    "SELECT COUNT(*) FROM section WHERE line_id = 1", Integer.class) > 0;
+            dao.delete(List.of(new Section(1L, 강남역, 잠실역, 10)));
+            int existingSectionCount = jdbcTemplate.queryForObject(
+                    "SELECT COUNT(*) FROM section WHERE line_id = 1", Integer.class);
 
-            assertThat(exists).isFalse();
+            assertThat(existingSectionCount).isEqualTo(1);
         }
 
         @Test
         void 거리_정보가_틀리더라도_성공적으로_데이터_삭제_성공() {
             databaseFixtureUtils.saveSection(1L, 강남역, 잠실역, 10);
 
-            dao.delete(new Section(1L, 강남역, 잠실역, 99999999));
+            dao.delete(List.of(new Section(1L, 강남역, 잠실역, 99999999)));
             boolean exists = jdbcTemplate.queryForObject(
                     "SELECT COUNT(*) FROM section WHERE line_id = 2", Integer.class) > 0;
 
@@ -132,7 +133,7 @@ class SectionDaoTest extends DatabaseUsageTest {
         void 존재하지_않는_구간_정보가_입력되더라도_결과는_동일하므로_예외_미발생() {
             Section nonExistingSection = new Section(99999L, 강남역, 선릉역, 10);
             assertThatNoException()
-                    .isThrownBy(() -> dao.delete(nonExistingSection));
+                    .isThrownBy(() -> dao.delete(List.of(nonExistingSection)));
         }
     }
 

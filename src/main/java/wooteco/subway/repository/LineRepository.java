@@ -8,11 +8,10 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
-import wooteco.subway.domain.line.LineExtraFare;
 import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.LineExtraFare;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
-import wooteco.subway.domain.station.Station;
 import wooteco.subway.entity.LineEntity;
 import wooteco.subway.exception.ExceptionType;
 import wooteco.subway.exception.NotFoundException;
@@ -71,12 +70,10 @@ public class LineRepository {
     }
 
     private void saveSections(Long lineId, List<Section> sections) {
-        for (Section section : sections) {
-            Station upStation = section.getUpStation();
-            Station downStation = section.getDownStation();
-            int distance = section.getDistance();
-            sectionDao.save(new Section(lineId, upStation, downStation, distance));
-        }
+        List<Section> newSections = sections.stream()
+                .map(section -> new Section(lineId, section))
+                .collect(Collectors.toList());
+        sectionDao.save(newSections);
     }
 
     public void updateLine(Line line) {
