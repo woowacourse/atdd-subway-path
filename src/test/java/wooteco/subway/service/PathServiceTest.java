@@ -11,8 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.service.dto.response.PathResponse;
@@ -27,13 +29,15 @@ class PathServiceTest {
 
     private StationDao stationDao;
     private SectionDao sectionDao;
+    private LineDao lineDao;
     private PathService pathService;
 
     @BeforeEach
     void sepUp() {
         stationDao = new StationDao(jdbcTemplate);
         sectionDao = new SectionDao(jdbcTemplate);
-        pathService = new PathService(stationDao, sectionDao);
+        lineDao = new LineDao(jdbcTemplate);
+        pathService = new PathService(stationDao, sectionDao, lineDao);
     }
 
     @DisplayName("조회한 경로에 대해 최단 경로, 최단 거리, 요금 정보를 반환한다.")
@@ -44,8 +48,9 @@ class PathServiceTest {
         long stationId2 = stationDao.save(new Station(2L, "삼성역"));
         long stationId3 = stationDao.save(new Station(3L, "역삼역"));
 
-        sectionDao.save(1L, Section.of(stationId1, stationId2, 10));
-        sectionDao.save(1L, Section.of(stationId2, stationId3, 10));
+        long lineId = lineDao.save(Line.of(1L, "신분당선", "bg-red-600", 0));
+        sectionDao.save(lineId, Section.of(stationId1, stationId2, 10));
+        sectionDao.save(lineId, Section.of(stationId2, stationId3, 10));
 
         // when
         PathResponse pathResponse = pathService.findShortestPath(stationId1, stationId3);
@@ -58,6 +63,33 @@ class PathServiceTest {
         assertAll(
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(20),
                 () -> assertThat(pathResponse.getFare()).isEqualTo(1450),
+                () -> assertThat(stationNames).isEqualTo(List.of("강남역", "삼성역", "역삼역"))
+        );
+    }
+
+    @DisplayName("추가요금이 있는 노선을 거쳐 지나갈 경우 추가요금을 포함하여 계산한다.")
+    @Test
+    void findShortestPathWithExtraFare() {
+        // given
+        long stationId1 = stationDao.save(new Station(1L, "강남역"));
+        long stationId2 = stationDao.save(new Station(2L, "삼성역"));
+        long stationId3 = stationDao.save(new Station(3L, "역삼역"));
+
+        long lineId = lineDao.save(Line.of(1L, "신분당선", "bg-red-600", 500));
+        sectionDao.save(lineId, Section.of(stationId1, stationId2, 10));
+        sectionDao.save(lineId, Section.of(stationId2, stationId3, 10));
+
+        // when
+        PathResponse pathResponse = pathService.findShortestPath(stationId1, stationId3);
+
+        final List<String> stationNames = pathResponse.getStations().stream()
+                .map(StationResponse::getName)
+                .collect(Collectors.toList());
+
+        // then
+        assertAll(
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(20),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1950),
                 () -> assertThat(stationNames).isEqualTo(List.of("강남역", "삼성역", "역삼역"))
         );
     }

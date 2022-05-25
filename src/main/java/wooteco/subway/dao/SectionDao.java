@@ -3,7 +3,9 @@ package wooteco.subway.dao;
 import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -53,7 +55,7 @@ public class SectionDao {
         }
     }
 
-    public List<Section> findAllById(final Long lineId) {
+    public List<Section> findAllByLineId(final Long lineId) {
         final String sql = "select * from SECTION where line_id = ?";
         return jdbcTemplate.query(sql, SECTION_ROW_MAPPER, lineId);
     }
@@ -61,6 +63,15 @@ public class SectionDao {
     public List<Section> findAll() {
         final String sql = "select * from SECTION";
         return jdbcTemplate.query(sql, SECTION_ROW_MAPPER);
+    }
+
+    public Optional<Section> findByStationId(final Long stationId) {
+        final String sql = "select * from SECTION where up_station_id = ? or down_station_id = ? limit 1";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, SECTION_ROW_MAPPER, stationId, stationId));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
     public boolean existStation(final Long lineId, final Long stationId) {

@@ -12,8 +12,8 @@ public class Fare {
     private Fare() {
     }
 
-    public static double calculate(final double distance) {
-        double fare = DEFAULT_FARE;
+    public static double calculate(final double distance, final int extraFare) {
+        double fare = DEFAULT_FARE + extraFare;
         if (distance <= MAXIMUM_DISTANCE_OF_DEFAULT_FARE) {
             return fare;
         }

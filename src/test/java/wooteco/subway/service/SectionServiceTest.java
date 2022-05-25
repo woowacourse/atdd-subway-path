@@ -91,7 +91,7 @@ public class SectionServiceTest {
         sectionService.save(1L, new SectionRequest(station1Id, station2Id, 10));
 
         // then
-        List<Section> sections = sectionDao.findAllById(1L);
+        List<Section> sections = sectionDao.findAllByLineId(1L);
         assertThat(sections).contains(
                 Section.of(station1Id, station2Id, 10),
                 Section.of(station2Id, station3Id, 10)
@@ -112,7 +112,7 @@ public class SectionServiceTest {
         sectionService.save(1L, new SectionRequest(station2Id, station3Id, 10));
 
         // then
-        List<Section> sections = sectionDao.findAllById(1L);
+        List<Section> sections = sectionDao.findAllByLineId(1L);
         assertThat(sections).contains(
                 Section.of(station1Id, station2Id, 10),
                 Section.of(station2Id, station3Id, 10)
@@ -133,7 +133,7 @@ public class SectionServiceTest {
         sectionService.save(1L, new SectionRequest(station2Id, station3Id, 5));
 
         // then
-        List<Section> sections = sectionDao.findAllById(1L);
+        List<Section> sections = sectionDao.findAllByLineId(1L);
         assertThat(sections).contains(
                 Section.of(station1Id, station2Id, 5),
                 Section.of(station2Id, station3Id, 5)
@@ -154,7 +154,7 @@ public class SectionServiceTest {
         sectionService.save(1L, new SectionRequest(station1Id, station2Id, 5));
 
         // then
-        List<Section> sections = sectionDao.findAllById(1L);
+        List<Section> sections = sectionDao.findAllByLineId(1L);
         assertThat(sections).contains(
                 Section.of(station1Id, station2Id, 5),
                 Section.of(station2Id, station3Id, 5)
@@ -175,7 +175,7 @@ public class SectionServiceTest {
         sectionService.save(1L, new SectionRequest(station1Id, station2Id, 5));
 
         // then
-        List<Section> sections = sectionDao.findAllById(1L);
+        List<Section> sections = sectionDao.findAllByLineId(1L);
         assertThat(sections).contains(
                 Section.of(station1Id, station2Id, 5),
                 Section.of(station2Id, station3Id, 5)
@@ -251,7 +251,7 @@ public class SectionServiceTest {
         sectionService.delete(1L, station1Id);
 
         // then
-        assertThat(sectionDao.findAllById(1L)).contains(
+        assertThat(sectionDao.findAllByLineId(1L)).contains(
                 Section.of(station2Id, station3Id, 10)
         );
     }
@@ -271,7 +271,7 @@ public class SectionServiceTest {
         sectionService.delete(1L, station3Id);
 
         // then
-        assertThat(sectionDao.findAllById(1L)).contains(
+        assertThat(sectionDao.findAllByLineId(1L)).contains(
                 Section.of(station1Id, station2Id, 10)
         );
     }
@@ -291,7 +291,7 @@ public class SectionServiceTest {
         sectionService.delete(1L, station2Id);
 
         // then
-        assertThat(sectionDao.findAllById(1L)).contains(
+        assertThat(sectionDao.findAllByLineId(1L)).contains(
                 Section.of(station1Id, station3Id, 20)
         );
     }

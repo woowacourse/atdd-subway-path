@@ -2,7 +2,6 @@ package wooteco.subway.dao;
 
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -69,7 +68,7 @@ class SectionDaoTest {
         sectionDao.saveAll(1L, savedSections);
 
         // when
-        List<Section> sections = sectionDao.findAllById(1L);
+        List<Section> sections = sectionDao.findAllByLineId(1L);
 
         // then
         assertThat(sections).contains(
@@ -141,7 +140,7 @@ class SectionDaoTest {
         sectionDao.update(Section.of(sectionId, 1L, 1L, 2L, 50));
 
         // then
-        assertThat(sectionDao.findAllById(1L)).contains(
+        assertThat(sectionDao.findAllByLineId(1L)).contains(
                 Section.of(sectionId, 1L, 1L, 2L, 50)
         );
     }

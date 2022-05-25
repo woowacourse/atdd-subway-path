@@ -90,7 +90,7 @@ public class LineService {
     }
 
     private List<Long> getStationIdsByLineId(final Long id) {
-        List<Section> sections = sectionDao.findAllById(id);
+        List<Section> sections = sectionDao.findAllByLineId(id);
 
         List<Long> stationIds = new ArrayList<>();
         stationIds.addAll(getUpStationIds(sections));
