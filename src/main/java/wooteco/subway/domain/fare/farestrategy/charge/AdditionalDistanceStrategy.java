@@ -1,7 +1,5 @@
 package wooteco.subway.domain.fare.farestrategy.charge;
 
-import wooteco.subway.domain.fare.farestrategy.ChargeStrategy;
-
 public class AdditionalDistanceStrategy extends DistanceStrategy {
     public AdditionalDistanceStrategy(int distance) {
         super(distance);

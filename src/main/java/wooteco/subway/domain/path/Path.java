@@ -5,7 +5,6 @@ import wooteco.subway.domain.Station;
 import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.fare.farestrategy.charge.DistanceStandard;
 import wooteco.subway.domain.fare.farestrategy.discount.AgeStandard;
-import wooteco.subway.domain.fare.farestrategy.charge.DistanceStrategy;
 import wooteco.subway.exception.ExceptionMessage;
 import wooteco.subway.exception.NotFoundException;
 

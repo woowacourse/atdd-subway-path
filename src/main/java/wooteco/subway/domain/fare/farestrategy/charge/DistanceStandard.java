@@ -6,7 +6,6 @@ import java.util.function.Predicate;
 import wooteco.subway.domain.fare.farestrategy.ChargeStrategy;
 import wooteco.subway.exception.DomainException;
 import wooteco.subway.exception.ExceptionMessage;
-import wooteco.subway.exception.NotFoundException;
 
 public enum DistanceStandard {
     DEFAULT(x -> 0 < x && x <= 10, DefaultDistanceStrategy::new),
