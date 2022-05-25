@@ -6,9 +6,9 @@ import wooteco.subway.controller.dto.station.StationRequest;
 
 public class AcceptanceFixture {
 
-    public static final LineRequest 일호선 = new LineRequest("1호선", "bg-blue-200", 1L, 2L, 5);
-    public static final LineRequest 이호선 = new LineRequest("2호선", "bg-green-300", 1L, 2L, 10);
-    public static final LineRequest 삼호선 = new LineRequest("3호선", "bg-orange-400", 7L, 8L, 10);
+    public static final LineRequest 일호선 = new LineRequest("1호선", "bg-blue-200", 1L, 2L, 5, 100);
+    public static final LineRequest 이호선 = new LineRequest("2호선", "bg-green-300", 1L, 2L, 10, 200);
+    public static final LineRequest 삼호선 = new LineRequest("3호선", "bg-orange-400", 7L, 8L, 10, 300);
 
     public static final StationRequest 낙성대 = new StationRequest("낙성대");
     public static final StationRequest 사당 = new StationRequest("사당");

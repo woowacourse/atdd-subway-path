@@ -7,24 +7,19 @@ public class Line {
     private Long id;
     private String name;
     private String color;
+    private int extraFare;
 
-    public Line(Long id, String name, String color) {
+    public Line(Long id, String name, String color, int extraFare) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
     }
 
-    public Line(String name, String color) {
+    public Line(String name, String color, int extraFare) {
         this.name = name;
         this.color = color;
-    }
-
-    public boolean isName(String name) {
-        return this.name.equals(name);
-    }
-
-    public boolean isColor(String color) {
-        return this.color.equals(color);
+        this.extraFare = extraFare;
     }
 
     public Long getId() {
@@ -39,12 +34,8 @@ public class Line {
         return color;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
+    public int getExtraFare() {
+        return extraFare;
     }
 
     @Override

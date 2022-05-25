@@ -38,6 +38,14 @@ public class Section {
         return downStationId;
     }
 
+    public boolean isSameUpStation(Long upStationId) {
+        return this.upStationId.equals(upStationId);
+    }
+
+    public boolean isSameDownStation(Long downStationId) {
+        return this.downStationId.equals(downStationId);
+    }
+
     public int getDistance() {
         return distance;
     }
@@ -50,6 +58,11 @@ public class Section {
         if (this.distance <= section.getDistance()) {
             throw new IllegalArgumentException("[ERROR] 기존 구간 거리보다 작아야합니다.");
         }
+    }
+
+    public boolean checkTwoStations(Long stationId1, Long stationId2) {
+        return (upStationId.equals(stationId1) && downStationId.equals(stationId2))
+                || (downStationId.equals(stationId1) && upStationId.equals(stationId2));
     }
 
     @Override
@@ -65,8 +78,12 @@ public class Section {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Section section = (Section) o;
         return Objects.equals(id, section.id);
     }

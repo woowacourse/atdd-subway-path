@@ -51,7 +51,7 @@ class LineServiceTest {
     @DisplayName("노선 생성")
     void saveLine() {
         //given
-        LineRequestDto lineRequestDto = new LineRequestDto("2호선", "bg-green-300", 1L, 2L, 10);
+        LineRequestDto lineRequestDto = new LineRequestDto("2호선", "bg-green-300", 1L, 2L, 10, 200);
         lineService.create(lineRequestDto);
         sectionService.create(new SectionRequestDto(1L, 2L, 3L, 20));
         List<StationResponseDto> expected = new ArrayList<>();
@@ -66,6 +66,8 @@ class LineServiceTest {
                 () -> assertThat(findLineResponseDto.getId()).isEqualTo(1L),
                 () -> assertThat(findLineResponseDto.getName()).isEqualTo("2호선"),
                 () -> assertThat(findLineResponseDto.getColor()).isEqualTo("bg-green-300"),
+
+                () -> assertThat(findLineResponseDto.getExtraFare()).isEqualTo(200),
                 () -> assertThat(expected).isEqualTo(actual)
         );
     }
@@ -75,9 +77,9 @@ class LineServiceTest {
     void duplicateLineName() {
         //given
         //when
-        lineService.create(new LineRequestDto("2호선", "bg-green-300", 1L, 2L, 10));
+        lineService.create(new LineRequestDto("2호선", "bg-green-300", 1L, 2L, 10, 200));
         //then
-        assertThatThrownBy(() -> lineService.create(new LineRequestDto("2호선", "bg-green-300", 2L, 3L, 10)))
+        assertThatThrownBy(() -> lineService.create(new LineRequestDto("2호선", "bg-green-300", 2L, 3L, 10, 200)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -85,7 +87,7 @@ class LineServiceTest {
     @DisplayName("노선 조회")
     void findLine() {
         //given
-        LineRequestDto lineRequestDto = new LineRequestDto("2호선", "bg-green-300", 1L, 2L, 10);
+        LineRequestDto lineRequestDto = new LineRequestDto("2호선", "bg-green-300", 1L, 2L, 10, 200);
         //when
         LineResponseDto lineResponseDto = lineService.create(lineRequestDto);
         LineResponseDto findResult = lineService.findById(lineResponseDto.getId());
@@ -93,7 +95,8 @@ class LineServiceTest {
         assertAll(
                 () -> assertThat(findResult.getId()).isEqualTo(lineResponseDto.getId()),
                 () -> assertThat(findResult.getName()).isEqualTo("2호선"),
-                () -> assertThat(findResult.getColor()).isEqualTo("bg-green-300")
+                () -> assertThat(findResult.getColor()).isEqualTo("bg-green-300"),
+                () -> assertThat(findResult.getExtraFare()).isEqualTo(200)
         );
     }
 
@@ -111,8 +114,8 @@ class LineServiceTest {
     @DisplayName("노선 목록 조회")
     void findAllLine() {
         //given
-        LineRequestDto lineRequest1 = new LineRequestDto("1호선", "bg-blue-200", 1L, 2L, 10);
-        LineRequestDto lineRequest2 = new LineRequestDto("2호선", "bg-green-300", 2L, 3L, 20);
+        LineRequestDto lineRequest1 = new LineRequestDto("1호선", "bg-blue-200", 1L, 2L, 10, 100);
+        LineRequestDto lineRequest2 = new LineRequestDto("2호선", "bg-green-300", 2L, 3L, 20, 200);
         LineResponseDto lineResponse1 = lineService.create(lineRequest1);
         LineResponseDto lineResponse2 = lineService.create(lineRequest2);
         //when
@@ -130,36 +133,37 @@ class LineServiceTest {
     @DisplayName("노선 업데이트 성공")
     void updateLine() {
         //given
-        LineRequestDto lineRequestDto = new LineRequestDto("1호선", "bg-blue-200", 1L, 2L, 10);
+        LineRequestDto lineRequestDto = new LineRequestDto("1호선", "bg-blue-200", 1L, 2L, 10, 100);
         LineResponseDto lineResponseDto = lineService.create(lineRequestDto);
         //when
-        LineRequestDto newLineRequestDto = new LineRequestDto("2호선", "bg-green-300", 1L, 2L, 10);
+        LineRequestDto newLineRequestDto = new LineRequestDto("2호선", "bg-green-300", 1L, 2L, 10, 200);
         lineService.updateById(lineResponseDto.getId(), newLineRequestDto);
         LineResponseDto response = lineService.findById(lineResponseDto.getId());
         //then
         assertThat(response.getName()).isEqualTo("2호선");
         assertThat(response.getColor()).isEqualTo("bg-green-300");
+        assertThat(response.getExtraFare()).isEqualTo(200);
     }
 
     @Test
     @DisplayName("노선 업데이트 실패")
     void failUpdateLine() {
         //given
-        LineRequestDto lineRequestDto1 = new LineRequestDto("1호선", "bg-blue-200", 1L, 2L, 10);
+        LineRequestDto lineRequestDto1 = new LineRequestDto("1호선", "bg-blue-200", 1L, 2L, 10, 100);
         lineService.create(lineRequestDto1);
         //when
-        LineRequestDto lineRequestDto2 = new LineRequestDto("2호선", "bg-green-300", 2L, 3L, 20);
+        LineRequestDto lineRequestDto2 = new LineRequestDto("2호선", "bg-green-300", 2L, 3L, 20, 200);
         LineResponseDto lineResponseDto = lineService.create(lineRequestDto2);
         //then
         assertAll(
                 () -> assertThatThrownBy(
-                        () -> lineService.updateById(-1L, new LineRequestDto("2호선", "bg-black-500", 1L, 2L, 10)))
+                        () -> lineService.updateById(-1L, new LineRequestDto("2호선", "bg-black-500", 1L, 2L, 10, -100)))
                         .isInstanceOf(NoSuchElementException.class),
                 () -> assertThatThrownBy(() -> lineService.updateById(lineResponseDto.getId(),
-                        new LineRequestDto("1호선", "bg-black-500", 1L, 2L, 10)))
+                        new LineRequestDto("1호선", "bg-black-500", 1L, 2L, 10, 100)))
                         .isInstanceOf(NoSuchElementException.class),
                 () -> assertThatThrownBy(() -> lineService.updateById(lineResponseDto.getId(),
-                        new LineRequestDto("3호선", "bg-blue-200", 1L, 2L, 10)))
+                        new LineRequestDto("3호선", "bg-blue-200", 1L, 2L, 10, 300)))
                         .isInstanceOf(NoSuchElementException.class)
         );
     }
@@ -168,7 +172,7 @@ class LineServiceTest {
     @DisplayName("노선 삭제")
     void deleteLine() {
         //given
-        LineRequestDto lineRequestDto = new LineRequestDto("1호선", "bg-blue-200", 1L, 2L, 10);
+        LineRequestDto lineRequestDto = new LineRequestDto("1호선", "bg-blue-200", 1L, 2L, 10, 100);
         Long id = lineService.create(lineRequestDto).getId();
         //when
         lineService.deleteById(id);

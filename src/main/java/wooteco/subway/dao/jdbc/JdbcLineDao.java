@@ -1,7 +1,10 @@
 package wooteco.subway.dao.jdbc;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -14,11 +17,13 @@ import java.util.List;
 @Repository
 public class JdbcLineDao implements LineDao {
 
-    private static final RowMapper<Line> Line_ROW_MAPPER = (rs, rowNum) -> new Line(
+    private static final RowMapper<Line> LINE_ROW_MAPPER = (rs, rowNum) -> new Line(
             rs.getLong("id"),
             rs.getString("name"),
-            rs.getString("color")
+            rs.getString("color"),
+            rs.getInt("extra_fare")
     );
+
     private final JdbcTemplate jdbcTemplate;
 
     public JdbcLineDao(JdbcTemplate jdbcTemplate) {
@@ -27,33 +32,35 @@ public class JdbcLineDao implements LineDao {
 
     @Override
     public Line create(Line line) {
-        String sql = "INSERT INTO line (name, color) VALUES(?, ?)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement(sql, new String[]{"id"});
-            statement.setString(1, line.getName());
-            statement.setString(2, line.getColor());
-            return statement;
-        }, keyHolder);
-        return new Line(keyHolder.getKey().longValue(), line.getName(), line.getColor());
+        final SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("line")
+                .usingGeneratedKeyColumns("id");
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("name", line.getName());
+        parameters.put("color", line.getColor());
+        parameters.put("extra_fare", line.getExtraFare());
+
+        final Number number = simpleJdbcInsert.executeAndReturnKey(parameters);
+        return new Line(number.longValue(), line.getName(), line.getColor(), line.getExtraFare());
     }
 
     @Override
     public Line findById(Long id) {
         String sql = "SELECT * FROM line WHERE id=?";
-        return jdbcTemplate.queryForObject(sql, Line_ROW_MAPPER, id);
+        return jdbcTemplate.queryForObject(sql, LINE_ROW_MAPPER, id);
     }
 
     @Override
     public List<Line> findAll() {
         String sql = "SELECT * FROM line";
-        return jdbcTemplate.query(sql, Line_ROW_MAPPER);
+        return jdbcTemplate.query(sql, LINE_ROW_MAPPER);
     }
 
     @Override
-    public void update(Long id, String name, String color) {
-        String sql = "UPDATE line SET name=?, color=? WHERE id=?";
-        jdbcTemplate.update(sql, name, color, id);
+    public void update(Long id, String name, String color, int extraFare) {
+        String sql = "UPDATE line SET name=?, color=?, extra_fare=? WHERE id=?";
+        jdbcTemplate.update(sql, name, color, extraFare, id);
     }
 
     @Override

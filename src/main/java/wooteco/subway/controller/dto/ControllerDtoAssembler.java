@@ -30,12 +30,12 @@ public class ControllerDtoAssembler {
                 .map(it -> new StationResponse(it.getId(), it.getName()))
                 .collect(Collectors.toList());
         return new LineResponse(lineResponseDto.getId(), lineResponseDto.getName(), lineResponseDto.getColor(),
-                stations);
+                stations, lineResponseDto.getExtraFare());
     }
 
     public static LineRequestDto lineRequestDto(LineRequest lineRequest) {
         return new LineRequestDto(lineRequest.getName(), lineRequest.getColor(), lineRequest.getUpStationId(),
-                lineRequest.getDownStationId(), lineRequest.getDistance());
+                lineRequest.getDownStationId(), lineRequest.getDistance(), lineRequest.getExtraFare());
     }
 
     public static SectionRequestDto sectionRequestDto(Long lineId, SectionRequest sectionRequest) {

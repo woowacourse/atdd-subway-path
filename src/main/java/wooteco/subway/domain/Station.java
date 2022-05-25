@@ -6,9 +6,6 @@ public class Station {
     private Long id;
     private String name;
 
-    public Station() {
-    }
-
     public Station(Long id, String name) {
         this.id = id;
         this.name = name;
@@ -16,10 +13,6 @@ public class Station {
 
     public Station(String name) {
         this.name = name;
-    }
-
-    public boolean isName(String name) {
-        return this.name.equals(name);
     }
 
     public Long getId() {

@@ -42,7 +42,7 @@ class JdbcStationDaoTest {
         Station station2 = stationDao.create(new Station("잠실역"));
         List<Station> stations = stationDao.findAll();
         assertAll(
-                () -> assertThat(stations).hasSize(2),
+                () -> assertThat(stations.size()).isEqualTo(2),
                 () -> assertThat(stations.get(0)).isEqualTo(station1),
                 () -> assertThat(stations.get(1)).isEqualTo(station2)
         );

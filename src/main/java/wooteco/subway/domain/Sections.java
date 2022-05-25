@@ -1,12 +1,13 @@
 package wooteco.subway.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 public class Sections {
 
-    public final int limitSectionSize = 1;
+    private static final int SIZE_ONE = 1;
     private final List<Section> sections;
 
     public Sections(List<Section> sections) {
@@ -15,14 +16,14 @@ public class Sections {
 
     public boolean hasOneStation(Long stationId) {
         long count = sections.stream()
-                .filter(it -> it.getUpStationId().equals(stationId) || it.getDownStationId().equals(stationId))
+                .filter(it -> it.isSameUpStation(stationId) || it.isSameDownStation(stationId))
                 .count();
-        return count == 1;
+        return count == SIZE_ONE;
     }
 
     public Long getSectionId(Long stationId) {
         return sections.stream()
-                .filter(it -> it.getUpStationId().equals(stationId) || it.getDownStationId().equals(stationId))
+                .filter(it -> it.isSameUpStation(stationId) || it.isSameDownStation(stationId))
                 .map(Section::getId)
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 삭제하려는 구간이 존재하지 않습니다."));
@@ -30,14 +31,14 @@ public class Sections {
 
     public Section getUpStationSection(Long stationId) {
         return sections.stream()
-                .filter(it -> it.getDownStationId().equals(stationId))
+                .filter(it -> it.isSameDownStation(stationId))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 삭제할 대상의 상행종점을 찾을 수 없습니다."));
     }
 
     public Section getDownStationSection(Long stationId) {
         return sections.stream()
-                .filter(it -> it.getUpStationId().equals(stationId))
+                .filter(it -> it.isSameUpStation(stationId))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 삭제할 대상의 하행종점을 찾을 수 없습니다."));
     }
@@ -55,14 +56,12 @@ public class Sections {
     }
 
     private boolean existSection(Long stationId) {
-        Long count = sections.stream()
-                .filter(it -> it.getUpStationId().equals(stationId) || it.getDownStationId().equals(stationId))
-                .count();
-        return count != 0;
+        return sections.stream()
+                .anyMatch(it -> it.isSameUpStation(stationId) || it.isSameDownStation(stationId));
     }
 
     private void validateExistSection(Section section) {
-        if (sections.size() == 0) {
+        if (sections.isEmpty()) {
             return;
         }
         boolean hasSection1 = existSection(section.getUpStationId());
@@ -71,47 +70,41 @@ public class Sections {
         if (hasSection1 && hasSection2) {
             throw new IllegalArgumentException("[ERROR] 이미 등록되어 있어 추가할 수 없습니다.");
         }
-        if (hasSection1 == false && hasSection2 == false) {
+        if (!hasSection1 && !hasSection2) {
             throw new IllegalArgumentException("[ERROR] 지하철역이 존재하지 않습니다.");
         }
     }
 
     private void validateDistance(int distance) {
-        if (distance < 1) {
+        if (distance < SIZE_ONE) {
             throw new IllegalArgumentException("[ERROR] 거리는 양수입니다.");
         }
     }
 
     public boolean isUpStationId(Long upStationId) {
-        Long count = sections.stream()
-                .filter(it -> it.getUpStationId().equals(upStationId))
-                .count();
-        return count != 0;
+        return sections.stream().anyMatch(it -> it.isSameUpStation(upStationId));
     }
 
     public boolean isDownStationId(Long downStationId) {
-        Long count = sections.stream()
-                .filter(it -> it.getDownStationId().equals(downStationId))
-                .count();
-        return count != 0;
+        return sections.stream().anyMatch(it -> it.isSameDownStation(downStationId));
     }
 
     public Section getSectionByUpStationId(Long upStationId) {
         return sections.stream()
-                .filter(it -> it.getUpStationId().equals(upStationId))
+                .filter(it -> it.isSameUpStation(upStationId))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 대상이 존재하지 않습니다."));
     }
 
     public Section getSectionByDownStationId(Long downStationId) {
         return sections.stream()
-                .filter(it -> it.getDownStationId().equals(downStationId))
+                .filter(it -> it.isSameDownStation(downStationId))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 대상이 존재하지 않습니다."));
     }
 
     public void validateSize() {
-        if (sections.size() == limitSectionSize) {
+        if (sections.size() == SIZE_ONE) {
             throw new IllegalArgumentException("[ERROR] 더 이상 삭제할 수 없습니다.");
         }
     }
@@ -122,13 +115,13 @@ public class Sections {
 
     private List<Long> getUpStationIds() {
         return sections.stream()
-                .map(it -> it.getUpStationId())
+                .map(Section::getUpStationId)
                 .collect(Collectors.toList());
     }
 
     private List<Long> getDownStationIds() {
         return sections.stream()
-                .map(it -> it.getDownStationId())
+                .map(Section::getDownStationId)
                 .collect(Collectors.toList());
     }
 
@@ -141,5 +134,40 @@ public class Sections {
 
     public boolean hasUpStationId(Long upStationId) {
         return getUpStationIds().contains(upStationId);
+    }
+
+    public List<Section> getSectionsFromShortestPath(List<Long> shortestPath) {
+        List<Section> shortestPathSections = new ArrayList<>();
+        for (int i = 0; i < shortestPath.size() - 1; i++) {
+            List<Section> candidateSections = getCandidateSections(shortestPath, i);
+            if (candidateSections.isEmpty()) {
+                continue;
+            }
+            addToShortestPathSections(shortestPathSections, candidateSections);
+
+        }
+        return shortestPathSections;
+    }
+
+    private void addToShortestPathSections(List<Section> shortestPathSections, List<Section> candidateSections) {
+        Section tempSection = new Section(0L, 0L, 0L, Integer.MAX_VALUE);
+        shortestPathSections.add(candidateSections.stream()
+                .reduce(tempSection, this::getShorterDistance)
+        );
+    }
+
+    private Section getShorterDistance(Section section1, Section section2) {
+        if (section1.getDistance() < section2.getDistance()) {
+            return section1;
+        }
+        return section2;
+    }
+
+    private List<Section> getCandidateSections(List<Long> shortestPath, int i) {
+        Long stationId1 = shortestPath.get(i);
+        Long stationId2 = shortestPath.get(i + 1);
+        return sections.stream()
+                .filter(section -> section.checkTwoStations(stationId1, stationId2))
+                .collect(Collectors.toList());
     }
 }

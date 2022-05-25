@@ -47,8 +47,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(response.header("Location")).isNotBlank(),
                 () -> assertThat(lineResponse.getName()).isEqualTo(이호선.getName()),
-                () -> assertThat(lineResponse.getColor()).isEqualTo(이호선.getColor())
-        );
+                () -> assertThat(lineResponse.getColor()).isEqualTo(이호선.getColor()),
+                () -> assertThat(lineResponse.getExtraFare()).isEqualTo(이호선.getExtraFare())
+                );
     }
 
     @DisplayName("기존에 존재하는 노선 이름으로 생성시 예외가 발생한다.")
@@ -76,7 +77,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(lineResponse.getId()).isEqualTo(Long.valueOf(id)),
                 () -> assertThat(lineResponse.getName()).isEqualTo(이호선.getName()),
-                () -> assertThat(lineResponse.getColor()).isEqualTo(이호선.getColor())
+                () -> assertThat(lineResponse.getColor()).isEqualTo(이호선.getColor()),
+                () -> assertThat(lineResponse.getExtraFare()).isEqualTo(이호선.getExtraFare())
         );
     }
 
@@ -111,7 +113,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(lineResponse.getId()).isEqualTo(Long.valueOf(id)),
                 () -> assertThat(lineResponse.getName()).isEqualTo(이호선.getName()),
-                () -> assertThat(lineResponse.getColor()).isEqualTo(이호선.getColor())
+                () -> assertThat(lineResponse.getColor()).isEqualTo(이호선.getColor()),
+                () -> assertThat(lineResponse.getExtraFare()).isEqualTo(이호선.getExtraFare())
         );
     }
 

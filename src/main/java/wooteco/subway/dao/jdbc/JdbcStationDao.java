@@ -1,7 +1,10 @@
 package wooteco.subway.dao.jdbc;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -26,14 +29,14 @@ public class JdbcStationDao implements StationDao {
 
     @Override
     public Station create(Station station) {
-        String sql = "INSERT INTO station (name) VALUES(?)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement(sql, new String[]{"id"});
-            statement.setString(1, station.getName());
-            return statement;
-        }, keyHolder);
-        return new Station(keyHolder.getKey().longValue(), station.getName());
+        final SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("station").usingGeneratedKeyColumns("id");
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("name", station.getName());
+
+        final Number number = simpleJdbcInsert.executeAndReturnKey(parameters);
+        return new Station(number.longValue(), station.getName());
     }
 
     @Override
