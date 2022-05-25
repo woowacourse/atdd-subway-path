@@ -1,6 +1,6 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.fare;
 
-import wooteco.subway.domain.farestrategy.FareStrategy;
+import wooteco.subway.domain.fare.farestrategy.FareStrategy;
 
 public class Fare {
 

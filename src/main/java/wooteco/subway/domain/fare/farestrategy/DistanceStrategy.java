@@ -1,4 +1,4 @@
-package wooteco.subway.domain.farestrategy;
+package wooteco.subway.domain.fare.farestrategy;
 
 import wooteco.subway.exception.DomainException;
 import wooteco.subway.exception.ExceptionMessage;

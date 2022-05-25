@@ -1,4 +1,4 @@
-package wooteco.subway.domain.farestrategy;
+package wooteco.subway.domain.fare.farestrategy;
 
 import java.util.Arrays;
 import java.util.function.Function;

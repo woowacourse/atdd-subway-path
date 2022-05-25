@@ -1,4 +1,4 @@
-package wooteco.subway.jgraph;
+package wooteco.subway.domain.jgraph;
 
 import java.util.HashSet;
 import java.util.List;
@@ -8,8 +8,8 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
-import wooteco.subway.domain.Path;
-import wooteco.subway.domain.PathGenerator;
+import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.path.PathGenerator;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.exception.DomainException;

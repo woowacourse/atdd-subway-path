@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.domain.Fare;
-import wooteco.subway.domain.Path;
+import wooteco.subway.domain.fare.Fare;
+import wooteco.subway.domain.path.Path;
 
 @SpringBootTest
 @Transactional

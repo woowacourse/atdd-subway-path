@@ -3,12 +3,12 @@ package wooteco.subway.service;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.domain.Fare;
-import wooteco.subway.domain.Path;
-import wooteco.subway.domain.PathGenerator;
+import wooteco.subway.domain.fare.Fare;
+import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.path.PathGenerator;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.jgraph.JGraphPathGenerator;
+import wooteco.subway.domain.jgraph.JGraphPathGenerator;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
 

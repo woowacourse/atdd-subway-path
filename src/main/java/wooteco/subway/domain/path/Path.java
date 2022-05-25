@@ -1,8 +1,10 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import java.util.List;
-import wooteco.subway.domain.farestrategy.AgeStrategy;
-import wooteco.subway.domain.farestrategy.DistanceStrategy;
+import wooteco.subway.domain.Station;
+import wooteco.subway.domain.fare.Fare;
+import wooteco.subway.domain.fare.farestrategy.AgeStrategy;
+import wooteco.subway.domain.fare.farestrategy.DistanceStrategy;
 import wooteco.subway.exception.ExceptionMessage;
 import wooteco.subway.exception.NotFoundException;
 

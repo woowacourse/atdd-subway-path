@@ -3,8 +3,8 @@ package wooteco.subway.ui;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.subway.domain.Fare;
-import wooteco.subway.domain.Path;
+import wooteco.subway.domain.fare.Fare;
+import wooteco.subway.domain.path.Path;
 import wooteco.subway.service.PathService;
 import wooteco.subway.service.dto.PathResponse;
 
