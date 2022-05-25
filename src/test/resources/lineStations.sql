@@ -29,8 +29,8 @@ create table if not exists section
 );
 
 insert into station (name) values ('강남역');
-insert into station (name) values ('역삼역');
-insert into station (name) values ('교대역');
+insert into station (name) values ('선릉역');
+insert into station (name) values ('잠실역');
 
 insert into line (name, color, extra_fare) values ('2호선', 'green', 0);
 
