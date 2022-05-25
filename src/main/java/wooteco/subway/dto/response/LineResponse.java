@@ -9,10 +9,14 @@ public class LineResponse {
     private final Long id;
     private final String name;
     private final String color;
-    private final int extraFare;
+    private final Integer extraFare;
     private final List<StationResponse> stations;
 
-    public LineResponse(Long id, String name, String color, int extraFare,
+    public LineResponse() {
+        this(null, null, null, null, null);
+    }
+
+    public LineResponse(Long id, String name, String color, Integer extraFare,
         List<StationResponse> stations) {
         this.id = id;
         this.name = name;
