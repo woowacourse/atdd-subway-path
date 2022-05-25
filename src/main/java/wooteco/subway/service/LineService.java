@@ -16,7 +16,6 @@ import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.exception.duplicatename.LineDuplicateException;
 import wooteco.subway.exception.requestvalue.ExtraFareValueException;
-import wooteco.subway.exception.requestvalue.RequestValueException;
 
 @Service
 public class LineService {
@@ -34,7 +33,7 @@ public class LineService {
     @Transactional
     public LineResponse save(final LineRequest lineRequest) {
         validate(lineRequest);
-        final Line line = createLine(lineRequest);
+        final Line line = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         final Line newLine = lineDao.save(line);
         saveSection(newLine.getId(), lineRequest);
         return LineResponse.of(newLine, getStationsFromSection(newLine.getId()));
@@ -58,14 +57,6 @@ public class LineService {
     private void validateExtraFareNotNegative(final LineRequest lineRequest) {
         if (lineRequest.getExtraFare() < 0) {
             throw new ExtraFareValueException("추가요금은 0과 같거나 양수이어야 합니다.");
-        }
-    }
-
-    private Line createLine(final LineRequest lineRequest) {
-        try {
-            return new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
-        } catch (RequestValueException e) {
-            throw new RequestValueException(e.getMessage());
         }
     }
 
