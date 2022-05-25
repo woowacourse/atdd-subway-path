@@ -1,7 +1,5 @@
 package wooteco.subway.domain.path;
 
-import wooteco.subway.domain.fare.PathAlgorithm;
-
 import java.util.List;
 
 public class PathFinder<E> {

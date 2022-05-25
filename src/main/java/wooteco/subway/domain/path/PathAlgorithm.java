@@ -1,4 +1,4 @@
-package wooteco.subway.domain.fare;
+package wooteco.subway.domain.path;
 
 import java.util.List;
 

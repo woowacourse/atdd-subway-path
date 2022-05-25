@@ -1,13 +1,46 @@
 package wooteco.subway.domain.fare;
 
-import java.util.function.IntPredicate;
-import java.util.function.IntUnaryOperator;
+import java.util.Arrays;
 
 public enum DistanceFarePolicy {
 
-    SHORT_DISTANCE_POLICY(DistanceFarePolicy::shortDistanceCondition, DistanceFarePolicy::calculateShortPolicy),
-    MIDDLE_DISTANCE_POLICY(DistanceFarePolicy::middleDistanceCondition, DistanceFarePolicy::calculateMiddlePolicy),
-    LONG_DISTANCE_POLICY(DistanceFarePolicy::longDistanceCondition, DistanceFarePolicy::calculateLongPolicy);
+    SHORT_DISTANCE_POLICY {
+        @Override
+        boolean condition(int distance) {
+            return distance >= 0 && distance <= FIRST_FARE_INCREASE_STANDARD;
+        }
+
+        @Override
+        int calculate(int distance) {
+            return BASIS_FARE;
+        }
+    },
+
+    MIDDLE_DISTANCE_POLICY {
+        @Override
+        boolean condition(int distance) {
+            return distance > FIRST_FARE_INCREASE_STANDARD && distance <= LAST_FARE_INCREASE_STANDARD;
+        }
+
+        @Override
+        int calculate(int distance) {
+            return BASIS_FARE + INCREASE_RATE *
+                    (int) Math.ceil((double) (distance - FIRST_FARE_INCREASE_STANDARD) / FIRST_FARE_INCREASE_STANDARD_UNIT);
+        }
+    },
+
+    LONG_DISTANCE_POLICY {
+        @Override
+        boolean condition(int distance) {
+            return distance > FIRST_FARE_INCREASE_STANDARD;
+        }
+
+        @Override
+        int calculate(int distance) {
+            return FARE_AT_50KM + INCREASE_RATE *
+                    (int) Math.ceil((double) (distance - LAST_FARE_INCREASE_STANDARD) / LAST_FARE_INCREASE_STANDARD_UNIT);
+        }
+    };
 
     private static final int BASIS_FARE = 1_250;
     private static final int FARE_AT_50KM = 2_050;
@@ -17,45 +50,15 @@ public enum DistanceFarePolicy {
     private static final int LAST_FARE_INCREASE_STANDARD_UNIT = 8;
     private static final int INCREASE_RATE = 100;
 
-    private final IntPredicate condition;
-    private final IntUnaryOperator calculator;
+    abstract boolean condition(int distance);
 
-    DistanceFarePolicy(IntPredicate condition, IntUnaryOperator calculator) {
-        this.condition = condition;
-        this.calculator = calculator;
-    }
+    abstract int calculate(int distance);
 
-    private static boolean shortDistanceCondition(int distance) {
-        return distance >= 0 && distance <= FIRST_FARE_INCREASE_STANDARD;
-    }
-
-    private static boolean middleDistanceCondition(int distance) {
-        return distance > 0 && distance <= LAST_FARE_INCREASE_STANDARD;
-    }
-
-    private static boolean longDistanceCondition(int distance) {
-        return distance > FIRST_FARE_INCREASE_STANDARD;
-    }
-
-    private static int calculateShortPolicy(int distance) {
-        return BASIS_FARE;
-    }
-
-    private static int calculateMiddlePolicy(int distance) {
-        return BASIS_FARE + INCREASE_RATE *
-                (int) Math.ceil((double) (distance - FIRST_FARE_INCREASE_STANDARD) / FIRST_FARE_INCREASE_STANDARD_UNIT);
-    }
-
-    private static int calculateLongPolicy(int distance) {
-        return FARE_AT_50KM + INCREASE_RATE *
-                (int) Math.ceil((double) (distance - LAST_FARE_INCREASE_STANDARD) / LAST_FARE_INCREASE_STANDARD_UNIT);
-    }
-
-    public IntPredicate condition() {
-        return condition;
-    }
-
-    public IntUnaryOperator calculator() {
-        return calculator;
+    public static int calculateFare(int distance) {
+        return Arrays.stream(DistanceFarePolicy.values())
+                .filter(distanceFarePolicy -> distanceFarePolicy.condition(distance))
+                .map(distanceFarePolicy -> distanceFarePolicy.calculate(distance))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("거리를 잘못 입력하였습니다."));
     }
 }

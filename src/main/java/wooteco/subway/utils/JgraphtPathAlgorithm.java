@@ -2,7 +2,7 @@ package wooteco.subway.utils;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
-import wooteco.subway.domain.fare.PathAlgorithm;
+import wooteco.subway.domain.path.PathAlgorithm;
 
 import java.util.Collection;
 import java.util.List;

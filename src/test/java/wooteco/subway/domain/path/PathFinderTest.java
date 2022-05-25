@@ -3,7 +3,6 @@ package wooteco.subway.domain.path;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.fare.PathAlgorithm;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
 import wooteco.subway.utils.JgraphtPathAlgorithm;

@@ -1,51 +1,56 @@
 package wooteco.subway.domain.fare;
 
-import java.util.function.IntPredicate;
-import java.util.function.IntUnaryOperator;
+import java.util.Arrays;
+
+import static java.util.Arrays.stream;
 
 public enum AgeFarePolicy {
 
-    CHILD_AGE_POLICY(AgeFarePolicy::childCondition, AgeFarePolicy::calculateChildPolicy),
-    YOUTH_AGE_POLICY(AgeFarePolicy::youthCondition, AgeFarePolicy::calculateYouthPolicy),
-    ADULT_AGE_POLICY(AgeFarePolicy::adultCondition, AgeFarePolicy::calculateAdultPolicy);
+    CHILD_AGE_POLICY{
+        @Override
+        public boolean condition(int age) {
+            return age >= 6 && age < 13;
+        }
 
-    private final IntPredicate condition;
-    private final IntUnaryOperator calculator;
+        @Override
+        public int calculate(int amount) {
+            return (int)((amount -350) * 0.5);
+        }
+    },
 
-    AgeFarePolicy(IntPredicate condition, IntUnaryOperator calculator) {
-        this.condition = condition;
-        this.calculator = calculator;
-    }
+    YOUTH_AGE_POLICY{
+        @Override
+        public boolean condition(int age) {
+            return age >= 13 && age < 19;
+        }
 
-    private static boolean childCondition(int age) {
-        return age >= 6 && age < 13;
-    }
+        @Override
+        public int calculate(int amount) {
+            return (int)((amount -350) * 0.8);
+        }
+    },
 
-    private static boolean youthCondition(int age) {
-        return age >= 13 && age < 19;
-    }
+    ADULT_AGE_POLICY{
+        @Override
+        public boolean condition(int age) {
+            return age >= 19 || (age >= 0 && age < 6);
+        }
 
-    private static boolean adultCondition(int age) {
-        return age >= 19 || (age >= 0 && age < 6);
-    }
+        @Override
+        public int calculate(int amount) {
+            return amount;
+        }
+    };
 
-    private static int calculateChildPolicy(int amount) {
-        return (int)((amount -350) * 0.5);
-    }
+    abstract public boolean condition(int age);
 
-    private static int calculateYouthPolicy(int amount) {
-        return (int)((amount -350) * 0.8);
-    }
+    abstract public int calculate(int amount);
 
-    private static int calculateAdultPolicy(int amount) {
-        return amount;
-    }
-
-    public IntPredicate condition() {
-        return condition;
-    }
-
-    public IntUnaryOperator calculator() {
-        return calculator;
+    public static int calculateFare(int fare, int age) {
+        return stream(values())
+                .filter(AgeFarePolicy -> AgeFarePolicy.condition(age))
+                .map(AgeFarePolicy -> AgeFarePolicy.calculate(fare))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("연령을 잘못 입력하였습니다."));
     }
 }
