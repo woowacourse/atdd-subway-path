@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 public class Sections {
 
-    public final int limitSectionSize = 1;
+    public static final int LIMIT_SECTION_SIZE = 1;
     private final List<Section> sections;
 
     public Sections(List<Section> sections) {
@@ -112,7 +112,7 @@ public class Sections {
     }
 
     public void validateSize() {
-        if (sections.size() == limitSectionSize) {
+        if (sections.size() == LIMIT_SECTION_SIZE) {
             throw new IllegalArgumentException("[ERROR] 더 이상 삭제할 수 없습니다.");
         }
     }

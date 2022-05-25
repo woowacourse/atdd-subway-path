@@ -64,12 +64,9 @@ public class PathService {
     }
 
     private List<StationResponse> toStationResponse(Path path) {
-        Map<Long, Station> stations = stationService.findAll()
-                .stream()
-                .collect(Collectors.toMap(Station::getId, station -> station));
+        List<Station> stations = stationService.findByIds(path.getShortestPathByStationId());
 
-        return path.getShortestPathByStationId().stream()
-                .map(stations::get)
+        return stations.stream()
                 .map(StationResponse::new)
                 .collect(Collectors.toList());
     }
