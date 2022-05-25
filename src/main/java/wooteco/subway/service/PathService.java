@@ -35,16 +35,19 @@ public class PathService {
 
     @Transactional(readOnly = true)
     public PathResponse findShortestPath(PathRequest pathRequest) {
-        validateExistStations(pathRequest);
-        List<Section> allSections = sectionDao.findAll();
-        ShortestPath shortestPath = new ShortestPath(new DistanceShortestPathStrategy(), new Sections(allSections),
-                pathRequest.getSource(), pathRequest.getTarget());
-
+        ShortestPath shortestPath = createShortestPath(pathRequest);
         Fare fare = calculateFare(pathRequest, shortestPath);
 
         List<Long> stationIds = shortestPath.getStationIds(pathRequest.getSource(), pathRequest.getTarget());
         List<StationResponse> stations = stationService.findByStationIds(stationIds);
         return new PathResponse(stations, shortestPath.getTotalDistance(), fare.getValue());
+    }
+
+    private ShortestPath createShortestPath(PathRequest pathRequest) {
+        validateExistStations(pathRequest);
+        List<Section> allSections = sectionDao.findAll();
+        return new ShortestPath(new DistanceShortestPathStrategy(), new Sections(allSections),
+                pathRequest.getSource(), pathRequest.getTarget());
     }
 
     private void validateExistStations(PathRequest pathRequest) {
