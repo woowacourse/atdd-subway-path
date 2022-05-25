@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.request.CreateLineRequest;
 import wooteco.subway.dto.request.UpdateLineRequest;
 import wooteco.subway.dto.response.LineResponse;
@@ -21,6 +22,10 @@ import wooteco.subway.fixture.DatabaseUsageTest;
 
 @SuppressWarnings("NonAsciiCharacters")
 class LineServiceTest extends DatabaseUsageTest {
+
+    private static final Station STATION1 = new Station(1L, "강남역");
+    private static final Station STATION2 = new Station(2L, "선릉역");
+    private static final Station STATION3 = new Station(3L, "잠실역");
 
     @Autowired
     private LineService service;
@@ -41,12 +46,12 @@ class LineServiceTest extends DatabaseUsageTest {
 
         @BeforeEach
         void setup() {
-            databaseFixtureUtils.saveStations("강남역", "선릉역", "잠실역");
+            databaseFixtureUtils.saveStations(STATION1, STATION2, STATION3);
             databaseFixtureUtils.saveLine("1호선", "색깔", 1000);
             databaseFixtureUtils.saveLine("2호선", "색깔2", 0);
-            databaseFixtureUtils.saveSection(2L, 3L, 1L);
-            databaseFixtureUtils.saveSection(2L, 1L, 2L);
-            databaseFixtureUtils.saveSection(1L, 1L, 3L);
+            databaseFixtureUtils.saveSection(2L, STATION3, STATION1);
+            databaseFixtureUtils.saveSection(2L, STATION1, STATION2);
+            databaseFixtureUtils.saveSection(1L, STATION1, STATION3);
         }
 
         @Test
@@ -85,7 +90,7 @@ class LineServiceTest extends DatabaseUsageTest {
 
         @Test
         void 유효한_입력인_경우_성공() {
-            databaseFixtureUtils.saveStations("강남역", "선릉역");
+            databaseFixtureUtils.saveStations(STATION1, STATION2);
 
             LineResponse actual = service.save(new CreateLineRequest(
                     "새로운 노선명", "색깔", 300, 1L, 2L, 10));
@@ -97,9 +102,9 @@ class LineServiceTest extends DatabaseUsageTest {
 
         @Test
         void 중복되는_노선명인_경우_예외발생() {
-            databaseFixtureUtils.saveStations("강남역", "선릉역", "잠실역");
+            databaseFixtureUtils.saveStations(STATION1, STATION2, STATION3);
             databaseFixtureUtils.saveLine("존재하는 노선명", "색깔");
-            databaseFixtureUtils.saveSection(1L, 1L, 2L);
+            databaseFixtureUtils.saveSection(1L, STATION1, STATION2);
 
             CreateLineRequest duplicateLineNameRequest = new CreateLineRequest(
                     "존재하는 노선명", "색깔", 200, 1L, 3L, 10);
@@ -109,9 +114,9 @@ class LineServiceTest extends DatabaseUsageTest {
 
         @Test
         void 존재하지_않는_상행역을_입력한_경우_예외발생() {
-            databaseFixtureUtils.saveStations("강남역", "선릉역");
+            databaseFixtureUtils.saveStations(STATION1, STATION2);
             databaseFixtureUtils.saveLine("노선1", "색깔");
-            databaseFixtureUtils.saveSection(1L, 1L, 2L);
+            databaseFixtureUtils.saveSection(1L, STATION1, STATION2);
 
             CreateLineRequest noneExistingUpStationRequest = new CreateLineRequest(
                     "유효 노선명", "유효한 색", 200, 999L, 1L, 10);
@@ -121,9 +126,9 @@ class LineServiceTest extends DatabaseUsageTest {
 
         @Test
         void 존재하지_않는_하행역을_입력한_경우_예외발생() {
-            databaseFixtureUtils.saveStations("강남역", "선릉역");
+            databaseFixtureUtils.saveStations(STATION1, STATION2);
             databaseFixtureUtils.saveLine("노선1", "색깔");
-            databaseFixtureUtils.saveSection(1L, 1L, 2L);
+            databaseFixtureUtils.saveSection(1L, STATION1, STATION2);
 
             CreateLineRequest noneExistingDownStationRequest = new CreateLineRequest(
                     "유효한 노선명", "유효한 색상", 200, 1L, 999L, 10);
@@ -133,7 +138,7 @@ class LineServiceTest extends DatabaseUsageTest {
 
         @Test
         void 거리가_1이하인_경우_예외발생() {
-            databaseFixtureUtils.saveStations("강남역", "선릉역");
+            databaseFixtureUtils.saveStations(STATION1, STATION2);
 
             CreateLineRequest zeroDistanceRequest = new CreateLineRequest(
                     "유효한 노선명", "색깔", 200, 1L, 2L, 0);
@@ -143,7 +148,7 @@ class LineServiceTest extends DatabaseUsageTest {
 
         @Test
         void 추가비용이_0미만인_경우_예외발생() {
-            databaseFixtureUtils.saveStations("강남역", "선릉역");
+            databaseFixtureUtils.saveStations(STATION1, STATION2);
 
             CreateLineRequest negativeExtraFareRequest = new CreateLineRequest(
                     "유효한 노선명", "색깔", -1, 1L, 2L, 0);
@@ -203,10 +208,10 @@ class LineServiceTest extends DatabaseUsageTest {
 
         @Test
         void 존재하는_데이터의_id가_입력된_경우_삭제성공() {
-            databaseFixtureUtils.saveStations("강남역", "선릉역", "잠실역");
+            databaseFixtureUtils.saveStations(STATION1, STATION2, STATION3);
             databaseFixtureUtils.saveLine("존재하는 노선", "색깔");
-            databaseFixtureUtils.saveSection(1L, 1L, 2L);
-            databaseFixtureUtils.saveSection(1L, 2L, 3L);
+            databaseFixtureUtils.saveSection(1L, STATION1, STATION2);
+            databaseFixtureUtils.saveSection(1L, STATION2, STATION3);
 
             service.delete(1L);
             boolean lineNotFound = lineDao.findById(1L).isEmpty();

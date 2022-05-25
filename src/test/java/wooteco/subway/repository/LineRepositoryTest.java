@@ -32,10 +32,11 @@ class LineRepositoryTest extends DatabaseUsageTest {
 
     private static final Station STATION1 = new Station(1L, "강남역");
     private static final Station STATION2 = new Station(2L, "잠실역");
+    private static final Station STATION3 = new Station(3L, "선릉역");
 
     @BeforeEach
     void setup() {
-        databaseFixtureUtils.saveStations("강남역", "잠실역", "선릉역", "청계산입구역");
+        databaseFixtureUtils.saveStations(STATION1, STATION2, STATION3);
     }
 
     @Test
@@ -173,8 +174,8 @@ class LineRepositoryTest extends DatabaseUsageTest {
     @Test
     void deleteLine_메서드는_노선과_등록된_구간들을_제거() {
         databaseFixtureUtils.saveLine("노선1", "색상", 100);
-        databaseFixtureUtils.saveSection(1L, 1L, 2L, 10);
-        databaseFixtureUtils.saveSection(1L, 2L, 3L, 15);
+        databaseFixtureUtils.saveSection(1L, STATION1, STATION2, 10);
+        databaseFixtureUtils.saveSection(1L, STATION2, STATION3, 15);
 
         repository.deleteLine(new Line(1L, "노선1", "색상", 100));
         boolean lineExistence = lineDao.findById(1L).isPresent();

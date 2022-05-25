@@ -21,13 +21,15 @@ class SectionDaoTest extends DatabaseUsageTest {
     private static final Station STATION1 = new Station(1L, "강남역");
     private static final Station STATION2 = new Station(2L, "선릉역");
     private static final Station STATION3 = new Station(3L, "잠실역");
+    private static final Station STATION4 = new Station(4L, "강변역");
+    private static final Station STATION5 = new Station(5L, "청계산입구역");
 
     @Autowired
     private SectionDao dao;
 
     @BeforeEach
     void setup() {
-        databaseFixtureUtils.saveStations("강남역", "선릉역", "잠실역", "강변역", "청계산입구역");
+        databaseFixtureUtils.saveStations(STATION1, STATION2, STATION3, STATION4, STATION5);
         databaseFixtureUtils.saveLine("1호선", "색깔");
         databaseFixtureUtils.saveLine("2호선", "색깔2");
     }
@@ -38,9 +40,9 @@ class SectionDaoTest extends DatabaseUsageTest {
 
         @BeforeEach
         void setup() {
-            databaseFixtureUtils.saveSection(1L, 1L, 2L, 20);
-            databaseFixtureUtils.saveSection(1L, 2L, 3L, 10);
-            databaseFixtureUtils.saveSection(2L, 1L, 3L, 30);
+            databaseFixtureUtils.saveSection(1L, STATION1, STATION2, 20);
+            databaseFixtureUtils.saveSection(1L, STATION2, STATION3, 10);
+            databaseFixtureUtils.saveSection(2L, STATION1, STATION3, 30);
         }
 
         @Test
@@ -92,7 +94,7 @@ class SectionDaoTest extends DatabaseUsageTest {
 
         @Test
         void 중복되는_정보로_생성하려는_경우_예외발생() {
-            databaseFixtureUtils.saveSection(1L, 1L, 2L, 10);
+            databaseFixtureUtils.saveSection(1L, STATION1, STATION2, 10);
 
             Section existingSection = new Section(1L, STATION1, STATION2, 10);
             assertThatThrownBy(() -> dao.save(existingSection))
@@ -106,7 +108,7 @@ class SectionDaoTest extends DatabaseUsageTest {
 
         @Test
         void delete_메서드는_노선과_상행역_하행역에_부합하는_데이터를_삭제() {
-            databaseFixtureUtils.saveSection(1L, 1L, 3L, 10);
+            databaseFixtureUtils.saveSection(1L, STATION1, STATION3, 10);
 
             dao.delete(new Section(1L, STATION1, STATION3, 10));
             boolean exists = jdbcTemplate.queryForObject(
@@ -117,7 +119,7 @@ class SectionDaoTest extends DatabaseUsageTest {
 
         @Test
         void 거리_정보가_틀리더라도_성공적으로_데이터_삭제_성공() {
-            databaseFixtureUtils.saveSection(1L, 1L, 3L, 10);
+            databaseFixtureUtils.saveSection(1L, STATION1, STATION3, 10);
 
             dao.delete(new Section(1L, STATION1, STATION3, 99999999));
             boolean exists = jdbcTemplate.queryForObject(
@@ -136,8 +138,8 @@ class SectionDaoTest extends DatabaseUsageTest {
 
     @Test
     void deleteAllByLineId_메서드는_노선에_해당되는_모든_구간_데이터를_삭제() {
-        databaseFixtureUtils.saveSection(1L, 2L, 3L, 10);
-        databaseFixtureUtils.saveSection(1L, 1L, 2L, 5);
+        databaseFixtureUtils.saveSection(1L, STATION2, STATION3, 10);
+        databaseFixtureUtils.saveSection(1L, STATION1, STATION2, 5);
 
         dao.deleteAllByLineId(1L);
         boolean exists = jdbcTemplate.queryForObject(

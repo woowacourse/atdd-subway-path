@@ -3,6 +3,7 @@ package wooteco.subway.fixture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import wooteco.subway.domain.station.Station;
 
 @Component
 public class DatabaseFixtureUtils {
@@ -10,10 +11,10 @@ public class DatabaseFixtureUtils {
     @Autowired
     protected JdbcTemplate jdbcTemplate;
 
-    public void saveStations(String... names) {
+    public void saveStations(Station... stations) {
         String sql = "INSERT INTO station(name) VALUES (?)";
-        for (String stationName : names) {
-            jdbcTemplate.update(sql, stationName);
+        for (Station station : stations) {
+            jdbcTemplate.update(sql, station.getName());
         }
     }
 
@@ -27,13 +28,13 @@ public class DatabaseFixtureUtils {
         jdbcTemplate.update(sql, name, color, extraFare);
     }
 
-    public void saveSection(Long lineId, Long upStationId, Long downStationId) {
-        saveSection(lineId, upStationId, downStationId, 10);
+    public void saveSection(Long lineId, Station upStation, Station downStation) {
+        saveSection(lineId, upStation, downStation, 10);
     }
 
-    public void saveSection(Long lineId, Long upStationId, Long downStationId, int distance) {
+    public void saveSection(Long lineId, Station upStation, Station downStation, int distance) {
         String sql = "INSERT INTO section(line_id, up_station_id, down_station_id, distance) "
                 + "VALUES (?, ?, ?, ?)";
-        jdbcTemplate.update(sql, lineId, upStationId, downStationId, distance);
+        jdbcTemplate.update(sql, lineId, upStation.getId(), downStation.getId(), distance);
     }
 }
