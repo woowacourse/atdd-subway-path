@@ -10,6 +10,8 @@ import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.dao.jdbc.JdbcLineDao;
 import wooteco.subway.dao.jdbc.JdbcSectionDao;
 import wooteco.subway.dao.jdbc.JdbcStationDao;
+import wooteco.subway.domain.fare.FareCalculator;
+import wooteco.subway.domain.path.PathFactory;
 import wooteco.subway.service.dto.line.LineRequestDto;
 import wooteco.subway.service.dto.path.PathRequestDto;
 import wooteco.subway.service.dto.path.PathResponse;
@@ -27,6 +29,8 @@ class PathServiceTest {
     private StationService stationService;
     private SectionService sectionService;
     private PathService pathService;
+    private PathFactory pathFactory;
+    private FareCalculator fareCalculator;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -38,7 +42,10 @@ class PathServiceTest {
                 new SectionService(new JdbcSectionDao(jdbcTemplate)));
         stationService = new StationService(new JdbcStationDao(jdbcTemplate));
         sectionService = new SectionService(new JdbcSectionDao(jdbcTemplate));
-        pathService = new PathService(lineService, stationService, sectionService);
+        pathFactory = new PathFactory();
+        fareCalculator = new FareCalculator();
+        pathService = new PathService(lineService, stationService, sectionService, pathFactory, fareCalculator);
+
         stationService.createStation("에덴");
         stationService.createStation("제로");
         stationService.createStation("서초");

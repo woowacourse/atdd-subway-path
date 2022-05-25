@@ -21,13 +21,16 @@ public class PathService {
     private final LineService lineService;
     private final StationService stationService;
     private final SectionService sectionService;
+    private final PathFactory pathFactory;
+    private final FareCalculator fareCalculator;
 
-    public PathService(LineService lineService, StationService stationService, SectionService sectionService) {
+    public PathService(LineService lineService, StationService stationService, SectionService sectionService, PathFactory pathFactory, FareCalculator fareCalculator) {
         this.lineService = lineService;
         this.stationService = stationService;
         this.sectionService = sectionService;
+        this.pathFactory = pathFactory;
+        this.fareCalculator = fareCalculator;
     }
-
 
     @Transactional(readOnly = true)
     public PathResponse getPath(PathRequestDto pathRequestDto) {
@@ -38,7 +41,6 @@ public class PathService {
     }
 
     private Path makePath(PathRequestDto pathRequestDto) {
-        PathFactory pathFactory = new PathFactory();
         List<Long> stationIds = getStationIds();
         Sections sections = sectionService.findAll();
         return pathFactory.makePath(pathRequestDto.getSource(), pathRequestDto.getTarget(), stationIds, sections);
@@ -52,7 +54,6 @@ public class PathService {
     }
 
     private int makeFare(PathRequestDto pathRequestDto, Path path) {
-        FareCalculator fareCalculator = new FareCalculator();
         return fareCalculator.makeFare(path.getTotalDistance(), findMaxExtraFare(path), pathRequestDto.getAge());
     }
 

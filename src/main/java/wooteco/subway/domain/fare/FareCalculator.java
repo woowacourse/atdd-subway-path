@@ -1,5 +1,8 @@
 package wooteco.subway.domain.fare;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class FareCalculator {
 
     private final int basicFare = 1250;
