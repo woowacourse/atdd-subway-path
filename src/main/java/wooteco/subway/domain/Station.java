@@ -1,8 +1,8 @@
 package wooteco.subway.domain;
 
 import java.util.Objects;
+import wooteco.subway.exception.DomainException;
 import wooteco.subway.exception.ExceptionMessage;
-import wooteco.subway.exception.domain.StationException;
 
 public class Station {
 
@@ -23,10 +23,10 @@ public class Station {
 
     private void validateName(final String name) {
         if (name.isBlank()) {
-            throw new StationException(ExceptionMessage.BLANK_STATION_NAME.getContent());
+            throw new DomainException(ExceptionMessage.BLANK_STATION_NAME.getContent());
         }
         if (name.length() > MAX_NAME_LENGTH) {
-            throw new StationException(
+            throw new DomainException(
                     String.format(ExceptionMessage.OVER_MAX_LENGTH_STATION_NAME.getContent(), MAX_NAME_LENGTH));
         }
     }

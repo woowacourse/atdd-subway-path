@@ -28,15 +28,15 @@ public class LineDaoTest {
         lineDao = new JdbcLineDao(jdbcTemplate);
     }
 
-    LineEntity saveLine(String name, String color) {
-        return lineDao.save(new LineEntity(null, name, color));
+    LineEntity saveLine(String name, String color, Long extraFare) {
+        return lineDao.save(new LineEntity(null, name, color, extraFare));
     }
 
     @Test
     @DisplayName("노선을 저장하면 저장된 노선 정보를 반환한다.")
     void save() {
         // given
-        final LineEntity line = new LineEntity(null, "7호선", "bg-red-600");
+        final LineEntity line = new LineEntity(null, "7호선", "bg-red-600", 10L);
 
         // when
         LineEntity savedLine = lineDao.save(line);
@@ -44,6 +44,7 @@ public class LineDaoTest {
         // then
         assertThat(savedLine.getName()).isEqualTo(line.getName());
         assertThat(savedLine.getColor()).isEqualTo(line.getColor());
+        assertThat(savedLine.getExtraFare()).isEqualTo(line.getExtraFare());
     }
 
     @Test
@@ -52,11 +53,13 @@ public class LineDaoTest {
         // given
         String line7Name = "7호선";
         String line7Color = "bg-red-600";
-        saveLine(line7Name, line7Color);
+        Long line7ExtraFare = 100L;
+        saveLine(line7Name, line7Color, line7ExtraFare);
 
-        final String line5Name = "5호선";
-        final String line5Color = "bg-green-600";
-        saveLine(line5Name, line5Color);
+        String line5Name = "5호선";
+        String line5Color = "bg-green-600";
+        Long line5ExtraFare = 1000L;
+        saveLine(line5Name, line5Color, line5ExtraFare);
 
         // when
         final List<LineEntity> lines = lineDao.findAll();
@@ -73,7 +76,7 @@ public class LineDaoTest {
     @DisplayName("id를 통해 해당하는 노선을 조회한다.")
     void findById() {
         // given
-        LineEntity persistLine = saveLine("7호선", "bg-red-600");
+        LineEntity persistLine = saveLine("7호선", "bg-red-600", 100L);
 
         // when
         LineEntity actual = lineDao.findById(persistLine.getId()).get();
@@ -82,6 +85,7 @@ public class LineDaoTest {
         assertAll(() -> {
             assertThat(actual.getName()).isEqualTo(persistLine.getName());
             assertThat(actual.getColor()).isEqualTo(persistLine.getColor());
+            assertThat(actual.getExtraFare()).isEqualTo(persistLine.getExtraFare());
         });
     }
 
@@ -89,10 +93,10 @@ public class LineDaoTest {
     @DisplayName("id를 통해 해당하는 노선을 업데이트한다.")
     void updateById() {
         // given
-        final LineEntity persistLine = saveLine("7호선", "bg-red-600");
+        final LineEntity persistLine = saveLine("7호선", "bg-red-600", 100L);
 
         // when
-        final LineEntity lineForUpdate = new LineEntity(persistLine.getId(), "5호선", "bg-green-600");
+        final LineEntity lineForUpdate = new LineEntity(persistLine.getId(), "5호선", "bg-green-600", 200L);
         int affectedRows = lineDao.update(lineForUpdate);
 
         // then
@@ -103,7 +107,7 @@ public class LineDaoTest {
     @DisplayName("id를 통해 해당하는 노선을 삭제한다.")
     void deleteById() {
         // given
-        final LineEntity persistLine = saveLine("7호선", "bg-red-600");
+        final LineEntity persistLine = saveLine("7호선", "bg-red-600", 100L);
 
         // when
         Long id = persistLine.getId();

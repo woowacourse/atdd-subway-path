@@ -13,7 +13,7 @@ public class SectionSaveRequest {
     @NotNull
     private Integer distance;
 
-    public SectionSaveRequest() {
+    private SectionSaveRequest() {
     }
 
     public SectionSaveRequest(Long lineId, Long upStationId, Long downStationId, Integer distance) {

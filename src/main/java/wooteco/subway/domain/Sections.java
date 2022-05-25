@@ -1,20 +1,20 @@
 package wooteco.subway.domain;
 
+import static java.util.stream.Collectors.toMap;
+
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import wooteco.subway.exception.DomainException;
 import wooteco.subway.exception.ExceptionMessage;
-import wooteco.subway.exception.domain.SectionException;
-import wooteco.subway.exception.notfound.SectionNotFoundException;
+import wooteco.subway.exception.NotFoundException;
 
 public class Sections {
 
     private static final int MINIMUM_SECTIONS_FOR_DELETE = 2;
-    private static final int NO_UPPER_SECTION_EXISTS = 0;
     private static final int MERGEABLE_SECTION_COUNT = 2;
 
     private final List<Section> sections;
@@ -47,10 +47,10 @@ public class Sections {
 
     private void checkInsertSectionsStations(Section section) {
         if (!sections.isEmpty() && isAlreadyConnected(section)) {
-            throw new SectionException(ExceptionMessage.INSERT_DUPLICATED_SECTION.getContent());
+            throw new DomainException(ExceptionMessage.INSERT_DUPLICATED_SECTION.getContent());
         }
         if (!sections.isEmpty() && unableConnect(section)) {
-            throw new SectionException(ExceptionMessage.INSERT_SECTION_NOT_MATCH.getContent());
+            throw new DomainException(ExceptionMessage.INSERT_SECTION_NOT_MATCH.getContent());
         }
     }
 
@@ -66,57 +66,46 @@ public class Sections {
     }
 
     public List<Station> getSortedStation() {
-        LinkedList<Section> unsorted = new LinkedList<>(sections);
-        LinkedList<Section> sorted = new LinkedList<>();
-        Section first = findFirst();
-
-        sorted.offerLast(first);
-        unsorted.remove(first);
-        while (!unsorted.isEmpty()) {
-            Section last = sorted.peekLast();
-            Section next = findNext(last, unsorted);
-            sorted.offerLast(next);
-            unsorted.remove(next);
+        Map<Station, Section> sectionWithUpStation = getSectionWithUpStation();
+        Station firstStation = getFirstStation();
+        List<Station> sorted = new ArrayList<>();
+        sorted.add(firstStation);
+        while (!sectionWithUpStation.isEmpty()) {
+            Section section = sectionWithUpStation.get(firstStation);
+            sorted.add(section.getDownStation());
+            sectionWithUpStation.remove(firstStation);
+            firstStation = section.getDownStation();
         }
-        return getSortedStation(sorted);
+        return sorted;
     }
 
-    private Section findFirst() {
+    private Map<Station, Section> getSectionWithUpStation() {
         return sections.stream()
-                .filter(this::isFirstSection)
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("구간이 순환되고 있습니다."));
+                .collect(toMap(Section::getUpStation, Function.identity()));
     }
 
-    private boolean isFirstSection(Section section) {
-        return getUpperCount(section) == NO_UPPER_SECTION_EXISTS;
+    private List<Station> getDownStations() {
+        return sections.stream().map(Section::getDownStation).collect(Collectors.toList());
     }
 
-    private long getUpperCount(Section section) {
-        return sections.stream()
-                .filter(it -> it.isUpperThan(section))
-                .count();
+    private List<Station> getUpStations() {
+        return sections.stream().map(Section::getUpStation).collect(Collectors.toList());
     }
 
-    private Section findNext(Section section, List<Section> sections) {
-        return sections.stream()
-                .filter(it -> it.isDownerThan(section))
-                .findFirst()
-                .orElseThrow(SectionNotFoundException::new);
-    }
-
-    private List<Station> getSortedStation(List<Section> sections) {
-        Set<Station> distinctStations = new LinkedHashSet<>();
-        for (Section section : sections) {
-            distinctStations.add(section.getUpStation());
-            distinctStations.add(section.getDownStation());
-        }
-        return new ArrayList<>(distinctStations);
+    private Station getFirstStation() {
+        List<Station> upStations = getUpStations();
+        List<Station> downStations = getDownStations();
+        return upStations.stream()
+                .filter(upStation -> !downStations.contains(upStation))
+                .reduce((one, another) -> {
+                    throw new DomainException(ExceptionMessage.NOT_CONNECTED_SECTIONS.getContent());
+                })
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.SECTIONS_ROTATE.getContent()));
     }
 
     public void deleteNearBy(Station station) {
         if (sections.size() < MINIMUM_SECTIONS_FOR_DELETE) {
-            throw new SectionException(ExceptionMessage.SECTIONS_NOT_DELETABLE.getContent());
+            throw new DomainException(ExceptionMessage.SECTIONS_NOT_DELETABLE.getContent());
         }
 
         List<Section> nearSections = findNearSections(station);

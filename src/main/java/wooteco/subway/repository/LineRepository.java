@@ -4,9 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.exception.notfound.LineNotFoundException;
-import wooteco.subway.exception.notfound.NotFoundException;
+import wooteco.subway.exception.ExceptionMessage;
+import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.repository.dao.LineDao;
 import wooteco.subway.repository.entity.LineEntity;
 
@@ -14,22 +13,23 @@ import wooteco.subway.repository.entity.LineEntity;
 public class LineRepository {
 
     private final LineDao lineDao;
-    private final SectionRepository sectionRepository;
 
-    public LineRepository(LineDao lineDao, SectionRepository sectionRepository) {
+    public LineRepository(LineDao lineDao) {
         this.lineDao = lineDao;
-        this.sectionRepository = sectionRepository;
     }
 
     public Line findById(Long id) {
         return lineDao.findById(id)
                 .map(this::toLine)
-                .orElseThrow(NotFoundException::new);
+                .orElseThrow(this::throwNotFoundException);
+    }
+
+    private NotFoundException throwNotFoundException() {
+        return new NotFoundException(ExceptionMessage.NOT_FOUND_LINE.getContent());
     }
 
     private Line toLine(LineEntity entity) {
-        return new Line(entity.getId(), entity.getName(), entity.getColor(),
-                sectionRepository.findByLineId(entity.getId()));
+        return new Line(entity.getId(), entity.getName(), entity.getColor(), entity.getExtraFare());
     }
 
     public List<Line> findAll() {
@@ -39,25 +39,22 @@ public class LineRepository {
     }
 
     public void update(Line line) {
-        sectionRepository.deleteByLineId(line.getId());
-        sectionRepository.saveAll(line.getSections());
+        checkLineExists(line.getId());
         lineDao.update(LineEntity.from(line));
+    }
+
+    private void checkLineExists(Long id) {
+        lineDao.findById(id)
+                .orElseThrow(this::throwNotFoundException);
     }
 
     public Line save(Line line) {
         LineEntity saved = lineDao.save(LineEntity.from(line));
-        List<Section> sections = line.getSections().stream()
-                .map(section -> new Section(saved.getId(), section.getUpStation(), section.getDownStation(),
-                        section.getDistance()))
-                .collect(Collectors.toList());
-        sectionRepository.saveAll(sections);
-        return new Line(saved.getId(), saved.getName(), saved.getColor(), sections);
+        return new Line(saved.getId(), saved.getName(), saved.getColor(), saved.getExtraFare());
     }
 
     public void deleteById(Long id) {
-        lineDao.findById(id)
-                .orElseThrow(LineNotFoundException::new);
-        sectionRepository.deleteByLineId(id);
+        checkLineExists(id);
         lineDao.deleteById(id);
     }
 }

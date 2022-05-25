@@ -11,12 +11,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import wooteco.subway.domain.Line;
 import wooteco.subway.repository.dao.StationDao;
 import wooteco.subway.repository.entity.StationEntity;
 import wooteco.subway.service.LineService;
 import wooteco.subway.service.SectionService;
 import wooteco.subway.service.dto.LineRequest;
-import wooteco.subway.service.dto.LineResponse;
 import wooteco.subway.service.dto.SectionRequest;
 import wooteco.subway.service.dto.SectionSaveRequest;
 
@@ -35,7 +35,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
     private StationEntity nowon;
     private StationEntity jamsil;
 
-    private LineResponse line1;
+    private Line line1;
 
     @Override
     @BeforeEach

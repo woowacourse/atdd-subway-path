@@ -27,7 +27,7 @@ public class SectionService {
     }
 
     public void save(SectionSaveRequest request) {
-        Section sectionForSave = new Section(request.getLineId(),
+        Section sectionForSave = new Section(lineRepository.findById(request.getLineId()),
                 stationService.findById(request.getUpStationId()),
                 stationService.findById(request.getDownStationId()), request.getDistance());
         Sections sections = new Sections(findByLineId(request.getLineId()));
@@ -36,8 +36,7 @@ public class SectionService {
         commitRepository(request.getLineId(), sections.getValue());
     }
 
-    @Transactional(readOnly = true)
-    public List<Section> findByLineId(Long lineId) {
+    private List<Section> findByLineId(Long lineId) {
         return sectionRepository.findByLineId(lineId);
     }
 
@@ -53,5 +52,10 @@ public class SectionService {
         lineRepository.findById(lineId);
         sectionRepository.deleteByLineId(lineId);
         sectionRepository.saveAll(sections);
+    }
+
+    public List<Station> getSortedStationInLineId(Long lineId) {
+        List<Section> sectionsInLine = findByLineId(lineId);
+        return new Sections(sectionsInLine).getSortedStation();
     }
 }

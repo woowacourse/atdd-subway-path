@@ -7,7 +7,7 @@ public class StationRequest {
     @NotEmpty
     private String name;
 
-    public StationRequest() {
+    private StationRequest() {
     }
 
     public StationRequest(String name) {

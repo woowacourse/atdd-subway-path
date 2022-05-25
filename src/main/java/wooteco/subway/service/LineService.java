@@ -1,67 +1,53 @@
 package wooteco.subway.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
+import wooteco.subway.exception.DomainException;
 import wooteco.subway.exception.ExceptionMessage;
-import wooteco.subway.exception.domain.LineException;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.service.dto.LineRequest;
-import wooteco.subway.service.dto.LineResponse;
+import wooteco.subway.service.dto.LineUpdateRequest;
+import wooteco.subway.service.dto.SectionSaveRequest;
 
 @Service
 @Transactional
 public class LineService {
 
-    private final StationService stationService;
+    private final SectionService sectionService;
     private final LineRepository lineRepository;
 
-    public LineService(StationService stationService, LineRepository lineRepository) {
-        this.stationService = stationService;
+    public LineService(SectionService sectionService, LineRepository lineRepository) {
+        this.sectionService = sectionService;
         this.lineRepository = lineRepository;
     }
 
-    public LineResponse save(final LineRequest request) {
+    public Line save(final LineRequest request) {
         try {
-            Station upStation = stationService.findById(request.getUpStationId());
-            Station downStation = stationService.findById(request.getDownStationId());
-            Section section = new Section(null, upStation, downStation, request.getDistance());
-            Line line = new Line(request.getName(), request.getColor(), List.of(section));
+            Line line = Line.withoutIdOf(request.getName(), request.getColor(), request.getExtraFare());
             Line saved = lineRepository.save(line);
-            return createResponseFrom(saved);
+            sectionService.save(new SectionSaveRequest(saved.getId(), request.getUpStationId(),
+                    request.getDownStationId(), request.getDistance()));
+            return saved;
         } catch (DuplicateKeyException e) {
-            throw new LineException(ExceptionMessage.DUPLICATED_LINE_NAME.getContent());
+            throw new DomainException(ExceptionMessage.DUPLICATED_LINE_NAME.getContent());
         }
     }
 
-    private LineResponse createResponseFrom(Line line) {
-        return LineResponse.of(line, line.getSortedStations());
+    @Transactional(readOnly = true)
+    public List<Line> findAll() {
+        return lineRepository.findAll();
     }
 
     @Transactional(readOnly = true)
-    public List<LineResponse> findAll() {
-        return lineRepository.findAll().stream()
-                .map(this::createResponseFrom)
-                .collect(Collectors.toList());
+    public Line findById(Long id) {
+        return lineRepository.findById(id);
     }
 
-    @Transactional(readOnly = true)
-    public LineResponse findById(Long id) {
-        Line line = lineRepository.findById(id);
-        List<Station> sortedStations = line.getSortedStations();
-        return LineResponse.of(line, sortedStations);
-    }
-
-    public void updateById(final Long id, final LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
-        Section section = new Section(null, id, upStation, downStation, request.getDistance());
-        Line updated = new Line(id, request.getName(), request.getColor(), List.of(section));
+    public void updateById(final Long id, final LineUpdateRequest request) {
+        Line updated = new Line(id, request.getName(), request.getColor(), request.getExtraFare());
         lineRepository.update(updated);
     }
 

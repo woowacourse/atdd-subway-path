@@ -1,63 +1,64 @@
 package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.repository.dao.StationDao;
-import wooteco.subway.repository.entity.StationEntity;
+import org.mockito.InjectMocks;
+import wooteco.subway.domain.Line;
 import wooteco.subway.service.dto.LineRequest;
-import wooteco.subway.service.dto.LineResponse;
 
-@SpringBootTest
-@Transactional
-class LineServiceTest {
+class LineServiceTest extends ServiceMockTest {
 
-    @Autowired
+    @InjectMocks
     private LineService lineService;
-
-    @Autowired
-    private StationDao stationDao;
-
-    private StationEntity gangnam;
-    private StationEntity nowon;
-
-    @BeforeEach
-    void setUp() {
-        gangnam = stationDao.save(new StationEntity(null, "강남역"));
-        nowon = stationDao.save(new StationEntity(null, "노원역"));
-    }
 
     @Test
     @DisplayName("노선을 생성한다.")
     void createLine() {
         // given
-        final LineRequest request = new LineRequest("7호선", "bg-red-600", gangnam.getId(), nowon.getId(), 10);
+        final LineRequest request = new LineRequest("7호선", "bg-red-600", 1L, 2L, 10);
+        Line line = Line.withoutIdOf(request.getName(), request.getColor(), request.getExtraFare());
+        when(lineRepository.save(line)).thenReturn(new Line(1L, line.getName(), line.getColor(), line.getExtraFare()));
 
         // when
-        final LineResponse response = lineService.save(request);
+        Line save = lineService.save(request);
 
         // then
-        assertThat(response.getName()).isEqualTo(request.getName());
+        assertThat(save.getName()).isEqualTo(request.getName());
+    }
+
+    @Test
+    @DisplayName("추가 요금을 가진 노선을 생성한다")
+    void createLine_extraFare() {
+        // given
+        long extraFare = 100L;
+        final LineRequest request = new LineRequest("7호선", "bg-red-600", 1L, 2L, 10, extraFare);
+        Line line = Line.withoutIdOf(request.getName(), request.getColor(), request.getExtraFare());
+        when(lineRepository.save(line)).thenReturn(new Line(1L, line.getName(), line.getColor(), line.getExtraFare()));
+
+        // when
+        Line saved = lineService.save(request);
+
+        // then
+        assertThat(saved.getExtraFare()).isEqualTo(extraFare);
     }
 
     @Test
     @DisplayName("모든 노선을 조회한다.")
     void showLines() {
         // given
-        lineService.save(new LineRequest("1호선", "bg-red-600", gangnam.getId(), nowon.getId(), 10));
-        lineService.save(new LineRequest("2호선", "bg-blue-600", nowon.getId(), gangnam.getId(), 10));
+        Line 일호선 = new Line(1L, "1호선", "red", 100L);
+        Line 이호선 = new Line(2L, "2호선", "blue", 200L);
+        when(lineRepository.findAll()).thenReturn(List.of(일호선, 이호선));
 
         // when
-        List<LineResponse> responses = lineService.findAll();
+        List<Line> lines = lineService.findAll();
 
         // then
-        assertThat(responses).hasSize(2);
+        assertThat(lines).hasSize(2);
     }
 
     @Test
@@ -66,48 +67,15 @@ class LineServiceTest {
         // given
         String color = "bg-red-600";
         String name = "7호선";
-
-        LineResponse savedLine = lineService.save(new LineRequest(name, color, gangnam.getId(), nowon.getId(), 10));
+        long id = 1L;
+        Line 칠호선 = new Line(id, name, color, 100L);
+        when(lineRepository.findById(id)).thenReturn(칠호선);
 
         // when
-        LineResponse response = lineService.findById(savedLine.getId());
+        Line response = lineService.findById(id);
 
         // then
         assertThat(response.getName()).isEqualTo(name);
         assertThat(response.getColor()).isEqualTo(color);
-        assertThat(response.getStations()).hasSize(2);
-    }
-
-    @Test
-    @DisplayName("id에 해당하는 노선 정보를 수정한다.")
-    void updateById() {
-        // given
-        LineResponse saved = lineService.save(new LineRequest("1호선", "red", gangnam.getId(), nowon.getId(), 10));
-
-        final String name = "7호선";
-        final String color = "bg-blue-600";
-        final LineRequest request = new LineRequest(name, color, nowon.getId(), gangnam.getId(), 20);
-
-        // when
-        lineService.updateById(saved.getId(), request);
-
-        // then
-        LineResponse updated = lineService.findById(saved.getId());
-        assertThat(updated.getName()).isEqualTo(name);
-        assertThat(updated.getColor()).isEqualTo(color);
-    }
-
-    @Test
-    @DisplayName("id에 해당하는 노선을 삭제한다.")
-    void deleteById() {
-        // given
-        LineResponse saved = lineService.save(new LineRequest("1호선", "red", gangnam.getId(), nowon.getId(), 10));
-
-        // when
-        lineService.deleteById(saved.getId());
-
-        // then
-        List<LineResponse> all = lineService.findAll();
-        assertThat(all).hasSize(0);
     }
 }
