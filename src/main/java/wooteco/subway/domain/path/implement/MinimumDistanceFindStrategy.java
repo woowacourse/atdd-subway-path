@@ -7,26 +7,17 @@ import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.PathFindSpecification;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.path.PathFindStrategy;
 
-@Component
-@Qualifier("MinimumDistance")
 public class MinimumDistanceFindStrategy implements PathFindStrategy {
 
     private static final String UNCONNECTED_STATION_EXCEPTION = "연결되지 않은 두 역입니다.";
-    private static final MinimumDistanceFindStrategy STRATEGY = new MinimumDistanceFindStrategy();
 
-    private MinimumDistanceFindStrategy() {}
-
-    public static MinimumDistanceFindStrategy of() {
-        return STRATEGY;
-    }
+    public MinimumDistanceFindStrategy() {}
 
     @Override
     public Path findPath(PathFindSpecification specification) {

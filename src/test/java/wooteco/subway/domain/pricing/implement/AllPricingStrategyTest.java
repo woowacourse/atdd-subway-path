@@ -20,7 +20,7 @@ import wooteco.subway.domain.pricing.PricingStrategy;
 class AllPricingStrategyTest {
 
     @Autowired
-    @Qualifier("All")
+    @Qualifier("AllPricingStrategy")
     private PricingStrategy strategy;
 
     @DisplayName("모든 요금계산 전략을 이용해 요금을 계산한다.")

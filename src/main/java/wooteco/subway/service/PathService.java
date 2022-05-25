@@ -32,7 +32,7 @@ public class PathService {
 
     public PathService(StationDao stationDao, LineDao lineDao, SectionDao sectionDao,
                        @Qualifier("MinimumDistance") PathFindStrategy pathFindStrategy,
-                       @Qualifier("All") PricingStrategy pricingStrategy,
+                       @Qualifier("AllPricingStrategy") PricingStrategy pricingStrategy,
                        @Qualifier("Age") DiscountStrategy discountStrategy) {
         this.stationDao = stationDao;
         this.lineDao = lineDao;

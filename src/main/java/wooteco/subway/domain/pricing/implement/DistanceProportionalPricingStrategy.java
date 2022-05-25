@@ -1,6 +1,7 @@
 package wooteco.subway.domain.pricing.implement;
 
 import java.util.List;
+import org.springframework.beans.factory.annotation.Qualifier;
 import wooteco.subway.domain.FareCacluateSpecification;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.pricing.PricingStrategy;
@@ -8,19 +9,17 @@ import wooteco.subway.domain.pricing.distancepricing.PricingBySection;
 
 public class DistanceProportionalPricingStrategy implements PricingStrategy {
 
-    private final List<PricingBySection> pricingBySections;
+    private final PricingBySection pricingBySection;
 
     public DistanceProportionalPricingStrategy(
-            List<PricingBySection> pricingBySections) {
-        this.pricingBySections = pricingBySections;
+            @Qualifier("AllPricingBySectionStrategy") PricingBySection pricingBySection) {
+        this.pricingBySection = pricingBySection;
     }
 
     @Override
     public int calculateFee(FareCacluateSpecification specification) {
         int distance = calculateDistance(specification.getSections());
-        return pricingBySections.stream()
-                .mapToInt(it -> it.calculateFee(distance))
-                .sum();
+        return pricingBySection.calculateFee(distance);
     }
 
     private int calculateDistance(List<Section> sections) {
