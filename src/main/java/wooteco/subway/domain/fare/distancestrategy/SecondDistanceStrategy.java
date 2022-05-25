@@ -1,6 +1,6 @@
 package wooteco.subway.domain.fare.distancestrategy;
 
-public class SecondDistanceFareStrategy implements DistanceStrategy {
+public class SecondDistanceStrategy implements DistanceStrategy {
 
     private static final int STANDARD_KILOMETER = 8;
     private static final int ADDED_FARE = 100;

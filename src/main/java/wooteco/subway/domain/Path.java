@@ -1,12 +1,8 @@
 package wooteco.subway.domain;
 
 import java.util.List;
+import wooteco.subway.domain.fare.DiscountStrategyFactory;
 import wooteco.subway.domain.fare.Fare;
-import wooteco.subway.domain.fare.discountstrategy.AdultDiscountStrategy;
-import wooteco.subway.domain.fare.discountstrategy.ChildDiscountStrategy;
-import wooteco.subway.domain.fare.discountstrategy.DiscountStrategy;
-import wooteco.subway.domain.fare.discountstrategy.FreeDiscountStrategy;
-import wooteco.subway.domain.fare.discountstrategy.TeenagerDiscountStrategy;
 
 public class Path {
 
@@ -23,20 +19,7 @@ public class Path {
 
     public int calculateFare(int age) {
         validateAge(age);
-        return new Fare(distance, getDiscountStrategy(age)).calculate(extraFare);
-    }
-
-    private DiscountStrategy getDiscountStrategy(int age) {
-        if (age < 6 || age >= 65) {
-            return new FreeDiscountStrategy();
-        }
-        if (age < 13) {
-            return new ChildDiscountStrategy();
-        }
-        if (age < 19) {
-            return new TeenagerDiscountStrategy();
-        }
-        return new AdultDiscountStrategy();
+        return new Fare(distance, DiscountStrategyFactory.getDiscountStrategy(age)).calculate(extraFare);
     }
 
     private void validateAge(int age) {
