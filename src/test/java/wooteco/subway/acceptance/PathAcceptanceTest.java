@@ -43,7 +43,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
                 assertThat(actual)
                         .extracting("distance", "fare")
-                        .containsExactly(6, 1250);
+                        .containsExactly(6, 720);
             });
         }
 

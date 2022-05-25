@@ -7,6 +7,8 @@ import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.fare.AgeDiscountPolicy;
+import wooteco.subway.domain.fare.FarePolicy;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.PathFindStrategy;
 import wooteco.subway.dto.PathRequest;
@@ -30,10 +32,12 @@ public class PathService {
         List<Line> lines = lineDao.findAll();
         Station sourceStation = findStationById(pathRequest.getSource());
         Station targetStation = findStationById(pathRequest.getTarget());
+        AgeDiscountPolicy ageDiscountPolicy = AgeDiscountPolicy.of(pathRequest.getAge());
 
         Path path = pathFindStrategy.findPath(lines, sourceStation, targetStation);
-        
-        return PathResponse.of(path);
+        int fare = FarePolicy.calculateFare(path.getDistance(), path.getUsedLines().findMaxExtraFare());
+
+        return PathResponse.of(path, ageDiscountPolicy.discount(fare));
     }
 
     private Station findStationById(Long id) {
