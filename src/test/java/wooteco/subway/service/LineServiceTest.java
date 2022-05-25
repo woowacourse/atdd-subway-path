@@ -116,13 +116,17 @@ class LineServiceTest {
     @Test
     void find() {
         // given
-        LineResponse lineResponse = lineService.save(LINE_SAVE_REQUEST);
-        long lineId = lineResponse.getId();
+        LineResponse lineSavedResponse = lineService.save(LINE_SAVE_REQUEST);
+        long lineId = lineSavedResponse.getId();
 
-        // when & then
+        // when
+        LineResponse lineResponse = lineService.find(lineId);
+
+        // then
         assertAll(
-                () -> assertThat(lineService.find(lineId).getName()).isEqualTo("신분당선"),
-                () -> assertThat(lineService.find(lineId).getColor()).isEqualTo("bg-red-600")
+                () -> assertThat(lineResponse.getName()).isEqualTo("신분당선"),
+                () -> assertThat(lineResponse.getColor()).isEqualTo("bg-red-600"),
+                () -> assertThat(lineResponse.getExtraFare()).isEqualTo(0)
         );
     }
 
