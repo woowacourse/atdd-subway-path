@@ -15,7 +15,7 @@ public class FareCalculator {
     }
 
     public int calculate() {
-        return age.calculateFare(calculateByDistance() + extraFare);
+        return age.discountFare(calculateByDistance() + extraFare);
     }
 
     private int calculateByDistance() {

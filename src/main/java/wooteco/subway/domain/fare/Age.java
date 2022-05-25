@@ -27,7 +27,7 @@ public enum Age {
                 .orElseThrow(() -> new IllegalArgumentException(NONE_AGE_ERROR));
     }
 
-    public int calculateFare(int fare) {
+    public int discountFare(int fare) {
         return fare - (fare - EXCLUDED_FARE) * discountRate / 100;
     }
 }
