@@ -17,12 +17,6 @@ public class UpdateLineRequest {
     public UpdateLineRequest() {
     }
 
-    public UpdateLineRequest(String name, String color, int extraFare) {
-        this.name = name;
-        this.color = color;
-        this.extraFare = extraFare;
-    }
-
     public String getName() {
         return name;
     }

@@ -27,20 +27,6 @@ public class CreateLineRequest {
     public CreateLineRequest() {
     }
 
-    public CreateLineRequest(String name,
-                             String color,
-                             int extraFare,
-                             Long upStationId,
-                             Long downStationId,
-                             int distance) {
-        this.name = name;
-        this.color = color;
-        this.extraFare = extraFare;
-        this.upStationId = upStationId;
-        this.downStationId = downStationId;
-        this.distance = distance;
-    }
-
     public String getName() {
         return name;
     }

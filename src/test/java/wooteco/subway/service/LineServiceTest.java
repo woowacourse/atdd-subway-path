@@ -92,8 +92,8 @@ class LineServiceTest extends DatabaseUsageTest {
         void 유효한_입력인_경우_성공() {
             databaseFixtureUtils.saveStations(강남역, 선릉역);
 
-            LineResponse actual = service.save(new CreateLineRequest(
-                    "새로운 노선명", "색깔", 300, 1L, 2L, 10));
+            LineResponse actual = service.save(generateCreatLineRequest(
+                    "새로운 노선명", "색깔", 300, 강남역, 선릉역, 10));
             LineResponse expected = new LineResponse(1L, "새로운 노선명", "색깔", 300,
                     List.of(new StationResponse(1L, "강남역"), new StationResponse(2L, "선릉역")));
 
@@ -102,12 +102,13 @@ class LineServiceTest extends DatabaseUsageTest {
 
         @Test
         void 중복되는_노선명인_경우_예외발생() {
+            String 존재하는_노선명 = "존재하는 노선명";
             databaseFixtureUtils.saveStations(강남역, 선릉역, 잠실역);
-            databaseFixtureUtils.saveLine("존재하는 노선명", "색깔");
+            databaseFixtureUtils.saveLine(존재하는_노선명, "색깔");
             databaseFixtureUtils.saveSection(1L, 강남역, 선릉역);
 
-            CreateLineRequest duplicateLineNameRequest = new CreateLineRequest(
-                    "존재하는 노선명", "색깔", 200, 1L, 3L, 10);
+            CreateLineRequest duplicateLineNameRequest = generateCreatLineRequest(
+                    존재하는_노선명, "색깔", 200, 강남역, 잠실역, 10);
             assertThatThrownBy(() -> service.save(duplicateLineNameRequest))
                     .isInstanceOf(IllegalArgumentException.class);
         }
@@ -117,9 +118,10 @@ class LineServiceTest extends DatabaseUsageTest {
             databaseFixtureUtils.saveStations(강남역, 선릉역);
             databaseFixtureUtils.saveLine("노선1", "색깔");
             databaseFixtureUtils.saveSection(1L, 강남역, 선릉역);
+            Station 저장되지_않은_역 = new Station("저장되지 않은 역");
 
-            CreateLineRequest noneExistingUpStationRequest = new CreateLineRequest(
-                    "유효 노선명", "유효한 색", 200, 999L, 1L, 10);
+            CreateLineRequest noneExistingUpStationRequest = generateCreatLineRequest(
+                    "유효 노선명", "유효한 색", 200, 저장되지_않은_역, 강남역, 10);
             assertThatThrownBy(() -> service.save(noneExistingUpStationRequest))
                     .isInstanceOf(NotFoundException.class);
         }
@@ -129,9 +131,10 @@ class LineServiceTest extends DatabaseUsageTest {
             databaseFixtureUtils.saveStations(강남역, 선릉역);
             databaseFixtureUtils.saveLine("노선1", "색깔");
             databaseFixtureUtils.saveSection(1L, 강남역, 선릉역);
+            Station 저장되지_않은_역 = new Station("저장되지 않은 역");
 
-            CreateLineRequest noneExistingDownStationRequest = new CreateLineRequest(
-                    "유효한 노선명", "유효한 색상", 200, 1L, 999L, 10);
+            CreateLineRequest noneExistingDownStationRequest = generateCreatLineRequest(
+                    "유효한 노선명", "유효한 색상", 200, 선릉역, 저장되지_않은_역, 10);
             assertThatThrownBy(() -> service.save(noneExistingDownStationRequest))
                     .isInstanceOf(NotFoundException.class);
         }
@@ -140,8 +143,8 @@ class LineServiceTest extends DatabaseUsageTest {
         void 거리가_1이하인_경우_예외발생() {
             databaseFixtureUtils.saveStations(강남역, 선릉역);
 
-            CreateLineRequest zeroDistanceRequest = new CreateLineRequest(
-                    "유효한 노선명", "색깔", 200, 1L, 2L, 0);
+            CreateLineRequest zeroDistanceRequest =generateCreatLineRequest(
+                    "유효한 노선명", "색깔", 200, 강남역, 선릉역, 0);
             assertThatThrownBy(() -> service.save(zeroDistanceRequest))
                     .isInstanceOf(IllegalArgumentException.class);
         }
@@ -150,10 +153,26 @@ class LineServiceTest extends DatabaseUsageTest {
         void 추가비용이_0미만인_경우_예외발생() {
             databaseFixtureUtils.saveStations(강남역, 선릉역);
 
-            CreateLineRequest negativeExtraFareRequest = new CreateLineRequest(
-                    "유효한 노선명", "색깔", -1, 1L, 2L, 0);
+            CreateLineRequest negativeExtraFareRequest = generateCreatLineRequest(
+                    "유효한 노선명", "색깔", -1, 강남역, 선릉역, 0);
             assertThatThrownBy(() -> service.save(negativeExtraFareRequest))
                     .isInstanceOf(IllegalArgumentException.class);
+        }
+
+        private CreateLineRequest generateCreatLineRequest(String name,
+                                                           String color,
+                                                           int extraFare,
+                                                           Station upStation,
+                                                           Station downStation,
+                                                           int distance) {
+            CreateLineRequest request = new CreateLineRequest();
+            request.setName(name);
+            request.setColor(color);
+            request.setExtraFare(extraFare);
+            request.setUpStationId(upStation.getId());
+            request.setDownStationId(downStation.getId());
+            request.setDistance(distance);
+            return request;
         }
     }
 
@@ -165,7 +184,7 @@ class LineServiceTest extends DatabaseUsageTest {
         void 유효한_입력인_경우_성공() {
             databaseFixtureUtils.saveLine("노선1", "색깔", 100);
 
-            service.update(1L, new UpdateLineRequest("수정된 노선명", "수정된 색깔", 300));
+            service.update(1L, generateUpdateLineRequest("수정된 노선명", "수정된 색깔", 300));
             Line actual = lineDao.findById(1L).get();
             Line expected = new Line(1L, "수정된 노선명", "수정된 색깔", 300);
 
@@ -174,7 +193,7 @@ class LineServiceTest extends DatabaseUsageTest {
 
         @Test
         void 존재하지_않는_노선을_수정하려는_경우_예외발생() {
-            UpdateLineRequest validValueRequest = new UpdateLineRequest(
+            UpdateLineRequest validValueRequest = generateUpdateLineRequest(
                     "새로운 노선명", "새로운 색깔", 300);
             assertThatThrownBy(() -> service.update(999999L, validValueRequest))
                     .isInstanceOf(NotFoundException.class);
@@ -185,7 +204,7 @@ class LineServiceTest extends DatabaseUsageTest {
             databaseFixtureUtils.saveLine("존재하는 노선명", "색깔");
             databaseFixtureUtils.saveLine("현재 노선명", "색깔");
 
-            UpdateLineRequest duplicateLineNameRequest = new UpdateLineRequest(
+            UpdateLineRequest duplicateLineNameRequest = generateUpdateLineRequest(
                     "존재하는 노선명", "새로운 색깔", 300);
             assertThatThrownBy(() -> service.update(2L, duplicateLineNameRequest))
                     .isInstanceOf(IllegalArgumentException.class);
@@ -195,10 +214,18 @@ class LineServiceTest extends DatabaseUsageTest {
         void 추가비용이_0미만인_경우_예외발생() {
             databaseFixtureUtils.saveLine("현재 노선명", "색깔");
 
-            UpdateLineRequest negativeExtraFareRequest = new UpdateLineRequest(
+            UpdateLineRequest negativeExtraFareRequest = generateUpdateLineRequest(
                     "유효한 노선명", "색깔", -1);
             assertThatThrownBy(() -> service.update(1L, negativeExtraFareRequest))
                     .isInstanceOf(IllegalArgumentException.class);
+        }
+
+        private UpdateLineRequest generateUpdateLineRequest(String name, String color, int extraFare) {
+            UpdateLineRequest request = new UpdateLineRequest();
+            request.setName(name);
+            request.setColor(color);
+            request.setExtraFare(extraFare);
+            return request;
         }
     }
 

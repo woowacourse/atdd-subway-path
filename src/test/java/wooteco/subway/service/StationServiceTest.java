@@ -46,7 +46,7 @@ class StationServiceTest extends DatabaseUsageTest {
 
         @Test
         void 중복되지_않는_이름인_경우_성공() {
-            StationResponse actual = service.save(new StationRequest("새로운 지하철역"));
+            StationResponse actual = service.save(generateStationRequest("새로운 지하철역"));
 
             StationResponse expected = new StationResponse(1L, "새로운 지하철역");
 
@@ -58,8 +58,14 @@ class StationServiceTest extends DatabaseUsageTest {
             Station 이미_존재하는_역_이름 = new Station("존재하는 역 이름");
             databaseFixtureUtils.saveStations(이미_존재하는_역_이름);
 
-            assertThatThrownBy(() -> service.save(new StationRequest("존재하는 역 이름")))
+            assertThatThrownBy(() -> service.save(generateStationRequest("존재하는 역 이름")))
                     .isInstanceOf(IllegalArgumentException.class);
+        }
+
+        private StationRequest generateStationRequest(String name) {
+            StationRequest request = new StationRequest();
+            request.setName(name);
+            return request;
         }
     }
 
