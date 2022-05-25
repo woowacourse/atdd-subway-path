@@ -1,5 +1,6 @@
 package wooteco.subway.service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
@@ -29,9 +30,9 @@ public class LineService {
 
     public List<LineResponse> findAll() {
         return lineRepository.findAllLines()
-                .toSortedLines()
                 .stream()
                 .map(LineResponse::of)
+                .sorted(Comparator.comparingLong(LineResponse::getId))
                 .collect(Collectors.toUnmodifiableList());
     }
 

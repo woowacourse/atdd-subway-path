@@ -11,7 +11,6 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineExtraFare;
 import wooteco.subway.domain.line.LineMap;
-import wooteco.subway.domain.line.SubwayMap;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
 import wooteco.subway.domain.station.Station;
@@ -29,11 +28,7 @@ public class LineRepository {
         this.sectionDao = sectionDao;
     }
 
-    public SubwayMap findAllLines() {
-        return SubwayMap.of(lineDao.findAll(), sectionDao.findAll());
-    }
-
-    public List<LineMap> findAllLines2() {
+    public List<LineMap> findAllLines() {
         Map<Long, List<Section>> sectionsMap = sectionDao.findAll()
                 .stream()
                 .collect(groupingBy(Section::getLineId));
