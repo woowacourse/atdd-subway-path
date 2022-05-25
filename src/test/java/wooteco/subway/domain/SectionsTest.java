@@ -17,11 +17,12 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 @Nested
-public class SectionsTest {
+@DisplayName("Sections 클래스")
+class SectionsTest {
 
     @Test
-    @DisplayName("구간들에서 역들을 추출한다.")
-    void toStationIds() {
+    @DisplayName("toSortedStations 메서드는 구간들에 포함된 역들을 상행에서 하행순으로 반환한다.")
+    void toSortedStations() {
         final Sections sections = new Sections(new Section(new Station(1L, STATION_1), new Station(2L, STATION_2), 10),
                 new Section(new Station(2L, STATION_2), new Station(3L, STATION_3), 10));
 
@@ -32,11 +33,11 @@ public class SectionsTest {
     }
 
     @Nested
-    @DisplayName("지하철 구간을 추가한다.")
+    @DisplayName("AddSection 메소드는")
     class AddSectionTest {
 
         @Test
-        @DisplayName("1-2 구간이 있을 때, 2-3 구간을 추가한다.")
+        @DisplayName("1-2 구간이 있을 때 2-3 구간을 추가하면, 2-3 구간이 추가된다.")
         void addSection1() {
             // given
             final Sections sections = new Sections(List.of(SECTION_1_2));
@@ -49,7 +50,7 @@ public class SectionsTest {
         }
 
         @Test
-        @DisplayName("2-3 구간이 있을 때, 1-2 구간을 추가한다.")
+        @DisplayName("2-3 구간이 있을 때, 1-2 구간을 추가하면, 1-2 구간이 추가된다.")
         void addSection2() {
             // given
             final Sections sections = new Sections(List.of(SECTION_2_3));
@@ -62,7 +63,7 @@ public class SectionsTest {
         }
 
         @Test
-        @DisplayName("1-3 구간이 있을 때, 1-2 구간을 추가한다. 1-3 구간이 삭제되고, 1-2, 1-3 구간이 추가된다.")
+        @DisplayName("1-3 구간이 있을 때 1-2 구간을 추가하면, 1-3 구간이 삭제되고, 1-2, 2-3 구간이 추가된다.")
         void addSection3() {
             // given
             final Sections sections = new Sections(List.of(SECTION_1_3));
@@ -75,7 +76,7 @@ public class SectionsTest {
         }
 
         @Test
-        @DisplayName("1-3 구간이 있을 때, 2-3 구간을 추가한다. 1-3 구간이 삭제되고, 1-2, 1-3 구간이 추가된다.")
+        @DisplayName("1-3 구간이 있을 때 2-3 구간을 추가하면, 1-3 구간이 삭제되고 1-2,1-3 구간이 추가된다.")
         void addSection4() {
             // given
             final Sections sections = new Sections(List.of(SECTION_1_3));
@@ -88,7 +89,7 @@ public class SectionsTest {
         }
 
         @Test
-        @DisplayName("1-3 구간이 있을 때, 2-3 구간을 추가한다. 이때 2-3 구간의 거리가 1-3 구간의 거리보다 같거나 큰 경우, 예외를 발생키신다.")
+        @DisplayName("1-3 구간이 있을 때 거리가 길거나 같은 2-3 구간을 추가하면 예외를 던진다.")
         void exceptionAddLongSection() {
             // given
             final Sections sections = new Sections(List.of(SECTION_1_3));
@@ -100,7 +101,7 @@ public class SectionsTest {
         }
 
         @Test
-        @DisplayName("추가하는 구간이 이미 존재하는 경우, 예외를 발생시킨다.")
+        @DisplayName("존재하는 구간을 추가하면 예외를 던진다.")
         void exceptionAddDifferentLineIdSection() {
             // given
             final Sections sections = new Sections(List.of(SECTION_1_3));
@@ -115,11 +116,11 @@ public class SectionsTest {
     }
 
     @Nested
-    @DisplayName("지하철 구간을 추가한다.")
+    @DisplayName("removeSection 메서드는.")
     class RemoveSectionTest {
 
         @Test
-        @DisplayName("1-2, 2-3 구간이 있을 때, 1 역을 삭제한다.")
+        @DisplayName("1-2, 2-3 구간이 있고 1역을 삭제하면, 1-2가 삭제된다.")
         void removeSection1() {
             // given
             final Sections sections = new Sections(List.of(SECTION_1_2, SECTION_2_3));
@@ -132,7 +133,7 @@ public class SectionsTest {
         }
 
         @Test
-        @DisplayName("1-2, 2-3 구간이 있을 때, 3 역을 삭제한다.")
+        @DisplayName("1-2, 2-3 구간이 있고 3역을 삭제하면, 2-3이 삭제된다.")
         void removeSection2() {
             // given
             final Sections sections = new Sections(List.of(SECTION_1_2, SECTION_2_3));
@@ -145,7 +146,7 @@ public class SectionsTest {
         }
 
         @Test
-        @DisplayName("1-2, 2-3, 3-4 구간이 있을 때, 2 역을 삭제한다.")
+        @DisplayName("1-2, 2-3, 3-4 구간이 있고 2역을 삭제하면, 1-2,2-3 구간이 병합된다.")
         void removeSection3() {
             // given
             final Sections sections = new Sections(List.of(SECTION_1_2, SECTION_2_3, SECTION_3_4));
@@ -160,7 +161,7 @@ public class SectionsTest {
         }
 
         @Test
-        @DisplayName("1-2, 2-3, 3-4 구간이 있을 때, 3 역을 삭제한다.")
+        @DisplayName("1-2, 2-3, 3-4 구간이 있고 3 역을 삭제하면, 2-3,3-4 구간이 병합된다.")
         void removeSection4() {
             // given
             final Sections sections = new Sections(List.of(SECTION_1_2, SECTION_2_3, SECTION_3_4));
@@ -175,7 +176,7 @@ public class SectionsTest {
         }
 
         @Test
-        @DisplayName("1-2구간이 있을 때, 1 역을 삭제하면 예외를 발생시킨다.")
+        @DisplayName("1-2구간이 있고 1 역을 삭제하면, 예외를 던진다.")
         void exceptionRemoveSection1() {
             // given
             final Sections sections = new Sections(List.of(SECTION_1_2));
