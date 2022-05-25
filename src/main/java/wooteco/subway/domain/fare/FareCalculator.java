@@ -23,8 +23,7 @@ public class FareCalculator {
 
     public int calculateFare(final List<Line> lines, final int age) {
         int extraFare = findExtraFareToCharged(lines);
-        FarePolicy farePolicy = FarePolicy.choosePolicy(distance);
-        int totalFare = farePolicy.calculateFare(distance) + extraFare;
+        int totalFare = FarePolicy.calculateFare(distance) + extraFare;
         return AgePolicy.calculateFareByAgePolicy(totalFare, age);
     }
 
