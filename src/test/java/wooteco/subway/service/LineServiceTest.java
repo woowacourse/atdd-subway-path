@@ -6,25 +6,14 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.domain.Line;
-import wooteco.subway.repository.LineRepository;
 import wooteco.subway.service.dto.LineRequest;
 
-@ExtendWith({MockitoExtension.class})
-class LineServiceTest {
+class LineServiceTest extends ServiceMockTest {
 
     @InjectMocks
     private LineService lineService;
-
-    @Mock
-    private LineRepository lineRepository;
-
-    @Mock
-    private SectionService sectionService;
 
     @Test
     @DisplayName("노선을 생성한다.")
