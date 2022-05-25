@@ -1,5 +1,7 @@
 package wooteco.subway.domain;
 
+import wooteco.subway.domain.line.Line;
+
 public class LineFixtures {
 
     public static final Line LINE_1 = new Line(1L, "1호선", "blue", 0);
