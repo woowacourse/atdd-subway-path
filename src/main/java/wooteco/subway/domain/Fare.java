@@ -13,14 +13,16 @@ public class Fare {
     private static final int DISTANCE_UNIT_OVER_50 = 8;
     private static final int ADDITIONAL_AMOUNT = 100;
 
+    private final Lines lines;
     private final AgeDiscountPolicy ageDiscountPolicy;
 
-    public Fare(AgeDiscountPolicy ageDiscountPolicy) {
+    public Fare(final Lines lines, final AgeDiscountPolicy ageDiscountPolicy) {
+        this.lines = lines;
         this.ageDiscountPolicy = ageDiscountPolicy;
     }
 
-    public int calculate(final int distance, final List<Station> stations, final List<Line> lines) {
-        final int extraLineFare = calculateExtraLineFare(stations, lines);
+    public int calculate(final int distance, final List<Station> stations) {
+        final int extraLineFare = lines.calculateExtraLineFare(stations);
         int fare = DEFAULT_FARE + extraLineFare;
         if (ADDITIONAL_DISTANCE_PER_5KM <= distance && distance < ADDITIONAL_DISTANCE_PER_8KM) {
              fare += addExtraFare(distance, DISTANCE_UNIT_UNDER_50, ADDITIONAL_DISTANCE_PER_5KM);
@@ -31,18 +33,6 @@ public class Fare {
                     + addExtraFare(distance, DISTANCE_UNIT_OVER_50, ADDITIONAL_DISTANCE_PER_8KM - 1);
         }
         return ageDiscountPolicy.discount(fare);
-    }
-
-    private int calculateExtraLineFare(final List<Station> stations, final List<Line> lines) {
-        return lines.stream()
-                .filter(line -> doesLineContainStation(line, stations))
-                .mapToInt(Line::getExtraFare)
-                .max()
-                .orElse(DEFAULT_EXTRA_LINE_FARE);
-    }
-
-    private boolean doesLineContainStation(final Line line, final List<Station> stations) {
-        return stations.stream().anyMatch(line::containStation);
     }
 
     private int addExtraFare(final int distance, final int distanceUnit, final int limit) {

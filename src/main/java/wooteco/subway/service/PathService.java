@@ -6,6 +6,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Lines;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.PathCalculator;
 import wooteco.subway.domain.Station;
@@ -39,7 +40,8 @@ public class PathService {
         final Path path = pathCalculator.findShortestPath(source, target);
         final List<Station> stations = path.getVertexList();
         final int distance = path.getWeight();
-        final int fare = (new Fare(AgeDiscountFactory.from(AgeRange.from(pathDto.getAge())))).calculate(distance, stations, lines);
+        final int fare = (new Fare(new Lines(lines), AgeDiscountFactory.from(AgeRange.from(pathDto.getAge()))))
+                .calculate(distance, stations);
 
         return new PathResponse(stations, distance, fare);
     }
