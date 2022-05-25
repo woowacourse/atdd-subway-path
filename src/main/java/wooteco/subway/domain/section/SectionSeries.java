@@ -13,6 +13,7 @@ import wooteco.subway.util.CollectorsUtils;
 public class SectionSeries {
 
     private static final SectionSeriesSorter SORTER = new SectionSeriesSorter();
+    private static final SectionToStationMapper STATION_MAPPER = new SectionToStationMapper();
 
     private final List<Section> sections;
 
@@ -122,5 +123,9 @@ public class SectionSeries {
 
     public List<Section> getSections() {
         return sections;
+    }
+
+    public List<Station> getStations() {
+        return STATION_MAPPER.toStation(sections);
     }
 }

@@ -19,13 +19,14 @@ public class PathResponse {
     }
 
     public static PathResponse of(Path path, Fare fare) {
-        final List<StationResponse> stations = path.getStations()
-            .stream()
-            .map(StationResponse::from)
-            .collect(Collectors.toList());
-        final int distanceValue = path.getDistance().getValue();
-        final int fareAmount = fare.getAmount();
-        return new PathResponse(stations, distanceValue, fareAmount);
+        return new PathResponse(
+            path.getStations()
+                .stream()
+                .map(StationResponse::from)
+                .collect(Collectors.toList()),
+            path.getDistance().getValue(),
+            fare.getAmount()
+        );
     }
 
     public List<StationResponse> getStations() {
