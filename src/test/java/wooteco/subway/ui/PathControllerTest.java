@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.ui.dto.PathRequest;
 import wooteco.subway.ui.dto.PathResponse;
 import wooteco.subway.ui.dto.StationResponse;
 
@@ -33,7 +34,8 @@ class PathControllerTest extends ControllerTest {
         sectionDao.save(new Section(line.getId(), station2.getId(), station3.getId(), 5));
 
         // when
-        ResponseEntity<PathResponse> response = pathController.findShortestPath(station1.getId(), station3.getId(), 20);
+        PathRequest pathRequest = new PathRequest(station1.getId(), station3.getId(), 20);
+        ResponseEntity<PathResponse> response = pathController.findShortestPath(pathRequest);
 
         // then
         HttpStatus statusCode = response.getStatusCode();
@@ -68,7 +70,8 @@ class PathControllerTest extends ControllerTest {
         sectionDao.save(new Section(line.getId(), station2.getId(), station3.getId(), 5));
 
         // when
-        ResponseEntity<PathResponse> response = pathController.findShortestPath(station1.getId(), station3.getId(), 20);
+        PathRequest pathRequest = new PathRequest(station1.getId(), station3.getId(), 20);
+        ResponseEntity<PathResponse> response = pathController.findShortestPath(pathRequest);
 
         // then
         HttpStatus statusCode = response.getStatusCode();
@@ -103,7 +106,8 @@ class PathControllerTest extends ControllerTest {
         sectionDao.save(new Section(line.getId(), station2.getId(), station3.getId(), 5));
 
         // when
-        ResponseEntity<PathResponse> response = pathController.findShortestPath(station1.getId(), station3.getId(), 10);
+        PathRequest pathRequest = new PathRequest(station1.getId(), station3.getId(), 10);
+        ResponseEntity<PathResponse> response = pathController.findShortestPath(pathRequest);
 
         // then
         HttpStatus statusCode = response.getStatusCode();
@@ -138,7 +142,8 @@ class PathControllerTest extends ControllerTest {
         sectionDao.save(new Section(line.getId(), station2.getId(), station3.getId(), 5));
 
         // when
-        ResponseEntity<PathResponse> response = pathController.findShortestPath(station1.getId(), station3.getId(), 10);
+        PathRequest pathRequest = new PathRequest(station1.getId(), station3.getId(), 10);
+        ResponseEntity<PathResponse> response = pathController.findShortestPath(pathRequest);
 
         // then
         HttpStatus statusCode = response.getStatusCode();
@@ -173,7 +178,8 @@ class PathControllerTest extends ControllerTest {
         sectionDao.save(new Section(line.getId(), station2.getId(), station3.getId(), 5));
 
         // when
-        ResponseEntity<PathResponse> response = pathController.findShortestPath(station1.getId(), station3.getId(), 15);
+        PathRequest pathRequest = new PathRequest(station1.getId(), station3.getId(), 15);
+        ResponseEntity<PathResponse> response = pathController.findShortestPath(pathRequest);
 
         // then
         HttpStatus statusCode = response.getStatusCode();
@@ -208,7 +214,8 @@ class PathControllerTest extends ControllerTest {
         sectionDao.save(new Section(line.getId(), station2.getId(), station3.getId(), 5));
 
         // when
-        ResponseEntity<PathResponse> response = pathController.findShortestPath(station1.getId(), station3.getId(), 15);
+        PathRequest pathRequest = new PathRequest(station1.getId(), station3.getId(), 15);
+        ResponseEntity<PathResponse> response = pathController.findShortestPath(pathRequest);
 
         // then
         HttpStatus statusCode = response.getStatusCode();
@@ -243,7 +250,8 @@ class PathControllerTest extends ControllerTest {
         sectionDao.save(new Section(line.getId(), station2.getId(), station3.getId(), 5));
 
         // when
-        ResponseEntity<PathResponse> response = pathController.findShortestPath(station1.getId(), station3.getId(), 5);
+        PathRequest pathRequest = new PathRequest(station1.getId(), station3.getId(), 5);
+        ResponseEntity<PathResponse> response = pathController.findShortestPath(pathRequest);
 
         // then
         HttpStatus statusCode = response.getStatusCode();
@@ -278,7 +286,8 @@ class PathControllerTest extends ControllerTest {
         sectionDao.save(new Section(line.getId(), station2.getId(), station3.getId(), 5));
 
         // when
-        ResponseEntity<PathResponse> response = pathController.findShortestPath(station1.getId(), station3.getId(), 65);
+        PathRequest pathRequest = new PathRequest(station1.getId(), station3.getId(), 65);
+        ResponseEntity<PathResponse> response = pathController.findShortestPath(pathRequest);
 
         // then
         HttpStatus statusCode = response.getStatusCode();
@@ -312,7 +321,9 @@ class PathControllerTest extends ControllerTest {
         sectionDao.save(new Section(line.getId(), station1.getId(), station2.getId(), 5));
 
         // when
-        assertThatThrownBy(() -> pathController.findShortestPath(station1.getId(), station3.getId(), 20))
+        PathRequest pathRequest = new PathRequest(station1.getId(), station3.getId(), 10);
+
+        assertThatThrownBy(() -> pathController.findShortestPath(pathRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("구간에 등록 되지 않은 역입니다.");
     }
@@ -331,7 +342,9 @@ class PathControllerTest extends ControllerTest {
         sectionDao.save(new Section(line2.getId(), station3.getId(), station4.getId(), 5));
 
         // when
-        assertThatThrownBy(() -> pathController.findShortestPath(station1.getId(), station3.getId(), 20))
+        PathRequest pathRequest = new PathRequest(station1.getId(), station3.getId(), 10);
+
+        assertThatThrownBy(() -> pathController.findShortestPath(pathRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("연결되지 않은 구간입니다.");
     }
