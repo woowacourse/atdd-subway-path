@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.line;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -9,13 +9,15 @@ import static wooteco.subway.domain.fixtures.TestFixtures.성수;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.Section;
 
 public class SectionTest {
 
     @Test
     @DisplayName("상행역을 기준으로 구간을 분리한다.")
     void splitByUpStation() {
-        Line line = new Line(1L, "2호선", "green");
+        Line line = new Line(1L, "2호선", "green", 0);
 
         Section 기존_구간 = new Section(1L, line, 삼성, 성수, 10);
         Section 추가할_구간 = new Section(line, 삼성, 강남, 4);
@@ -35,7 +37,7 @@ public class SectionTest {
     @Test
     @DisplayName("하행역을 기준으로 구간을 분리한다.")
     void splitByDownStation() {
-        Line line = new Line(1L, "2호선", "green");
+        Line line = new Line(1L, "2호선", "green", 0);
 
         Section 기존_구간 = new Section(1L, line, 삼성, 성수, 10);
         Section 추가할_구간 = new Section(line, 강남, 성수, 4);
@@ -58,13 +60,13 @@ public class SectionTest {
         Line line = new Line(1L, "2호선", "green");
 
         Section 기존_구간 = new Section(1L, line, 삼성, 성수, 10);
-        Section 추가할_구간 = new Section(line, 강남, 삼성, 4);
+        Section 추가할_구간 = new Section(line, 강남, 삼성, 11);
 
         List<Section> sections = 기존_구간.split(추가할_구간);
         assertThat(sections.get(0).getId()).isNull();
         assertThat(sections.get(0).getUpStation()).isEqualTo(강남);
         assertThat(sections.get(0).getDownStation()).isEqualTo(삼성);
-        assertThat(sections.get(0).getDistance()).isEqualTo(4);
+        assertThat(sections.get(0).getDistance()).isEqualTo(11);
     }
 
     @Test
@@ -123,12 +125,22 @@ public class SectionTest {
 
     @Test
     @DisplayName("구간 생성시 거리가 1보다 작은 경우 예외를 발생한다.")
-    void invalidDistance() {
+    void minDistance() {
         Line line = new Line(1L, "2호선", "green");
 
         assertThatThrownBy(() -> new Section(1L, line, 삼성, 성수, 0))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("거리는 1이상이어야 합니다.");
+    }
+
+    @Test
+    @DisplayName("구간 생성시 거리가 200보다 큰 경우 예외를 발생한다.")
+    void maxDistance() {
+        Line line = new Line(1L, "2호선", "green");
+
+        assertThatThrownBy(() -> new Section(1L, line, 삼성, 성수, 201))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("거리는 200이하여야 합니다.");
     }
 
     @Test

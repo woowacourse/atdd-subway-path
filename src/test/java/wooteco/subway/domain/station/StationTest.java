@@ -1,10 +1,11 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.station;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import wooteco.subway.domain.station.Station;
 
 public class StationTest {
 

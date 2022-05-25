@@ -1,11 +1,13 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.line;
 
 import java.util.List;
 import java.util.Objects;
+import wooteco.subway.domain.station.Station;
 
 public class Section {
 
     private static final int MIN_DISTANCE = 1;
+    private static final int MAX_DISTANCE = 200;
 
     private Long id;
     private final Line line;
@@ -27,14 +29,15 @@ public class Section {
     }
 
     public List<Section> split(Section other) {
-        validateShortDistance(other.distance);
         if (upStation.equals(other.upStation)) {
+            validateShortDistance(other.distance);
             Section start = new Section(id, line, upStation, other.downStation, other.distance);
             Section end = new Section(line, other.downStation, downStation,
                     distance - other.distance);
             return List.of(start, end);
         }
         if (downStation.equals(other.downStation)) {
+            validateShortDistance(other.distance);
             Section start = new Section(id, line, upStation, other.upStation,
                     distance - other.distance);
             Section end = new Section(line, other.upStation, downStation, other.distance);
@@ -66,6 +69,9 @@ public class Section {
     private void validate(int distance) {
         if (distance < MIN_DISTANCE) {
             throw new IllegalArgumentException("거리는 1이상이어야 합니다.");
+        }
+        if (distance > MAX_DISTANCE) {
+            throw new IllegalArgumentException("거리는 200이하여야 합니다.");
         }
     }
 

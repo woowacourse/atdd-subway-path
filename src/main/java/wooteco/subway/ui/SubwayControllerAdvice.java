@@ -35,15 +35,9 @@ public class SubwayControllerAdvice {
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ErrorResponse> runtimeExceptionHandler(RuntimeException e) {
-        log.debug(Arrays.toString(e.getStackTrace()));
-        return ResponseEntity.badRequest().body(new ErrorResponse("서버 에러가 발생했습니다."));
-    }
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> exceptionHandler(Exception e) {
-        log.debug(Arrays.toString(e.getStackTrace()));
+        log.error(Arrays.toString(e.getStackTrace()));
         return ResponseEntity.internalServerError().body(new ErrorResponse("서버 에러가 발생했습니다."));
     }
 }

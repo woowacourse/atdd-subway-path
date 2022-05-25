@@ -3,10 +3,11 @@ package wooteco.subway.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
-import wooteco.subway.domain.Station;
+import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.Section;
+import wooteco.subway.domain.line.Sections;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.exception.BadRequestException;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
@@ -34,16 +35,17 @@ public class LineService {
         this.sectionRepository = sectionRepository;
     }
 
+    @Transactional
     public LineResponse create(LineRequest lineRequest) {
-        validateDuplicateNameAndColor(lineRequest.getName(), lineRequest.getColor());
-        Line line = new Line(lineRequest.getName(), lineRequest.getColor());
+        validateDuplicateNameOrColor(lineRequest.getName(), lineRequest.getColor());
+        Line line = new Line(lineRequest.getName(), lineRequest.getColor(),
+                lineRequest.getExtraFare());
         Station upStation = getStation(lineRequest.getUpStationId());
         Station downStation = getStation(lineRequest.getDownStationId());
 
         Line savedLine = lineRepository.save(line);
-        sectionRepository
-                .save(new Section(savedLine, upStation, downStation, lineRequest.getDistance()));
-
+        Section section = new Section(savedLine, upStation, downStation, lineRequest.getDistance());
+        sectionRepository.save(section);
         return toLineResponse(savedLine, List.of(upStation, downStation));
     }
 
@@ -59,9 +61,9 @@ public class LineService {
     }
 
     public void updateById(Long id, LineUpdateRequest request) {
-        validateDuplicateNameAndColor(request.getName(), request.getColor());
+        validateDuplicateNameOrColor(request.getName(), request.getColor());
         Line line = getLine(id);
-        line.update(request.getName(), request.getColor());
+        line.update(request.getName(), request.getColor(), request.getExtraFare());
         lineRepository.save(line);
     }
 
@@ -93,8 +95,8 @@ public class LineService {
         }
     }
 
-    private void validateDuplicateNameAndColor(String name, String color) {
-        if (lineRepository.existByNameAndColor(name, color)) {
+    private void validateDuplicateNameOrColor(String name, String color) {
+        if (lineRepository.existByNameOrColor(name, color)) {
             throw new BadRequestException("노선이 이름과 색상은 중복될 수 없습니다.");
         }
     }
@@ -102,9 +104,9 @@ public class LineService {
     private void isDeleteOrSave(Section removedSection) {
         if (removedSection.getId() == null) {
             sectionRepository.save(removedSection);
-        } else {
-            sectionRepository.deleteById(removedSection.getId());
+            return;
         }
+        sectionRepository.deleteById(removedSection.getId());
     }
 
     private Station getStation(Long stationId) {
@@ -116,8 +118,13 @@ public class LineService {
     }
 
     private LineResponse toLineResponse(Line line, List<Station> stations) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor(),
-                toResponse(stations));
+        return new LineResponse(
+                line.getId(),
+                line.getName(),
+                line.getColor(),
+                line.getExtraFare(),
+                toResponse(stations)
+        );
     }
 
     private static List<StationResponse> toResponse(List<Station> stations) {

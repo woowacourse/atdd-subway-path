@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.Section;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
@@ -61,7 +61,7 @@ class PathServiceTest {
         SectionRequest sectionRequest2 = new SectionRequest(양재.getId(), 판교.getId(), 4);
         lineService.createSection(신분당선.getId(), sectionRequest2);
 
-        PathResponse actual = pathService.showPaths(new PathsRequest(강남.getId(), 판교.getId(), 15));
+        PathResponse actual = pathService.showPaths(new PathsRequest(강남.getId(), 판교.getId(), 20));
 
         assertThat(actual.getStations())
                 .extracting("name")

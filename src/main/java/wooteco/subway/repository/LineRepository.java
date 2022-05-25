@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.entity.LineEntity;
-import wooteco.subway.domain.Line;
+import wooteco.subway.domain.line.Line;
 import wooteco.subway.exception.NotFoundException;
 
 @Repository
@@ -19,9 +19,9 @@ public class LineRepository {
 
     public Line save(Line line) {
         if (line.getId() == null) {
-            return toLine(lineDao.save(new LineEntity(line.getName(), line.getColor())));
+            return toLine(lineDao.save(new LineEntity(line.getName(), line.getColor(), line.getExtraFare())));
         }
-        lineDao.modifyById(new LineEntity(line.getId(), line.getName(), line.getColor()));
+        lineDao.modifyById(new LineEntity(line.getId(), line.getName(), line.getColor(), line.getExtraFare()));
         return line;
     }
 
@@ -42,11 +42,11 @@ public class LineRepository {
         lineDao.deleteById(id);
     }
 
-    public boolean existByNameAndColor(String name, String color) {
-        return lineDao.existByNameAndColor(name, color);
+    public boolean existByNameOrColor(String name, String color) {
+        return lineDao.existByNameOrColor(name, color);
     }
 
     private Line toLine(LineEntity entity) {
-        return new Line(entity.getId(), entity.getName(), entity.getColor());
+        return new Line(entity.getId(), entity.getName(), entity.getColor(), entity.getExtraFare());
     }
 }

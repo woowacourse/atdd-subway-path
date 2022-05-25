@@ -5,7 +5,7 @@
   <a href="https://techcourse.woowahan.com/c/Dr6fhku7" alt="woowacuorse subway">
     <img alt="Website" src="https://img.shields.io/website?url=https%3A%2F%2Fedu.nextstep.camp%2Fc%2FR89PYi5H">
   </a>
-  <img alt="GitHub" src="https://img.shields.io/github/license/woowacourse/atdd-subway-subwayGraph">
+  <img alt="GitHub" src="https://img.shields.io/github/license/woowacourse/atdd-subway-subwayMap">
 </p>
 
 <br>
@@ -36,13 +36,13 @@
 
 ## 🐞 Bug Report
 
-버그를 발견한다면, [Issues](https://github.com/woowacourse/atdd-subway-subwayGraph/issues) 에 등록해주세요 :)
+버그를 발견한다면, [Issues](https://github.com/woowacourse/atdd-subway-subwayMap/issues) 에 등록해주세요 :)
 
 <br>
 
 ## 📝 License
 
-This project is [MIT](https://github.com/woowacourse/atdd-subway-subwayGraph/blob/master/LICENSE) licensed.
+This project is [MIT](https://github.com/woowacourse/atdd-subway-subwayMap/blob/master/LICENSE) licensed.
 
 # 기능 요구사항
 
@@ -133,3 +133,15 @@ This project is [MIT](https://github.com/woowacourse/atdd-subway-subwayGraph/blo
         - [x] 10km~50km: 5km 까지 마다 100원 추가
         - [x] 50km 초과: 8km 까지 마다 100원 추가
         - [x] 지하철 운임은 거리비례제로 책정된다.
+  
+## 2단계 요구사항 도출
+
+### 요금 정책 추가
+
+- [x] 노선 등록시 추가요금을 받는다.
+- [x] 노선 수정시 추가요금을 받는다.  
+  - [x] 추가요금이 0원 미만인지 검증한다.
+- [x] 요금 계산시 추가 요금을 측정된 요금에 추가한다.
+  - [x] 여러 노선을 이용할 경우 가장 높은 금액의 추가 요금을 추가한다.
+- [x] 나이가 13세 이상~19세 미만일 경우 350원을 공제한 금액의 20% 할인한다.
+- [x] 나이가 6세 이상~13세 미만 미만일 경우 350원을 공제한 금액의 50% 할인한다.

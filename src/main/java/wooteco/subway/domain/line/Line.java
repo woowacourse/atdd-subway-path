@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.line;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -8,32 +8,46 @@ public class Line {
     private static final Pattern pattern = Pattern.compile("^[ㄱ-ㅎ|가-힣|0-9]+");
     private static final int MAX_RANGE = 10;
     private static final int MIN_RANGE = 3;
+    private static final int MIN_EXTRA_FARE = 0;
+    private static final int DEFAULT_EXTRA_FARE = 0;
 
     private final Long id;
     private String name;
     private String color;
+    private int extraFare;
 
-    public Line(Long id, String name, String color) {
-        validate(name, color);
+    public Line(Long id, String name, String color, int extraFare) {
+        validate(name, color, extraFare);
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
+    }
+
+    public Line(long id, String color, String green) {
+        this(id, color, green, DEFAULT_EXTRA_FARE);
     }
 
     public Line(String name, String color) {
-        this(null, name, color);
+        this(null, name, color, DEFAULT_EXTRA_FARE);
     }
 
-    public void update(String name, String color) {
-        validate(name, color);
+    public Line(String name, String color, int extraFare) {
+        this(null, name, color, extraFare);
+    }
+
+    public void update(String name, String color, int extraFare) {
+        validate(name, color, extraFare);
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
     }
 
-    private void validate(String name, String color) {
+    private void validate(String name, String color, int extraFare) {
         validateEmpty(name, color);
         validateNameRange(name);
         validateLanguageType(name);
+        validateExtraFare(extraFare);
     }
 
     private void validateEmpty(String name, String color) {
@@ -59,6 +73,12 @@ public class Line {
         }
     }
 
+    private void validateExtraFare(int extraFare) {
+        if (extraFare < MIN_EXTRA_FARE) {
+            throw new IllegalArgumentException("추가 금액은 음수일 수 없습니다.");
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -69,6 +89,10 @@ public class Line {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     @Override
