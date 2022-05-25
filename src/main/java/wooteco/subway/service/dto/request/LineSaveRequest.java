@@ -39,7 +39,7 @@ public class LineSaveRequest {
     }
 
     public Line toLine() {
-        return new Line(getName(), getColor(), getExtraFare());
+        return Line.of(getName(), getColor(), getExtraFare());
     }
 
     public Section convertSection() {

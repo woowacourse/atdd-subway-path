@@ -17,7 +17,7 @@ import wooteco.subway.domain.Line;
 public class LineDao {
 
     private static final RowMapper<Line> LINE_ROW_MAPPER = (resultSet, rowNum) -> {
-        return new Line(
+        return Line.of(
                 resultSet.getLong("id"),
                 resultSet.getString("name"),
                 resultSet.getString("color"),

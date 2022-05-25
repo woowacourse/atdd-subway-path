@@ -24,7 +24,7 @@ public class LineUpdateRequest {
     }
 
     public Line toLine() {
-        return new Line(getName(), getColor(), getExtraFare());
+        return Line.of(getName(), getColor(), getExtraFare());
     }
 
     public String getName() {
