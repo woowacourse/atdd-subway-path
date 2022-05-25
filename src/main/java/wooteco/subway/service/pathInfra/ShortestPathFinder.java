@@ -5,6 +5,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Path;
+import wooteco.subway.domain.PathFinder;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 

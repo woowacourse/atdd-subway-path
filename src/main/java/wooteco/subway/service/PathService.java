@@ -8,7 +8,6 @@ import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.*;
 import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
-import wooteco.subway.service.pathInfra.PathFinder;
 import wooteco.subway.service.pathInfra.ShortestPathFinder;
 
 import java.util.Comparator;

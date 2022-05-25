@@ -1,7 +1,4 @@
-package wooteco.subway.service.pathInfra;
-
-import wooteco.subway.domain.Path;
-import wooteco.subway.domain.Section;
+package wooteco.subway.domain;
 
 import java.util.List;
 
