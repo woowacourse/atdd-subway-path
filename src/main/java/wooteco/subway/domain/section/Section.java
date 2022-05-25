@@ -66,10 +66,6 @@ public class Section {
         return upStation.equals(station) || downStation.equals(station);
     }
 
-    public boolean isRegisteredAtLine(Long lineId) {
-        return lineId.equals(this.lineId);
-    }
-
     public int toConnectedDistance(Section adjacentSection) {
         validateAdjacentSections(adjacentSection);
         return distance + adjacentSection.distance;
