@@ -26,8 +26,11 @@ public class Sections {
 
     public void add(final Section newSection) {
         validateSectionCreate(newSection);
-        findNearbySection(newSection)
-                .ifPresent(section -> updateSection(newSection, section));
+        if (findNearbySection(newSection).isPresent()) {
+            final Section foundSection = findNearbySection(newSection).get();
+            insertSectionBetween(newSection, foundSection);
+            return;
+        }
         values.add(newSection);
     }
 
@@ -84,7 +87,7 @@ public class Sections {
                 .collect(toList());
     }
 
-    private void updateSection(final Section newSection, final Section foundSection) {
+    private void insertSectionBetween(final Section newSection, final Section foundSection) {
         validateCutInDistance(newSection, foundSection);
         if (foundSection.isSameUpStation(newSection.getUpStation())) {
             Station newUpStation = newSection.getDownStation();
@@ -95,6 +98,7 @@ public class Sections {
         Station newUpStation = foundSection.getUpStation();
         Station newDownStation = newSection.getUpStation();
         foundSection.updateSection(newUpStation, newDownStation, newSection.getDistance());
+        values.add(newSection);
     }
 
     private void validateCutInDistance(Section section, Section foundSection) {
