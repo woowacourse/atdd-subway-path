@@ -1,7 +1,6 @@
 package wooteco.subway.domain;
 
 import java.util.List;
-import wooteco.subway.domain.fare.DiscountStrategyFactory;
 import wooteco.subway.domain.fare.Fare;
 
 public class Path {
@@ -19,7 +18,7 @@ public class Path {
 
     public int calculateFare(int age) {
         validateAge(age);
-        return new Fare(distance, DiscountStrategyFactory.getDiscountStrategy(age)).calculate(extraFare);
+        return new Fare(distance).calculate(age, extraFare);
     }
 
     private void validateAge(int age) {
