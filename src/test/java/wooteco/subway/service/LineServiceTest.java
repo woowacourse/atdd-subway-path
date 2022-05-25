@@ -7,12 +7,16 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
@@ -21,8 +25,6 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.exception.DataNotFoundException;
 import wooteco.subway.exception.DuplicateNameException;
-import java.util.List;
-import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 class LineServiceTest {
@@ -36,6 +38,9 @@ class LineServiceTest {
     @Mock
     private SectionDao sectionDao;
 
+    @Mock
+    private StationService stationService;
+
     @InjectMocks
     private LineService lineService;
 
@@ -44,15 +49,15 @@ class LineServiceTest {
     void createLine() {
         final String lineName = "신분당선";
         final String lineColor = "bg-red-600";
-        final Line line = new Line(lineName, lineColor);
+        final Line line = new Line(lineName, lineColor, 0);
         final Station station1 = new Station(1L, "선릉역");
         final Station station2 = new Station(2L, "강남역");
         final Section section = new Section(station1, station2, 3, 1L);
 
-        given(lineDao.save(line)).willReturn(new Line(1L, lineName, lineColor));
-        given(sectionDao.save(section)).willReturn(section);
-        given(stationDao.findById(section.getUpStation().getId())).willReturn(Optional.of(station1));
-        given(stationDao.findById(section.getDownStation().getId())).willReturn(Optional.of(station2));
+        given(lineDao.save(line)).willReturn(new Line(1L, lineName, lineColor, 0));
+        given(sectionDao.save(section)).willReturn(new Section(1L, station1, station2, 3, 1L));
+        given(stationService.findStationById(section.getUpStation().getId())).willReturn(station1);
+        given(stationService.findStationById(section.getDownStation().getId())).willReturn(station2);
 
         final Line actual = lineService.createLine(line, section);
 
@@ -84,7 +89,7 @@ class LineServiceTest {
         final List<Line> expected = List.of(line1, line2);
         given(lineDao.findAll()).willReturn(expected);
 
-        final List<Line> actual = lineService.getAllLines();
+        final List<Line> actual = lineService.findAllLines();
 
         assertThat(actual).containsAll(expected);
     }
@@ -95,7 +100,7 @@ class LineServiceTest {
         final Line expected = new Line("신분당선", "bg-red-600");
         given(lineDao.findById(1L)).willReturn(Optional.of(expected));
 
-        final Line actual = lineService.getLineById(1L);
+        final Line actual = lineService.findLineById(1L);
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -103,7 +108,7 @@ class LineServiceTest {
     @DisplayName("노선 ID로 노선을 업데이트 한다.")
     @Test
     void updateLine() {
-        final Line newLine = new Line(1L, "분당선", "bg-yellow-600");
+        final Line newLine = new Line(1L, "분당선", "bg-yellow-600", 0);
 
         given(lineDao.findById(1L)).willReturn(Optional.of(newLine));
 
@@ -135,11 +140,13 @@ class LineServiceTest {
     void create_throwsExceptionIfStationsDoesNotExist() {
         final Station station1 = new Station("역삼역");
         final Station station2 = new Station("교대역");
-        final Section section = new Section(station1, station2, 10);
+        final Section section = new Section(new Station(3L, ""), station2, 10);
         final Line line = new Line("2호선", "bg-green-600");
+
+        given(stationService.findStationById(3L)).willThrow(new DataNotFoundException("존재하지 않는 지하철역 ID입니다."));
 
         assertThatThrownBy(() -> lineService.createLine(line, section))
                 .isInstanceOf(DataNotFoundException.class)
-                .hasMessage("존재하지 않는 지하철 역입니다.");
+                .hasMessage("존재하지 않는 지하철역 ID입니다.");
     }
 }

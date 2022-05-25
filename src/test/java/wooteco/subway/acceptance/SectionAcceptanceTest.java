@@ -2,14 +2,15 @@ package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationRequest;
@@ -28,7 +29,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         upStationId = createStation(new StationRequest("아차산역"));
         downStationId = createStation(new StationRequest("군자역"));
         newDownStationId = createStation(new StationRequest("마장역"));
-        lineId = createLine(new LineRequest("5호선", "bg-purple-600", upStationId, downStationId, 10));
+        lineId = createLine(new LineRequest("5호선", "bg-purple-600", 0, upStationId, downStationId, 10));
 
         sectionRequest = new SectionRequest(downStationId, newDownStationId, 5);
     }

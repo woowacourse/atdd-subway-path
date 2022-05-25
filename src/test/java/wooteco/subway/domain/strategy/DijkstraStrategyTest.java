@@ -2,10 +2,16 @@ package wooteco.subway.domain.strategy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.*;
-import java.util.List;
+
+import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Path;
+import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.Station;
 
 class DijkstraStrategyTest {
 
@@ -14,7 +20,7 @@ class DijkstraStrategyTest {
     void findPath() {
         Station station1 = new Station(1L, "선릉역");
         Station station2 = new Station(2L, "역삼역");
-        Line line = new Line(1L, "2호선", "bg-green-600");
+        Line line = new Line(1L, "2호선", "bg-green-600", 0);
         Section section1 = new Section(1L, station1, station2, 5, line.getId());
         Sections sections = new Sections(List.of(section1));
         ShortestPathStrategy strategy = new DijkstraStrategy();

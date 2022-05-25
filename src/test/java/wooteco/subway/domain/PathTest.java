@@ -2,12 +2,14 @@ package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import wooteco.subway.domain.strategy.DijkstraStrategy;
 import wooteco.subway.domain.strategy.ShortestPathStrategy;
-import java.util.List;
 
 class PathTest {
 
@@ -21,7 +23,7 @@ class PathTest {
         station1 = new Station(1L, "선릉역");
         station2 = new Station(2L, "역삼역");
         station3 = new Station(3L, "강남역");
-        Line line = new Line(1L, "2호선", "bg-green-600");
+        Line line = new Line(1L, "2호선", "bg-green-600", 0);
         Section section1 = new Section(1L, station1, station2, 5, line.getId());
         Section section2 = new Section(1L, station2, station3, 5, line.getId());
         sections = new Sections(List.of(section1, section2));

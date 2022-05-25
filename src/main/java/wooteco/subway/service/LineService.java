@@ -1,28 +1,30 @@
 package wooteco.subway.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
-import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.exception.DataNotFoundException;
 import wooteco.subway.exception.DuplicateNameException;
-import java.util.List;
 
 @Service
 public class LineService {
 
     private final LineDao lineDao;
     private final SectionDao sectionDao;
-    private final StationDao stationDao;
+    private final StationService stationService;
 
-    public LineService(final LineDao lineDao, final SectionDao sectionDao, final StationDao stationDao) {
+    public LineService(final LineDao lineDao, final SectionDao sectionDao, final StationService stationService) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
-        this.stationDao = stationDao;
+        this.stationService = stationService;
     }
 
     @Transactional
@@ -31,29 +33,34 @@ public class LineService {
         validateStationsNames(section);
         final Line savedLine = lineDao.save(line);
         final Section sectionToSave = new Section(
-                section.getUpStation(),
-                section.getDownStation(),
-                section.getDistance(),
-                savedLine.getId()
+            section.getUpStation(),
+            section.getDownStation(),
+            section.getDistance(),
+            savedLine.getId()
         );
         sectionDao.save(sectionToSave);
         return savedLine;
     }
 
     @Transactional(readOnly = true)
-    public List<Line> getAllLines() {
+    public List<Line> findAllLines() {
         return lineDao.findAll();
     }
 
     @Transactional(readOnly = true)
-    public Line getLineById(final Long id) {
+    public List<Line> findAllByIds(final List<Long> ids) {
+        return lineDao.findAllByIds(ids);
+    }
+
+    @Transactional(readOnly = true)
+    public Line findLineById(final Long id) {
         return lineDao.findById(id)
-                .orElseThrow(() -> new DataNotFoundException("존재하지 않는 노선 ID입니다."));
+            .orElseThrow(() -> new DataNotFoundException("존재하지 않는 노선 ID입니다."));
     }
 
     @Transactional
     public void update(final Long id, final Line line) {
-        final Line result = getLineById(id);
+        final Line result = findLineById(id);
         validateUpdatedName(line, result);
         result.update(line);
 
@@ -82,9 +89,43 @@ public class LineService {
     }
 
     private void validateStationsNames(final Section section) {
-        final Station upStation = stationDao.findById(section.getUpStation().getId())
-                .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철 역입니다."));
-        final Station downStation = stationDao.findById(section.getDownStation().getId())
-                .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철 역입니다."));
+        stationService.findStationById(section.getUpStation().getId());
+        stationService.findStationById(section.getDownStation().getId());
+    }
+
+    @Transactional
+    public Section addSection(final long lineId, final Section requestSection) {
+        final Station upStation = stationService.findStationById(requestSection.getUpStation().getId());
+        final Station downStation = stationService.findStationById(requestSection.getDownStation().getId());
+        findLineById(lineId);
+
+        Section section = new Section(upStation, downStation, requestSection.getDistance(), lineId);
+        final Sections sections = new Sections(sectionDao.findAllByLineId(lineId));
+        sections.add(section);
+
+        sectionDao.deleteByLineId(lineId);
+        sectionDao.saveAll(sections.getSections());
+
+        return section;
+    }
+
+    @Transactional
+    public void delete(final Long lineId, final Long stationId) {
+        final Sections sections = new Sections(sectionDao.findAllByLineId(lineId));
+        sections.remove(stationId);
+        sectionDao.deleteByLineId(lineId);
+        sectionDao.saveAll(sections.getSections());
+    }
+
+    @Transactional(readOnly = true)
+    public List<Station> findStationsByLine(final long lineId) {
+        final List<Section> lineSections = sectionDao.findAllByLineId(lineId);
+        final Sections sections = new Sections(lineSections);
+        return sections.extractStations();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Section> findAllSections() {
+        return sectionDao.findAll();
     }
 }

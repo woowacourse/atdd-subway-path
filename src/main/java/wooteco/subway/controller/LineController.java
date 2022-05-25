@@ -1,29 +1,37 @@
-package wooteco.subway.ui;
+package wooteco.subway.controller;
+
+import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.service.LineService;
-import wooteco.subway.service.SectionService;
-import javax.validation.Valid;
-import java.net.URI;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/lines")
 public class LineController {
 
     private final LineService lineService;
-    private final SectionService sectionService;
 
-    public LineController(final LineService lineService, final SectionService sectionService) {
+    public LineController(final LineService lineService) {
         this.lineService = lineService;
-        this.sectionService = sectionService;
     }
 
     @PostMapping
@@ -31,26 +39,26 @@ public class LineController {
         final Line line = lineRequest.toEntity();
 
         final Line newLine = lineService.createLine(line, lineRequest.toSectionEntity());
-        final List<Station> stations = getStationsByLine(newLine);
+        final List<Station> stations = findStationsByLine(newLine);
         final LineResponse lineResponse = LineResponse.from(newLine, stations);
 
         return ResponseEntity.created(URI.create("/lines/" + newLine.getId())).body(lineResponse);
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponse>> showLines() {
-        final List<Line> lines = lineService.getAllLines();
+    public ResponseEntity<List<LineResponse>> findLines() {
+        final List<Line> lines = lineService.findAllLines();
         final List<LineResponse> lineResponses = lines.stream()
-                .map(line -> LineResponse.from(line, getStationsByLine(line)))
+                .map(line -> LineResponse.from(line, findStationsByLine(line)))
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok().body(lineResponses);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<LineResponse> showLine(@PathVariable final Long id) {
-        final Line line = lineService.getLineById(id);
-        final LineResponse lineResponse = LineResponse.from(line, getStationsByLine(line));
+    public ResponseEntity<LineResponse> findLine(@PathVariable final Long id) {
+        final Line line = lineService.findLineById(id);
+        final LineResponse lineResponse = LineResponse.from(line, findStationsByLine(line));
 
         return ResponseEntity.ok().body(lineResponse);
     }
@@ -73,15 +81,15 @@ public class LineController {
 
     @PostMapping("/{id}/sections")
     public void addSection(@PathVariable final Long id, @RequestBody @Valid final SectionRequest sectionRequest) {
-        sectionService.addSection(id, SectionRequest.toEntity(sectionRequest));
+        lineService.addSection(id, SectionRequest.toEntity(sectionRequest));
     }
 
     @DeleteMapping("/{id}/sections")
     public void deleteSection(@PathVariable final Long id, @RequestParam final Long stationId) {
-        sectionService.delete(id, stationId);
+        lineService.delete(id, stationId);
     }
 
-    private List<Station> getStationsByLine(final Line line) {
-        return sectionService.getStationsByLine(line.getId());
+    private List<Station> findStationsByLine(final Line line) {
+        return lineService.findStationsByLine(line.getId());
     }
 }

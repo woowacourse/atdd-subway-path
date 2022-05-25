@@ -1,11 +1,13 @@
 package wooteco.subway.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
+
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
 import wooteco.subway.exception.DataNotFoundException;
 import wooteco.subway.exception.DuplicateNameException;
-import java.util.List;
 
 @Service
 public class StationService {
@@ -21,8 +23,13 @@ public class StationService {
         return stationDao.save(station);
     }
 
-    public List<Station> getAllStations() {
+    public List<Station> findAllStations() {
         return stationDao.findAll();
+    }
+
+    public Station findStationById(final Long id) {
+        return stationDao.findById(id)
+            .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철역 ID입니다."));
     }
 
     public void delete(final Long id) {
