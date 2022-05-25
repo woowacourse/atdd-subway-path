@@ -9,16 +9,20 @@ import org.junit.jupiter.api.Test;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
+import wooteco.subway.domain.station.StationRepository;
 import wooteco.subway.dto.service.StationDto;
+import wooteco.subway.service.repository.StationRepositoryWithDao;
 
 public class StationServiceTest {
     private StationService stationService;
+    private StationRepository stationRepository;
     private SectionDao sectionDao;
 
     @BeforeEach
     void setUp() {
         sectionDao = new FakeSectionDao();
-        stationService = new StationService(new FakeStationDao(), sectionDao);
+        stationRepository = new StationRepositoryWithDao(new FakeStationDao(), sectionDao);
+        stationService = new StationService(stationRepository);
     }
 
     @DisplayName("지하철역을 생성한다.")
