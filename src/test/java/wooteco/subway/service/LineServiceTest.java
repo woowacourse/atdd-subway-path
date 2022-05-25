@@ -11,11 +11,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
+import wooteco.subway.domain.line.Line;
 import wooteco.subway.dto.request.CreateLineRequest;
 import wooteco.subway.dto.request.UpdateLineRequest;
 import wooteco.subway.dto.response.LineResponse;
 import wooteco.subway.dto.response.StationResponse;
-import wooteco.subway.entity.LineEntity;
 import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.fixture.DatabaseUsageTest;
 
@@ -161,8 +161,8 @@ class LineServiceTest extends DatabaseUsageTest {
             databaseFixtureUtils.saveLine("노선1", "색깔", 100);
 
             service.update(1L, new UpdateLineRequest("수정된 노선명", "수정된 색깔", 300));
-            LineEntity actual = lineDao.findById(1L).get();
-            LineEntity expected = new LineEntity(1L, "수정된 노선명", "수정된 색깔", 300);
+            Line actual = lineDao.findById(1L).get();
+            Line expected = new Line(1L, "수정된 노선명", "수정된 색깔", 300);
 
             assertThat(actual).isEqualTo(expected);
         }

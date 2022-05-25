@@ -11,11 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
-import wooteco.subway.domain.line.LineMap;
 import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.LineMap;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
-import wooteco.subway.entity.LineEntity;
 import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.fixture.DatabaseUsageTest;
 
@@ -149,9 +148,9 @@ class LineRepositoryTest extends DatabaseUsageTest {
             Section initialSection = new Section(1L, STATION1, STATION2, 10);
             repository.saveLine(line, initialSection);
 
-            LineEntity actualLine = lineDao.findById(1L).get();
+            Line actualLine = lineDao.findById(1L).get();
             List<Section> actualSections = sectionDao.findAll();
-            LineEntity expectedLine = new LineEntity(1L, "노선", "색상", 300);
+            Line expectedLine = new Line(1L, "노선", "색상", 300);
             List<Section> expectedSections = List.of(
                     new Section(1L, STATION1, STATION2, 10));
 
@@ -165,8 +164,8 @@ class LineRepositoryTest extends DatabaseUsageTest {
         databaseFixtureUtils.saveLine("기존 노선명", "색상", 200);
 
         repository.updateLine(new Line(1L, "새로운 노선명", "새로운 색상", 0));
-        LineEntity actual = lineDao.findById(1L).get();
-        LineEntity expected = new LineEntity(1L, "새로운 노선명", "새로운 색상", 0);
+        Line actual = lineDao.findById(1L).get();
+        Line expected = new Line(1L, "새로운 노선명", "새로운 색상", 0);
 
         assertThat(actual).isEqualTo(expected);
     }

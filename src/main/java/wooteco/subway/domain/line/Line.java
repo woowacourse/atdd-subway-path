@@ -24,6 +24,11 @@ public class Line {
         this(null, name, color, extraFare);
     }
 
+
+    public Line(Long id, Line line) {
+        this(id, line.name, line.color, line.extraFare);
+    }
+
     private void validateExtraFare(int extraFare) {
         if (extraFare < MIN_EXTRA_FARE) {
             throw new IllegalArgumentException(INVALID_EXTRA_FARE_VALUE_EXCEPTION);

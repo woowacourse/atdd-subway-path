@@ -1,14 +1,12 @@
 package wooteco.subway.repository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
-import wooteco.subway.domain.line.LineMap;
 import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.LineMap;
 import wooteco.subway.domain.section.Section;
-import wooteco.subway.entity.LineEntity;
 import wooteco.subway.exception.ExceptionType;
 import wooteco.subway.exception.NotFoundException;
 
@@ -25,23 +23,16 @@ public class LineRepository {
     }
 
     public List<Line> findAllLines() {
-        return lineDao.findAll()
-                .stream()
-                .map(LineEntity::toDomain)
-                .collect(Collectors.toList());
+        return lineDao.findAll();
     }
 
     public List<Line> findAllLinesByIds(List<Long> ids) {
-        return lineDao.findAllByIds(ids)
-                .stream()
-                .map(LineEntity::toDomain)
-                .collect(Collectors.toList());
+        return lineDao.findAllByIds(ids);
     }
 
     public Line findExistingLine(Long id) {
         return lineDao.findById(id)
-                .orElseThrow(() -> new NotFoundException(ExceptionType.LINE_NOT_FOUND))
-                .toDomain();
+                .orElseThrow(() -> new NotFoundException(ExceptionType.LINE_NOT_FOUND));
     }
 
     public boolean checkExistingLine(Long id) {
@@ -57,9 +48,9 @@ public class LineRepository {
         String color = line.getColor();
         int extraFare = line.getExtraFare();
 
-        LineEntity lineEntity = lineDao.save(new LineEntity(name, color, extraFare));
-        sectionDao.save(new Section(lineEntity.getId(), section));
-        return LineMap.of(lineEntity.toDomain(), section);
+        Line savedLine = lineDao.save(new Line(name, color, extraFare));
+        sectionDao.save(new Section(savedLine.getId(), section));
+        return LineMap.of(savedLine, section);
     }
 
     public void updateLine(Line line) {
@@ -68,7 +59,7 @@ public class LineRepository {
         String color = line.getColor();
         int extraFare = line.getExtraFare();
 
-        LineEntity updatedLine = new LineEntity(id, name, color, extraFare);
+        Line updatedLine = new Line(id, name, color, extraFare);
         lineDao.update(updatedLine);
     }
 
