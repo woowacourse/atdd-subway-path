@@ -12,10 +12,10 @@ import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.LineUpdateRequest;
 import wooteco.subway.dto.StationResponse;
+import wooteco.subway.exception.NameDuplicatedException;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
-import wooteco.subway.exception.NameDuplicatedException;
 
 @Transactional
 @Service
@@ -39,10 +39,15 @@ public class LineService {
         Long id = lineRepository.save(new Line(name, lineRequest.getColor()));
         Station upStation = stationRepository.findById(lineRequest.getUpStationId());
         Station downStation = stationRepository.findById(lineRequest.getDownStationId());
-
         Section section = new Section(id, upStation, downStation, lineRequest.getDistance());
         sectionRepository.save(section);
-        Line line = new Line(id, name, lineRequest.getColor(), lineRequest.getExtraFare(), new Sections(List.of(section)));
+        return toLineResponse(lineRequest, name, id, upStation, downStation, section);
+    }
+
+    private LineResponse toLineResponse(final LineRequest lineRequest, final String name, final Long id,
+            final Station upStation, final Station downStation, final Section section) {
+        final Line line = new Line(id, name, lineRequest.getColor(), lineRequest.getExtraFare(),
+                new Sections(List.of(section)));
         return new LineResponse(line.getId(),
                 line.getName(),
                 line.getColor(),
