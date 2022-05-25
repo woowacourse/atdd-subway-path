@@ -36,11 +36,16 @@ public class PathFinder {
         validateSameStation(source, target);
         final GraphPath<Station, PathEdge> graphPath = dijkstraShortestPath.getPath(source, target);
         validateGraphPath(graphPath);
-        List<PathEdge> edgeList = graphPath.getEdgeList();
-        Optional<Integer> max = edgeList.stream()
+        int maxExtraFare = findMaxExtraFare(graphPath);
+        return new Path(graphPath.getVertexList(), (int) graphPath.getWeight(), maxExtraFare);
+    }
+
+    private int findMaxExtraFare(GraphPath<Station, PathEdge> graphPath) {
+        List<PathEdge> pathEdges = graphPath.getEdgeList();
+        return pathEdges.stream()
                 .map(PathEdge::getExtraFare)
-                .max(Integer::compareTo);
-        return new Path(graphPath.getVertexList(), (int) graphPath.getWeight(), max.get());
+                .max(Integer::compareTo)
+                .orElseThrow(() -> new IllegalStateException("노선 추가 요금이 등록되지 않았습니다."));
     }
 
     private void validateGraphPath(GraphPath<Station, PathEdge> graphPath) {
