@@ -76,7 +76,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                     );
                 }),
 
-                dynamicTest("다른 노선의 갈 수 없는 경로를 조회한다.", () -> {
+                dynamicTest("다른 노선의 갈 수 없는 경로를 조회하면 400을 반환한다.", () -> {
                     Long 부천역Id = generateStationId("부천역");
                     Long 중동역Id = generateStationId("중동역");
 
