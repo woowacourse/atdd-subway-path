@@ -1,7 +1,6 @@
 package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,6 +12,9 @@ import wooteco.subway.domain.discountpolicy.AgeDiscountFactory;
 import wooteco.subway.domain.discountpolicy.AgeRange;
 import wooteco.subway.domain.factory.SectionFactory;
 import wooteco.subway.domain.factory.StationFactory;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.Lines;
+import wooteco.subway.domain.section.Sections;
 
 @DisplayName("Fare 는 ")
 class FareTest {

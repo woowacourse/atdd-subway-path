@@ -2,6 +2,7 @@ package wooteco.subway.domain;
 
 import java.util.List;
 import wooteco.subway.domain.discountpolicy.AgeDiscountPolicy;
+import wooteco.subway.domain.line.Lines;
 
 public class Fare {
 

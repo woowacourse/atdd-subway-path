@@ -2,15 +2,14 @@ package wooteco.subway.domain.discountpolicy;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import wooteco.subway.domain.Fare;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Lines;
-import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.Lines;
+import wooteco.subway.domain.section.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.factory.SectionFactory;
 import wooteco.subway.domain.factory.StationFactory;

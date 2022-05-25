@@ -2,7 +2,7 @@ package wooteco.subway.util;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import wooteco.subway.domain.Section;
+import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.response.StationResponse;
 

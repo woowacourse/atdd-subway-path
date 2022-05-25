@@ -5,15 +5,15 @@ import static wooteco.subway.domain.factory.SectionFactory.AB3;
 import static wooteco.subway.domain.factory.SectionFactory.BC3;
 
 import java.util.List;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.factory.SectionFactory;
 import wooteco.subway.domain.factory.StationFactory;
+import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.PathCalculator;
+import wooteco.subway.domain.section.Sections;
 import wooteco.subway.infrastructure.PathCalculatorDijkstra;
 
 @DisplayName("PathCalculator 는")

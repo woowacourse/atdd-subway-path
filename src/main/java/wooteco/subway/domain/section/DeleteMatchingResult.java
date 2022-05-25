@@ -1,4 +1,6 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.section;
+
+import wooteco.subway.domain.Station;
 
 public enum DeleteMatchingResult {
 

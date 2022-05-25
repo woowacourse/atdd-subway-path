@@ -1,7 +1,8 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.section;
 
 import java.util.ArrayList;
 import java.util.List;
+import wooteco.subway.domain.Station;
 
 public class Sections {
 
