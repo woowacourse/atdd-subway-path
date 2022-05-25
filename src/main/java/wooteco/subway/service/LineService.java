@@ -12,6 +12,7 @@ import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.SectionsResponse;
+import wooteco.subway.dto.StationResponse;
 import wooteco.subway.exception.ClientException;
 
 import java.util.*;
@@ -38,7 +39,7 @@ public class LineService {
 
             Station upsStation = stationDao.findById(request.getUpStationId());
             Station downStation = stationDao.findById(request.getDownStationId());
-            return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare(), Set.of(upsStation, downStation));
+            return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare(), Set.of(new StationResponse(upsStation), new StationResponse(downStation)));
         }
         throw new ClientException("이미 등록된 지하철노선입니다.");
     }
@@ -68,7 +69,8 @@ public class LineService {
             stations.add(toMapStations().get(section.getUpStationId()));
             stations.add(toMapStations().get(section.getDownStationId()));
         }
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare(), stations);
+        Set<StationResponse> stationResponses = stations.stream().map(it -> new StationResponse(it)).collect(Collectors.toSet());
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare(), stationResponses);
     }
 
     @Transactional(readOnly = true)

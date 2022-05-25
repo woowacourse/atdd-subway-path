@@ -23,7 +23,7 @@ class SectionsTest {
 
         assertAll(
                 () -> assertThat(shortestPath.getStationIds()).containsExactly(1L, 2L, 3L, 4L),
-                () -> assertThat(shortestPath.getLineIds()).containsExactly(1L, 1L, 2L),
+                () -> assertThat(shortestPath.getLineIds()).containsExactly(1L, 2L),
                 () -> assertThat(shortestPath.getDistance()).isEqualTo(50)
         );
     }
