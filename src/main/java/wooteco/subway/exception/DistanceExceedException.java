@@ -1,6 +1,6 @@
 package wooteco.subway.exception;
 
-public class DistanceExceedException extends IllegalArgumentException{
+public class DistanceExceedException extends SectionException{
 
     public DistanceExceedException(String message) {
         super(message);

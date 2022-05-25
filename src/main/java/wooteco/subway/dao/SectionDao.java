@@ -6,19 +6,20 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Section;
 
 import java.util.List;
+import wooteco.subway.dto.SectionDto;
 
 @Repository
 public class SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private final RowMapper<Section> rowMapper = (resultSet, rowNum) -> {
+    private final RowMapper<SectionDto> rowMapper = (resultSet, rowNum) -> {
         Long id = resultSet.getLong("id");
         Long lineId = resultSet.getLong("line_id");
         Long upStationId = resultSet.getLong("up_station_id");
         Long downStationId = resultSet.getLong("down_station_id");
         int distance = resultSet.getInt("distance");
 
-        return new Section(id, lineId, upStationId, downStationId, distance);
+        return new SectionDto(id, lineId, upStationId, downStationId, distance);
     };
 
     public SectionDao(final JdbcTemplate jdbcTemplate) {
@@ -35,7 +36,7 @@ public class SectionDao {
         jdbcTemplate.update(sql, lineId, stationId, stationId);
     }
 
-    public List<Section> findAllByLineId(Long lineId) {
+    public List<SectionDto> findAllByLineId(Long lineId) {
         final String sql = "select id, line_id, up_station_id, down_station_id, distance from section where line_id=?";
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
@@ -45,7 +46,7 @@ public class SectionDao {
         jdbcTemplate.update(sql, lineId);
     }
 
-    public List<Section> findAll() {
+    public List<SectionDto> findAll() {
         final String sql = "select id, line_id, up_station_id, down_station_id, distance from section";
         return jdbcTemplate.query(sql, rowMapper);
     }

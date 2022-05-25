@@ -12,6 +12,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
+import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.dto.StationResponse;
 
@@ -224,7 +225,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         List<Section> sections = new ArrayList<>();
 
         for (int i = 1; i < stations.size(); i++) {
-            sections.add(new Section(강남역_ID, stations.get(i - 1).getId(), stations.get(i).getId(), 5));
+            sections.add(new Section(new Line(노선_ID, "테스트선", "bg-color", 0), stations.get(i - 1).getId(), stations.get(i).getId(), 5));
         }
 
         return sections;

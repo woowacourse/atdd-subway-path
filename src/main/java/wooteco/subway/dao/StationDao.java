@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -54,12 +55,20 @@ public class StationDao {
         return jdbcTemplate.update(sql, id);
     }
 
-    public Station getById(Long stationId) {
-        final String sql = "select id, name from station where id=?";
-        return jdbcTemplate.queryForObject(
-                sql,
-                (rs, rowNum) -> new Station(rs.getLong("id"), rs.getString("name")),
-                stationId
-        );
+    public List<Station> getByIds(List<Long> sortedStationIds) {
+        String sortedStationValues = sortedStationIds.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(", "));
+        String sql = String.format("SELECT id, name FROM STATION WHERE id IN (%s)", sortedStationValues);
+
+        List<Station> stations = jdbcTemplate.query(sql, STATION_ROW_MAPPER);
+        return sort(sortedStationIds, stations);
+    }
+
+    private List<Station> sort(List<Long> sortedIds, List<Station> stations) {
+        return sortedIds.stream()
+                .flatMap(sortedId -> stations.stream()
+                        .filter(station -> station.getId().equals(sortedId)))
+                .collect(Collectors.toList());
     }
 }

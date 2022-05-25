@@ -77,7 +77,7 @@ public class Sections {
 
     private void addDownMiddleSection(Section section, Section currentSection) {
         this.sections.add(new Section(
-                currentSection.getLineId(),
+                currentSection.getLine(),
                 section.getDownStationId(),
                 currentSection.getDownStationId(),
                 currentSection.getDistance() - section.getDistance()
@@ -114,7 +114,7 @@ public class Sections {
 
     private void addUpMiddleSection(Section section, Section currentSection) {
         this.sections.add(new Section(
-                currentSection.getLineId(),
+                currentSection.getLine(),
                 currentSection.getUpStationId(),
                 section.getUpStationId(),
                 currentSection.getDistance() - section.getDistance()
@@ -148,10 +148,9 @@ public class Sections {
 
         final Section upSection = getUpSection(stationId, removeCandidates);
         final Section downSection = getDownSection(stationId, removeCandidates);
-        final Long lineId = upSection.getLineId();
 
         sections.add(new Section(
-                lineId,
+                upSection.getLine(),
                 downSection.getUpStationId(),
                 upSection.getDownStationId(),
                 downSection.getDistance() + upSection.getDistance()

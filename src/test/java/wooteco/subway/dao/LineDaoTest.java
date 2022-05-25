@@ -88,4 +88,13 @@ public class LineDaoTest {
         int actual = lineDao.deleteById(newLine.getId());
         assertThat(actual).isEqualTo(1);
     }
+
+    @Test
+    @DisplayName("id를 이용하여 초과 요금을 조회해온다.")
+    void getExtraFare() {
+        Line 신분당선 = lineDao.save(new Line("테스트선", "bg-yellow-600", 500));
+        int extraFare = lineDao.getExtraFare(신분당선.getId());
+
+        assertThat(extraFare).isEqualTo(500);
+    }
 }

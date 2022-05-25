@@ -1,20 +1,23 @@
 package wooteco.subway.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
-import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Section;
+import wooteco.subway.domain.SectionRepository;
 import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.exception.LineDuplicationException;
-import wooteco.subway.exception.NotExistLineException;
+import wooteco.subway.exception.LineNotFoundException;
 
 @Service
 public class LineService {
@@ -26,12 +29,12 @@ public class LineService {
     private static final String LINE_NOT_EXIST = "존재하지 않은 지하철 노선입니다.";
 
     private final LineDao lineDao;
-    private final SectionDao sectionDao;
+    private SectionRepository sectionRepository;
     private final StationDao stationDao;
 
-    public LineService(final LineDao lineDao, final SectionDao sectionDao, StationDao stationDao) {
+    public LineService(final LineDao lineDao, final SectionRepository sectionRepository, StationDao stationDao) {
         this.lineDao = lineDao;
-        this.sectionDao = sectionDao;
+        this.sectionRepository = sectionRepository;
         this.stationDao = stationDao;
     }
 
@@ -43,15 +46,10 @@ public class LineService {
                 lineRequest.getExtraFare()
         );
         validateDuplication(line);
-
         final Line newLine = lineDao.save(line);
 
-        sectionDao.save(
-                newLine.getId(),
-                lineRequest.getUpStationId(),
-                lineRequest.getDownStationId(),
-                lineRequest.getDistance()
-        );
+        sectionRepository.saveSection(new Section(newLine, lineRequest.getUpStationId(), lineRequest.getDownStationId(),
+                lineRequest.getDistance()));
 
         List<StationResponse> stationResponses = createStationResponsesByLine(newLine);
 
@@ -71,11 +69,13 @@ public class LineService {
         }
     }
 
-    private List<StationResponse> createStationResponsesByLine(Line newLine) {
-        Sections sections = new Sections(sectionDao.findAllByLineId(newLine.getId()));
+    public List<StationResponse> createStationResponsesByLine(Line newLine) {
+        List<Section> values = sectionRepository.getSectionsByLineId(newLine.getId());
+        Sections sections = new Sections(values);
         Set<Long> stationIds = sections.getStations();
-        return stationIds.stream()
-                .map(stationDao::getById)
+        List<Station> stations = stationDao.getByIds(new ArrayList<>(stationIds));
+
+        return stations.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
@@ -90,12 +90,9 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public LineResponse getById(final Long id) {
-        Line line = lineDao.findById(id)
-                .orElseThrow(() -> new NotExistLineException(LINE_NOT_EXIST));
-
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), createStationResponsesByLine(line),
-                line.getExtraFare());
+    public Line getById(final Long id) {
+        return lineDao.findById(id)
+                .orElseThrow(() -> new LineNotFoundException(LINE_NOT_EXIST));
     }
 
     @Transactional
@@ -104,14 +101,14 @@ public class LineService {
                 new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare()));
 
         if (updateFlag != UPDATE_SUCCESS) {
-            throw new NotExistLineException(LINE_NOT_EXIST);
+            throw new LineNotFoundException(LINE_NOT_EXIST);
         }
     }
 
     @Transactional
     public void deleteById(final Long id) {
         if (lineDao.deleteById(id) != DELETE_SUCCESS) {
-            throw new NotExistLineException(LINE_NOT_EXIST);
+            throw new LineNotFoundException(LINE_NOT_EXIST);
         }
     }
 }

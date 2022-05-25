@@ -12,9 +12,12 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Line;
+import wooteco.subway.exception.LineNotFoundException;
 
 @Repository
 public class LineDao {
+
+    private static final String LINE_NOT_EXIST = "존재하지 않은 지하철 노선입니다.";
 
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<Line> lineRowMapper = (resultSet, rowNum) -> new Line(
@@ -62,6 +65,11 @@ public class LineDao {
         }
     }
 
+    public Line getById(long id) {
+        return findById(id)
+                .orElseThrow(() -> new LineNotFoundException(LINE_NOT_EXIST));
+    }
+
     public int update(Long id, Line line) {
         final String sql = "update Line set name = ?, color = ?, extra_fare = ? where id = ?";
         return jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getExtraFare(), id);
@@ -75,5 +83,10 @@ public class LineDao {
     public int isExistLine(Line line) {
         String sql = "select EXISTS (select name from line where name = ?) as success";
         return jdbcTemplate.queryForObject(sql, Integer.class, line.getName());
+    }
+
+    public int getExtraFare(final Long id) {
+        String sql = "select extra_fare from line where id = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, id);
     }
 }
