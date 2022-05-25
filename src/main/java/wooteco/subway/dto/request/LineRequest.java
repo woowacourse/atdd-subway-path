@@ -1,12 +1,24 @@
 package wooteco.subway.dto.request;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
+
 public class LineRequest {
 
+    @NotNull
+    @Size(min = 2, max = 10, message = "노선 이름은 2글자 이상 10글자 이하여야 합니다.")
     private String name;
+    @NotNull
     private String color;
+    @Positive
     private Long upStationId;
+    @Positive
     private Long downStationId;
+    @PositiveOrZero(message = "거리는 0 이상의 수만 가능합니다.")
     private int distance;
+    @PositiveOrZero(message = "요금은 0 이상의 수만 가능합니다.")
     private int extraFare;
 
     public LineRequest() {
