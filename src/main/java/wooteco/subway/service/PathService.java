@@ -8,7 +8,7 @@ import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.PathGenerator;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.jgraph.JGraphPathGenerator;
+import wooteco.subway.domain.path.jgraph.JGraphPathGenerator;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
 
@@ -21,7 +21,7 @@ public class PathService {
     private final PathGenerator pathGenerator;
 
     public PathService(SectionRepository sectionRepository, StationRepository stationRepository,
-                       JGraphPathGenerator pathGenerator) {
+                       PathGenerator pathGenerator) {
         this.sectionRepository = sectionRepository;
         this.stationRepository = stationRepository;
         this.pathGenerator = pathGenerator;

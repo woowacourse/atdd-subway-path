@@ -1,63 +1,54 @@
 package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.mockito.Mockito.when;
 
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.repository.dao.LineDao;
-import wooteco.subway.repository.dao.SectionDao;
-import wooteco.subway.repository.dao.StationDao;
-import wooteco.subway.repository.entity.LineEntity;
-import wooteco.subway.repository.entity.SectionEntity;
-import wooteco.subway.repository.entity.StationEntity;
+import org.mockito.InjectMocks;
+import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Station;
 import wooteco.subway.service.dto.SectionDeleteRequest;
 import wooteco.subway.service.dto.SectionSaveRequest;
 
-@SpringBootTest
-@Transactional
-class SectionServiceTest {
+class SectionServiceTest extends ServiceMockTest {
 
-    StationEntity first;
-    StationEntity second;
-    StationEntity third;
-    StationEntity fourth;
-    StationEntity add;
-    @Autowired
-    private SectionService sectionService;
-    @Autowired
-    private SectionDao sectionDao;
-    @Autowired
-    private StationDao stationDao;
-    @Autowired
-    private LineDao lineDao;
-    private Long lineId;
+    @InjectMocks
+    SectionService sectionService;
+
+    Station 상계역;
+    Station 중계역;
+    Station 하계역;
+
+    Section 상계_중계;
+    Section 중계_하계;
+
+    Line 칠호선;
 
     @BeforeEach
     void setUp() {
-        LineEntity firstLine = lineDao.save(new LineEntity(null, "1호선", "red", 100L));
-        lineId = firstLine.getId();
+        상계역 = new Station(1L, "상계역");
+        중계역 = new Station(2L, "중계역");
+        하계역 = new Station(3L, "하계역");
+        상계_중계 = new Section(1L, 칠호선, 상계역, 중계역, 10);
+        중계_하계 = new Section(2L, 칠호선, 중계역, 하계역, 10);
 
-        first = stationDao.save(new StationEntity(null, "first"));
-        second = stationDao.save(new StationEntity(null, "second"));
-        third = stationDao.save(new StationEntity(null, "third"));
-        fourth = stationDao.save(new StationEntity(null, "fourth"));
-        add = stationDao.save(new StationEntity(null, "add"));
-
-        sectionDao.save(new SectionEntity(null, lineId, first.getId(), second.getId(), 3));
-        sectionDao.save(new SectionEntity(null, lineId, second.getId(), third.getId(), 4));
-        sectionDao.save(new SectionEntity(null, lineId, third.getId(), fourth.getId(), 5));
+        칠호선 = new Line(1L, "7호선", "red", 100L);
     }
 
     @Test
     @DisplayName("구간 등록하기")
     void saveSection() {
         // given
-        SectionSaveRequest request = new SectionSaveRequest(lineId, second.getId(), add.getId(), 1);
+        SectionSaveRequest request = new SectionSaveRequest(1L, 1L, 2L, 1);
+        when(lineRepository.findById(1L)).thenReturn(칠호선);
+        when(stationService.findById(1L)).thenReturn(상계역);
+        when(stationService.findById(2L)).thenReturn(중계역);
 
+        // then
         assertThatCode(() -> sectionService.save(request))
                 .doesNotThrowAnyException();
     }
@@ -66,7 +57,12 @@ class SectionServiceTest {
     @DisplayName("구간 삭제하기")
     void deleteSection() {
         // given
-        SectionDeleteRequest request = new SectionDeleteRequest(lineId, first.getId());
+        SectionDeleteRequest request = new SectionDeleteRequest(1L, 2L);
+        when(lineRepository.findById(1L)).thenReturn(칠호선);
+        when(sectionRepository.findByLineId(1L))
+                .thenReturn(List.of(상계_중계, 중계_하계));
+        when(stationService.findById(2L)).thenReturn(중계역);
+
         // then
         assertThatCode(() -> sectionService.delete(request))
                 .doesNotThrowAnyException();

@@ -3,6 +3,7 @@ package wooteco.subway.service;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import wooteco.subway.domain.path.PathGenerator;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
@@ -18,6 +19,9 @@ class ServiceMockTest {
 
     @Mock
     protected LineRepository lineRepository;
+
+    @Mock
+    protected PathGenerator pathGenerator;
 
     @Mock
     protected StationService stationService;

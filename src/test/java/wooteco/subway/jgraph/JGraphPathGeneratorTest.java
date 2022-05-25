@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.jgraph.JGraphPathGenerator;
+import wooteco.subway.domain.path.jgraph.JGraphPathGenerator;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;

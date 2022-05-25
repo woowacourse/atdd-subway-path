@@ -36,8 +36,7 @@ public class SectionService {
         commitRepository(request.getLineId(), sections.getValue());
     }
 
-    @Transactional(readOnly = true)
-    public List<Section> findByLineId(Long lineId) {
+    private List<Section> findByLineId(Long lineId) {
         return sectionRepository.findByLineId(lineId);
     }
 

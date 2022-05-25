@@ -1,4 +1,4 @@
-package wooteco.subway.domain.jgraph;
+package wooteco.subway.domain.path.jgraph;
 
 import java.util.HashSet;
 import java.util.List;
