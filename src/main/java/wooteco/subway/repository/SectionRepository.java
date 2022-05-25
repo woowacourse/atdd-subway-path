@@ -1,11 +1,10 @@
 package wooteco.subway.repository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.section.Section;
-import wooteco.subway.entity.SectionEntity;
+import wooteco.subway.domain.station.Station;
 
 @Repository
 public class SectionRepository {
@@ -17,35 +16,29 @@ public class SectionRepository {
     }
 
     public List<Section> findAllSections() {
-        return sectionDao.findAll()
-                .stream()
-                .map(SectionEntity::toDomain)
-                .collect(Collectors.toList());
+        return sectionDao.findAll();
     }
 
     public List<Section> findAllSectionsByLineId(Long lineId) {
-        return sectionDao.findAllByLineId(lineId)
-                .stream()
-                .map(SectionEntity::toDomain)
-                .collect(Collectors.toList());
+        return sectionDao.findAllByLineId(lineId);
     }
 
     public List<Section> findAllSectionsByStationId(Long stationId) {
-        return sectionDao.findAllByStationId(stationId)
-                .stream()
-                .map(SectionEntity::toDomain)
-                .collect(Collectors.toList());
+        return sectionDao.findAllByStationId(stationId);
     }
 
     public void saveSections(Long lineId, List<Section> sections) {
         for (Section section : sections) {
-            sectionDao.save(SectionEntity.of(lineId, section));
+            sectionDao.save(new Section(lineId, section));
         }
     }
 
     public void deleteSections(Long lineId, List<Section> sections) {
         for (Section section : sections) {
-            sectionDao.delete(SectionEntity.of(lineId, section));
+            Station upStation = section.getUpStation();
+            Station downStation = section.getDownStation();
+            int distance = section.getDistance();
+            sectionDao.delete(new Section(lineId, upStation, downStation, distance));
         }
     }
 }

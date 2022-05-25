@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
-import wooteco.subway.entity.SectionEntity;
 import wooteco.subway.fixture.DatabaseUsageTest;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -45,31 +45,31 @@ class SectionDaoTest extends DatabaseUsageTest {
 
         @Test
         void findAll_메서드는_모든_구간_데이터를_조회() {
-            List<SectionEntity> actual = dao.findAll();
-            List<SectionEntity> expected = List.of(
-                    new SectionEntity(1L, STATION1, STATION2, 20),
-                    new SectionEntity(1L, STATION2, STATION3, 10),
-                    new SectionEntity(2L, STATION1, STATION3, 30));
+            List<Section> actual = dao.findAll();
+            List<Section> expected = List.of(
+                    new Section(1L, STATION1, STATION2, 20),
+                    new Section(1L, STATION2, STATION3, 10),
+                    new Section(2L, STATION1, STATION3, 30));
 
             assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
         }
 
         @Test
         void findAllByLineId_메서드는_lineId에_해당하는_모든_구간_데이터를_조회() {
-            List<SectionEntity> actual = dao.findAllByLineId(1L);
-            List<SectionEntity> expected = List.of(
-                    new SectionEntity(1L, STATION1, STATION2, 20),
-                    new SectionEntity(1L, STATION2, STATION3, 10));
+            List<Section> actual = dao.findAllByLineId(1L);
+            List<Section> expected = List.of(
+                    new Section(1L, STATION1, STATION2, 20),
+                    new Section(1L, STATION2, STATION3, 10));
 
             assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
         }
 
         @Test
         void findAllByStationId_메서드는_특정_역이_등록된_모든_구간들의_데이터를_조회() {
-            List<SectionEntity> actual = dao.findAllByStationId(1L);
-            List<SectionEntity> expected = List.of(
-                    new SectionEntity(1L, STATION1, STATION2, 20),
-                    new SectionEntity(2L, STATION1, STATION3, 30));
+            List<Section> actual = dao.findAllByStationId(1L);
+            List<Section> expected = List.of(
+                    new Section(1L, STATION1, STATION2, 20),
+                    new Section(2L, STATION1, STATION3, 30));
 
             assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
         }
@@ -81,7 +81,7 @@ class SectionDaoTest extends DatabaseUsageTest {
 
         @Test
         void 중복되지_않는_정보인_경우_데이터_생성() {
-            dao.save(new SectionEntity(1L, STATION1, STATION3, 10));
+            dao.save(new Section(1L, STATION1, STATION3, 10));
 
             boolean created = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM section "
                     + "WHERE id = 1 AND line_id = 1 AND up_station_id = 1 "
@@ -94,7 +94,7 @@ class SectionDaoTest extends DatabaseUsageTest {
         void 중복되는_정보로_생성하려는_경우_예외발생() {
             databaseFixtureUtils.saveSection(1L, 1L, 2L, 10);
 
-            SectionEntity existingSection = new SectionEntity(1L, STATION1, STATION2, 10);
+            Section existingSection = new Section(1L, STATION1, STATION2, 10);
             assertThatThrownBy(() -> dao.save(existingSection))
                     .isInstanceOf(DataAccessException.class);
         }
@@ -108,7 +108,7 @@ class SectionDaoTest extends DatabaseUsageTest {
         void delete_메서드는_노선과_상행역_하행역에_부합하는_데이터를_삭제() {
             databaseFixtureUtils.saveSection(1L, 1L, 3L, 10);
 
-            dao.delete(new SectionEntity(1L, STATION1, STATION3, 10));
+            dao.delete(new Section(1L, STATION1, STATION3, 10));
             boolean exists = jdbcTemplate.queryForObject(
                     "SELECT COUNT(*) FROM section WHERE line_id = 1", Integer.class) > 0;
 
@@ -119,7 +119,7 @@ class SectionDaoTest extends DatabaseUsageTest {
         void 거리_정보가_틀리더라도_성공적으로_데이터_삭제_성공() {
             databaseFixtureUtils.saveSection(1L, 1L, 3L, 10);
 
-            dao.delete(new SectionEntity(1L, STATION1, STATION3, 99999999));
+            dao.delete(new Section(1L, STATION1, STATION3, 99999999));
             boolean exists = jdbcTemplate.queryForObject(
                     "SELECT COUNT(*) FROM section WHERE line_id = 2", Integer.class) > 0;
 
@@ -128,7 +128,7 @@ class SectionDaoTest extends DatabaseUsageTest {
 
         @Test
         void 존재하지_않는_구간_정보가_입력되더라도_결과는_동일하므로_예외_미발생() {
-            SectionEntity nonExistingSection = new SectionEntity(99999L, STATION1, STATION2, 10);
+            Section nonExistingSection = new Section(99999L, STATION1, STATION2, 10);
             assertThatNoException()
                     .isThrownBy(() -> dao.delete(nonExistingSection));
         }

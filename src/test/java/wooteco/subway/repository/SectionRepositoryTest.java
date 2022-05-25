@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
-import wooteco.subway.entity.SectionEntity;
 import wooteco.subway.fixture.DatabaseUsageTest;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -81,10 +80,10 @@ class SectionRepositoryTest extends DatabaseUsageTest {
                 new Section(STATION2, STATION3, 5));
         repository.saveSections(1L, sections);
 
-        List<SectionEntity> actual = sectionDao.findAll();
-        List<SectionEntity> expected = List.of(
-                new SectionEntity(1L, STATION1, STATION2, 10),
-                new SectionEntity(1L, STATION2, STATION3, 5));
+        List<Section> actual = sectionDao.findAll();
+        List<Section> expected = List.of(
+                new Section(1L, STATION1, STATION2, 10),
+                new Section(1L, STATION2, STATION3, 5));
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -99,10 +98,10 @@ class SectionRepositoryTest extends DatabaseUsageTest {
                 new Section(STATION2, STATION3, 15));
 
         repository.deleteSections(1L, sections);
-        List<SectionEntity> actual = sectionDao.findAll();
-        List<SectionEntity> expected = List.of(
-                new SectionEntity(1L, STATION3, STATION4, 5),
-                new SectionEntity(2L, STATION1, STATION3, 5));
+        List<Section> actual = sectionDao.findAll();
+        List<Section> expected = List.of(
+                new Section(1L, STATION3, STATION4, 5),
+                new Section(2L, STATION1, STATION3, 5));
 
         assertThat(actual).isEqualTo(expected);
     }

@@ -9,7 +9,6 @@ import wooteco.subway.domain.line.LineMap;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.entity.LineEntity;
-import wooteco.subway.entity.SectionEntity;
 import wooteco.subway.exception.ExceptionType;
 import wooteco.subway.exception.NotFoundException;
 
@@ -59,7 +58,7 @@ public class LineRepository {
         int extraFare = line.getExtraFare();
 
         LineEntity lineEntity = lineDao.save(new LineEntity(name, color, extraFare));
-        sectionDao.save(SectionEntity.of(lineEntity.getId(), section));
+        sectionDao.save(new Section(lineEntity.getId(), section));
         return LineMap.of(lineEntity.toDomain(), section);
     }
 

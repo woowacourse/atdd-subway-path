@@ -10,9 +10,9 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import wooteco.subway.dao.SectionDao;
+import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.request.CreateSectionRequest;
-import wooteco.subway.entity.SectionEntity;
 import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.fixture.DatabaseUsageTest;
 
@@ -44,10 +44,10 @@ class SectionServiceTest extends DatabaseUsageTest {
             databaseFixtureUtils.saveSection(1L, 2L, 3L, 10);
 
             service.save(1L, new CreateSectionRequest(1L, 2L, 20));
-            List<SectionEntity> actual = dao.findAllByLineId(1L);
-            List<SectionEntity> expected = List.of(
-                    new SectionEntity(1L, STATION1, STATION2, 20),
-                    new SectionEntity(1L, STATION2, STATION3, 10));
+            List<Section> actual = dao.findAllByLineId(1L);
+            List<Section> expected = List.of(
+                    new Section(1L, STATION1, STATION2, 20),
+                    new Section(1L, STATION2, STATION3, 10));
 
             assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
         }
@@ -57,10 +57,10 @@ class SectionServiceTest extends DatabaseUsageTest {
             databaseFixtureUtils.saveSection(1L, 1L, 2L, 10);
 
             service.save(1L, new CreateSectionRequest(2L, 3L, 30));
-            List<SectionEntity> actual = dao.findAllByLineId(1L);
-            List<SectionEntity> expected = List.of(
-                    new SectionEntity(1L, STATION1, STATION2, 10),
-                    new SectionEntity(1L, STATION2, STATION3, 30));
+            List<Section> actual = dao.findAllByLineId(1L);
+            List<Section> expected = List.of(
+                    new Section(1L, STATION1, STATION2, 10),
+                    new Section(1L, STATION2, STATION3, 30));
 
             assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
         }
@@ -72,10 +72,10 @@ class SectionServiceTest extends DatabaseUsageTest {
             databaseFixtureUtils.saveSection(1L, 1L, 3L, existingSectionDistance);
 
             service.save(1L, new CreateSectionRequest(1L, 2L, newSectionDistance));
-            List<SectionEntity> actual = dao.findAllByLineId(1L);
-            List<SectionEntity> expected = List.of(
-                    new SectionEntity(1L, STATION1, STATION2, newSectionDistance),
-                    new SectionEntity(1L, STATION2, STATION3, existingSectionDistance - newSectionDistance));
+            List<Section> actual = dao.findAllByLineId(1L);
+            List<Section> expected = List.of(
+                    new Section(1L, STATION1, STATION2, newSectionDistance),
+                    new Section(1L, STATION2, STATION3, existingSectionDistance - newSectionDistance));
 
             assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
         }
@@ -87,10 +87,10 @@ class SectionServiceTest extends DatabaseUsageTest {
             databaseFixtureUtils.saveSection(1L, 1L, 3L, existingSectionDistance);
 
             service.save(1L, new CreateSectionRequest(2L, 3L, newSectionDistance));
-            List<SectionEntity> actual = dao.findAllByLineId(1L);
-            List<SectionEntity> expected = List.of(
-                    new SectionEntity(1L, STATION1, STATION2, existingSectionDistance - newSectionDistance),
-                    new SectionEntity(1L, STATION2, STATION3, newSectionDistance));
+            List<Section> actual = dao.findAllByLineId(1L);
+            List<Section> expected = List.of(
+                    new Section(1L, STATION1, STATION2, existingSectionDistance - newSectionDistance),
+                    new Section(1L, STATION2, STATION3, newSectionDistance));
 
             assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
         }
@@ -112,9 +112,9 @@ class SectionServiceTest extends DatabaseUsageTest {
             databaseFixtureUtils.saveSection(1L, 2L, 3L, 10);
 
             service.delete(1L, 1L);
-            List<SectionEntity> actual = dao.findAllByLineId(1L);
-            List<SectionEntity> expected = List.of(
-                    new SectionEntity(1L, STATION2, STATION3, 10));
+            List<Section> actual = dao.findAllByLineId(1L);
+            List<Section> expected = List.of(
+                    new Section(1L, STATION2, STATION3, 10));
 
             assertThat(actual).isEqualTo(expected);
         }
@@ -127,9 +127,9 @@ class SectionServiceTest extends DatabaseUsageTest {
             databaseFixtureUtils.saveSection(1L, 2L, 3L, 10);
 
             service.delete(1L, 2L);
-            List<SectionEntity> actual = dao.findAllByLineId(1L);
-            List<SectionEntity> expected = List.of(
-                    new SectionEntity(1L, STATION1, STATION3, 15));
+            List<Section> actual = dao.findAllByLineId(1L);
+            List<Section> expected = List.of(
+                    new Section(1L, STATION1, STATION3, 15));
 
             assertThat(actual).isEqualTo(expected);
         }

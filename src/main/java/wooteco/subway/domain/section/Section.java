@@ -30,6 +30,10 @@ public class Section {
         this(null, upStation, downStation, distance);
     }
 
+    public Section(Long lineId, Section section) {
+        this(lineId, section.upStation, section.downStation, section.distance);
+    }
+
     private void validateDifferentStations(Station upStation, Station downStation) {
         if (upStation.equals(downStation)) {
             throw new IllegalArgumentException(SAME_STATION_INPUT_EXCEPTION);
@@ -100,8 +104,16 @@ public class Section {
         return upStation;
     }
 
+    public Long getUpStationId() {
+        return upStation.getId();
+    }
+
     public Station getDownStation() {
         return downStation;
+    }
+
+    public Long getDownStationId() {
+        return downStation.getId();
     }
 
     public int getDistance() {

@@ -16,7 +16,6 @@ import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.entity.LineEntity;
-import wooteco.subway.entity.SectionEntity;
 import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.fixture.DatabaseUsageTest;
 
@@ -151,10 +150,10 @@ class LineRepositoryTest extends DatabaseUsageTest {
             repository.saveLine(line, initialSection);
 
             LineEntity actualLine = lineDao.findById(1L).get();
-            List<SectionEntity> actualSections = sectionDao.findAll();
+            List<Section> actualSections = sectionDao.findAll();
             LineEntity expectedLine = new LineEntity(1L, "노선", "색상", 300);
-            List<SectionEntity> expectedSections = List.of(
-                    new SectionEntity(1L, STATION1, STATION2, 10));
+            List<Section> expectedSections = List.of(
+                    new Section(1L, STATION1, STATION2, 10));
 
             assertThat(actualLine).isEqualTo(expectedLine);
             assertThat(actualSections).isEqualTo(expectedSections);
@@ -180,7 +179,7 @@ class LineRepositoryTest extends DatabaseUsageTest {
 
         repository.deleteLine(new Line(1L, "노선1", "색상", 100));
         boolean lineExistence = lineDao.findById(1L).isPresent();
-        List<SectionEntity> existingSections = sectionDao.findAll();
+        List<Section> existingSections = sectionDao.findAll();
 
         assertThat(lineExistence).isFalse();
         assertThat(existingSections).isEmpty();
