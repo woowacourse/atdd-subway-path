@@ -5,13 +5,14 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.line.LineExtraFare;
 
 @SuppressWarnings("NonAsciiCharacters")
 class ExtraFareTest {
 
     @Test
     void 추가비용이_0원인_경우_그대로_0원_부과() {
-        Fare fare = new ExtraFare(new BasicFare(), List.of(0));
+        Fare fare = new ExtraFare(new BasicFare(), List.of(new LineExtraFare(0)));
 
         int actual = fare.calculate();
         int expected = 1250 + 0;
@@ -21,7 +22,8 @@ class ExtraFareTest {
 
     @Test
     void 복수의_노선정보가_제공된_경우_가장_비싼_노선의_추가비용만_부과() {
-        Fare fare = new ExtraFare(new BasicFare(), List.of(0, 500, 1200));
+        Fare fare = new ExtraFare(new BasicFare(), List.of(new LineExtraFare(0),
+                new LineExtraFare(500), new LineExtraFare(1200)));
 
         int actual = fare.calculate();
         int expected = 1250 + 1200;

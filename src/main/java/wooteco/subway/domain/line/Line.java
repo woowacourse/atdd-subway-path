@@ -24,10 +24,6 @@ public class Line {
         this(null, name, color, extraFare);
     }
 
-    public Line(Long id, Line line) {
-        this(id, line.name, line.color, line.extraFare);
-    }
-
     public Long getId() {
         return id;
     }
@@ -42,6 +38,10 @@ public class Line {
 
     public int getExtraFare() {
         return extraFare.getValue();
+    }
+
+    public LineExtraFare getLineExtraFare() {
+        return extraFare;
     }
 
     @Override

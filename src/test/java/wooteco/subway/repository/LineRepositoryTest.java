@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.LineExtraFare;
 import wooteco.subway.domain.line.LineMap;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
@@ -61,8 +62,8 @@ class LineRepositoryTest extends DatabaseUsageTest {
         databaseFixtureUtils.saveLine("노선명2", "색깔2", 0);
         databaseFixtureUtils.saveLine("노선명3", "색깔3", 900);
 
-        List<Integer> actual = repository.findLineExtraFaresByIds(List.of(2L, 3L));
-        List<Integer> expected = List.of(0, 900);
+        List<LineExtraFare> actual = repository.findLineExtraFaresByIds(List.of(2L, 3L));
+        List<LineExtraFare> expected = List.of(new LineExtraFare(0), new LineExtraFare(900));
 
         assertThat(actual).isEqualTo(expected);
     }

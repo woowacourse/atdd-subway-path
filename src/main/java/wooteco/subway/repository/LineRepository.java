@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.LineExtraFare;
 import wooteco.subway.domain.line.LineMap;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
@@ -36,10 +37,10 @@ public class LineRepository {
         return new LineMap(line, sections);
     }
 
-    public List<Integer> findLineExtraFaresByIds(List<Long> ids) {
+    public List<LineExtraFare> findLineExtraFaresByIds(List<Long> ids) {
         return lineDao.findAllByIds(ids)
                 .stream()
-                .map(Line::getExtraFare)
+                .map(Line::getLineExtraFare)
                 .collect(Collectors.toList());
     }
 
