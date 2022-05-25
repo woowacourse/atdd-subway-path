@@ -11,14 +11,14 @@ import java.util.function.Function;
 import wooteco.subway.domain.farediscount.ChildrenDiscountPolicy;
 import wooteco.subway.domain.farediscount.DiscountPolicy;
 import wooteco.subway.domain.farediscount.NormalDiscountPolicy;
-import wooteco.subway.domain.farediscount.SpecialDiscountPolicy;
+import wooteco.subway.domain.farediscount.FreeDiscountPolicy;
 import wooteco.subway.domain.farediscount.TeenagerDiscountPolicy;
 
 public enum DiscountType {
 
     CHILD_DISCOUNT(new ChildrenDiscountPolicy(), (age) -> age >= CHILDREN_MINIMUM_AGE && age < CHILDREN_MAXIMUM_AGE),
     TEENAGER_DISCOUNT(new TeenagerDiscountPolicy(), (age) -> age >= TEENAGER_MINIMUM_AGE && age < TEENAGER_MAXIMUM_AGE),
-    SPECIAL_DISCOUNT(new SpecialDiscountPolicy(), (age) -> age >= SENILE_MINIMUM_AGE || age < CHILDREN_MINIMUM_AGE);
+    FREE_DISCOUNT(new FreeDiscountPolicy(), (age) -> age >= SENILE_MINIMUM_AGE || age < CHILDREN_MINIMUM_AGE);
 
     private final DiscountPolicy discountPolicy;
     private final Function<Integer, Boolean> expression;
@@ -48,8 +48,8 @@ public enum DiscountType {
     static class Constant {
         static final int CHILDREN_MINIMUM_AGE = 6;
         static final int CHILDREN_MAXIMUM_AGE = 13;
-        static final int TEENAGER_MINIMUM_AGE = 6;
-        static final int TEENAGER_MAXIMUM_AGE = 13;
+        static final int TEENAGER_MINIMUM_AGE = 13;
+        static final int TEENAGER_MAXIMUM_AGE = 19;
         static final int SENILE_MINIMUM_AGE = 65;
     }
 }

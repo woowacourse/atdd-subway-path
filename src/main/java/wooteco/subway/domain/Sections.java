@@ -67,6 +67,7 @@ public class Sections {
 
     private List<Section> updateUpStationSection(Section section) {
         Section sectionByUpStation = findSectionByDownStationId(section.getDownStationId());
+        validateUpdateDistance(sectionByUpStation, section);
         int distance = sectionByUpStation.getDistance() - section.getDistance();
         Section updateSection = new Section(sectionByUpStation.getLine(),
             sectionByUpStation.getUpStationId(),
@@ -77,6 +78,7 @@ public class Sections {
         return sections;
     }
 
+    // 삽입되는 구간 길이가 기존의 구간 길이보다 긴가?
     private void validateUpdateDistance(Section section, Section insertSection) {
         if (section.getDistance() <= insertSection.getDistance()) {
             throw new IllegalArgumentException("등록할 구간의 길이가 기존 역 사이의 길이보다 길거나 같으면 안됩니다.");
