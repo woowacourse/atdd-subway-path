@@ -2,7 +2,6 @@ package wooteco.subway.domain.line;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 import wooteco.subway.exception.constant.BlankArgumentException;
 

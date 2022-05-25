@@ -2,8 +2,6 @@ package wooteco.subway.domain.fare;
 
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-
 @Component
 public class FareCalculator {
 

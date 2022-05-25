@@ -14,6 +14,6 @@ class StationTest {
     @ValueSource(strings = {"", "  ", "     "})
     void saveEmptyName(String stationName) {
         assertThatThrownBy(() -> new Station(stationName))
-            .isInstanceOf(BlankArgumentException.class);
+                .isInstanceOf(BlankArgumentException.class);
     }
 }

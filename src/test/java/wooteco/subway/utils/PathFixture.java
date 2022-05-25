@@ -24,7 +24,7 @@ public class PathFixture {
         setUp();
     }
 
-    public void setUp () {
+    public void setUp() {
         ExtractableResponse<Response> 선릉역_응답 = post(STATION, new StationRequest("선릉역"));
         ExtractableResponse<Response> 선정릉역_응답 = post(STATION, new StationRequest("선정릉역"));
         ExtractableResponse<Response> 한티역_응답 = post(STATION, new StationRequest("한티역"));

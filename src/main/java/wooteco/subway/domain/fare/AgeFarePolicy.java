@@ -1,12 +1,10 @@
 package wooteco.subway.domain.fare;
 
-import java.util.Arrays;
-
 import static java.util.Arrays.stream;
 
 public enum AgeFarePolicy {
 
-    CHILD_AGE_POLICY{
+    CHILD_AGE_POLICY {
         @Override
         public boolean condition(int age) {
             return age >= 6 && age < 13;
@@ -14,11 +12,11 @@ public enum AgeFarePolicy {
 
         @Override
         public int calculate(int amount) {
-            return (int)((amount -350) * 0.5);
+            return (int) ((amount - 350) * 0.5);
         }
     },
 
-    YOUTH_AGE_POLICY{
+    YOUTH_AGE_POLICY {
         @Override
         public boolean condition(int age) {
             return age >= 13 && age < 19;
@@ -26,11 +24,11 @@ public enum AgeFarePolicy {
 
         @Override
         public int calculate(int amount) {
-            return (int)((amount -350) * 0.8);
+            return (int) ((amount - 350) * 0.8);
         }
     },
 
-    ADULT_AGE_POLICY{
+    ADULT_AGE_POLICY {
         @Override
         public boolean condition(int age) {
             return age >= 19 || (age >= 0 && age < 6);
