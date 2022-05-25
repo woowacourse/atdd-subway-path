@@ -7,6 +7,7 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.pathfinder.PathFinder;
 import wooteco.subway.domain.Station;
+import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.StationRepository;
@@ -25,11 +26,11 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findPath(Long sourceId, Long targetId, int age) {
+    public PathResponse findPath(PathRequest pathRequest) {
         List<Line> lines = lineRepository.findAll();
-        Station source = stationRepository.findById(sourceId);
-        Station target = stationRepository.findById(targetId);
+        Station source = stationRepository.findById(pathRequest.getSource());
+        Station target = stationRepository.findById(pathRequest.getTarget());
         Path path = pathFinder.findShortest(lines, source, target);
-        return new PathResponse(path.getStations(), path.getDistance(), path.finalFare(age));
+        return new PathResponse(path.getStations(), path.getDistance(), path.finalFare(pathRequest.getAge()));
     }
 }
