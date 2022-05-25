@@ -2,19 +2,17 @@ package wooteco.subway.domain.path;
 
 import wooteco.subway.domain.Station;
 
-public class PathAdapter implements Shortest {
+public class PathAdapter {
     private final ShortestPath shortestPath;
 
     public PathAdapter(final ShortestPath shortestPath) {
         this.shortestPath = shortestPath;
     }
 
-    @Override
     public Path getShortestPath(final Station source, final Station target, final int fare, final int age) {
         return shortestPath.getPath(source, target, fare, age);
     }
 
-    @Override
     public Long getExpensiveLineId(final Station source, final Station target) {
         return shortestPath.getExpensiveLineId(source, target);
     }

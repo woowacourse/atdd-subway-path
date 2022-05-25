@@ -5,7 +5,7 @@ import wooteco.subway.domain.Station;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Path implements Shortest {
+public class Path {
     private final List<Station> stations;
     private final int distance;
     private final double fare;
@@ -26,15 +26,5 @@ public class Path implements Shortest {
 
     public double getFare() {
         return fare;
-    }
-
-    @Override
-    public Path getShortestPath(final Station source, final Station target, final int fare, final int age) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Long getExpensiveLineId(final Station source, final Station target) {
-        throw new UnsupportedOperationException();
     }
 }
