@@ -33,14 +33,20 @@ public enum AgeDiscountPolicy {
     }
 
     private static int discountTeen(final int fare) {
-        return (int) ((fare - 350) * 0.8);
+        return (int) ((fare - DiscountConstants.DEDUCTION_AMOUNT) * DiscountConstants.TEEN_DISCOUNT_RATE);
     }
 
     private static int discountChild(final int fare) {
-        return (int) ((fare - 350) * 0.5);
+        return (int) ((fare - DiscountConstants.DEDUCTION_AMOUNT) * DiscountConstants.CHILD_DISCOUNT_RATE);
     }
 
     public int getDiscountedFare(final int fare) {
         return ageDiscountPolicy.apply(fare);
+    }
+
+    private static class DiscountConstants {
+        private static final int DEDUCTION_AMOUNT = 350;
+        private static final double TEEN_DISCOUNT_RATE = 0.8;
+        private static final double CHILD_DISCOUNT_RATE = 0.5;
     }
 }
