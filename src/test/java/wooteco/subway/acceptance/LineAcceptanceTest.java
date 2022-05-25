@@ -316,13 +316,6 @@ class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> requestToFindLineById(final long expectedLineId) {
-        return RestAssured.given().log().all()
-                .when()
-                .get("/lines/" + expectedLineId)
-                .then().log().all()
-                .extract();
-    }
 
     private static Stream<Arguments> provideNotInvalidCreationSource() {
         return Stream.of(
