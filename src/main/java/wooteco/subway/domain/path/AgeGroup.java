@@ -3,7 +3,7 @@ package wooteco.subway.domain.path;
 import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import wooteco.subway.application.exception.RidiculousAgeException;
+import wooteco.subway.application.exception.InvalidAgeException;
 
 public enum AgeGroup {
     INFANTS(age -> 0 < age && age < 6, fare -> 0),
@@ -29,6 +29,6 @@ public enum AgeGroup {
         return Arrays.stream(values())
                 .filter(ageGroupGroup -> ageGroupGroup.findAgeGroup.test(age))
                 .findFirst()
-                .orElseThrow(RidiculousAgeException::new);
+                .orElseThrow(InvalidAgeException::new);
     }
 }

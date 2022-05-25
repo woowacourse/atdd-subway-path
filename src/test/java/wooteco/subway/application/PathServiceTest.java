@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.application.exception.NotFoundStationException;
-import wooteco.subway.application.exception.RidiculousAgeException;
+import wooteco.subway.application.exception.InvalidAgeException;
 import wooteco.subway.application.exception.UnreachablePathException;
 import wooteco.subway.application.path.PathService;
 import wooteco.subway.domain.Line;
@@ -141,7 +141,7 @@ class PathServiceTest {
     @CsvSource({"151", "1000", "0", "-1", " -1000"})
     void searchPathWithRidiculousException(int age) {
         assertThatThrownBy(() -> pathService.searchPath(강남역.getId(), 잠실역.getId(), age))
-                .isInstanceOf(RidiculousAgeException.class);
+                .isInstanceOf(InvalidAgeException.class);
     }
 
     @DisplayName("노선에 추가 요금이 있는 경우 경로 찾기")

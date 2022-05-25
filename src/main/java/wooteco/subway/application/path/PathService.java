@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.application.exception.NotFoundStationException;
-import wooteco.subway.application.exception.RidiculousAgeException;
 import wooteco.subway.application.exception.UnreachablePathException;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
