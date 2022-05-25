@@ -51,8 +51,9 @@ public class LineService {
         Station downStation = stationRepository.findExistingStation(lineRequest.getDownStationId());
         Section newSection = new Section(upStation, downStation, lineRequest.getDistance());
 
-        Line newLine = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
-        return LineResponse.of(lineRepository.saveLine(newLine, newSection));
+        Line line = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
+        LineMap newLine = LineMap.of(line, newSection);
+        return LineResponse.of(lineRepository.saveLine(newLine));
     }
 
     @Transactional

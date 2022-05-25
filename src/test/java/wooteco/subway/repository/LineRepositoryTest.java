@@ -137,10 +137,10 @@ class LineRepositoryTest extends DatabaseUsageTest {
 
         @Test
         void 생성된_노선의_도메인을_반환() {
-            Line line = new Line("노선", "색상", 1000);
             Section initialSection = new Section(1L, 강남역, 잠실역, 10);
+            LineMap line = LineMap.of(new Line("노선", "색상", 1000), initialSection);
 
-            LineMap actual = repository.saveLine(line, initialSection);
+            LineMap actual = repository.saveLine(line);
             LineMap expected = LineMap.of(new Line(1L, "노선", "색상", 1000), initialSection);
 
             assertThat(actual).isEqualTo(expected);
@@ -148,9 +148,9 @@ class LineRepositoryTest extends DatabaseUsageTest {
 
         @Test
         void 새로운_노선과_구간을_저장() {
-            Line line = new Line("노선", "색상", 300);
             Section initialSection = new Section(1L, 강남역, 잠실역, 10);
-            repository.saveLine(line, initialSection);
+            LineMap line = LineMap.of(new Line("노선", "색상", 300), initialSection);
+            repository.saveLine(line);
 
             Line actualLine = lineDao.findById(1L).get();
             List<Section> actualSections = sectionDao.findAll();

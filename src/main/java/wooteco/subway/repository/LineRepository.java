@@ -9,6 +9,7 @@ import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineMap;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.exception.ExceptionType;
 import wooteco.subway.exception.NotFoundException;
 
@@ -50,14 +51,23 @@ public class LineRepository {
         return lineDao.findByName(name).isPresent();
     }
 
-    public LineMap saveLine(Line line, Section section) {
+    public LineMap saveLine(LineMap line) {
         String name = line.getName();
         String color = line.getColor();
         int extraFare = line.getExtraFare();
 
         Line savedLine = lineDao.save(new Line(name, color, extraFare));
-        sectionDao.save(new Section(savedLine.getId(), section));
-        return LineMap.of(savedLine, section);
+        saveSections(savedLine.getId(), line.toSectionList());
+        return new LineMap(savedLine, line.getSections());
+    }
+
+    private void saveSections(Long lineId, List<Section> sections) {
+        for (Section section : sections) {
+            Station upStation = section.getUpStation();
+            Station downStation = section.getDownStation();
+            int distance = section.getDistance();
+            sectionDao.save(new Section(lineId, upStation, downStation, distance));
+        }
     }
 
     public void updateLine(LineMap line) {

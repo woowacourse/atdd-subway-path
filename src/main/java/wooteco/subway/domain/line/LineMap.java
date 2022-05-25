@@ -44,6 +44,10 @@ public class LineMap {
         return sections.toSortedStations();
     }
 
+    public List<Section> toSectionList() {
+        return sections.toSortedList();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
