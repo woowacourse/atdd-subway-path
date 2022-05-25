@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
-import wooteco.subway.domain.Fare;
+import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
@@ -43,8 +43,8 @@ public class PathService {
         return new PathResponse(stationResponses, shortestDistance, fare.calculateFare());
     }
 
-    private List<StationResponse> convertToStationResponse(Path shortestPath) {
-        return shortestPath.getStations()
+    private List<StationResponse> convertToStationResponse(Path path) {
+        return path.getStations()
                 .stream()
                 .map(StationResponse::new)
                 .collect(toList());
