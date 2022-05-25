@@ -1,6 +1,6 @@
 package wooteco.subway.ui.dto;
 
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.station.Station;
 
 public class StationRequest {
     private String name;

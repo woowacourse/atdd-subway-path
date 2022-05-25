@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.FareCalculator;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.PathStrategy;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.ShortestPathStrategy;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.fare.FareCalculator;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.path.PathStrategy;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.path.ShortestPathStrategy;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.service.dto.PathResponse;
 import wooteco.subway.service.dto.StationResponse;
 

@@ -1,6 +1,7 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import java.util.List;
+import wooteco.subway.domain.station.Station;
 
 public interface PathStrategy {
     List<Station> findPath(Station source, Station target);
