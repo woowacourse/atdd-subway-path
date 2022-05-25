@@ -9,9 +9,11 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.request.StationRequest;
 import wooteco.subway.dto.response.StationResponse;
+import wooteco.subway.entity.LineEntity;
 import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.fixture.DatabaseUsageTest;
 
@@ -95,8 +97,8 @@ class StationServiceTest extends DatabaseUsageTest {
             Station 강남역 = new Station(1L, "강남역");
             Station 선릉역 = new Station(1L, "선릉역");
             databaseFixtureUtils.saveStations(강남역, 선릉역);
-            databaseFixtureUtils.saveLine("노선명", "색상");
-            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역, 15);
+            databaseFixtureUtils.saveLines(new LineEntity("노선명", "색상", 0));
+            databaseFixtureUtils.saveSections(new Section(1L, 강남역, 선릉역, 15));
 
             assertThatThrownBy(() -> service.delete(1L))
                     .isInstanceOf(IllegalArgumentException.class);

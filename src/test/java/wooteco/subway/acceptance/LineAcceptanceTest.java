@@ -11,9 +11,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.response.LineResponse;
 import wooteco.subway.dto.response.StationResponse;
+import wooteco.subway.entity.LineEntity;
 import wooteco.utils.HttpMethod;
 import wooteco.utils.HttpUtils;
 
@@ -126,11 +128,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
         @Test
         void 성공시_200_OK() {
             databaseFixtureUtils.saveStations(강남역, 선릉역, 잠실역);
-            databaseFixtureUtils.saveLine("1호선", "노란색", 1000);
-            databaseFixtureUtils.saveLine("2호선", "빨간색", 0);
-            databaseFixtureUtils.saveSection(1L, 선릉역, 잠실역);
-            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역);
-            databaseFixtureUtils.saveSection(2L, 강남역, 잠실역);
+            saveLineTestFixture("1호선", "노란색", 1000);
+            saveLineTestFixture("2호선", "빨간색", 0);
+            saveSectionTestFixture(1L, 선릉역, 잠실역, 10);
+            saveSectionTestFixture(1L, 강남역, 선릉역, 10);
+            saveSectionTestFixture(2L, 강남역, 잠실역, 10);
 
             ExtractableResponse<Response> response = HttpUtils.send(HttpMethod.GET, PATH);
             List<LineResponse> actualBody = extractJsonBody(response);
@@ -155,9 +157,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
         @Test
         void 모든_구간은_상행종점부터_하행종점까지_순서대로_나열되며_성공시_200_OK() {
             databaseFixtureUtils.saveStations(강남역, 선릉역, 잠실역);
-            databaseFixtureUtils.saveLine("1호선", "노란색", 1000);
-            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역);
-            databaseFixtureUtils.saveSection(1L, 잠실역, 강남역);
+            saveLineTestFixture("1호선", "노란색", 1000);
+            saveSectionTestFixture(1L, 강남역, 선릉역, 10);
+            saveSectionTestFixture(1L, 잠실역, 강남역, 10);
 
             ExtractableResponse<Response> response = HttpUtils.send(HttpMethod.GET, toPath(1L));
             LineResponse actualBody = extractSingleLineResponseBody(response);
@@ -189,8 +191,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         @Test
         void 성공시_200_OK() {
             databaseFixtureUtils.saveStations(강남역, 선릉역);
-            databaseFixtureUtils.saveLine("신분당선", "노란색", 0);
-            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역, 10);
+            saveLineTestFixture("신분당선", "노란색", 0);
+            saveSectionTestFixture(1L, 강남역, 선릉역, 10);
             Map<String, Object> params = jsonLineOf("NEW 분당선", "bg-red-800", 900);
 
             ExtractableResponse<Response> response = HttpUtils.send(HttpMethod.PUT, toPath(1L), params);
@@ -210,10 +212,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
         @Test
         void 이미_존재하는_지하철_노선_이름으로_수정시_400_BAD_REQUEST() {
             databaseFixtureUtils.saveStations(강남역, 선릉역);
-            databaseFixtureUtils.saveLine("현재 노선명", "노란색", 1000);
-            databaseFixtureUtils.saveLine("존재하는 노선명", "노란색", 1000);
-            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역);
-            databaseFixtureUtils.saveSection(2L, 강남역, 선릉역);
+            saveLineTestFixture("현재 노선명", "노란색", 1000);
+            saveLineTestFixture("존재하는 노선명", "노란색", 1000);
+            saveSectionTestFixture(1L, 강남역, 선릉역, 10);
+            saveSectionTestFixture(2L, 강남역, 선릉역, 10);
             Map<String, Object> duplicateNameParams = jsonLineOf("존재하는 노선명", "bg-red-600", 100);
 
             ExtractableResponse<Response> response = HttpUtils.send(HttpMethod.PUT, toPath(2L), duplicateNameParams);
@@ -243,7 +245,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         void 추가비용을_0미만으로_수정하려는_경우_400_BAD_REQUEST() {
             Map<String, Object> negativeExtraFareParams = jsonLineOf("분당선", "bg-red-800", -1);
 
-            ExtractableResponse<Response> response = HttpUtils.send(HttpMethod.PUT, toPath(1L), negativeExtraFareParams);
+            ExtractableResponse<Response> response = HttpUtils.send(HttpMethod.PUT, toPath(1L),
+                    negativeExtraFareParams);
 
             assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         }
@@ -270,8 +273,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         @Test
         void 성공시_204_OK() {
             databaseFixtureUtils.saveStations(강남역, 선릉역);
-            databaseFixtureUtils.saveLine("존재하는 노선", "노란색");
-            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역);
+            saveLineTestFixture("존재하는 노선", "노란색", 0);
+            saveSectionTestFixture(1L, 강남역, 선릉역, 10);
 
             ExtractableResponse<Response> response = HttpUtils.send(HttpMethod.DELETE, toPath(1L));
 
@@ -292,5 +295,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     private LineResponse extractSingleLineResponseBody(ExtractableResponse<Response> response) {
         return response.jsonPath().getObject(".", LineResponse.class);
+    }
+
+    private void saveLineTestFixture(String name, String color, int extraFare) {
+        databaseFixtureUtils.saveLines(new LineEntity(name, color, extraFare));
+    }
+
+    private void saveSectionTestFixture(Long lineId, Station upStation, Station downStation, int distance) {
+        databaseFixtureUtils.saveSections(new Section(lineId, upStation, downStation, distance));
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
+import wooteco.subway.entity.LineEntity;
 import wooteco.subway.fixture.DatabaseUsageTest;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -30,28 +31,28 @@ class SectionDaoTest extends DatabaseUsageTest {
     @BeforeEach
     void setup() {
         databaseFixtureUtils.saveStations(강남역, 선릉역, 잠실역, 강변역, 청계산입구역);
-        databaseFixtureUtils.saveLine("1호선", "색깔");
-        databaseFixtureUtils.saveLine("2호선", "색깔2");
+        LineEntity 신분당선 = new LineEntity("신분당선", "색깔", 0);
+        LineEntity 수인선 = new LineEntity("수인선", "색깔2", 0);
+        databaseFixtureUtils.saveLines(신분당선, 수인선);
     }
 
     @DisplayName("findAll 메서드들은 조건에 부합하는 모든 데이터를 조회한다")
     @Nested
     class FindAllMethodsTest {
 
+        private final Section 강남_선릉 = new Section(1L, 강남역, 선릉역, 20);
+        private final Section 선릉_잠실 = new Section(1L, 선릉역, 잠실역, 10);
+        private final Section 강남_잠실 = new Section(2L, 강남역, 잠실역, 30);
+
         @BeforeEach
         void setup() {
-            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역, 20);
-            databaseFixtureUtils.saveSection(1L, 선릉역, 잠실역, 10);
-            databaseFixtureUtils.saveSection(2L, 강남역, 잠실역, 30);
+            databaseFixtureUtils.saveSections(강남_선릉, 선릉_잠실, 강남_잠실);
         }
 
         @Test
         void findAll_메서드는_모든_구간_데이터를_조회() {
             List<Section> actual = dao.findAll();
-            List<Section> expected = List.of(
-                    new Section(1L, 강남역, 선릉역, 20),
-                    new Section(1L, 선릉역, 잠실역, 10),
-                    new Section(2L, 강남역, 잠실역, 30));
+            List<Section> expected = List.of(강남_선릉, 선릉_잠실, 강남_잠실);
 
             assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
         }
@@ -59,9 +60,7 @@ class SectionDaoTest extends DatabaseUsageTest {
         @Test
         void findAllByLineId_메서드는_lineId에_해당하는_모든_구간_데이터를_조회() {
             List<Section> actual = dao.findAllByLineId(1L);
-            List<Section> expected = List.of(
-                    new Section(1L, 강남역, 선릉역, 20),
-                    new Section(1L, 선릉역, 잠실역, 10));
+            List<Section> expected = List.of(강남_선릉, 선릉_잠실);
 
             assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
         }
@@ -69,9 +68,7 @@ class SectionDaoTest extends DatabaseUsageTest {
         @Test
         void findAllByStationId_메서드는_특정_역이_등록된_모든_구간들의_데이터를_조회() {
             List<Section> actual = dao.findAllByStationId(1L);
-            List<Section> expected = List.of(
-                    new Section(1L, 강남역, 선릉역, 20),
-                    new Section(2L, 강남역, 잠실역, 30));
+            List<Section> expected = List.of(강남_선릉, 강남_잠실);
 
             assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
         }
@@ -94,7 +91,7 @@ class SectionDaoTest extends DatabaseUsageTest {
 
         @Test
         void 중복되는_정보로_생성하려는_경우_예외발생() {
-            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역, 10);
+            saveSectionTestFixture(1L, 강남역, 선릉역, 10);
 
             Section existingSection = new Section(1L, 강남역, 선릉역, 10);
             assertThatThrownBy(() -> dao.save(List.of(existingSection)))
@@ -108,8 +105,8 @@ class SectionDaoTest extends DatabaseUsageTest {
 
         @Test
         void delete_메서드는_노선과_상행역_하행역에_부합하는_데이터들을_삭제() {
-            databaseFixtureUtils.saveSection(1L, 강남역, 잠실역, 10);
-            databaseFixtureUtils.saveSection(1L, 잠실역, 강변역, 10);
+            saveSectionTestFixture(1L, 강남역, 잠실역, 10);
+            saveSectionTestFixture(1L, 잠실역, 강변역, 10);
 
             dao.delete(List.of(new Section(1L, 강남역, 잠실역, 10)));
             int existingSectionCount = jdbcTemplate.queryForObject(
@@ -120,7 +117,7 @@ class SectionDaoTest extends DatabaseUsageTest {
 
         @Test
         void 거리_정보가_틀리더라도_성공적으로_데이터_삭제_성공() {
-            databaseFixtureUtils.saveSection(1L, 강남역, 잠실역, 10);
+            saveSectionTestFixture(1L, 강남역, 잠실역, 10);
 
             dao.delete(List.of(new Section(1L, 강남역, 잠실역, 99999999)));
             boolean exists = jdbcTemplate.queryForObject(
@@ -139,13 +136,17 @@ class SectionDaoTest extends DatabaseUsageTest {
 
     @Test
     void deleteAllByLineId_메서드는_노선에_해당되는_모든_구간_데이터를_삭제() {
-        databaseFixtureUtils.saveSection(1L, 선릉역, 잠실역, 10);
-        databaseFixtureUtils.saveSection(1L, 강남역, 선릉역, 5);
+        saveSectionTestFixture(1L, 선릉역, 잠실역, 10);
+        saveSectionTestFixture(1L, 강남역, 선릉역, 5);
 
         dao.deleteAllByLineId(1L);
         boolean exists = jdbcTemplate.queryForObject(
                 "SELECT COUNT(*) FROM section WHERE line_id = 1", Integer.class) > 0;
 
         assertThat(exists).isFalse();
+    }
+
+    private void saveSectionTestFixture(Long lineId, Station upStation, Station downStation, int distance) {
+        databaseFixtureUtils.saveSections(new Section(lineId, upStation, downStation, distance));
     }
 }

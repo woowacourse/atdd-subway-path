@@ -11,8 +11,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.response.StationResponse;
+import wooteco.subway.entity.LineEntity;
 import wooteco.utils.HttpMethod;
 import wooteco.utils.HttpUtils;
 
@@ -129,8 +131,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
         @Test
         void 등록된_지하철역을_제거하려는_경우_400_BAD_REQUEST() {
             databaseFixtureUtils.saveStations(강남역, 선릉역);
-            databaseFixtureUtils.saveLine("신분당선", "노란색");
-            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역);
+            databaseFixtureUtils.saveLines(new LineEntity("신분당선", "노란색", 0));
+            databaseFixtureUtils.saveSections(new Section(1L, 강남역, 선릉역, 10));
 
             ExtractableResponse<Response> response = HttpUtils.send(HttpMethod.DELETE, toPath(1L));
 

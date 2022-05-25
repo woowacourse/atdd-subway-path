@@ -8,9 +8,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.dto.response.StationResponse;
+import wooteco.subway.entity.LineEntity;
 import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.fixture.DatabaseUsageTest;
 
@@ -36,9 +38,9 @@ class PathServiceTest extends DatabaseUsageTest {
         @Test
         void 최단경로에_대해_지하철역들의_목록과_거리_및_요금_정보를_반환() {
             databaseFixtureUtils.saveStations(강남역, 선릉역, 잠실역);
-            databaseFixtureUtils.saveLine("노선", "색깔", 0);
-            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역, 5);
-            databaseFixtureUtils.saveSection(1L, 선릉역, 잠실역, 5);
+            saveLineTestFixture("노선", "색깔", 0);
+            saveSectionTestFixture(1L, 강남역, 선릉역, 5);
+            saveSectionTestFixture(1L, 선릉역, 잠실역, 5);
 
             PathResponse actual = service.findShortestPath(1L, 3L, 25);
             PathResponse expected = new PathResponse(
@@ -51,9 +53,9 @@ class PathServiceTest extends DatabaseUsageTest {
         @Test
         void fareCalculation() {
             databaseFixtureUtils.saveStations(강남역, 선릉역, 잠실역);
-            databaseFixtureUtils.saveLine("노선", "색깔", 500);
-            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역, 10);
-            databaseFixtureUtils.saveSection(1L, 선릉역, 잠실역, 8);
+            saveLineTestFixture("노선", "색깔", 500);
+            saveSectionTestFixture(1L, 강남역, 선릉역, 10);
+            saveSectionTestFixture(1L, 선릉역, 잠실역, 8);
 
             int actual = service.findShortestPath(1L, 3L, 15).getFare();
             int expected = (int) ((((1250 + 200) + 500) - 350) * 0.8);
@@ -64,9 +66,9 @@ class PathServiceTest extends DatabaseUsageTest {
         @Test
         void 존재하지_않는_지하철역을_입력한_경우_예외발생() {
             databaseFixtureUtils.saveStations(강남역, 선릉역, 잠실역);
-            databaseFixtureUtils.saveLine("노선", "색깔", 0);
-            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역, 5);
-            databaseFixtureUtils.saveSection(1L, 선릉역, 잠실역, 5);
+            saveLineTestFixture("노선", "색깔", 0);
+            saveSectionTestFixture(1L, 강남역, 선릉역, 5);
+            saveSectionTestFixture(1L, 선릉역, 잠실역, 5);
 
             assertThatThrownBy(() -> service.findShortestPath(1L, 9999999999L, 10))
                     .isInstanceOf(NotFoundException.class);
@@ -75,9 +77,9 @@ class PathServiceTest extends DatabaseUsageTest {
         @Test
         void 연결되지_않은_지하철역들_사이의_경로를_조회하려는_경우_예외발생() {
             databaseFixtureUtils.saveStations(강남역, 선릉역, 잠실역, 청계산입구역);
-            databaseFixtureUtils.saveLine("노선", "색깔", 0);
-            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역, 10);
-            databaseFixtureUtils.saveSection(1L, 잠실역, 청계산입구역, 10);
+            saveLineTestFixture("노선", "색깔", 0);
+            saveSectionTestFixture(1L, 강남역, 선릉역, 10);
+            saveSectionTestFixture(1L, 잠실역, 청계산입구역, 10);
 
             assertThatThrownBy(() -> service.findShortestPath(1L, 3L, 10))
                     .isInstanceOf(IllegalArgumentException.class);
@@ -86,10 +88,18 @@ class PathServiceTest extends DatabaseUsageTest {
         @Test
         void 구간에_등록되지_않은_지하철역이_입력된_경우_예외발생() {
             databaseFixtureUtils.saveStations(강남역, 선릉역);
-            databaseFixtureUtils.saveLine("노선", "색깔", 0);
+            saveLineTestFixture("노선", "색깔", 0);
 
             assertThatThrownBy(() -> service.findShortestPath(1L, 2L, 10))
                     .isInstanceOf(IllegalArgumentException.class);
         }
+    }
+
+    private void saveLineTestFixture(String name, String color, int extraFare) {
+        databaseFixtureUtils.saveLines(new LineEntity(name, color, extraFare));
+    }
+
+    private void saveSectionTestFixture(Long lineId, Station upStation, Station downStation, int distance) {
+        databaseFixtureUtils.saveSections(new Section(lineId, upStation,downStation, distance));
     }
 }

@@ -9,9 +9,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.dto.response.StationResponse;
+import wooteco.subway.entity.LineEntity;
 import wooteco.utils.HttpMethod;
 import wooteco.utils.HttpUtils;
 
@@ -31,9 +33,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         @Test
         void 경로_조회_성공시_200_OK() {
             databaseFixtureUtils.saveStations(강남역, 선릉역, 잠실역);
-            databaseFixtureUtils.saveLine("노선", "색상");
-            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역, 10);
-            databaseFixtureUtils.saveSection(1L, 선릉역, 잠실역, 5);
+            saveLineTestFixture("노선", "색상", 0);
+            saveSectionTestFixture(1L, 강남역, 선릉역, 10);
+            saveSectionTestFixture(1L, 선릉역, 잠실역, 5);
 
             ExtractableResponse<Response> response = HttpUtils.send(HttpMethod.GET,
                     toPath(1L, 3L, 30));
@@ -57,9 +59,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         @Test
         void 연결되지_않은_지하철역들_사이의_경로를_조회하려는_경우_400_BAD_REQUEST() {
             databaseFixtureUtils.saveStations(강남역, 선릉역, 잠실역, 청계산입구역);
-            databaseFixtureUtils.saveLine("노선", "색상");
-            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역, 10);
-            databaseFixtureUtils.saveSection(1L, 잠실역, 청계산입구역, 10);
+            saveLineTestFixture("노선", "색상", 0);
+            saveSectionTestFixture(1L, 강남역, 선릉역, 10);
+            saveSectionTestFixture(1L, 잠실역, 청계산입구역, 10);
 
             ExtractableResponse<Response> response = HttpUtils.send(HttpMethod.GET,
                     toPath(1L, 3L, 30));
@@ -70,7 +72,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         @Test
         void 구간에_등록되지_않은_지하철역이_입력된_경우_400_BAD_REQUEST() {
             databaseFixtureUtils.saveStations(강남역, 선릉역);
-            databaseFixtureUtils.saveLine("등록된 노선", "색상");
+            saveLineTestFixture("등록된 노선", "색상", 0);
 
             ExtractableResponse<Response> response = HttpUtils.send(HttpMethod.GET,
                     toPath(1L, 2L, 30));
@@ -81,5 +83,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         private String toPath(Long source, Long target, int age) {
             return String.format("/paths?source=%d&target=%d&age=%d", source, target, age);
         }
+    }
+
+    private void saveLineTestFixture(String name, String color, int extraFare) {
+        databaseFixtureUtils.saveLines(new LineEntity(name, color, extraFare));
+    }
+
+    private void saveSectionTestFixture(Long lineId, Station upStation, Station downStation, int distance) {
+        databaseFixtureUtils.saveSections(new Section(lineId, upStation, downStation, distance));
     }
 }

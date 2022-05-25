@@ -1,40 +1,44 @@
 package wooteco.subway.fixture;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.stereotype.Component;
+import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
+import wooteco.subway.entity.LineEntity;
 
 @Component
 public class DatabaseFixtureUtils {
 
     @Autowired
-    protected JdbcTemplate jdbcTemplate;
+    protected NamedParameterJdbcTemplate jdbcTemplate;
+
+    public void saveLines(LineEntity... lines) {
+        String sql = "INSERT INTO line(name, color, extra_fare) VALUES (:name, :color, :extraFare)";
+        List<LineEntity> lineList = Arrays.stream(lines)
+                .collect(Collectors.toList());
+
+        jdbcTemplate.batchUpdate(sql, SqlParameterSourceUtils.createBatch(lineList));
+    }
 
     public void saveStations(Station... stations) {
-        String sql = "INSERT INTO station(name) VALUES (?)";
-        for (Station station : stations) {
-            jdbcTemplate.update(sql, station.getName());
-        }
+        final String sql = "INSERT INTO station(name) VALUES (:name)";
+        List<Station> stationList = Arrays.stream(stations)
+                .collect(Collectors.toList());
+
+        jdbcTemplate.batchUpdate(sql, SqlParameterSourceUtils.createBatch(stationList));
     }
 
-    public void saveLine(String name, String color) {
-        String sql = "INSERT INTO line(name, color) VALUES (?, ?)";
-        jdbcTemplate.update(sql, name, color);
-    }
-
-    public void saveLine(String name, String color, int extraFare) {
-        String sql = "INSERT INTO line(name, color, extra_fare) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sql, name, color, extraFare);
-    }
-
-    public void saveSection(Long lineId, Station upStation, Station downStation) {
-        saveSection(lineId, upStation, downStation, 10);
-    }
-
-    public void saveSection(Long lineId, Station upStation, Station downStation, int distance) {
+    public void saveSections(Section... sections) {
         String sql = "INSERT INTO section(line_id, up_station_id, down_station_id, distance) "
-                + "VALUES (?, ?, ?, ?)";
-        jdbcTemplate.update(sql, lineId, upStation.getId(), downStation.getId(), distance);
+                + "VALUES (:lineId, :upStationId, :downStationId, :distance)";
+        List<Section> sectionList = Arrays.stream(sections)
+                .collect(Collectors.toList());
+
+        jdbcTemplate.batchUpdate(sql, SqlParameterSourceUtils.createBatch(sectionList));
     }
 }
