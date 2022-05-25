@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import wooteco.subway.entity.StationEntity;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.fixture.DatabaseUsageTest;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -23,11 +23,11 @@ class StationDaoTest extends DatabaseUsageTest {
     void findAll_메서드는_모든_데이터를_조회() {
         databaseFixtureUtils.saveStations("강남역", "선릉역", "잠실역");
 
-        List<StationEntity> actual = dao.findAll();
-        List<StationEntity> expected = List.of(
-                new StationEntity(1L, "강남역"),
-                new StationEntity(2L, "선릉역"),
-                new StationEntity(3L, "잠실역"));
+        List<Station> actual = dao.findAll();
+        List<Station> expected = List.of(
+                new Station(1L, "강남역"),
+                new Station(2L, "선릉역"),
+                new Station(3L, "잠실역"));
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -36,10 +36,10 @@ class StationDaoTest extends DatabaseUsageTest {
     void findAllByIds_메서드는_id_목록에_해당되는_모든_데이터를_조회() {
         databaseFixtureUtils.saveStations("강남역", "선릉역", "잠실역");
 
-        List<StationEntity> actual = dao.findAllByIds(List.of(1L, 3L));
-        List<StationEntity> expected = List.of(
-                new StationEntity(1L, "강남역"),
-                new StationEntity(3L, "잠실역"));
+        List<Station> actual = dao.findAllByIds(List.of(1L, 3L));
+        List<Station> expected = List.of(
+                new Station(1L, "강남역"),
+                new Station(3L, "잠실역"));
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -52,8 +52,8 @@ class StationDaoTest extends DatabaseUsageTest {
         void 존재하는_데이터의_id인_경우_해당_데이터가_담긴_Optional_반환() {
             databaseFixtureUtils.saveStations("강남역");
 
-            StationEntity actual = dao.findById(1L).get();
-            StationEntity expected = new StationEntity(1L, "강남역");
+            Station actual = dao.findById(1L).get();
+            Station expected = new Station(1L, "강남역");
 
             assertThat(actual).isEqualTo(expected);
         }
@@ -74,8 +74,8 @@ class StationDaoTest extends DatabaseUsageTest {
         void 저장된_name인_경우_해당_데이터가_담긴_Optional_반환() {
             databaseFixtureUtils.saveStations("존재하는 역 이름");
 
-            StationEntity actual = dao.findByName("존재하는 역 이름").get();
-            StationEntity expected = new StationEntity(1L, "존재하는 역 이름");
+            Station actual = dao.findByName("존재하는 역 이름").get();
+            Station expected = new Station(1L, "존재하는 역 이름");
 
             assertThat(actual).isEqualTo(expected);
         }
@@ -96,8 +96,8 @@ class StationDaoTest extends DatabaseUsageTest {
         void 중복되지_않는_이름인_경우_저장_성공() {
             databaseFixtureUtils.saveStations("존재하는 역 이름");
 
-            StationEntity actual = dao.save(new StationEntity("새로운 지하철역"));
-            StationEntity expected = new StationEntity(2L, "새로운 지하철역");
+            Station actual = dao.save(new Station("새로운 지하철역"));
+            Station expected = new Station(2L, "새로운 지하철역");
 
             assertThat(actual).isEqualTo(expected);
         }
@@ -106,7 +106,7 @@ class StationDaoTest extends DatabaseUsageTest {
         void 중복되는_이름을_입력한_경우_예외발생() {
             databaseFixtureUtils.saveStations("존재하는 역 이름");
 
-            assertThatThrownBy(() -> dao.save(new StationEntity("존재하는 역 이름")))
+            assertThatThrownBy(() -> dao.save(new Station("존재하는 역 이름")))
                     .isInstanceOf(DataAccessException.class);
         }
     }

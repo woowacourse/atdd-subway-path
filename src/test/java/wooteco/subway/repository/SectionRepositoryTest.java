@@ -10,7 +10,6 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.entity.SectionEntity;
-import wooteco.subway.entity.StationEntity;
 import wooteco.subway.fixture.DatabaseUsageTest;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -25,10 +24,7 @@ class SectionRepositoryTest extends DatabaseUsageTest {
     private static final Station STATION1 = new Station(1L, "강남역");
     private static final Station STATION2 = new Station(2L, "잠실역");
     private static final Station STATION3 = new Station(3L, "선릉역");
-    private static final StationEntity STATION_ENTITY1 = new StationEntity(1L, "강남역");
-    private static final StationEntity STATION_ENTITY2 = new StationEntity(2L, "잠실역");
-    private static final StationEntity STATION_ENTITY3 = new StationEntity(3L, "선릉역");
-    private static final StationEntity STATION_ENTITY4 = new StationEntity(4L, "청계산입구역");
+    private static final Station STATION4 = new Station(4L, "청계산입구역");
 
     @BeforeEach
     void setup() {
@@ -87,8 +83,8 @@ class SectionRepositoryTest extends DatabaseUsageTest {
 
         List<SectionEntity> actual = sectionDao.findAll();
         List<SectionEntity> expected = List.of(
-                new SectionEntity(1L, STATION_ENTITY1, STATION_ENTITY2, 10),
-                new SectionEntity(1L, STATION_ENTITY2, STATION_ENTITY3, 5));
+                new SectionEntity(1L, STATION1, STATION2, 10),
+                new SectionEntity(1L, STATION2, STATION3, 5));
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -105,8 +101,8 @@ class SectionRepositoryTest extends DatabaseUsageTest {
         repository.deleteSections(1L, sections);
         List<SectionEntity> actual = sectionDao.findAll();
         List<SectionEntity> expected = List.of(
-                new SectionEntity(1L, STATION_ENTITY3, STATION_ENTITY4, 5),
-                new SectionEntity(2L, STATION_ENTITY1, STATION_ENTITY3, 5));
+                new SectionEntity(1L, STATION3, STATION4, 5),
+                new SectionEntity(2L, STATION1, STATION3, 5));
 
         assertThat(actual).isEqualTo(expected);
     }

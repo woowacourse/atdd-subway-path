@@ -41,7 +41,10 @@ public class PathService {
         Path path = new Path(startStation, endStation, navigator);
         int distance = path.getDistance();
         List<Line> lines = lineRepository.findAllLinesByIds(path.getPassingLineIds());
-        Fare fare = new AgeDiscountFare(new LineOverFare(new DistanceOverFare(new BasicFare(), distance), lines), age);
+
+        Fare fare = new DistanceOverFare(new BasicFare(), distance);
+        fare = new LineOverFare(fare, lines);
+        fare = new AgeDiscountFare(fare, age);
         return PathResponse.of(path, fare.calculate());
     }
 }

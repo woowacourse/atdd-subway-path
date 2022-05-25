@@ -10,9 +10,9 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import wooteco.subway.dao.SectionDao;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.request.CreateSectionRequest;
 import wooteco.subway.entity.SectionEntity;
-import wooteco.subway.entity.StationEntity;
 import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.fixture.DatabaseUsageTest;
 
@@ -29,9 +29,9 @@ class SectionServiceTest extends DatabaseUsageTest {
     @Nested
     class SaveTest {
 
-        private final StationEntity STATION1 = new StationEntity(1L, "강남역");
-        private final StationEntity STATION2 = new StationEntity(2L, "선릉역");
-        private final StationEntity STATION3 = new StationEntity(3L, "잠실역");
+        private final Station STATION1 = new Station(1L, "강남역");
+        private final Station STATION2 = new Station(2L, "선릉역");
+        private final Station STATION3 = new Station(3L, "잠실역");
 
         @BeforeEach
         void setupStations() {
@@ -100,9 +100,9 @@ class SectionServiceTest extends DatabaseUsageTest {
     @Nested
     class DeleteTest {
 
-        private final StationEntity STATION1 = new StationEntity(1L, "강남역");
-        private final StationEntity STATION2 = new StationEntity(2L, "선릉역");
-        private final StationEntity STATION3 = new StationEntity(3L, "잠실역");
+        private final Station STATION1 = new Station(1L, "강남역");
+        private final Station STATION2 = new Station(2L, "선릉역");
+        private final Station STATION3 = new Station(3L, "잠실역");
 
         @Test
         void 노선의_종점을_제거하려는_경우_그와_연결된_구간만_하나_제거() {

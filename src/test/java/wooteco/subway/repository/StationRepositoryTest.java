@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.station.Station;
-import wooteco.subway.entity.StationEntity;
 import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.fixture.DatabaseUsageTest;
 
@@ -81,8 +80,8 @@ class StationRepositoryTest extends DatabaseUsageTest {
     @Test
     void save_메서드는_지하철역_도메인을_받아_새로운_지하철역을_저장() {
         repository.save(new Station("강남역"));
-        List<StationEntity> actual = dao.findAll();
-        List<StationEntity> expected = List.of(new StationEntity(1L, "강남역"));
+        List<Station> actual = dao.findAll();
+        List<Station> expected = List.of(new Station(1L, "강남역"));
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -92,8 +91,8 @@ class StationRepositoryTest extends DatabaseUsageTest {
         databaseFixtureUtils.saveStations("강남역", "잠실역");
 
         repository.delete(new Station(1L, "강남역"));
-        List<StationEntity> actual = dao.findAll();
-        List<StationEntity> expected = List.of(new StationEntity(2L, "잠실역"));
+        List<Station> actual = dao.findAll();
+        List<Station> expected = List.of(new Station(2L, "잠실역"));
 
         assertThat(actual).isEqualTo(expected);
     }

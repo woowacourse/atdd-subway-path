@@ -11,13 +11,13 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import wooteco.subway.entity.StationEntity;
+import wooteco.subway.domain.station.Station;
 
 @Repository
 public class StationDao {
 
-    private static final RowMapper<StationEntity> ROW_MAPPER = (resultSet, rowNum) ->
-            new StationEntity(resultSet.getLong("id"),
+    private static final RowMapper<Station> ROW_MAPPER = (resultSet, rowNum) ->
+            new Station(resultSet.getLong("id"),
                     resultSet.getString("name"));
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
@@ -26,20 +26,20 @@ public class StationDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<StationEntity> findAll() {
+    public List<Station> findAll() {
         final String sql = "SELECT * FROM station";
 
         return jdbcTemplate.query(sql, new EmptySqlParameterSource(), ROW_MAPPER);
     }
 
-    public List<StationEntity> findAllByIds(List<Long> ids) {
+    public List<Station> findAllByIds(List<Long> ids) {
         final String sql = "SELECT * FROM station WHERE id in (:ids)";
         SqlParameterSource params = new MapSqlParameterSource("ids", ids);
 
         return jdbcTemplate.query(sql, params, ROW_MAPPER);
     }
 
-    public Optional<StationEntity> findById(Long id) {
+    public Optional<Station> findById(Long id) {
         final String sql = "SELECT * FROM station WHERE id = :id";
         MapSqlParameterSource paramSource = new MapSqlParameterSource();
         paramSource.addValue("id", id);
@@ -49,7 +49,7 @@ public class StationDao {
                 .findFirst();
     }
 
-    public Optional<StationEntity> findByName(String name) {
+    public Optional<Station> findByName(String name) {
         final String sql = "SELECT * FROM station WHERE name = :name";
         MapSqlParameterSource paramSource = new MapSqlParameterSource();
         paramSource.addValue("name", name);
@@ -59,14 +59,14 @@ public class StationDao {
                 .findFirst();
     }
 
-    public StationEntity save(StationEntity stationEntity) {
+    public Station save(Station stationEntity) {
         final String sql = "INSERT INTO station(name) VALUES (:name)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         SqlParameterSource paramSource = new BeanPropertySqlParameterSource(stationEntity);
 
         jdbcTemplate.update(sql, paramSource, keyHolder);
         Number generatedId = keyHolder.getKey();
-        return new StationEntity(generatedId.longValue(), stationEntity.getName());
+        return new Station(generatedId.longValue(), stationEntity.getName());
     }
 
     public void deleteById(Long id) {

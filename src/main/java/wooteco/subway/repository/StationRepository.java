@@ -1,11 +1,9 @@
 package wooteco.subway.repository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.station.Station;
-import wooteco.subway.entity.StationEntity;
 import wooteco.subway.exception.ExceptionType;
 import wooteco.subway.exception.NotFoundException;
 
@@ -19,16 +17,12 @@ public class StationRepository {
     }
 
     public List<Station> findAllStations() {
-        return stationDao.findAll()
-                .stream()
-                .map(StationEntity::toDomain)
-                .collect(Collectors.toList());
+        return stationDao.findAll();
     }
 
     public Station findExistingStation(Long stationId) {
         return stationDao.findById(stationId)
-                .orElseThrow(() -> new NotFoundException(ExceptionType.STATION_NOT_FOUND))
-                .toDomain();
+                .orElseThrow(() -> new NotFoundException(ExceptionType.STATION_NOT_FOUND));
     }
 
     public boolean checkExistingStationName(String name) {
@@ -36,8 +30,7 @@ public class StationRepository {
     }
 
     public Station save(Station station) {
-        StationEntity savedStation = stationDao.save(new StationEntity(station.getName()));
-        return savedStation.toDomain();
+        return stationDao.save(new Station(station.getName()));
     }
 
     public void delete(Station station) {

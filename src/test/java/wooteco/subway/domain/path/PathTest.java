@@ -64,7 +64,7 @@ class PathTest {
                 new Section(STATION2, STATION3, 100),
                 new Section(STATION3, STATION4, 20)));
 
-        assertThatThrownBy(() -> getPathOf(STATION1, nonRegisteredStation))
+        assertThatThrownBy(() -> getPathOf(STATION1, nonRegisteredStation, navigator))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -73,7 +73,7 @@ class PathTest {
         Navigator<Station, Section> navigator = new NavigatorJgraphtAdapter(List.of(
                 new Section(STATION1, STATION2, 10)));
 
-        assertThatThrownBy(() -> getPathOf(STATION1, STATION1))
+        assertThatThrownBy(() -> getPathOf(STATION1, STATION1, navigator))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -83,11 +83,15 @@ class PathTest {
                 new Section(STATION1, STATION2, 10),
                 new Section(STATION3, STATION4, 20)));
 
-        assertThatThrownBy(() -> getPathOf(STATION1, STATION3))
+        assertThatThrownBy(() -> getPathOf(STATION1, STATION3, navigator))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    private Path getPathOf(Station start, Station target, Navigator<Station, Section> navigator) {
+        return new Path(start, target, navigator);
+    }
+
     private Path getPathOf(Station start, Station target) {
-        return new Path(start, target, NAVIGATOR);
+        return getPathOf(start, target, NAVIGATOR);
     }
 }

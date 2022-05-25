@@ -8,18 +8,18 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.entity.SectionEntity;
-import wooteco.subway.entity.StationEntity;
 
 @Repository
 public class SectionDao {
 
     private static final RowMapper<SectionEntity> ROW_MAPPER = (resultSet, rowNum) -> {
         Long lineId = resultSet.getLong("line_id");
-        StationEntity upStation = new StationEntity(
+        Station upStation = new Station(
                 resultSet.getLong("up_station_id"),
                 resultSet.getString("up_station_name"));
-        StationEntity downStation = new StationEntity(
+        Station downStation = new Station(
                 resultSet.getLong("down_station_id"),
                 resultSet.getString("down_station_name"));
         int distance = resultSet.getInt("distance");

@@ -17,7 +17,6 @@ import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.entity.LineEntity;
 import wooteco.subway.entity.SectionEntity;
-import wooteco.subway.entity.StationEntity;
 import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.fixture.DatabaseUsageTest;
 
@@ -33,10 +32,8 @@ class LineRepositoryTest extends DatabaseUsageTest {
     @Autowired
     private SectionDao sectionDao;
 
-    private final Station station1 = new Station(1L, "강남역");
-    private final Station station2 = new Station(2L, "잠실역");
-    private final StationEntity stationEntity1 = new StationEntity(1L, "강남역");
-    private final StationEntity stationEntity2 = new StationEntity(2L, "잠실역");
+    private static final Station STATION1 = new Station(1L, "강남역");
+    private static final Station STATION2 = new Station(2L, "잠실역");
 
     @BeforeEach
     void setup() {
@@ -139,7 +136,7 @@ class LineRepositoryTest extends DatabaseUsageTest {
         @Test
         void 생성된_노선의_도메인을_반환() {
             Line line = new Line("노선", "색상", 1000);
-            Section initialSection = new Section(1L, station1, station2, 10);
+            Section initialSection = new Section(1L, STATION1, STATION2, 10);
 
             LineMap actual = repository.saveLine(line, initialSection);
             LineMap expected = LineMap.of(new Line(1L, "노선", "색상", 1000), initialSection);
@@ -150,14 +147,14 @@ class LineRepositoryTest extends DatabaseUsageTest {
         @Test
         void 새로운_노선과_구간을_저장() {
             Line line = new Line("노선", "색상", 300);
-            Section initialSection = new Section(1L, station1, station2, 10);
+            Section initialSection = new Section(1L, STATION1, STATION2, 10);
             repository.saveLine(line, initialSection);
 
             LineEntity actualLine = lineDao.findById(1L).get();
             List<SectionEntity> actualSections = sectionDao.findAll();
             LineEntity expectedLine = new LineEntity(1L, "노선", "색상", 300);
             List<SectionEntity> expectedSections = List.of(
-                    new SectionEntity(1L, stationEntity1, stationEntity2, 10));
+                    new SectionEntity(1L, STATION1, STATION2, 10));
 
             assertThat(actualLine).isEqualTo(expectedLine);
             assertThat(actualSections).isEqualTo(expectedSections);

@@ -11,16 +11,16 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.entity.SectionEntity;
-import wooteco.subway.entity.StationEntity;
 import wooteco.subway.fixture.DatabaseUsageTest;
 
 @SuppressWarnings("NonAsciiCharacters")
 class SectionDaoTest extends DatabaseUsageTest {
 
-    private static final StationEntity STATION1 = new StationEntity(1L, "강남역");
-    private static final StationEntity STATION2 = new StationEntity(2L, "선릉역");
-    private static final StationEntity STATION3 = new StationEntity(3L, "잠실역");
+    private static final Station STATION1 = new Station(1L, "강남역");
+    private static final Station STATION2 = new Station(2L, "선릉역");
+    private static final Station STATION3 = new Station(3L, "잠실역");
 
     @Autowired
     private SectionDao dao;

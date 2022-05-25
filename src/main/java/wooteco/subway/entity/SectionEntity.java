@@ -7,13 +7,13 @@ import wooteco.subway.domain.station.Station;
 public class SectionEntity {
 
     private final Long lineId;
-    private final StationEntity upStation;
-    private final StationEntity downStation;
+    private final Station upStation;
+    private final Station downStation;
     private final int distance;
 
     public SectionEntity(Long lineId,
-                         StationEntity upStation,
-                         StationEntity downStation,
+                         Station upStation,
+                         Station downStation,
                          int distance) {
         this.lineId = lineId;
         this.upStation = upStation;
@@ -24,8 +24,8 @@ public class SectionEntity {
     public static SectionEntity of(Long lineId, Section section) {
         Station upStation = section.getUpStation();
         Station downStation = section.getDownStation();
-        StationEntity upStationEntity = new StationEntity(upStation.getId(), upStation.getName());
-        StationEntity downStationEntity = new StationEntity(downStation.getId(), downStation.getName());
+        Station upStationEntity = new Station(upStation.getId(), upStation.getName());
+        Station downStationEntity = new Station(downStation.getId(), downStation.getName());
         int distance = section.getDistance();
 
         return new SectionEntity(lineId, upStationEntity, downStationEntity, distance);
@@ -48,7 +48,7 @@ public class SectionEntity {
     }
 
     public Section toDomain() {
-        return new Section(lineId, upStation.toDomain(), downStation.toDomain(), distance);
+        return new Section(lineId, upStation, downStation, distance);
     }
 
     @Override
