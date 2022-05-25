@@ -15,6 +15,7 @@ import wooteco.subway.domain.fare.FareCalculator;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.path.ShortestPathEdge;
 
 class JgraphtTest {
 

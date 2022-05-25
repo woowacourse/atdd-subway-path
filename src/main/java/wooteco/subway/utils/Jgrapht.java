@@ -8,6 +8,7 @@ import org.jgrapht.graph.Multigraph;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.path.ShortestPathEdge;
 
 public class Jgrapht {
 
