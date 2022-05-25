@@ -45,7 +45,7 @@ public class Section {
         }
     }
 
-    public boolean haveStation(final Section section) {
+    public boolean haveOverlapStation(final Section section) {
         Station upStation = section.getUpStation();
         Station downStation = section.getDownStation();
         return isSameUpStation(upStation)

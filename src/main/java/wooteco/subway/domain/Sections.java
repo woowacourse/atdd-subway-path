@@ -57,7 +57,7 @@ public class Sections {
 
     private void validateSectionConnect(final Section section) {
         boolean exist = values.stream()
-                .anyMatch(value -> value.haveStation(section));
+                .anyMatch(value -> value.haveOverlapStation(section));
         if (!exist) {
             throw new SectionCreateException(SECTION_NOT_CONNECT_MESSAGE);
         }
