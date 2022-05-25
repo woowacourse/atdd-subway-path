@@ -9,6 +9,7 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -23,9 +24,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않는 노선을 생성한다.")
     void createLine() {
         // given
-        Long station1 = createStation("강남역");
-        Long station2 = createStation("역삼역");
-        LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4, 0);
+        LineRequest lineRequest = createLineRequest();
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -49,9 +48,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("이미 존재하는 노선을 생성할 수 없다.")
     void createLineWithDuplicateName() {
         // given
-        Long station1 = createStation("강남역");
-        Long station2 = createStation("역삼역");
-        LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4, 0);
+        LineRequest lineRequest = createLineRequest();
         RestAssured.given().log().all()
             .body(lineRequest)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -78,9 +75,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("노선들을 조회한다.")
     void getLines() {
         // given
-        Long station1 = createStation("강남역");
-        Long station2 = createStation("역삼역");
-        LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4, 0);
+        LineRequest lineRequest = createLineRequest();
 
         ExtractableResponse<Response> createResponse1 = RestAssured.given().log().all()
             .body(lineRequest)
@@ -112,9 +107,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하는 노선을 제거한다. 상태코드는 200 이어야 한다.")
     void deleteStation() {
         // given
-        Long station1 = createStation("강남역");
-        Long station2 = createStation("역삼역");
-        LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4, 0);
+        LineRequest lineRequest = createLineRequest();
         ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
             .body(lineRequest)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -220,5 +213,11 @@ class LineAcceptanceTest extends AcceptanceTest {
             .get("/lines/" + lineId)
             .then().log().all()
             .statusCode(HttpStatus.OK.value());
+    }
+
+    private LineRequest createLineRequest() {
+        Long station1 = createStation("강남역");
+        Long station2 = createStation("역삼역");
+        return new LineRequest("3호선", "bg-orange-600", station1, station2, 4, 0);
     }
 }
