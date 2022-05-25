@@ -6,6 +6,7 @@ import wooteco.subway.service.dto.line.LineRequestDto;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+import java.util.Objects;
 
 public class LineRequest {
 
