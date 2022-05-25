@@ -1,6 +1,7 @@
 package wooteco.subway.domain.fare;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,5 +17,13 @@ class AgeDiscounterTest {
         AgeDiscounter ageDiscounter = AgeDiscounter.from(age);
 
         assertThat(ageDiscounter.discount(unDiscountFare)).isEqualTo(discountFare);
+    }
+
+    @DisplayName("계산할 수 없는 나이인 경우 예외를 던진다.")
+    @ParameterizedTest
+    @CsvSource({"-1", "-2", "-3"})
+    void 계산_불가능_나이(int age) {
+        assertThatThrownBy(() -> AgeDiscounter.from(age))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }
