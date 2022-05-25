@@ -43,7 +43,7 @@ public class LineSaveRequest {
     }
 
     public Section convertSection() {
-        return new Section(getUpStationId(), getDownStationId(), getDistance());
+        return Section.of(getUpStationId(), getDownStationId(), getDistance());
     }
 
     public String getName() {

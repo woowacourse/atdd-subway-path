@@ -11,13 +11,12 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
-import wooteco.subway.domain.Station;
 
 @Repository
 public class SectionDao {
 
     private static final RowMapper<Section> SECTION_ROW_MAPPER = (resultSet, rowNum) -> {
-        return new Section(
+        return Section.of(
                 resultSet.getLong("id"),
                 resultSet.getLong("line_id"),
                 resultSet.getLong("up_station_id"),

@@ -4,13 +4,10 @@ public class Line {
 
     private static final int MONEY_UNIT = 10;
 
-    private Long id;
-    private String name;
-    private String color;
-    private int extraFare;
-
-    private Line() {
-    }
+    private final Long id;
+    private final String name;
+    private final String color;
+    private final int extraFare;
 
     private Line(final Long id, final String name, final String color, final int extraFare) {
         validateExtraFare(extraFare);

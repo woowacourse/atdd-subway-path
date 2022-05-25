@@ -44,8 +44,8 @@ class PathServiceTest {
         long stationId2 = stationDao.save(new Station(2L, "삼성역"));
         long stationId3 = stationDao.save(new Station(3L, "역삼역"));
 
-        sectionDao.save(1L, new Section(stationId1, stationId2, 10));
-        sectionDao.save(1L, new Section(stationId2, stationId3, 10));
+        sectionDao.save(1L, Section.of(stationId1, stationId2, 10));
+        sectionDao.save(1L, Section.of(stationId2, stationId3, 10));
 
         // when
         PathResponse pathResponse = pathService.findShortestPath(stationId1, stationId3);

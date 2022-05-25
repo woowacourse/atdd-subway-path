@@ -6,13 +6,13 @@ public class Section {
 
     private static final int MINIMUM_DISTANCE = 0;
 
-    private Long sectionId;
-    private Long lineId;
-    private Long upStationId;
-    private Long downStationId;
-    private int distance;
+    private final Long sectionId;
+    private final Long lineId;
+    private final Long upStationId;
+    private final Long downStationId;
+    private final int distance;
 
-    public Section(final Long sectionId, final Long lineId, final Long upStationId, final Long downStationId, final int distance) {
+    private Section(final Long sectionId, final Long lineId, final Long upStationId, final Long downStationId, final int distance) {
         validateDistance(distance);
         this.sectionId = sectionId;
         this.lineId = lineId;
@@ -21,22 +21,26 @@ public class Section {
         this.distance = distance;
     }
 
-    public Section(final Long upStationId, final Long downStationId, final int distance) {
-        this(null, null, upStationId, downStationId, distance);
+    public static Section of(final Long upStationId, final Long downStationId, final int distance) {
+        return Section.of(null, null, upStationId, downStationId, distance);
+    }
+
+    public static Section of(final Long sectionId, final Long lineId, final Long upStationId, final Long downStationId, final int distance) {
+        return new Section(sectionId, lineId, upStationId, downStationId, distance);
     }
 
     public static Section getReplacedSection(final Section existSection, final Section section) {
         int newDistance = subtractDistance(existSection, section);
         if (existSection.upStationId.equals(section.upStationId)) {
-            return new Section(existSection.sectionId, existSection.lineId,
+            return Section.of(existSection.sectionId, existSection.lineId,
                     section.downStationId, existSection.downStationId, newDistance);
         }
-        return new Section(existSection.upStationId, existSection.lineId,
+        return Section.of(existSection.upStationId, existSection.lineId,
                 existSection.upStationId, section.upStationId, newDistance);
     }
 
     public static Section getDeletedSection(final Section sectionIncludedDownStation, final Section sectionIncludedUpStation) {
-        return new Section(
+        return Section.of(
                 sectionIncludedDownStation.sectionId,
                 sectionIncludedDownStation.lineId,
                 sectionIncludedDownStation.upStationId,

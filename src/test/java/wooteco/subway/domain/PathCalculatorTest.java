@@ -14,9 +14,9 @@ class PathCalculatorTest {
     void findShortestPath() {
         // given
         final List<Section> sections = List.of(
-                new Section(1L, 2L, 10),
-                new Section(2L, 3L, 10),
-                new Section(3L, 4L, 10)
+                Section.of(1L, 2L, 10),
+                Section.of(2L, 3L, 10),
+                Section.of(3L, 4L, 10)
         );
         final PathCalculator pathCalculator = new PathCalculator(sections);
 
@@ -29,9 +29,9 @@ class PathCalculatorTest {
     void findShortestDistance() {
         // given
         final List<Section> sections = List.of(
-                new Section(1L, 2L, 10),
-                new Section(2L, 3L, 10),
-                new Section(3L, 4L, 10)
+                Section.of(1L, 2L, 10),
+                Section.of(2L, 3L, 10),
+                Section.of(3L, 4L, 10)
         );
         final PathCalculator pathCalculator = new PathCalculator(sections);
 

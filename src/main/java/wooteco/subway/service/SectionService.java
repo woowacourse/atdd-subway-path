@@ -49,7 +49,7 @@ public class SectionService {
     }
 
     private Section convertSection(final SectionRequest sectionRequest) {
-        return new Section(sectionRequest.getUpStationId(), sectionRequest.getDownStationId(), sectionRequest.getDistance());
+        return Section.of(sectionRequest.getUpStationId(), sectionRequest.getDownStationId(), sectionRequest.getDistance());
     }
 
     private Sections getAllSections(final Long lineId) {

@@ -68,7 +68,7 @@ public class SectionServiceTest {
         long station1Id = stationDao.save(new Station(1L, "강남역"));
         long station2Id = stationDao.save(new Station(2L, "역삼역"));
 
-        sectionDao.save(1L, new Section(station1Id, station2Id, 10));
+        sectionDao.save(1L, Section.of(station1Id, station2Id, 10));
 
         // when & then
         assertThatThrownBy(
@@ -85,7 +85,7 @@ public class SectionServiceTest {
         long station2Id = stationDao.save(new Station(2L, "역삼역"));
         long station3Id = stationDao.save(new Station(3L, "삼성역"));
 
-        sectionDao.save(1L, new Section(station2Id, station3Id, 10));
+        sectionDao.save(1L, Section.of(station2Id, station3Id, 10));
 
         // when
         sectionService.save(1L, new SectionRequest(station1Id, station2Id, 10));
@@ -93,8 +93,8 @@ public class SectionServiceTest {
         // then
         List<Section> sections = sectionDao.findAllById(1L);
         assertThat(sections).contains(
-                new Section(station1Id, station2Id, 10),
-                new Section(station2Id, station3Id, 10)
+                Section.of(station1Id, station2Id, 10),
+                Section.of(station2Id, station3Id, 10)
         );
     }
 
@@ -106,7 +106,7 @@ public class SectionServiceTest {
         long station2Id = stationDao.save(new Station(2L, "역삼역"));
         long station3Id = stationDao.save(new Station(3L, "삼성역"));
 
-        sectionDao.save(1L, new Section(station1Id, station2Id, 10));
+        sectionDao.save(1L, Section.of(station1Id, station2Id, 10));
 
         // when
         sectionService.save(1L, new SectionRequest(station2Id, station3Id, 10));
@@ -114,8 +114,8 @@ public class SectionServiceTest {
         // then
         List<Section> sections = sectionDao.findAllById(1L);
         assertThat(sections).contains(
-                new Section(station1Id, station2Id, 10),
-                new Section(station2Id, station3Id, 10)
+                Section.of(station1Id, station2Id, 10),
+                Section.of(station2Id, station3Id, 10)
         );
     }
 
@@ -127,7 +127,7 @@ public class SectionServiceTest {
         long station2Id = stationDao.save(new Station(2L, "역삼역"));
         long station3Id = stationDao.save(new Station(3L, "삼성역"));
 
-        sectionDao.save(1L, new Section(station1Id, station3Id, 10));
+        sectionDao.save(1L, Section.of(station1Id, station3Id, 10));
 
         // when
         sectionService.save(1L, new SectionRequest(station2Id, station3Id, 5));
@@ -135,8 +135,8 @@ public class SectionServiceTest {
         // then
         List<Section> sections = sectionDao.findAllById(1L);
         assertThat(sections).contains(
-                new Section(station1Id, station2Id, 5),
-                new Section(station2Id, station3Id, 5)
+                Section.of(station1Id, station2Id, 5),
+                Section.of(station2Id, station3Id, 5)
         );
     }
 
@@ -148,7 +148,7 @@ public class SectionServiceTest {
         long station2Id = stationDao.save(new Station(2L, "역삼역"));
         long station3Id = stationDao.save(new Station(3L, "삼성역"));
 
-        sectionDao.save(1L, new Section(station1Id, station3Id, 10));
+        sectionDao.save(1L, Section.of(station1Id, station3Id, 10));
 
         // when
         sectionService.save(1L, new SectionRequest(station1Id, station2Id, 5));
@@ -156,8 +156,8 @@ public class SectionServiceTest {
         // then
         List<Section> sections = sectionDao.findAllById(1L);
         assertThat(sections).contains(
-                new Section(station1Id, station2Id, 5),
-                new Section(station2Id, station3Id, 5)
+                Section.of(station1Id, station2Id, 5),
+                Section.of(station2Id, station3Id, 5)
         );
     }
 
@@ -169,7 +169,7 @@ public class SectionServiceTest {
         long station2Id = stationDao.save(new Station(2L, "역삼역"));
         long station3Id = stationDao.save(new Station(3L, "삼성역"));
 
-        sectionDao.save(1L, new Section(station1Id, station3Id, 10));
+        sectionDao.save(1L, Section.of(station1Id, station3Id, 10));
 
         // when
         sectionService.save(1L, new SectionRequest(station1Id, station2Id, 5));
@@ -177,8 +177,8 @@ public class SectionServiceTest {
         // then
         List<Section> sections = sectionDao.findAllById(1L);
         assertThat(sections).contains(
-                new Section(station1Id, station2Id, 5),
-                new Section(station2Id, station3Id, 5)
+                Section.of(station1Id, station2Id, 5),
+                Section.of(station2Id, station3Id, 5)
         );
     }
 
@@ -191,7 +191,7 @@ public class SectionServiceTest {
         long station2Id = stationDao.save(new Station(2L, "역삼역"));
         long station3Id = stationDao.save(new Station(3L, "삼성역"));
 
-        sectionDao.save(1L, new Section(station1Id, station3Id, 10));
+        sectionDao.save(1L, Section.of(station1Id, station3Id, 10));
 
         // when & then
         assertThatThrownBy(
@@ -209,7 +209,7 @@ public class SectionServiceTest {
         long station2Id = stationDao.save(new Station(2L, "역삼역"));
         long station3Id = stationDao.save(new Station(3L, "삼성역"));
 
-        sectionDao.save(1L, new Section(station1Id, station3Id, 10));
+        sectionDao.save(1L, Section.of(station1Id, station3Id, 10));
 
         // when & then
         assertThatThrownBy(
@@ -227,7 +227,7 @@ public class SectionServiceTest {
         long station3Id = stationDao.save(new Station(3L, "삼성역"));
         long station4Id = stationDao.save(new Station(4L, "선릉역"));
 
-        sectionDao.save(1L, new Section(station1Id, station2Id, 10));
+        sectionDao.save(1L, Section.of(station1Id, station2Id, 10));
 
         // when & then
         assertThatThrownBy(
@@ -244,15 +244,15 @@ public class SectionServiceTest {
         long station2Id = stationDao.save(new Station(2L, "역삼역"));
         long station3Id = stationDao.save(new Station(3L, "삼성역"));
 
-        sectionDao.save(1L, new Section(station1Id, station2Id, 10));
-        sectionDao.save(1L, new Section(station2Id, station3Id, 10));
+        sectionDao.save(1L, Section.of(station1Id, station2Id, 10));
+        sectionDao.save(1L, Section.of(station2Id, station3Id, 10));
 
         // when
         sectionService.delete(1L, station1Id);
 
         // then
         assertThat(sectionDao.findAllById(1L)).contains(
-                new Section(station2Id, station3Id, 10)
+                Section.of(station2Id, station3Id, 10)
         );
     }
 
@@ -264,15 +264,15 @@ public class SectionServiceTest {
         long station2Id = stationDao.save(new Station(2L, "역삼역"));
         long station3Id = stationDao.save(new Station(3L, "삼성역"));
 
-        sectionDao.save(1L, new Section(station1Id, station2Id, 10));
-        sectionDao.save(1L, new Section(station2Id, station3Id, 10));
+        sectionDao.save(1L, Section.of(station1Id, station2Id, 10));
+        sectionDao.save(1L, Section.of(station2Id, station3Id, 10));
 
         // when
         sectionService.delete(1L, station3Id);
 
         // then
         assertThat(sectionDao.findAllById(1L)).contains(
-                new Section(station1Id, station2Id, 10)
+                Section.of(station1Id, station2Id, 10)
         );
     }
 
@@ -284,15 +284,15 @@ public class SectionServiceTest {
         long station2Id = stationDao.save(new Station(2L, "역삼역"));
         long station3Id = stationDao.save(new Station(3L, "삼성역"));
 
-        sectionDao.save(1L, new Section(station1Id, station2Id, 10));
-        sectionDao.save(1L, new Section(station2Id, station3Id, 10));
+        sectionDao.save(1L, Section.of(station1Id, station2Id, 10));
+        sectionDao.save(1L, Section.of(station2Id, station3Id, 10));
 
         // when
         sectionService.delete(1L, station2Id);
 
         // then
         assertThat(sectionDao.findAllById(1L)).contains(
-                new Section(station1Id, station3Id, 20)
+                Section.of(station1Id, station3Id, 20)
         );
     }
 }

@@ -15,9 +15,9 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DisplayName("Sections 도메인 객체 테스트")
 class SectionsTest {
 
-    private final Section section1 = new Section(1L, 2L, 10);
-    private final Section section2 = new Section(2L, 3L, 10);
-    private final Section section3 = new Section(3L, 4L, 10);
+    private final Section section1 = Section.of(1L, 2L, 10);
+    private final Section section2 = Section.of(2L, 3L, 10);
+    private final Section section3 = Section.of(3L, 4L, 10);
 
     private final Sections sections = new Sections(List.of(section1, section2, section3));
 
@@ -38,7 +38,7 @@ class SectionsTest {
     @DisplayName("상행역과 하행역이 구간 목록에 존재할 경우 예외가 발생한다.")
     void addAlreadyExistUpAndDownStation(long downStationId) {
         // given
-        Section newSection = new Section(1L, downStationId, 10);
+        Section newSection = Section.of(1L, downStationId, 10);
 
         // when & then
         assertThatThrownBy(() -> sections.add(newSection))
@@ -50,7 +50,7 @@ class SectionsTest {
     @Test
     void addNotExistUpAndDownStation() {
         // given
-        Section newSection = new Section(5L, 6L, 10);
+        Section newSection = Section.of(5L, 6L, 10);
 
         // when & then
         assertThatThrownBy(() -> sections.add(newSection))
@@ -62,7 +62,7 @@ class SectionsTest {
     @Test
     void addEndUpStation() {
         // given
-        Section newSection = new Section(4L, 5L, 10);
+        Section newSection = Section.of(4L, 5L, 10);
 
         // when
         sections.add(newSection);
@@ -75,7 +75,7 @@ class SectionsTest {
     @Test
     void addEndDownStation() {
         // given
-        Section newSection = new Section(9L, 1L, 10);
+        Section newSection = Section.of(9L, 1L, 10);
 
         // when
         sections.add(newSection);
@@ -88,15 +88,15 @@ class SectionsTest {
     @Test
     void addUpStation() {
         // given
-        Section newSection = new Section(9L, 2L, 5);
+        Section newSection = Section.of(9L, 2L, 5);
 
         // when
         sections.add(newSection);
 
         // then
         assertAll(
-                () -> assertThat(sections.getSections()).contains(new Section(1L, 9L, 5)),
-                () -> assertThat(sections.getSections()).contains(new Section(9L, 2L, 5))
+                () -> assertThat(sections.getSections()).contains(Section.of(1L, 9L, 5)),
+                () -> assertThat(sections.getSections()).contains(Section.of(9L, 2L, 5))
         );
     }
 
@@ -104,15 +104,15 @@ class SectionsTest {
     @Test
     void addDownStation() {
         // given
-        Section newSection = new Section(1L, 9L, 5);
+        Section newSection = Section.of(1L, 9L, 5);
 
         // when
         sections.add(newSection);
 
         // then
         assertAll(
-                () -> assertThat(sections.getSections()).contains(new Section(1L, 9L, 5)),
-                () -> assertThat(sections.getSections()).contains(new Section(9L, 2L, 5))
+                () -> assertThat(sections.getSections()).contains(Section.of(1L, 9L, 5)),
+                () -> assertThat(sections.getSections()).contains(Section.of(9L, 2L, 5))
         );
     }
 
@@ -120,7 +120,7 @@ class SectionsTest {
     @Test
     void deleteOnlyOneSection() {
         // given
-        Sections sections = new Sections(List.of(new Section(1L, 2L, 10)));
+        Sections sections = new Sections(List.of(Section.of(1L, 2L, 10)));
 
         // when & then
         assertThatThrownBy(() -> sections.delete(1L))
@@ -162,7 +162,7 @@ class SectionsTest {
 
         // then
         assertAll(
-                () -> assertThat(sections.getSections()).contains(new Section(1L, 3L, 20)),
+                () -> assertThat(sections.getSections()).contains(Section.of(1L, 3L, 20)),
                 () -> assertThat(sections.getSections()).contains(section3)
         );
     }
