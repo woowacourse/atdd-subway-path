@@ -1,6 +1,9 @@
 package wooteco.subway.dto.response;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import wooteco.subway.domain.station.Station;
 
 @Getter

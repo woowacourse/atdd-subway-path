@@ -24,9 +24,9 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.utils.FixtureUtils.*;
 import static wooteco.subway.utils.FixtureUtils._7호선;
 import static wooteco.subway.utils.FixtureUtils.신분당선;
+import static wooteco.subway.utils.FixtureUtils.*;
 import static wooteco.subway.utils.LineFixtures.*;
 
 @DisplayName("지하철 노선 E2E")

@@ -1,6 +1,5 @@
 package wooteco.subway.Infrastructure.line;
 
-import wooteco.subway.Infrastructure.line.LineDao;
 import wooteco.subway.domain.line.Line;
 
 import java.util.*;

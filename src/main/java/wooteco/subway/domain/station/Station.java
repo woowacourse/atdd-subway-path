@@ -6,8 +6,6 @@ import lombok.Setter;
 import lombok.ToString;
 import wooteco.subway.exception.constant.BlankArgumentException;
 
-import java.util.Objects;
-
 import static wooteco.subway.utils.StringUtils.isBlank;
 
 @Getter
