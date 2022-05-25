@@ -7,6 +7,9 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.vo.LineColor;
+import wooteco.subway.domain.vo.LineExtraFare;
+import wooteco.subway.domain.vo.LineName;
 import wooteco.subway.exception.notfound.NotFoundLineException;
 import wooteco.subway.exception.unknown.LineDeleteFailureException;
 import wooteco.subway.exception.unknown.LineUpdateFailureException;
@@ -38,8 +41,9 @@ public class SpringLineService implements LineService {
         final Station downStation = stationService.findById(lineServiceRequest.getDownStationId());
         final Section section = new Section(upStation, downStation, lineServiceRequest.getDistance());
 
-        final Line saveRequest = new Line(lineServiceRequest.getName(), lineServiceRequest.getColor(),
-                lineServiceRequest.getExtraFare(), new Sections(List.of(section)));
+        final Line saveRequest = new Line(LineName.from(lineServiceRequest.getName()),
+                LineColor.from(lineServiceRequest.getColor()),
+                LineExtraFare.from(lineServiceRequest.getExtraFare()), new Sections(List.of(section)));
 
         return lineRepository.save(saveRequest);
     }
@@ -79,7 +83,8 @@ public class SpringLineService implements LineService {
 
     @Override
     public void update(Long id, LineServiceRequest lineServiceRequest) {
-        final Line updateRequest = new Line(id, lineServiceRequest.getName(), lineServiceRequest.getColor());
+        final Line updateRequest = new Line(id, LineName.from(lineServiceRequest.getName()),
+                LineColor.from(lineServiceRequest.getColor()));
         validate(id, lineServiceRequest);
 
         final long affectedRow = lineRepository.update(updateRequest);

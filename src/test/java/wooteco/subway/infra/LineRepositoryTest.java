@@ -18,6 +18,8 @@ import org.springframework.test.context.TestConstructor.AutowireMode;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.vo.LineColor;
+import wooteco.subway.domain.vo.LineName;
 import wooteco.subway.infra.dao.LineDao;
 import wooteco.subway.infra.dao.SectionDao;
 import wooteco.subway.infra.repository.JdbcLineRepository;
@@ -48,7 +50,7 @@ class LineRepositoryTest {
     @DisplayName("Line 저장")
     void save() {
         // given
-        final Line line = new Line("2호선", "bg-600-green", SECTIONS);
+        final Line line = new Line(LineName.from("2호선"), LineColor.from("bg-600-green"), SECTIONS);
 
         // when
         final Line saved = lineRepository.save(line);
@@ -66,7 +68,7 @@ class LineRepositoryTest {
     @DisplayName("Line 단 건 조회")
     void findById() {
         // given
-        final Line line = new Line("2호선", "bg-600-green", SECTIONS);
+        final Line line = new Line(LineName.from("2호선"), LineColor.from("bg-600-green"), SECTIONS);
         final Line saved = lineRepository.save(line);
 
         // when
@@ -86,11 +88,11 @@ class LineRepositoryTest {
     @DisplayName("Line 업데이트")
     void updateById() {
         // given
-        final Line line = new Line("2호선", "bg-600-green", SECTIONS);
+        final Line line = new Line(LineName.from("2호선"), LineColor.from("bg-600-green"), SECTIONS);
         final Line saved = lineRepository.save(line);
 
         // when
-        final Line newLine = new Line(saved.getId(), "3호선", "bg-700-blue");
+        final Line newLine = new Line(saved.getId(), LineName.from("3호선"), LineColor.from("bg-700-blue"));
         final long affectedRow = lineRepository.update(newLine);
         final Optional<Line> updated = lineRepository.findById(saved.getId());
 
@@ -107,7 +109,7 @@ class LineRepositoryTest {
     @DisplayName("Line 단 건 삭제")
     void deleteById() {
         // given
-        final Line line = new Line("2호선", "bg-600-green", SECTIONS);
+        final Line line = new Line(LineName.from("2호선"), LineColor.from("bg-600-green"), SECTIONS);
         final Line saved = lineRepository.save(line);
         final Long id = saved.getId();
 

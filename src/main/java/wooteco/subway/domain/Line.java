@@ -4,16 +4,19 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import wooteco.subway.domain.vo.LineColor;
+import wooteco.subway.domain.vo.LineExtraFare;
+import wooteco.subway.domain.vo.LineName;
 
 public class Line {
 
     private final Long id;
-    private final String name;
-    private final String color;
-    private final Long extraFare;
+    private final LineName name;
+    private final LineColor color;
+    private final LineExtraFare extraFare;
     private final Sections sections;
 
-    public Line(Long id, String name, String color, Long extraFare, Sections sections) {
+    public Line(Long id, LineName name, LineColor color, LineExtraFare extraFare, Sections sections) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -21,28 +24,29 @@ public class Line {
         this.sections = sections;
     }
 
-    public Line(Long id, String name, String color, Sections sections) {
-        this(id, name, color, null, sections);
+    public Line(Long id, LineName name, LineColor color, Sections sections) {
+        this(id, name, color, LineExtraFare.from(0L), sections);
     }
 
-    public Line(Long id, String name, String color, Long extraFare) {
+    public Line(Long id, LineName name, LineColor color, LineExtraFare extraFare) {
         this(id, name, color, extraFare, null);
     }
 
-    public Line(Long id, String name, String color) {
-        this(id, name, color, null, null);
+    public Line(Long id, LineName name, LineColor color) {
+        this(id, name, color, LineExtraFare.from(0L), null);
     }
 
-    public Line(String name, String color, Sections sections) {
-        this(null, name, color, null, sections);
+    public Line(LineName name, LineColor color, Sections sections) {
+        this(null, name, color, LineExtraFare.from(0L), sections);
     }
 
-    public Line(String name, String color, Long extraFare, Sections sections) {
+    public Line(LineName name, LineColor color, LineExtraFare extraFare, Sections sections) {
         this(null, name, color, extraFare, sections);
     }
 
     public static Line of(Line line, Sections sections) {
-        return new Line(line.getId(), line.getName(), line.getColor(), line.getExtraFare(), sections);
+        return new Line(line.getId(), LineName.from(line.getName()), LineColor.from(line.getColor()),
+                LineExtraFare.from(line.getExtraFare()), sections);
     }
 
     public List<Station> getStations() {
@@ -62,11 +66,11 @@ public class Line {
     }
 
     public String getName() {
-        return name;
+        return name.getName();
     }
 
     public String getColor() {
-        return color;
+        return color.getColor();
     }
 
     public Sections getSections() {
@@ -74,7 +78,7 @@ public class Line {
     }
 
     public Long getExtraFare() {
-        return extraFare;
+        return extraFare.getExtraFare();
     }
 
     @Override

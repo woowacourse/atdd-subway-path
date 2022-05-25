@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.vo.LineColor;
+import wooteco.subway.domain.vo.LineExtraFare;
+import wooteco.subway.domain.vo.LineName;
 import wooteco.subway.exception.SubwayUnknownException;
 import wooteco.subway.exception.SubwayValidationException;
 import wooteco.subway.infra.dao.LineDao;
@@ -34,7 +37,8 @@ public class JdbcLineRepository implements LineRepository {
         final Section section = sections.get(0);
         sectionRepository.save(savedLine.getId(), section);
 
-        return new Line(savedLine.getId(), savedLine.getName(), savedLine.getColor(), sectionInput);
+        return new Line(savedLine.getId(), LineName.from(savedLine.getName()), LineColor.from(savedLine.getColor()),
+                sectionInput);
     }
 
     @Override
@@ -50,7 +54,13 @@ public class JdbcLineRepository implements LineRepository {
     private List<Line> findAllLines() {
         return lineDao.findAll()
                 .stream()
-                .map(entity -> new Line(entity.getId(), entity.getName(), entity.getColor(), entity.getExtraFare()))
+                .map(entity -> new Line
+                        (
+                                entity.getId(),
+                                LineName.from(entity.getName()),
+                                LineColor.from(entity.getColor()),
+                                LineExtraFare.from(entity.getExtraFare())
+                        ))
                 .collect(Collectors.toList());
     }
 
@@ -73,7 +83,7 @@ public class JdbcLineRepository implements LineRepository {
     }
 
     private Line toLine(LineEntity entity) {
-        return new Line(entity.getId(), entity.getName(), entity.getColor());
+        return new Line(entity.getId(), LineName.from(entity.getName()), LineColor.from(entity.getColor()));
     }
 
     @Override

@@ -20,12 +20,8 @@ public class LineServiceRequest {
         this.extraFare = extraFare;
     }
 
-    public LineServiceRequest(Long id, String name, String color, Long upStationId, Long downStationId, Long distance) {
-        this(id, name, color, upStationId, downStationId, distance, null);
-    }
-
     public LineServiceRequest(String name, String color, Long upStationId, Long downStationId, Long distance) {
-        this(null, name, color, upStationId, downStationId, distance);
+        this(null, name, color, upStationId, downStationId, distance, 0L);
     }
 
     public void setId(Long id) {
