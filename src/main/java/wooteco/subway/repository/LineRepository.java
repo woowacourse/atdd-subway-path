@@ -1,6 +1,9 @@
 package wooteco.subway.repository;
 
+import static java.util.stream.Collectors.groupingBy;
+
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.dao.LineDao;
@@ -28,6 +31,16 @@ public class LineRepository {
 
     public SubwayMap findAllLines() {
         return SubwayMap.of(lineDao.findAll(), sectionDao.findAll());
+    }
+
+    public List<LineMap> findAllLines2() {
+        Map<Long, List<Section>> sectionsMap = sectionDao.findAll()
+                .stream()
+                .collect(groupingBy(Section::getLineId));
+        return lineDao.findAll()
+                .stream()
+                .map(lineEntity -> new LineMap(lineEntity, new Sections(sectionsMap.get(lineEntity.getId()))))
+                .collect(Collectors.toList());
     }
 
     public LineMap findExistingLine(Long id) {
