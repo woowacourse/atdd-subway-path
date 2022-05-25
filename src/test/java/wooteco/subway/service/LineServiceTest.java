@@ -13,16 +13,22 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import wooteco.subway.dao.LineDao;
-import wooteco.subway.dao.JdbcLineDao;
-import wooteco.subway.dao.SectionDao;
-import wooteco.subway.dao.JdbcSectionDao;
-import wooteco.subway.dao.StationDao;
-import wooteco.subway.dao.JdbcStationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
-import wooteco.subway.service.dto.LineServiceRequest;
+import wooteco.subway.repository.JdbcLineRepository;
+import wooteco.subway.repository.JdbcSectionRepository;
+import wooteco.subway.repository.JdbcStationRepository;
+import wooteco.subway.repository.LineRepository;
+import wooteco.subway.repository.SectionRepository;
+import wooteco.subway.repository.StationRepository;
+import wooteco.subway.repository.dao.JdbcLineDao;
+import wooteco.subway.repository.dao.JdbcSectionDao;
+import wooteco.subway.repository.dao.JdbcStationDao;
+import wooteco.subway.repository.dao.LineDao;
+import wooteco.subway.repository.dao.SectionDao;
+import wooteco.subway.repository.dao.StationDao;
 import wooteco.subway.service.dto.LineResponse;
+import wooteco.subway.service.dto.LineServiceRequest;
 import wooteco.subway.service.dto.StationResponse;
 
 @JdbcTest
@@ -31,32 +37,35 @@ class LineServiceTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private LineDao lineDao;
-    private StationDao stationDao;
+    private LineRepository lineRepository;
+    private StationRepository stationRepository;
     private LineService lineService;
 
     @BeforeEach
     void setUp() {
-        lineDao = new JdbcLineDao(jdbcTemplate);
+        LineDao lineDao = new JdbcLineDao(jdbcTemplate);
+        lineRepository = new JdbcLineRepository(lineDao);
+        StationDao stationDao = new JdbcStationDao(jdbcTemplate);
+        stationRepository = new JdbcStationRepository(stationDao);
         SectionDao sectionDao = new JdbcSectionDao(jdbcTemplate);
-        stationDao = new JdbcStationDao(jdbcTemplate);
-        lineService = new LineService(lineDao, sectionDao, stationDao);
+        SectionRepository sectionRepository = new JdbcSectionRepository(sectionDao, lineDao);
+        lineService = new LineService(lineRepository, stationRepository, sectionRepository);
 
-        deleteAllLine(lineDao);
-        deleteAllStation(stationDao);
+        deleteAllLine(lineRepository);
+        deleteAllStation(stationRepository);
     }
 
     @Test
     void save() {
         // given
-        Long savedId1 = stationDao.save(new Station("강남역"));
-        Long savedId2 = stationDao.save(new Station("역삼역"));
+        Long savedId1 = stationRepository.save(new Station("강남역"));
+        Long savedId2 = stationRepository.save(new Station("역삼역"));
         LineServiceRequest line = new LineServiceRequest("1호선", "bg-red-600", savedId1,
-            savedId2, 5);
+            savedId2, 5, 0);
 
         // when
         LineResponse savedLine = lineService.save(line);
-        Line result = lineDao.findById(savedLine.getId()).get();
+        Line result = lineRepository.findById(savedLine.getId());
 
         // then
         assertThat(line.getName()).isEqualTo(result.getName());
@@ -65,12 +74,12 @@ class LineServiceTest {
     @Test
     void validateDuplication() {
         // given
-        Long savedId1 = stationDao.save(new Station("강남역"));
-        Long savedId2 = stationDao.save(new Station("역삼역"));
+        Long savedId1 = stationRepository.save(new Station("강남역"));
+        Long savedId2 = stationRepository.save(new Station("역삼역"));
         LineServiceRequest line1 = new LineServiceRequest("1호선", "bg-red-600", savedId1,
-            savedId2, 5);
+            savedId2, 5, 0);
         LineServiceRequest line2 = new LineServiceRequest("1호선", "bg-red-600", savedId1,
-            savedId2, 5);
+            savedId2, 5, 0);
 
         // when
         lineService.save(line1);
@@ -84,12 +93,12 @@ class LineServiceTest {
     @Test
     void findAll() {
         // given
-        Long savedId1 = stationDao.save(new Station("강남역"));
-        Long savedId2 = stationDao.save(new Station("역삼역"));
+        Long savedId1 = stationRepository.save(new Station("강남역"));
+        Long savedId2 = stationRepository.save(new Station("역삼역"));
         LineServiceRequest line1 = new LineServiceRequest("1호선", "bg-red-600", savedId1,
-            savedId2, 5);
+            savedId2, 5, 0);
         LineServiceRequest line2 = new LineServiceRequest("2호선", "bg-green-600", savedId1,
-            savedId2, 5);
+            savedId2, 5, 0);
 
         // when
         lineService.save(line1);
@@ -109,10 +118,10 @@ class LineServiceTest {
     @Test
     void delete() {
         // given
-        Long savedId1 = stationDao.save(new Station("강남역"));
-        Long savedId2 = stationDao.save(new Station("역삼역"));
+        Long savedId1 = stationRepository.save(new Station("강남역"));
+        Long savedId2 = stationRepository.save(new Station("역삼역"));
         LineServiceRequest line = new LineServiceRequest("1호선", "bg-red-600", savedId1,
-            savedId2, 5);
+            savedId2, 5, 0);
         LineResponse savedLine = lineService.save(line);
 
         // when
@@ -130,17 +139,17 @@ class LineServiceTest {
     @Test
     void update() {
         // given
-        Long savedId1 = stationDao.save(new Station("강남역"));
-        Long savedId2 = stationDao.save(new Station("역삼역"));
+        Long savedId1 = stationRepository.save(new Station("강남역"));
+        Long savedId2 = stationRepository.save(new Station("역삼역"));
         LineServiceRequest originLine = new LineServiceRequest("1호선", "bg-red-600",
             savedId1,
-            savedId2, 5);
+            savedId2, 5, 0);
         LineResponse savedLine = lineService.save(originLine);
 
         // when
         LineServiceRequest newLineEntity = new LineServiceRequest("2호선", "bg-green-600");
         lineService.updateById(savedLine.getId(), newLineEntity);
-        Line lineEntity = lineDao.findById(savedLine.getId()).get();
+        Line lineEntity = lineRepository.findById(savedLine.getId());
 
         // then
         assertThat(lineEntity.getName()).isEqualTo(newLineEntity.getName());
@@ -149,11 +158,11 @@ class LineServiceTest {
     @Test
     void findById() {
         // given
-        Long savedId1 = stationDao.save(new Station("강남역"));
-        Long savedId2 = stationDao.save(new Station("역삼역"));
+        Long savedId1 = stationRepository.save(new Station("강남역"));
+        Long savedId2 = stationRepository.save(new Station("역삼역"));
         LineServiceRequest originLine = new LineServiceRequest("1호선", "bg-red-600",
             savedId1,
-            savedId2, 5);
+            savedId2, 5, 0);
         LineResponse savedLine = lineService.save(originLine);
 
         // when

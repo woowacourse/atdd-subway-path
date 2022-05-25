@@ -10,9 +10,10 @@ public class ShortestPathTest {
     @Test
     void findShortestDistance() {
         // given
-        Section section1 = new Section(1L, 1L, 2L, 3);
-        Section section2 = new Section(1L, 2L, 3L, 4);
-        Section section3 = new Section(1L, 3L, 4L, 5);
+        Line line = new Line(1L, "name", "color", 0);
+        Section section1 = new Section(line, 1L, 2L, 3);
+        Section section2 = new Section(line, 2L, 3L, 4);
+        Section section3 = new Section(line, 3L, 4L, 5);
         Sections sections = new Sections(List.of(section1, section2, section3));
         ShortestPath shortestPath = new ShortestPath(sections);
 
@@ -26,9 +27,10 @@ public class ShortestPathTest {
     @Test
     void findShortestPath() {
         // given
-        Section section1 = new Section(1L, 1L, 2L, 3);
-        Section section2 = new Section(1L, 2L, 3L, 4);
-        Section section3 = new Section(1L, 3L, 4L, 5);
+        Line line = new Line(1L, "name", "color", 0);
+        Section section1 = new Section(line, 1L, 2L, 3);
+        Section section2 = new Section(line, 2L, 3L, 4);
+        Section section3 = new Section(line, 3L, 4L, 5);
         Sections sections = new Sections(List.of(section1, section2, section3));
         ShortestPath shortestPath = new ShortestPath(sections);
 

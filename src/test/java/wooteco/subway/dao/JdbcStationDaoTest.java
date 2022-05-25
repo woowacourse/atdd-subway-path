@@ -13,6 +13,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.domain.Station;
+import wooteco.subway.repository.dao.JdbcStationDao;
+import wooteco.subway.repository.dao.StationDao;
+import wooteco.subway.repository.entity.StationEntity;
 
 @JdbcTest
 class JdbcStationDaoTest {
@@ -26,9 +29,9 @@ class JdbcStationDaoTest {
     void setUp() {
         stationDao = new JdbcStationDao(jdbcTemplate);
 
-        List<Station> stationEntities = stationDao.findAll();
+        List<StationEntity> stationEntities = stationDao.findAll();
         List<Long> stationIds = stationEntities.stream()
-            .map(Station::getId)
+            .map(StationEntity::getId)
             .collect(Collectors.toList());
 
         for (Long stationId : stationIds) {
@@ -55,7 +58,7 @@ class JdbcStationDaoTest {
         Long savedId2 = stationDao.save(new Station("애쉬"));
 
         // when
-        List<Station> stations = stationDao.findAll();
+        List<StationEntity> stations = stationDao.findAll();
 
         // then
         assertAll(
@@ -87,9 +90,10 @@ class JdbcStationDaoTest {
 
         // when
         stationDao.deleteById(savedId);
-        List<Station> stationEntities = stationDao.findAll();
+        List<StationEntity> stationEntities = stationDao.findAll();
 
         // then
-        assertThat(stationEntities).doesNotContain(station);
+        StationEntity stationEntity = new StationEntity(savedId, station.getName());
+        assertThat(stationEntities).doesNotContain(stationEntity);
     }
 }

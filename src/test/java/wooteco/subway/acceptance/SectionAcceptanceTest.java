@@ -14,15 +14,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Section;
+import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.ui.dto.LineRequest;
 import wooteco.subway.ui.dto.SectionRequest;
 
 public class SectionAcceptanceTest extends AcceptanceTest {
 
     @Autowired
-    SectionDao sectionDao;
+    SectionRepository sectionRepository;
 
     @Test
     @DisplayName("구간을 등록한다. 1-3 -> 1-2-3")
@@ -45,7 +45,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
             .statusCode(HttpStatus.OK.value())
             .extract();
 
-        List<Section> inputSections = sectionDao.findByLineId(lineId);
+        List<Section> inputSections = sectionRepository.findByLineId(lineId);
         Section section = inputSections.stream()
             .filter(i -> i.mathUpStationId(1L))
             .findAny()
@@ -86,7 +86,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
             .then().log().all()
             .extract();
 
-        List<Section> inputSections = sectionDao.findByLineId(lineId);
+        List<Section> inputSections = sectionRepository.findByLineId(lineId);
         Section section = inputSections.stream()
             .filter(i -> i.mathUpStationId(1L))
             .findAny()
@@ -100,7 +100,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     }
 
     Long saveLine(Long station1, Long station2) {
-        LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4);
+        LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4, 0);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
             .body(lineRequest)

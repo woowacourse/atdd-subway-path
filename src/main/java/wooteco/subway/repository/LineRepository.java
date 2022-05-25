@@ -1,10 +1,9 @@
-package wooteco.subway.dao;
+package wooteco.subway.repository;
 
 import java.util.List;
-import java.util.Optional;
 import wooteco.subway.domain.Line;
 
-public interface LineDao {
+public interface LineRepository {
 
     Long save(Line line);
 
@@ -12,7 +11,7 @@ public interface LineDao {
 
     boolean deleteById(Long id);
 
-    Optional<Line> findById(Long id);
+    Line findById(Long id);
 
     boolean updateById(Line line);
 

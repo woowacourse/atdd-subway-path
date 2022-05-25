@@ -15,7 +15,7 @@ public class AcceptanceTestFixture {
     public static Long createLine(String name, String color, Long upStationId, Long downStationId,
         int distance) {
         LineRequest lineRequest = new LineRequest(name, color, upStationId, downStationId,
-            distance);
+            distance, 0);
         ExtractableResponse<Response> response = RestAssured.given().log().all()
             .body(lineRequest)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -29,13 +29,13 @@ public class AcceptanceTestFixture {
         return Long.parseLong(uri.split("/")[2]);
     }
 
-    public static void createSection(Long upStationId, Long downStationId, int distance) {
+    public static void createSection(Long lineId, Long upStationId, Long downStationId, int distance) {
         SectionRequest sectionRequest = new SectionRequest(upStationId, downStationId, distance);
         ExtractableResponse<Response> response = RestAssured.given().log().all()
             .body(sectionRequest)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
-            .post("/lines/" + 1L + "/sections")
+            .post("/lines/" + lineId + "/sections")
             .then().log().all()
             .statusCode(HttpStatus.OK.value())
             .extract();

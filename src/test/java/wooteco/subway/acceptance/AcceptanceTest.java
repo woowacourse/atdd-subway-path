@@ -8,10 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
-import wooteco.subway.dao.JdbcLineDao;
-import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Station;
+import wooteco.subway.repository.dao.JdbcLineDao;
+import wooteco.subway.repository.dao.StationDao;
+import wooteco.subway.repository.entity.LineEntity;
+import wooteco.subway.repository.entity.StationEntity;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -35,9 +35,9 @@ public class AcceptanceTest {
     }
 
     private void clearAllStations() {
-        List<Station> stationEntities = stationDao.findAll();
+        List<StationEntity> stationEntities = stationDao.findAll();
         List<Long> stationIds = stationEntities.stream()
-            .map(Station::getId)
+            .map(StationEntity::getId)
             .collect(Collectors.toList());
 
         for (Long stationId : stationIds) {
@@ -46,9 +46,9 @@ public class AcceptanceTest {
     }
 
     private void clearAllLines() {
-        List<Line> lineEntities = jdbcLineDao.findAll();
+        List<LineEntity> lineEntities = jdbcLineDao.findAll();
         List<Long> lineIds = lineEntities.stream()
-            .map(Line::getId)
+            .map(LineEntity::getId)
             .collect(Collectors.toList());
 
         for (Long lineId : lineIds) {
