@@ -19,7 +19,7 @@ public class ClientFare {
         int chargePrice = sections.findChargePrice();
         int price = fare.calculate(distance) + chargePrice;
 
-        DiscountPolicy discountPolicy = DiscountFactory.findDiscountPolicy(age);
+        DiscountPolicy discountPolicy = DiscountType.findDiscountPolicy(age);
         return discountPolicy.apply(price);
     }
 }
