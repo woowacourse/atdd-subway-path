@@ -1,12 +1,10 @@
-package wooteco.subway.domain.discountpolicy;
+package wooteco.subway.domain.policy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.fare.FareFactory;
-import wooteco.subway.domain.policy.DiscountPolicy;
-import wooteco.subway.domain.policy.DiscountPolicyFactory;
 
 public class StudentsPolicyTest {
     private final int fare = new FareFactory().getFare(58).calculateFare(58, 0);

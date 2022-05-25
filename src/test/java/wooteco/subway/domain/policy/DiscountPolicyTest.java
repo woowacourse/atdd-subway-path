@@ -1,10 +1,9 @@
-package wooteco.subway.domain.discountpolicy;
+package wooteco.subway.domain.policy;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.policy.DiscountPolicyFactory;
 import wooteco.subway.exception.domain.DiscountPolicyException;
 
 public class DiscountPolicyTest {

@@ -26,7 +26,6 @@ public class WebFlowAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     void setUp() {
         super.setUp();
-
     }
 
     @Nested

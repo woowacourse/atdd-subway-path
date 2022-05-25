@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.fare.FareFactory;
 import wooteco.subway.domain.pathfinder.PathFinder;
 import wooteco.subway.domain.pathfinder.PathFinderFactory;
@@ -37,7 +36,7 @@ public class PathService {
         List<Section> sections = pathFinder.calculateSections(fromStation, toStation);
         int extraFare = calculateMaxExtraFare(sections);
         int distance = pathFinder.calculateDistance(fromStation, toStation);
-        int  totalFare = new FareFactory().getFare(distance).calculateFare(distance, extraFare);
+        int totalFare = new FareFactory().getFare(distance).calculateFare(distance, extraFare);
         DiscountPolicy discountPolicy = new DiscountPolicyFactory().getDiscountPolicy(age);
         return PathResponse.of(stations, distance, discountPolicy.calculateDiscountFare(totalFare));
     }
