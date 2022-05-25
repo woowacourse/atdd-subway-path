@@ -30,13 +30,13 @@ class LineRepositoryTest extends DatabaseUsageTest {
     @Autowired
     private SectionDao sectionDao;
 
-    private static final Station STATION1 = new Station(1L, "강남역");
-    private static final Station STATION2 = new Station(2L, "잠실역");
-    private static final Station STATION3 = new Station(3L, "선릉역");
+    private static final Station 강남역 = new Station(1L, "강남역");
+    private static final Station 잠실역 = new Station(2L, "잠실역");
+    private static final Station 선릉역 = new Station(3L, "선릉역");
 
     @BeforeEach
     void setup() {
-        databaseFixtureUtils.saveStations(STATION1, STATION2, STATION3);
+        databaseFixtureUtils.saveStations(강남역, 잠실역, 선릉역);
     }
 
     @Test
@@ -135,7 +135,7 @@ class LineRepositoryTest extends DatabaseUsageTest {
         @Test
         void 생성된_노선의_도메인을_반환() {
             Line line = new Line("노선", "색상", 1000);
-            Section initialSection = new Section(1L, STATION1, STATION2, 10);
+            Section initialSection = new Section(1L, 강남역, 잠실역, 10);
 
             LineMap actual = repository.saveLine(line, initialSection);
             LineMap expected = LineMap.of(new Line(1L, "노선", "색상", 1000), initialSection);
@@ -146,14 +146,14 @@ class LineRepositoryTest extends DatabaseUsageTest {
         @Test
         void 새로운_노선과_구간을_저장() {
             Line line = new Line("노선", "색상", 300);
-            Section initialSection = new Section(1L, STATION1, STATION2, 10);
+            Section initialSection = new Section(1L, 강남역, 잠실역, 10);
             repository.saveLine(line, initialSection);
 
             Line actualLine = lineDao.findById(1L).get();
             List<Section> actualSections = sectionDao.findAll();
             Line expectedLine = new Line(1L, "노선", "색상", 300);
             List<Section> expectedSections = List.of(
-                    new Section(1L, STATION1, STATION2, 10));
+                    new Section(1L, 강남역, 잠실역, 10));
 
             assertThat(actualLine).isEqualTo(expectedLine);
             assertThat(actualSections).isEqualTo(expectedSections);
@@ -174,8 +174,8 @@ class LineRepositoryTest extends DatabaseUsageTest {
     @Test
     void deleteLine_메서드는_노선과_등록된_구간들을_제거() {
         databaseFixtureUtils.saveLine("노선1", "색상", 100);
-        databaseFixtureUtils.saveSection(1L, STATION1, STATION2, 10);
-        databaseFixtureUtils.saveSection(1L, STATION2, STATION3, 15);
+        databaseFixtureUtils.saveSection(1L, 강남역, 잠실역, 10);
+        databaseFixtureUtils.saveSection(1L, 잠실역, 선릉역, 15);
 
         repository.deleteLine(new Line(1L, "노선1", "색상", 100));
         boolean lineExistence = lineDao.findById(1L).isPresent();

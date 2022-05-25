@@ -29,38 +29,38 @@ class SectionServiceTest extends DatabaseUsageTest {
     @Nested
     class SaveTest {
 
-        private final Station STATION1 = new Station(1L, "강남역");
-        private final Station STATION2 = new Station(2L, "선릉역");
-        private final Station STATION3 = new Station(3L, "잠실역");
+        private final Station 강남역 = new Station(1L, "강남역");
+        private final Station 선릉역 = new Station(2L, "선릉역");
+        private final Station 잠실역 = new Station(3L, "잠실역");
 
         @BeforeEach
         void setupStations() {
-            databaseFixtureUtils.saveStations(STATION1, STATION2, STATION3);
+            databaseFixtureUtils.saveStations(강남역, 선릉역, 잠실역);
             databaseFixtureUtils.saveLine("존재하는 노선", "색깔");
         }
 
         @Test
         void 상행_종점_등록시_그대로_저장() {
-            databaseFixtureUtils.saveSection(1L, STATION2, STATION3, 10);
+            databaseFixtureUtils.saveSection(1L, 선릉역, 잠실역, 10);
 
             service.save(1L, new CreateSectionRequest(1L, 2L, 20));
             List<Section> actual = dao.findAllByLineId(1L);
             List<Section> expected = List.of(
-                    new Section(1L, STATION1, STATION2, 20),
-                    new Section(1L, STATION2, STATION3, 10));
+                    new Section(1L, 강남역, 선릉역, 20),
+                    new Section(1L, 선릉역, 잠실역, 10));
 
             assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
         }
 
         @Test
         void 하행_종점_등록시_그대로_저장() {
-            databaseFixtureUtils.saveSection(1L, STATION1, STATION2, 10);
+            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역, 10);
 
             service.save(1L, new CreateSectionRequest(2L, 3L, 30));
             List<Section> actual = dao.findAllByLineId(1L);
             List<Section> expected = List.of(
-                    new Section(1L, STATION1, STATION2, 10),
-                    new Section(1L, STATION2, STATION3, 30));
+                    new Section(1L, 강남역, 선릉역, 10),
+                    new Section(1L, 선릉역, 잠실역, 30));
 
             assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
         }
@@ -69,13 +69,13 @@ class SectionServiceTest extends DatabaseUsageTest {
         void 저장하려는_구간의_상행역이_이미_상행역으로_등록된_경우_저장_후_기존_구간은_수정() {
             int existingSectionDistance = 10;
             int newSectionDistance = 2;
-            databaseFixtureUtils.saveSection(1L, STATION1, STATION3, existingSectionDistance);
+            databaseFixtureUtils.saveSection(1L, 강남역, 잠실역, existingSectionDistance);
 
             service.save(1L, new CreateSectionRequest(1L, 2L, newSectionDistance));
             List<Section> actual = dao.findAllByLineId(1L);
             List<Section> expected = List.of(
-                    new Section(1L, STATION1, STATION2, newSectionDistance),
-                    new Section(1L, STATION2, STATION3, existingSectionDistance - newSectionDistance));
+                    new Section(1L, 강남역, 선릉역, newSectionDistance),
+                    new Section(1L, 선릉역, 잠실역, existingSectionDistance - newSectionDistance));
 
             assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
         }
@@ -84,13 +84,13 @@ class SectionServiceTest extends DatabaseUsageTest {
         void 저장하려는_구간의_히행역이_이미_하행역으로_등록된_경우_저장_후_기존_구간은_수정() {
             int existingSectionDistance = 10;
             int newSectionDistance = 3;
-            databaseFixtureUtils.saveSection(1L, STATION1, STATION3, existingSectionDistance);
+            databaseFixtureUtils.saveSection(1L, 강남역, 잠실역, existingSectionDistance);
 
             service.save(1L, new CreateSectionRequest(2L, 3L, newSectionDistance));
             List<Section> actual = dao.findAllByLineId(1L);
             List<Section> expected = List.of(
-                    new Section(1L, STATION1, STATION2, existingSectionDistance - newSectionDistance),
-                    new Section(1L, STATION2, STATION3, newSectionDistance));
+                    new Section(1L, 강남역, 선릉역, existingSectionDistance - newSectionDistance),
+                    new Section(1L, 선릉역, 잠실역, newSectionDistance));
 
             assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
         }

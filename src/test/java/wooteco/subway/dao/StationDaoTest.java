@@ -17,16 +17,16 @@ import wooteco.subway.fixture.DatabaseUsageTest;
 @SuppressWarnings("NonAsciiCharacters")
 class StationDaoTest extends DatabaseUsageTest {
 
-    private static final Station STATION1 = new Station(1L, "강남역");
-    private static final Station STATION2 = new Station(2L, "선릉역");
-    private static final Station STATION3 = new Station(3L, "잠실역");
+    private static final Station 강남역 = new Station(1L, "강남역");
+    private static final Station 선릉역 = new Station(2L, "선릉역");
+    private static final Station 잠실역 = new Station(3L, "잠실역");
 
     @Autowired
     private StationDao dao;
 
     @Test
     void findAll_메서드는_모든_데이터를_조회() {
-        databaseFixtureUtils.saveStations(STATION1, STATION2, STATION3);
+        databaseFixtureUtils.saveStations(강남역, 선릉역, 잠실역);
 
         List<Station> actual = dao.findAll();
         List<Station> expected = List.of(
@@ -39,7 +39,7 @@ class StationDaoTest extends DatabaseUsageTest {
 
     @Test
     void findAllByIds_메서드는_id_목록에_해당되는_모든_데이터를_조회() {
-        databaseFixtureUtils.saveStations(STATION1, STATION2, STATION3);
+        databaseFixtureUtils.saveStations(강남역, 선릉역, 잠실역);
 
         List<Station> actual = dao.findAllByIds(List.of(1L, 3L));
         List<Station> expected = List.of(
@@ -55,7 +55,7 @@ class StationDaoTest extends DatabaseUsageTest {
 
         @Test
         void 존재하는_데이터의_id인_경우_해당_데이터가_담긴_Optional_반환() {
-            databaseFixtureUtils.saveStations(STATION1);
+            databaseFixtureUtils.saveStations(강남역);
 
             Station actual = dao.findById(1L).get();
             Station expected = new Station(1L, "강남역");

@@ -17,10 +17,10 @@ import wooteco.subway.fixture.DatabaseUsageTest;
 @SuppressWarnings("NonAsciiCharacters")
 class PathServiceTest extends DatabaseUsageTest {
 
-    private final Station STATION1 = new Station(1L, "강남역");
-    private final Station STATION2 = new Station(2L, "선릉역");
-    private final Station STATION3 = new Station(3L, "잠실역");
-    private final Station STATION4 = new Station(4L, "청계산입구역");
+    private final Station 강남역 = new Station(1L, "강남역");
+    private final Station 선릉역 = new Station(2L, "선릉역");
+    private final Station 잠실역 = new Station(3L, "잠실역");
+    private final Station 청계산입구역 = new Station(4L, "청계산입구역");
 
     @Autowired
     private PathService service;
@@ -35,10 +35,10 @@ class PathServiceTest extends DatabaseUsageTest {
 
         @Test
         void 최단경로에_대해_지하철역들의_목록과_거리_및_요금_정보를_반환() {
-            databaseFixtureUtils.saveStations(STATION1, STATION2, STATION3);
+            databaseFixtureUtils.saveStations(강남역, 선릉역, 잠실역);
             databaseFixtureUtils.saveLine("노선", "색깔", 0);
-            databaseFixtureUtils.saveSection(1L, STATION1, STATION2, 5);
-            databaseFixtureUtils.saveSection(1L, STATION2, STATION3, 5);
+            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역, 5);
+            databaseFixtureUtils.saveSection(1L, 선릉역, 잠실역, 5);
 
             PathResponse actual = service.findShortestPath(1L, 3L, 25);
             PathResponse expected = new PathResponse(
@@ -50,10 +50,10 @@ class PathServiceTest extends DatabaseUsageTest {
         @DisplayName("요금 계산은 기본요금 => 거리 추가비용 => 노선 추가비용 => 나이 할인 순으로 적용된다.")
         @Test
         void fareCalculation() {
-            databaseFixtureUtils.saveStations(STATION1, STATION2, STATION3);
+            databaseFixtureUtils.saveStations(강남역, 선릉역, 잠실역);
             databaseFixtureUtils.saveLine("노선", "색깔", 500);
-            databaseFixtureUtils.saveSection(1L, STATION1, STATION2, 10);
-            databaseFixtureUtils.saveSection(1L, STATION2, STATION3, 8);
+            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역, 10);
+            databaseFixtureUtils.saveSection(1L, 선릉역, 잠실역, 8);
 
             int actual = service.findShortestPath(1L, 3L, 15).getFare();
             int expected = (int) ((((1250 + 200) + 500) - 350) * 0.8);
@@ -63,10 +63,10 @@ class PathServiceTest extends DatabaseUsageTest {
 
         @Test
         void 존재하지_않는_지하철역을_입력한_경우_예외발생() {
-            databaseFixtureUtils.saveStations(STATION1, STATION2, STATION3);
+            databaseFixtureUtils.saveStations(강남역, 선릉역, 잠실역);
             databaseFixtureUtils.saveLine("노선", "색깔", 0);
-            databaseFixtureUtils.saveSection(1L, STATION1, STATION2, 5);
-            databaseFixtureUtils.saveSection(1L, STATION2, STATION3, 5);
+            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역, 5);
+            databaseFixtureUtils.saveSection(1L, 선릉역, 잠실역, 5);
 
             assertThatThrownBy(() -> service.findShortestPath(1L, 9999999999L, 10))
                     .isInstanceOf(NotFoundException.class);
@@ -74,10 +74,10 @@ class PathServiceTest extends DatabaseUsageTest {
 
         @Test
         void 연결되지_않은_지하철역들_사이의_경로를_조회하려는_경우_예외발생() {
-            databaseFixtureUtils.saveStations(STATION1, STATION2, STATION3, STATION4);
+            databaseFixtureUtils.saveStations(강남역, 선릉역, 잠실역, 청계산입구역);
             databaseFixtureUtils.saveLine("노선", "색깔", 0);
-            databaseFixtureUtils.saveSection(1L, STATION1, STATION2, 10);
-            databaseFixtureUtils.saveSection(1L, STATION3, STATION4, 10);
+            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역, 10);
+            databaseFixtureUtils.saveSection(1L, 잠실역, 청계산입구역, 10);
 
             assertThatThrownBy(() -> service.findShortestPath(1L, 3L, 10))
                     .isInstanceOf(IllegalArgumentException.class);
@@ -85,7 +85,7 @@ class PathServiceTest extends DatabaseUsageTest {
 
         @Test
         void 구간에_등록되지_않은_지하철역이_입력된_경우_예외발생() {
-            databaseFixtureUtils.saveStations(STATION1, STATION2);
+            databaseFixtureUtils.saveStations(강남역, 선릉역);
             databaseFixtureUtils.saveLine("노선", "색깔", 0);
 
             assertThatThrownBy(() -> service.findShortestPath(1L, 2L, 10))

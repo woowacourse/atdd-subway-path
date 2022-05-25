@@ -19,10 +19,10 @@ import wooteco.utils.HttpUtils;
 @DisplayName("인수테스트 - /paths")
 public class PathAcceptanceTest extends AcceptanceTest {
 
-    private final Station STATION1 = new Station(1L, "강남역");
-    private final Station STATION2 = new Station(2L, "선릉역");
-    private final Station STATION3 = new Station(3L, "잠실역");
-    private final Station STATION4 = new Station(4L, "청계산입구역");
+    private final Station 강남역 = new Station(1L, "강남역");
+    private final Station 선릉역 = new Station(2L, "선릉역");
+    private final Station 잠실역 = new Station(3L, "잠실역");
+    private final Station 청계산입구역 = new Station(4L, "청계산입구역");
 
     @DisplayName("GET /paths?source={source}&target={target}&age={age} - 경로 조회 테스트")
     @Nested
@@ -30,10 +30,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         @Test
         void 경로_조회_성공시_200_OK() {
-            databaseFixtureUtils.saveStations(STATION1, STATION2, STATION3);
+            databaseFixtureUtils.saveStations(강남역, 선릉역, 잠실역);
             databaseFixtureUtils.saveLine("노선", "색상");
-            databaseFixtureUtils.saveSection(1L, STATION1, STATION2, 10);
-            databaseFixtureUtils.saveSection(1L, STATION2, STATION3, 5);
+            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역, 10);
+            databaseFixtureUtils.saveSection(1L, 선릉역, 잠실역, 5);
 
             ExtractableResponse<Response> response = HttpUtils.send(HttpMethod.GET,
                     toPath(1L, 3L, 30));
@@ -56,10 +56,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         @Test
         void 연결되지_않은_지하철역들_사이의_경로를_조회하려는_경우_400_BAD_REQUEST() {
-            databaseFixtureUtils.saveStations(STATION1, STATION2, STATION3, STATION4);
+            databaseFixtureUtils.saveStations(강남역, 선릉역, 잠실역, 청계산입구역);
             databaseFixtureUtils.saveLine("노선", "색상");
-            databaseFixtureUtils.saveSection(1L, STATION1, STATION2, 10);
-            databaseFixtureUtils.saveSection(1L, STATION3, STATION4, 10);
+            databaseFixtureUtils.saveSection(1L, 강남역, 선릉역, 10);
+            databaseFixtureUtils.saveSection(1L, 잠실역, 청계산입구역, 10);
 
             ExtractableResponse<Response> response = HttpUtils.send(HttpMethod.GET,
                     toPath(1L, 3L, 30));
@@ -69,7 +69,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         @Test
         void 구간에_등록되지_않은_지하철역이_입력된_경우_400_BAD_REQUEST() {
-            databaseFixtureUtils.saveStations(STATION1, STATION2);
+            databaseFixtureUtils.saveStations(강남역, 선릉역);
             databaseFixtureUtils.saveLine("등록된 노선", "색상");
 
             ExtractableResponse<Response> response = HttpUtils.send(HttpMethod.GET,

@@ -16,9 +16,9 @@ import wooteco.subway.fixture.DatabaseUsageTest;
 @SuppressWarnings("NonAsciiCharacters")
 class StationRepositoryTest extends DatabaseUsageTest {
 
-    private static final Station STATION1 = new Station(1L, "강남역");
-    private static final Station STATION2 = new Station(2L, "선릉역");
-    private static final Station STATION3 = new Station(3L, "잠실역");
+    private static final Station 강남역 = new Station(1L, "강남역");
+    private static final Station 선릉역 = new Station(2L, "선릉역");
+    private static final Station 잠실역 = new Station(3L, "잠실역");
 
     @Autowired
     private StationRepository repository;
@@ -28,7 +28,7 @@ class StationRepositoryTest extends DatabaseUsageTest {
 
     @Test
     void findAllStations_메서드는_모든_지하철역들을_조회하여_도메인들의_리스트로_반환() {
-        databaseFixtureUtils.saveStations(STATION1, STATION2, STATION3);
+        databaseFixtureUtils.saveStations(강남역, 선릉역, 잠실역);
 
         List<Station> actual = repository.findAllStations();
         List<Station> expected = List.of(
@@ -45,7 +45,7 @@ class StationRepositoryTest extends DatabaseUsageTest {
 
         @Test
         void id에_대응되는_지하철역이_존재하는_경우_도메인으로_반환() {
-            databaseFixtureUtils.saveStations(STATION1, STATION2);
+            databaseFixtureUtils.saveStations(강남역, 선릉역);
 
             Station actual = repository.findExistingStation(1L);
             Station expected = new Station(1L, "강남역");
@@ -66,7 +66,7 @@ class StationRepositoryTest extends DatabaseUsageTest {
 
         @Test
         void 존재하는_지하철역의_이름인_경우_참_반환(){
-            databaseFixtureUtils.saveStations(STATION1);
+            databaseFixtureUtils.saveStations(강남역);
 
             boolean actual = repository.checkExistingStationName("강남역");
 
@@ -92,11 +92,11 @@ class StationRepositoryTest extends DatabaseUsageTest {
 
     @Test
     void delete_메서드는_지하철역_도메인을_받아_해당_새로운_지하철역을_제거() {
-        databaseFixtureUtils.saveStations(STATION1, STATION2);
+        databaseFixtureUtils.saveStations(강남역, 선릉역);
 
-        repository.delete(STATION1);
+        repository.delete(강남역);
         List<Station> actual = dao.findAll();
-        List<Station> expected = List.of(STATION2);
+        List<Station> expected = List.of(선릉역);
 
         assertThat(actual).isEqualTo(expected);
     }
