@@ -24,8 +24,16 @@ public class LineMap {
         return line.getId();
     }
 
-    public Line getLineInfo() {
-        return line;
+    public String getName() {
+        return line.getName();
+    }
+
+    public String getColor() {
+        return line.getColor();
+    }
+
+    public int getExtraFare() {
+        return  line.getExtraFare();
     }
 
     public Sections getSections() {
