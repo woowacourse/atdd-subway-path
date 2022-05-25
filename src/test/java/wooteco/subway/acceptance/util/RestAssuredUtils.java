@@ -41,6 +41,17 @@ public class RestAssuredUtils {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> getDataWithParameter(String url, Long source, Long target, int age) {
+        return RestAssured.given().log().all()
+                .when()
+                .queryParam("source", source)
+                .queryParam("target", target)
+                .queryParam("age", age)
+                .get(url)
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> createData(String url, Object object) {
         return RestAssured.given().log().all()
                 .body(object)
