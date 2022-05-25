@@ -64,26 +64,17 @@ public class Sections {
                         section -> section.getUpStation().getId()));
     }
 
-    /**
-     * 새로운 구간을 등록할 때 변경되는 기존 구간을 찾는 메서드. 종착역으로 등록되는 경우 변경되는 기존 구간이 없다.
-     *
-     * @param newSection 추가하고자 하는 구간
-     * @return 데이터가 변경된 Section
-     */
-    public Optional<Section> findUpdateWhenAdd(Section newSection) {
+    public void add(Section newSection) {
         validNewSection(newSection);
         validCrossPath(newSection);
 
-        Optional<Section> section = value.stream()
+        value.stream()
                 .filter(newSection::isSameUpStationId)
-                .findAny();
-
-        section.ifPresent(it -> {
-            it.updateUpStationId(newSection.getDownStation());
-            it.reduceDistance(newSection);
-        });
-
-        return section;
+                .forEach(it -> {
+                    it.updateUpStationId(newSection.getDownStation());
+                    it.reduceDistance(newSection);
+                });
+        value.add(newSection);
     }
 
     private void validCrossPath(Section existSection) {
@@ -190,6 +181,10 @@ public class Sections {
                 .filter(section -> section.isSameUpStationId(stationId))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException(String.format(NO_UP_STATION_ID_ERROR, stationId)));
+    }
+
+    public List<Section> getValue() {
+        return value;
     }
 
     @Override

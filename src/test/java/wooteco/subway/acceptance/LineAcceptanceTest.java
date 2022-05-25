@@ -1,7 +1,6 @@
 package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -36,7 +35,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private Long stationId3;
     private Long lineId1;
     private Long lineId2;
-    private Long sectionId1;
 
     @Autowired
     private StationService stationService;
@@ -56,9 +54,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineResponse line1 = lineService.save(
                 new LineCreateRequest("신분당선", "bg-red-600", stationId1, stationId2, 10, 10));
         lineId1 = line1.getId();
-
-        sectionService.create(lineId1, new SectionRequest(stationId2, stationId3, 10));
-        sectionId1 = line1.getStations().get(0).getId();
 
         LineResponse line2 = lineService.save(
                 new LineCreateRequest("분당선", "bg-green-600", stationId1, stationId2, 10, 10));
@@ -217,25 +212,22 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         SectionRequest sectionRequest = new SectionRequest(stationId2, stationId3, 5);
         String url = "/lines/" + lineId1 + "/sections";
+        int beforeCount = findStations(lineId1).size();
 
         // when
         post(url, sectionRequest);
 
         // then
-        List<StationResponse> stations = findStations(lineId1);
-
-        assertThat(stations).extracting("id", "name")
-                .containsExactly(
-                        tuple(stationId1, "강남역"),
-                        tuple(stationId2, "왕십리역"),
-                        tuple(stationId3, "정자역")
-                );
+        int afterCount = findStations(lineId1).size();
+        assertThat(afterCount).isEqualTo(beforeCount + 1);
     }
 
     @DisplayName("구간 삭제")
     @Test
     void deleteSection() {
         // given
+        sectionService.create(lineId1, new SectionRequest(stationId2, stationId3, 10));
+
         Map<String, String> source = new HashMap<>();
         source.put("stationId", stationId2.toString());
         String url = "/lines/" + lineId1 + "/sections";

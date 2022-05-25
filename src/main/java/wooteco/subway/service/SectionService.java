@@ -34,10 +34,11 @@ public class SectionService {
         Section newSection = sectionRequest.toEntity(lineId
                 , stationDao.findById(sectionRequest.getUpStationId())
                 , stationDao.findById(sectionRequest.getDownStationId()));
-        Optional<Section> updateSection = sections.findUpdateWhenAdd(newSection);
+        sections.add(newSection);
 
-        sectionDao.save(newSection);
-        updateSection.ifPresent(sectionDao::update);
+        sectionDao.deleteByLineId(lineId);
+        sections.getValue()
+                .forEach(sectionDao::save);
     }
 
     private void validLineId(Long lineId) {

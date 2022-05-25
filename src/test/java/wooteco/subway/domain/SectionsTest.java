@@ -8,6 +8,7 @@ import static wooteco.subway.fixture.TestFixture.잠실역;
 import static wooteco.subway.fixture.TestFixture.정자역;
 import static wooteco.subway.fixture.TestFixture.판교역;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -25,30 +26,30 @@ class SectionsTest {
     @DisplayName("Section 추가 시 수정되는 데이터")
     @ParameterizedTest
     @MethodSource("parameterProvider")
-    void find_update_when_add(Section newSection, Section expected) {
+    void find_update_when_add(Section newSection) {
         // given
         Section 판교_to_역삼 = new Section(1L, 1L, 판교역, 역삼역, 10);
         Section 정자_to_판교 = new Section(2L, 1L, 정자역, 판교역, 10);
         Section 서현_to_정자 = new Section(3L, 1L, 서현역, 정자역, 10);
         Section 잠실_to_서현 = new Section(4L, 1L, 잠실역, 서현역, 10);
-        Sections sections = new Sections(List.of(서현_to_정자, 정자_to_판교, 판교_to_역삼, 잠실_to_서현));
+        Sections sections = new Sections(new ArrayList<>(List.of(서현_to_정자, 정자_to_판교, 판교_to_역삼, 잠실_to_서현)));
+        int before = sections.getValue().size();
 
         // when
-        Optional<Section> section = sections.findUpdateWhenAdd(newSection);
+        sections.add(newSection);
 
         // then
-        assertThat(section).isEqualTo(Optional.ofNullable(expected));
+        int after = sections.getValue().size();
+        assertThat(before + 1).isEqualTo(after);
     }
 
     private static Stream<Arguments> parameterProvider() {
         return Stream.of(
                 Arguments.arguments(
-                        new Section(1L, 서현역, 미금역, 5),
-                        new Section(3L, 1L, 미금역, 정자역, 5)
+                        new Section(1L, 서현역, 미금역, 5)
                 ),
                 Arguments.arguments(
-                        new Section(1L, 미금역, 잠실역, 5),
-                        null
+                        new Section(1L, 미금역, 잠실역, 5)
                 )
         );
     }
@@ -61,7 +62,7 @@ class SectionsTest {
         Section 정자_to_판교 = new Section(2L, 1L, 정자역, 판교역, 10);
         Section 서현_to_정자 = new Section(3L, 1L, 서현역, 정자역, 10);
         Section 잠실_to_서현 = new Section(4L, 1L, 잠실역, 서현역, 10);
-        Sections sections = new Sections(List.of(서현_to_정자, 정자_to_판교, 판교_to_역삼, 잠실_to_서현));
+        Sections sections = new Sections(new ArrayList<>(List.of(서현_to_정자, 정자_to_판교, 판교_to_역삼, 잠실_to_서현)));
 
         // when
         List<Long> ids = sections.getSortedStationIds();
@@ -85,7 +86,7 @@ class SectionsTest {
         Section 정자_to_판교 = new Section(2L, 1L, 정자역, 판교역, 10);
         Section 서현_to_정자 = new Section(3L, 1L, 서현역, 정자역, 10);
         Section 잠실_to_서현 = new Section(4L, 1L, 잠실역, 서현역, 10);
-        Sections sections = new Sections(List.of(서현_to_정자, 정자_to_판교, 판교_to_역삼, 잠실_to_서현));
+        Sections sections = new Sections(new ArrayList<>(List.of(서현_to_정자, 정자_to_판교, 판교_to_역삼, 잠실_to_서현)));
 
         // when
         Long removedId = sections.findRemoveSectionId(removeStationId);
@@ -111,7 +112,7 @@ class SectionsTest {
         Section 정자_to_판교 = new Section(2L, 1L, 정자역, 판교역, 10);
         Section 서현_to_정자 = new Section(3L, 1L, 서현역, 정자역, 10);
         Section 잠실_to_서현 = new Section(4L, 1L, 잠실역, 서현역, 10);
-        Sections sections = new Sections(List.of(서현_to_정자, 정자_to_판교, 판교_to_역삼, 잠실_to_서현));
+        Sections sections = new Sections(new ArrayList<>(List.of(서현_to_정자, 정자_to_판교, 판교_to_역삼, 잠실_to_서현)));
 
         // when
         Optional<Section> section = sections.findUpdateWhenRemove(removeId);
