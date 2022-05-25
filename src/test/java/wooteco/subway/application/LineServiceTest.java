@@ -83,7 +83,10 @@ public class LineServiceTest {
     void updateLineWithEmptyName(String name) {
         Line saveLine = lineService.saveAndGet(신분당선, 샘플_구간);
 
-        assertThatThrownBy(() -> lineService.update(saveLine.getId(), name, "bg-red-600", 0))
+        assertThatThrownBy(() -> {
+            Line updateLine = new Line(saveLine.getId(), name, "bg-red-600", 0);
+            lineService.updateAndGet(updateLine);
+        })
                 .isInstanceOf(BlankArgumentException.class);
     }
 
@@ -93,7 +96,10 @@ public class LineServiceTest {
     void updateLineWithEmptyColor(String color) {
         Line saveLine = lineService.saveAndGet(신분당선, 샘플_구간);
 
-        assertThatThrownBy(() -> lineService.update(saveLine.getId(), "신분당선", color, 0))
+        assertThatThrownBy(() -> {
+            Line updateLine = new Line(saveLine.getId(), "신분당선", color, 0);
+            lineService.updateAndGet(updateLine);
+        })
                 .isInstanceOf(BlankArgumentException.class);
     }
 
@@ -101,8 +107,9 @@ public class LineServiceTest {
     @Test
     void updateLine() {
         Line saveLine = lineService.saveAndGet(신분당선, 샘플_구간);
+        Line updateLine = new Line(saveLine.getId(), "1호선", "bg-blue-600", 0);
 
-        lineService.update(saveLine.getId(), "1호선", "bg-blue-600", 0);
+        lineService.updateAndGet(updateLine);
 
         Line expectedLine = lineDao.findById(saveLine.getId()).orElseThrow();
         assertThat(expectedLine.getName()).isEqualTo("1호선");
@@ -112,7 +119,10 @@ public class LineServiceTest {
     @DisplayName("존재하지 않는 노선 ID를 대상으로 수정한다")
     @Test
     void updateNotExistLine() {
-        assertThatThrownBy(() -> lineService.update(50L, "1호선", "bg-red-600", 0))
+        assertThatThrownBy(() -> {
+            Line updateLine = new Line(50L, "1호선", "bg-red-600", 0);
+            lineService.updateAndGet(updateLine);
+        })
                 .isInstanceOf(NotExistException.class);
     }
 

@@ -50,20 +50,16 @@ public class LineService {
                 .orElseThrow(() -> new NotExistException(Which.LINE));
     }
 
-    public Line update(Long id, String name, String color, Integer extraFare) {
-        Line line = findById(id);
-
-        if (isDuplicateName(line, name)) {
+    public void updateAndGet(Line line) {
+        validateLineExist(line.getId());
+        if (isDuplicateName(line.getName())) {
             throw new DuplicateException();
         }
-
-        lineDao.update(new Line(id, name, color, extraFare));
-
-        return new Line(id, name, color, extraFare);
+        lineDao.update(line);
     }
 
-    private boolean isDuplicateName(Line line, String name) {
-        return !line.isSameName(name) && lineDao.existByName(name);
+    private boolean isDuplicateName(String name) {
+        return lineDao.existByName(name);
     }
 
     public void deleteById(Long id) {
@@ -71,5 +67,11 @@ public class LineService {
             throw new NotExistException(Which.LINE);
         }
         lineDao.deleteById(id);
+    }
+
+    private void validateLineExist(long lineId) {
+        if (!lineDao.existById(lineId)) {
+            throw new NotExistException(Which.LINE);
+        }
     }
 }

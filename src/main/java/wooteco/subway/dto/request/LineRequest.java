@@ -26,6 +26,15 @@ public class LineRequest {
         );
     }
 
+    public Line toLine(long id) {
+        return new Line(
+                id,
+                this.getName(),
+                this.getColor(),
+                this.getExtraFare()
+        );
+    }
+
     public Section toSection() {
         return new Section(
                 this.getUpStationId(),
