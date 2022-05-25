@@ -15,8 +15,8 @@ public class FareCalculator {
 
     public int findFare(int distance, List<Line> lines, int age) {
         int lineExtraFare = lines.stream()
-                .map(Line::getExtraFare)
-                .max(Integer::compare)
+                .mapToInt(Line::getExtraFare)
+                .max()
                 .orElse(NOTHING);
         int extraFare = distanceExtraFare(distance) + lineExtraFare;
         return AgeGroup.discount(age, BASE_FARE + extraFare);
