@@ -106,6 +106,25 @@ class SectionAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    @DisplayName("길이가 1보다 적은 구간을 추가할 경우 BAD_REQUEST 를 반환한다.")
+    @Test
+    void createSection_badRequest_distanceLowerThanOne() {
+        // given
+        Integer distance = 0;
+        Long lineId = getCreatedLineId(station1.getId(), station3.getId());
+
+        // when
+        ExtractableResponse<Response> response =
+                requestToCreateSection(lineId, station2.getId(), station3.getId(), distance);
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(exceptionResponse.getErrorMessage()).isEqualTo("역간의 거리는 1 이상이어야 합니다.")
+        );
+    }
+
     @DisplayName("상행과 하행 종점이 모두 포함되지 않는 구간을 추가할 경우 BAD_REQUEST 를 반환한다.")
     @Test
     void createSection_badRequest_bothNonExistingStations() {
@@ -262,7 +281,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
-    @DisplayName("유효하지 않은 값들로 구간을 생성하려고 하면 예외를 발생시킨다.")
+    @DisplayName("null이 하나라도 존재하는 값들로 구간을 생성하려고 하면 예외를 발생시킨다.")
     @ParameterizedTest
     @MethodSource("provideInvalidSectionCreationResource")
     void createSection_badRequest_InvalidSectionCreationResource(Long upStationId,
@@ -316,11 +335,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
     private static Stream<Arguments> provideInvalidSectionCreationResource() {
         return Stream.of(
                 Arguments.of(null, 2L, 3),
-                Arguments.of(0L, 2L, 3),
                 Arguments.of(1L, null, 3),
-                Arguments.of(1L, 0L, 3),
-                Arguments.of(1L, 2L, null),
-                Arguments.of(1L, 2L, 0)
+                Arguments.of(1L, 2L, null)
         );
     }
 }

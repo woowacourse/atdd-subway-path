@@ -48,7 +48,7 @@ class SectionServiceTest extends DBTest {
                 "2호선", "green", firstStation.getId(), secondStation.getId(), 10, 200));
     }
 
-    @DisplayName("상행 종점이 같은 구간을 저장한다.")
+    @DisplayName("상행 종점이 같은 구간을 연결한다.")
     @Test
     void save_sameUpStation() {
         SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(
@@ -58,7 +58,7 @@ class SectionServiceTest extends DBTest {
         assertThat(sectionDao.findAllByLineId(lineServiceResponse.getId()).size()).isEqualTo(2);
     }
 
-    @DisplayName("하행 종점이 같은 구간을 저장한다.")
+    @DisplayName("하행 종점이 같은 구간을 연결한다.")
     @Test
     void save_sameDownStation() {
         SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(lineServiceResponse.getId(),
@@ -69,9 +69,9 @@ class SectionServiceTest extends DBTest {
         assertThat(sectionDao.findAllByLineId(lineServiceResponse.getId()).size()).isEqualTo(2);
     }
 
-    @DisplayName("상행 종점과 하행 종점이 같은 구간을 저장한다.")
+    @DisplayName("상행 종점과 하행 종점이 같은 구간을 연결한다.")
     @Test
-    void save_extendingForward() {
+    void connect_extendingForward() {
         SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(
                 lineServiceResponse.getId(), thirdStation.getId(), firstStation.getId(), 10);
         sectionService.connect(sectionServiceRequest);
@@ -79,9 +79,9 @@ class SectionServiceTest extends DBTest {
         assertThat(sectionDao.findAllByLineId(lineServiceResponse.getId()).size()).isEqualTo(2);
     }
 
-    @DisplayName("하행 종점과 상행 종점이 같은 구간을 저장한다.")
+    @DisplayName("하행 종점과 상행 종점이 같은 구간을 연결한다.")
     @Test
-    void save_extendingBackward() {
+    void connect_extendingBackward() {
         SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(lineServiceResponse.getId(),
                 secondStation
                         .getId(), thirdStation.getId(), 10);
@@ -90,9 +90,21 @@ class SectionServiceTest extends DBTest {
         assertThat(sectionDao.findAllByLineId(lineServiceResponse.getId()).size()).isEqualTo(2);
     }
 
-    @DisplayName("상행과 하행 종점이 모두 같은 구간을 저장할 경우 예외가 발생한다.")
+    @DisplayName("역간의 거리가 1 미만인 구간을 연결하려고 하면 예외를 발생시킨다.")
     @Test
-    void save_exception_SameUpStationAndSameDownStation() {
+    void connect_exception_distanceLowerThanOne() {
+        Integer invalidDistance = 0;
+        SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(
+                lineServiceResponse.getId(), firstStation.getId(), thirdStation.getId(), invalidDistance);
+
+        assertThatThrownBy(() -> sectionService.connect(sectionServiceRequest))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("역간의 거리는 1 이상이어야 합니다.");
+    }
+
+    @DisplayName("상행과 하행 종점이 모두 같은 구간을 연결하려고 하면 예외가 발생시킨다.")
+    @Test
+    void connect_exception_SameUpStationAndSameDownStation() {
         SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(lineServiceResponse.getId(),
                 firstStation
                         .getId(), secondStation.getId(), 5);
@@ -100,9 +112,9 @@ class SectionServiceTest extends DBTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("상행과 하행 종점 모두 존재할 예외가 발생한다.")
+    @DisplayName("상행역과 하행역 모두 존재하는 구간을 연결하려고 하면 예외를 발생시킨다.")
     @Test
-    void save_exception_bothExistingStations() {
+    void connect_exception_bothExistingStations() {
         SectionServiceRequest sectionServiceRequest = new SectionServiceRequest(lineServiceResponse.getId(),
                 firstStation.getId(), secondStation.getId(), 10);
         assertThatThrownBy(() -> sectionService.connect(sectionServiceRequest))
