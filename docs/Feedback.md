@@ -23,3 +23,21 @@
 - [ ] `AcceptanceTest`
     - 사용자 유스케이스에 대한 테스트 작성
         - 브라우저로 직접 테스트할 때 흐름을 AcceptanceTest에서 작성
+
+## 2단계 피드백
+
+- [ ] 미사용 클래스 제거
+- [ ] `PathFinderFactory`
+    - [ ] `getObjectType()` 메서드 반환 타입 수정
+    - [ ] 적절한 패키지 위치로 수정
+- [ ] `Fare`
+    - [ ] 상수를 사용하는 클래스에서 가지고 있도록 수정
+    - [ ] 인터페이스로 수정 후 구현하도록 수정
+- [ ] `DiscountPolicyFactory` / `FareFactory`
+    - [ ] 현재 구조 상으로 조건이 추가될 경우 분기문이 추가됨. 개선 필요
+        - hint : 각 할인 정책이 할인 조건을 알고 있다면?
+- [ ] `Fare` / `DiscountPolicy`
+    - 각각의 구현 클래스별로 테스트 코드를 별도로 가지고 있도록 수정
+- [ ] `AcceptanceTest`
+    - `dao`가 아닌 `RestAssured`를 이용한 테스트  
+
