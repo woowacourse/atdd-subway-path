@@ -43,21 +43,21 @@ class FareCalculatorTest {
         assertThat(fareCalculator.calculateFare(distance, 0)).isEqualTo(fare);
     }
 
-    @DisplayName("거리 24km 기준 조회시 어린이일 때 요금을 조회한다")
+    @DisplayName("어린이의 운임을 계산한다")
     @Test
     void calculate_24km_children_age() {
         // 요금: (1550 - 350) * 0.5
         assertThat(fareCalculator.calculateFare(24, 10)).isEqualTo(600);
     }
 
-    @DisplayName("거리 24km 기준 조회시 청소년일 때 요금을 조회한다")
+    @DisplayName("청소년의 운임을 계산한다")
     @Test
     void calculate_24km_youth_age() {
         // 요금: (1550 - 350) * 0.8
         assertThat(fareCalculator.calculateFare(24, 16)).isEqualTo(960);
     }
 
-    @DisplayName("거리 24km 기준 조회시 성인일 때 요금을 조회한다")
+    @DisplayName("성인의 운임을 계산한다")
     @Test
     void calculate_24km_adult_age() {
         assertThat(fareCalculator.calculateFare(24, 25)).isEqualTo(1550);
