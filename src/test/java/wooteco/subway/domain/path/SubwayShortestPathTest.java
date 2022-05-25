@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -8,46 +8,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class LinesTest {
+import wooteco.subway.LinesFixture;
+import wooteco.subway.domain.Station;
+import wooteco.subway.domain.path.PathInfo;
+import wooteco.subway.domain.path.SubwayShortestPath;
 
-	private Lines lines;
+class SubwayShortestPathTest {
 
-	//            신사 (3호선)
-	//            |10|
-	// 신반포 (9호선) 잠원
-	//       \10\ |10|
-	// 내방 >10> 고속터미널 >10> 반포 >10> 논현 (7호선)
-	//            |10| \14\
-	//            서초 >3> 사평 (새호선)
+	private SubwayShortestPath subwayShortestPath;
 
 	@BeforeEach
 	void init() {
-		Line line7 = new Line("7호선", "red",
-			List.of(
-				makeSection("내방역", "고속터미널역", 10),
-				makeSection("고속터미널역", "반포역", 10),
-				makeSection("반포역", "논현역", 10))
-		);
-
-		Line line3 = new Line("3호선", "blue",
-			List.of(
-				makeSection("신사역", "잠원역", 10),
-				makeSection("잠원역", "고속터미널역", 10),
-				makeSection("고속터미널역", "서초역", 10))
-		);
-
-		Line line9 = new Line("9호선", "yellow",
-			List.of(makeSection("고속터미널역", "사평역", 14)));
-
-		Line newLine = new Line("새호선", "black",
-			List.of(makeSection("서초역", "사평역", 3))
-		);
-
-		lines = new Lines(List.of(line7, line3, line9, newLine));
-	}
-
-	private Section makeSection(String source, String target, int distance) {
-		return new Section(new Station(source), new Station(target), distance);
+		subwayShortestPath = new SubwayShortestPath(LinesFixture.toList());
 	}
 
 	@DisplayName("한 라인에서 경로를 순방향 조회한다.")
@@ -58,7 +30,7 @@ class LinesTest {
 		Station target = new Station("논현역");
 
 		// when
-		List<Station> stations = lines.findPath(source, target)
+		List<Station> stations = subwayShortestPath.find(source, target)
 			.getStations();
 
 		// then
@@ -75,7 +47,7 @@ class LinesTest {
 		Station target = new Station("내방역");
 
 		// when
-		List<Station> stations = lines.findPath(source, target)
+		List<Station> stations = subwayShortestPath.find(source, target)
 			.getStations();
 
 		// then
@@ -92,7 +64,7 @@ class LinesTest {
 		Station target = new Station("논현역");
 
 		// when
-		List<Station> stations = lines.findPath(source, target)
+		List<Station> stations = subwayShortestPath.find(source, target)
 			.getStations();
 
 		// then
@@ -109,7 +81,7 @@ class LinesTest {
 		Station target = new Station("사평역");
 
 		// when
-		List<Station> stations = lines.findPath(source, target)
+		List<Station> stations = subwayShortestPath.find(source, target)
 			.getStations();
 
 		// then
@@ -118,17 +90,31 @@ class LinesTest {
 			.containsExactly("내방역", "고속터미널역", "서초역", "사평역");
 	}
 
-	@DisplayName("최단 경로 거리를 반환한다.")
+	@DisplayName("7호선(700원) 환승 차액을 고려한 금액을 계산한다.")
 	@Test
-	void pathDistance() {
+	void calculateFare() {
 		// given
 		Station source = new Station("내방역");
-		Station target = new Station("논현역");
+		Station target = new Station("사평역");
 
 		// when
-		Path path = lines.findPath(source, target);
+		PathInfo pathInfo = subwayShortestPath.find(source, target);
 
 		// then
-		assertThat(path.getDistance()).isEqualTo(30);
+		assertThat(pathInfo.getFare()).isEqualTo(2250);
+	}
+
+	@DisplayName("3호선(300원) 환승 차액을 고려한 금액을 계산한다.")
+	@Test
+	void calculateFare9() {
+		// given
+		Station source = new Station("신사역");
+		Station target = new Station("서초역");
+
+		// when
+		PathInfo pathInfo = subwayShortestPath.find(source, target);
+
+		// then
+		assertThat(pathInfo.getFare()).isEqualTo(2050);
 	}
 }

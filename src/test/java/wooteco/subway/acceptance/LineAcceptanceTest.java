@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,7 +37,7 @@ public class LineAcceptanceTest {
 			"신분당선", "bg-red-600",
 			RestUtil.getIdFromStation(stationResponse1),
 			RestUtil.getIdFromStation(stationResponse2),
-			10);
+			10, 0);
 	}
 
 	@DisplayName("지하철 노선을 생성한다.")
@@ -89,7 +88,11 @@ public class LineAcceptanceTest {
 	void createLineNoFoundStation() {
 		// when
 		ExtractableResponse<Response> response = RestAssured.given().log().all()
-			.body(new LineRequest("2호선", "red", 100L, 101L, 10))
+			.body(new LineRequest(
+				"2호선", "red",
+				100L, 101L,
+				10, 0)
+			)
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.when()
 			.post("/lines")
@@ -128,7 +131,7 @@ public class LineAcceptanceTest {
 			new LineRequest("분당선", "bg-red-600",
 				RestUtil.getIdFromStation(RestUtil.post(new StationRequest("잠실역"))),
 				RestUtil.getIdFromStation(RestUtil.post(new StationRequest("선릉역"))),
-				10)
+				10, 0)
 		);
 
 		// when
@@ -199,9 +202,12 @@ public class LineAcceptanceTest {
 		ExtractableResponse<Response> createResponse = RestUtil.post(lineRequest);
 
 		// when
-		Map<String, String> params2 = Map.of("name", "다른분당선", "color", "bg-red-600");
 		ExtractableResponse<Response> response = RestAssured.given().log().all()
-			.body(params2)
+			.body(new LineRequest(
+				"name", "red",
+				1L, 2L,
+				1, 0)
+			)
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.when()
 			.put("/lines/" + RestUtil.getIdFromLine(createResponse))

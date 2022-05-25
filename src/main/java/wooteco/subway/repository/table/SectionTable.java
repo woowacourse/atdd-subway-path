@@ -1,6 +1,6 @@
 package wooteco.subway.repository.table;
 
-import wooteco.subway.domain.Section;
+import wooteco.subway.domain.line.section.Section;
 import wooteco.subway.domain.Station;
 
 public class SectionTable {

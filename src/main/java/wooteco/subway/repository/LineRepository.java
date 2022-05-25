@@ -2,7 +2,7 @@ package wooteco.subway.repository;
 
 import java.util.List;
 
-import wooteco.subway.domain.Line;
+import wooteco.subway.domain.line.Line;
 
 public interface LineRepository {
 	Long save(Line line);

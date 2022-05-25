@@ -7,9 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.SectionsDirtyChecker;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.section.Section;
+import wooteco.subway.repository.SectionsDirtyChecker;
 
 @Service
 @Transactional(readOnly = true)
@@ -24,9 +24,9 @@ public class LineService {
 	}
 
 	@Transactional
-	public Line create(String name, String color, Section section) {
+	public Line create(String name, String color, Section section, int extraFare) {
 		validateNameNotDuplicated(name);
-		Long lineId = lineRepository.save(new Line(name, color, List.of(section)));
+		Long lineId = lineRepository.save(new Line(name, color, extraFare, List.of(section)));
 		return lineRepository.findById(lineId);
 	}
 
@@ -62,7 +62,7 @@ public class LineService {
 
 		line.addSection(section);
 
-		executeDirtyChecking(id, line, checker);
+		executeDirtyChecking(line, checker);
 	}
 
 	@Transactional
@@ -72,15 +72,13 @@ public class LineService {
 
 		line.deleteSectionByStation(stationId);
 
-		executeDirtyChecking(lineId, line, checker);
+		executeDirtyChecking(line, checker);
 	}
 
-	private void executeDirtyChecking(Long lineId, Line line, SectionsDirtyChecker checker) {
-		checker.findUpdated(line.getSections())
-			.executeEach(sectionRepository::update);
-		checker.findDeleted(line.getSections())
-			.executeEach(section -> sectionRepository.remove(section.getId()));
-		checker.findSaved(line.getSections())
-			.executeEach(section -> sectionRepository.save(lineId, section));
+	private void executeDirtyChecking(Line line, SectionsDirtyChecker checker) {
+		List<Section> sections = line.getSections();
+		sectionRepository.saveAll(line.getId(), checker.findSaved(sections));
+		sectionRepository.updateAll(checker.findUpdated(sections));
+		sectionRepository.removeAll(checker.findDeleted(sections));
 	}
 }

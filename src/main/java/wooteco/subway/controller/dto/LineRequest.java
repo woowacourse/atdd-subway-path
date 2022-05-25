@@ -1,50 +1,71 @@
 package wooteco.subway.controller.dto;
 
-import wooteco.subway.domain.Line;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+
+import wooteco.subway.domain.line.Line;
 
 public class LineRequest {
-    private String name;
-    private String color;
-    private Long upStationId;
-    private Long downStationId;
-    private int distance;
 
-    public LineRequest() {
-    }
+	@NotBlank
+	private String name;
+	@NotBlank
+	private String color;
+	@NotNull
+	private Long upStationId;
+	@NotNull
+	private Long downStationId;
+	@Positive
+	private int distance;
+	@Min(value = 0)
+	private int extraFare;
 
-    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
-        this.name = name;
-        this.color = color;
-        this.upStationId = upStationId;
-        this.downStationId = downStationId;
-        this.distance = distance;
-    }
+	private LineRequest() {
+	}
 
-    public Line toEntity(Long id) {
-        return new Line(id, name, color);
-    }
+	public LineRequest(
+		String name, String color,
+		Long upStationId, Long downStationId,
+		int distance, int extraFare) {
+		this.name = name;
+		this.color = color;
+		this.upStationId = upStationId;
+		this.downStationId = downStationId;
+		this.distance = distance;
+		this.extraFare = extraFare;
+	}
 
-    public SectionRequest toSectionRequest() {
-        return new SectionRequest(upStationId, downStationId, distance);
-    }
+	public Line toEntity(Long id) {
+		return new Line(id, name, color, extraFare);
+	}
 
-    public String getName() {
-        return name;
-    }
+	public SectionRequest toSectionRequest() {
+		return new SectionRequest(upStationId, downStationId, distance);
+	}
 
-    public String getColor() {
-        return color;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public Long getUpStationId() {
-        return upStationId;
-    }
+	public String getColor() {
+		return color;
+	}
 
-    public Long getDownStationId() {
-        return downStationId;
-    }
+	public Long getUpStationId() {
+		return upStationId;
+	}
 
-    public int getDistance() {
-        return distance;
-    }
+	public Long getDownStationId() {
+		return downStationId;
+	}
+
+	public int getDistance() {
+		return distance;
+	}
+
+	public int getExtraFare() {
+		return extraFare;
+	}
 }

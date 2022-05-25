@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.line.section;
 
 import static java.util.stream.Collectors.*;
 
@@ -7,9 +7,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+import wooteco.subway.domain.Station;
 
 public class Sections {
 
@@ -107,10 +108,6 @@ public class Sections {
 			.ifPresent(value -> addUpStream(sortedStations, stations, value));
 	}
 
-	public void executeEach(Consumer<Section> consumer) {
-		values.forEach(consumer);
-	}
-
 	public void deleteByStation(Long stationId) {
 		List<Section> sections = values.stream()
 			.filter(section -> section.matchAnyStation(stationId))
@@ -160,5 +157,9 @@ public class Sections {
 			.noneMatch(
 				each -> each.hasSameUpStation(section)
 					&& each.hasSameDownStation(section));
+	}
+
+	public boolean contains(Section section) {
+		return values.contains(section);
 	}
 }

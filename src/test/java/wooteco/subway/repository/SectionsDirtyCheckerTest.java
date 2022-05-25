@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.repository;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -7,6 +7,10 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import wooteco.subway.domain.line.section.Section;
+import wooteco.subway.domain.line.section.Sections;
+import wooteco.subway.domain.Station;
 
 class SectionsDirtyCheckerTest {
 
@@ -26,11 +30,11 @@ class SectionsDirtyCheckerTest {
 		Station newStation = new Station(4L, "교대역");
 		sections.add(new Section(3L, station1, newStation, 5));
 
-		Sections updated = checker.findUpdated(sections.getValues());
+		List<Section> updated = checker.findUpdated(sections.getValues());
 
 		assertAll(
-			() -> assertThat(updated.getValues()).hasSize(1),
-			() -> assertThat(updated.getValues().get(0))
+			() -> assertThat(updated).hasSize(1),
+			() -> assertThat(updated.get(0))
 				.isEqualTo(new Section(1L,
 					new Station(4L, "교대역"), new Station(2L, "역삼역"), 5)
 				)
@@ -44,10 +48,10 @@ class SectionsDirtyCheckerTest {
 
 		sections.deleteByStation(2L);
 
-		Sections deleted = checker.findDeleted(sections.getValues());
+		List<Section> deleted = checker.findDeleted(sections.getValues());
 		assertAll(
-			() -> assertThat(deleted.getValues()).hasSize(2),
-			() -> assertThat(deleted.getValues())
+			() -> assertThat(deleted).hasSize(2),
+			() -> assertThat(deleted)
 				.containsOnly(section1, section2)
 		);
 	}
@@ -59,10 +63,10 @@ class SectionsDirtyCheckerTest {
 
 		sections.deleteByStation(2L);
 
-		Sections saved = checker.findSaved(sections.getValues());
+		List<Section> saved = checker.findSaved(sections.getValues());
 		assertAll(
-			() -> assertThat(saved.getValues()).hasSize(1),
-			() -> assertThat(saved.getValues())
+			() -> assertThat(saved).hasSize(1),
+			() -> assertThat(saved)
 				.containsOnly(new Section(0L, station1, station3, 20))
 		);
 	}

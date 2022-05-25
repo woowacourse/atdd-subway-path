@@ -3,7 +3,7 @@ package wooteco.subway.controller.dto;
 public class ExceptionResponse {
 	private String message;
 
-	public ExceptionResponse() {
+	private ExceptionResponse() {
 	}
 
 	public ExceptionResponse(String message) {

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import wooteco.subway.repository.dao.LineDao;
 import wooteco.subway.repository.table.LineTable;
-import wooteco.subway.domain.Line;
+import wooteco.subway.domain.line.Line;
 
 @Repository
 public class JdbcLineRepository implements LineRepository {

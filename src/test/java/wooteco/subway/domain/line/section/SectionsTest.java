@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.line.section;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -9,6 +9,10 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import wooteco.subway.domain.Station;
+import wooteco.subway.domain.line.section.Section;
+import wooteco.subway.domain.line.section.Sections;
 
 class SectionsTest {
 
