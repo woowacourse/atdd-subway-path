@@ -23,5 +23,4 @@ public class PathsRequest {
     public int getAge() {
         return age;
     }
-
 }

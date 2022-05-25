@@ -10,6 +10,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.element.Station;
 
 public class JGraphTest {
 

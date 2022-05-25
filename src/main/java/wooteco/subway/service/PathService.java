@@ -3,10 +3,13 @@ package wooteco.subway.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import wooteco.subway.domain.Fare;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
-import wooteco.subway.domain.SubwayGraph;
+import wooteco.subway.domain.element.Station;
+import wooteco.subway.domain.fare.Fare;
+import wooteco.subway.domain.fare.PolicyFactory;
+import wooteco.subway.domain.fare.policy.FarePolicy;
+import wooteco.subway.domain.fare.policy.distance.BasePolicy;
+import wooteco.subway.domain.path.GraphFactory;
+import wooteco.subway.domain.path.Path;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
 import wooteco.subway.service.dto.request.PathsRequest;
@@ -19,22 +22,28 @@ public class PathService {
     private final SectionRepository sectionRepository;
     private final StationRepository stationRepository;
 
-    public PathService(SectionRepository sectionRepository,
-                       StationRepository stationRepository) {
+    public PathService(SectionRepository sectionRepository, StationRepository stationRepository) {
         this.sectionRepository = sectionRepository;
         this.stationRepository = stationRepository;
     }
 
     public PathResponse showPaths(PathsRequest pathsRequest) {
-        List<Section> sections = sectionRepository.findAll();
-        SubwayGraph subwayGraph = new SubwayGraph(sections);
+        Path path = Path.create(GraphFactory.getGraph(sectionRepository.findAll()),
+                stationRepository.findById(pathsRequest.getSource()),
+                stationRepository.findById(pathsRequest.getTarget()));
+        return toPathResponse(path, pathsRequest.getAge());
+    }
 
-        Station source = stationRepository.findById(pathsRequest.getSource());
-        Station target = stationRepository.findById(pathsRequest.getTarget());
-        List<Station> route = subwayGraph.getShortestRoute(source, target);
-        int distance = subwayGraph.getShortestDistance(source, target);
-        int fare = new Fare().getFare(distance);
-        return new PathResponse(toStationResponse(route), distance, fare);
+    private PathResponse toPathResponse(Path path, int age) {
+        List<FarePolicy> policies = List.of(
+                PolicyFactory.createLineFee(path.getLines()),
+                PolicyFactory.createAgeDiscount(age)
+        );
+        BasePolicy basePolicy = PolicyFactory.createBase(path.getDistance());
+        return new PathResponse(
+                toStationResponse(path.getStations()),
+                path.getDistance(),
+                new Fare(policies, basePolicy).getFare());
     }
 
     private List<StationResponse> toStationResponse(List<Station> route) {
@@ -42,6 +51,4 @@ public class PathService {
                 .map(station -> new StationResponse(station.getId(), station.getName()))
                 .collect(Collectors.toList());
     }
-
 }
-

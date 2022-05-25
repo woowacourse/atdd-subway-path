@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.element.Line;
+import wooteco.subway.domain.element.Section;
+import wooteco.subway.domain.element.Station;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class SectionRepositoryTest {
@@ -40,7 +40,7 @@ class SectionRepositoryTest {
     void create() {
         Station 성수역 = stationRepository.save(new Station("성수역"));
         Station 건대입구 = stationRepository.save(new Station("건대입구"));
-        Line line = lineRepository.save(new Line(1L, "1호선", "blue"));
+        Line line = lineRepository.save(new Line(1L, "1호선", "blue", 0));
 
         sectionRepository.save(new Section(line, 성수역, 건대입구, 10));
 
@@ -55,11 +55,25 @@ class SectionRepositoryTest {
     void findAll() {
         Station 성수역 = stationRepository.save(new Station("성수역"));
         Station 건대입구 = stationRepository.save(new Station("건대입구"));
-        Line line = lineRepository.save(new Line("1호선", "blue"));
+        Line line = lineRepository.save(new Line("1호선", "blue", 0));
 
         Section section = new Section(line, 성수역, 건대입구, 10);
         sectionRepository.save(section);
 
         assertThat(sectionRepository.findAll()).containsOnly(section);
+    }
+
+    @Test
+    @DisplayName("해당 노선의 모든 구간을 삭제한다.")
+    void deleteSectionByLineId() {
+        Station 성수역 = stationRepository.save(new Station("성수역"));
+        Station 건대입구 = stationRepository.save(new Station("건대입구"));
+        Line line = lineRepository.save(new Line("1호선", "blue", 0));
+
+        Section section = new Section(line, 성수역, 건대입구, 10);
+        sectionRepository.save(section);
+        sectionRepository.deleteSectionByLineId(line.getId());
+
+        assertThat(sectionRepository.findSectionByLine(line)).isEmpty();
     }
 }

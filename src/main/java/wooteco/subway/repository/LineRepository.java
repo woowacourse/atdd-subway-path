@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.entity.LineEntity;
-import wooteco.subway.domain.Line;
+import wooteco.subway.domain.element.Line;
 import wooteco.subway.exception.NotFoundException;
 
 @Repository
@@ -18,18 +18,18 @@ public class LineRepository {
     }
 
     public Line save(Line line) {
-        if (line.getId() == null) {
-            return toLine(lineDao.save(new LineEntity(line.getName(), line.getColor())));
+        if (line.getId() == 0) {
+            return toLine(lineDao.save(new LineEntity(line.getName(), line.getColor(), line.getExtraFare())));
         }
-        lineDao.modifyById(new LineEntity(line.getId(), line.getName(), line.getColor()));
+        lineDao.modifyById(new LineEntity(line.getId(), line.getName(), line.getColor(), line.getExtraFare()));
         return line;
     }
 
     private Line toLine(LineEntity entity) {
-        return new Line(entity.getId(), entity.getName(), entity.getColor());
+        return new Line(entity.getId(), entity.getName(), entity.getColor(), entity.getExtraFare());
     }
 
-    public Line findById(Long id) {
+    public Line findById(long id) {
         LineEntity entity = lineDao.findById(id)
                 .orElseThrow(() -> new NotFoundException("조회하려는 id가 존재하지 않습니다. id : " + id));
         return toLine(entity);
@@ -42,7 +42,7 @@ public class LineRepository {
                 .collect(Collectors.toList());
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(long id) {
         lineDao.deleteById(id);
     }
 

@@ -1,33 +1,36 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.element;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class Line {
 
-    private static final Pattern pattern = Pattern.compile("^[ㄱ-ㅎ|가-힣|0-9]+");
+    private static final Pattern pattern = Pattern.compile("^[ㄱ-ㅎ가-힣0-9]+");
     private static final int MAX_RANGE = 10;
     private static final int MIN_RANGE = 3;
 
-    private final Long id;
+    private final long id;
     private String name;
     private String color;
+    private int extraFare;
 
-    public Line(Long id, String name, String color) {
+    public Line(long id, String name, String color, int extraFare) {
         validate(name, color);
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
     }
 
-    public Line(String name, String color) {
-        this(null, name, color);
+    public Line(String name, String color, int extraFare) {
+        this(0, name, color, extraFare);
     }
 
-    public void update(String name, String color) {
+    public void update(String name, String color, int extraFare) {
         validate(name, color);
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
     }
 
     private void validate(String name, String color) {
@@ -58,7 +61,7 @@ public class Line {
         }
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
@@ -68,6 +71,10 @@ public class Line {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     @Override
@@ -93,6 +100,7 @@ public class Line {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", color='" + color + '\'' +
+                ", extraFare=" + extraFare +
                 '}';
     }
 }

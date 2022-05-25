@@ -3,10 +3,10 @@ package wooteco.subway.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.element.Line;
+import wooteco.subway.domain.element.Section;
+import wooteco.subway.domain.element.Sections;
+import wooteco.subway.domain.element.Station;
 import wooteco.subway.exception.BadRequestException;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
@@ -19,6 +19,7 @@ import wooteco.subway.service.dto.response.StationResponse;
 
 @Service
 public class LineService {
+    private static final String ALREADY_IN_LINE_ERROR_MESSAGE = "지하철 노선에 해당 역이 등록되어있어 역을 삭제할 수 없습니다.";
 
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
@@ -42,7 +43,7 @@ public class LineService {
 
     public LineResponse create(LineRequest lineRequest) {
         validateDuplicateNameAndColor(lineRequest.getName(), lineRequest.getColor());
-        Line line = new Line(lineRequest.getName(), lineRequest.getColor());
+        Line line = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         Station upStation = findStation(lineRequest.getUpStationId());
         Station downStation = findStation(lineRequest.getDownStationId());
 
@@ -52,31 +53,32 @@ public class LineService {
         return toLineResponse(savedLine, List.of(upStation, downStation));
     }
 
-    private Station findStation(Long stationId) {
+    private Station findStation(long stationId) {
         return stationRepository.findById(stationId);
     }
 
     private void validateDuplicateNameAndColor(String name, String color) {
         if (lineRepository.existByNameAndColor(name, color)) {
-            throw new BadRequestException("노선이 이름과 색상은 중복될 수 없습니다.");
+            throw new BadRequestException("노선의 이름과 색상은 중복될 수 없습니다.");
         }
     }
 
     private LineResponse toLineResponse(Line line, List<Station> stations) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), toResponse(stations));
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare(),
+                toResponse(stations));
     }
 
-    public LineResponse showById(Long lineId) {
+    public LineResponse showById(long lineId) {
         return toLineResponse(findLine(lineId), getStations(lineId));
     }
 
-    private Line findLine(Long lineId) {
+    private Line findLine(long lineId) {
         return lineRepository.findById(lineId);
     }
 
-    private List<Station> getStations(Long lineId) {
+    private List<Station> getStations(long lineId) {
         Line line = lineRepository.findById(lineId);
-        Sections sections = new Sections(sectionRepository.findSectionByLine(line));
+        Sections sections = Sections.create(sectionRepository.findSectionByLine(line));
         return sections.getStations();
     }
 
@@ -90,20 +92,16 @@ public class LineService {
     public void updateById(LineUpdateRequest request) {
         validateDuplicateNameAndColor(request.getName(), request.getColor());
         Line line = findLine(request.getId());
-        line.update(request.getName(), request.getColor());
+        line.update(request.getName(), request.getColor(), request.getExtraFare());
         lineRepository.save(line);
     }
 
-    public void removeById(Long id) {
-        lineRepository.deleteById(id);
-    }
-
-    public void createSection(Long lineId, SectionRequest request) {
+    public void createSection(long lineId, SectionRequest request) {
         Line line = findLine(lineId);
         Station upStation = findStation(request.getUpStationId());
         Station downStation = findStation(request.getDownStationId());
         int distance = request.getDistance();
-        Sections sections = new Sections(sectionRepository.findSectionByLine(line));
+        Sections sections = Sections.create(sectionRepository.findSectionByLine(line));
         Section newSection = new Section(line, upStation, downStation, distance);
 
         for (Section updateSection : sections.findUpdatedSections(newSection)) {
@@ -111,10 +109,10 @@ public class LineService {
         }
     }
 
-    public void deleteSection(Long lineId, Long stationId) {
+    public void deleteSection(long lineId, long stationId) {
         Line line = findLine(lineId);
         Station station = findStation(stationId);
-        Sections sections = new Sections(sectionRepository.findSectionByLine(line));
+        Sections sections = Sections.create(sectionRepository.findSectionByLine(line));
 
         List<Section> removedSections = sections.findDeleteSections(line, station);
         for (Section removedSection : removedSections) {
@@ -124,6 +122,22 @@ public class LineService {
         if (removedSections.size() == Sections.COMBINE_SIZE) {
             Section combineSection = sections.combine(line, removedSections);
             sectionRepository.save(combineSection);
+        }
+    }
+
+    public void removeLineById(long lineId) {
+        sectionRepository.deleteSectionByLineId(lineId);
+        lineRepository.deleteById(lineId);
+    }
+
+    public void removeStationById(long id) {
+        validateStationNotLinked(id);
+        stationRepository.deleteById(id);
+    }
+
+    private void validateStationNotLinked(long stationId) {
+        if (Sections.createUnSorted(sectionRepository.findAll()).contains(findStation((stationId)))) {
+            throw new IllegalArgumentException(ALREADY_IN_LINE_ERROR_MESSAGE);
         }
     }
 }
