@@ -172,6 +172,6 @@ class FareCalculatorTest {
         FareCalculator fareCalculator = new FareCalculator(distance);
         int fare = fareCalculator.calculateFare(lines, age);
 
-        assertThat(fare).isEqualTo(2650);
+        assertThat(fare).isEqualTo(0);
     }
 }

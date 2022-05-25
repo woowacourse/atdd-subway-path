@@ -63,8 +63,8 @@ class PathsServiceTest {
                         List.of(new Station(4L, "이대역"), new Station(5L, "학동역")
                                 , new Station(6L, "이수역"), new Station(7L, "건대역"))
                 ),
-                () -> assertThat(pathsResponse.getDistance()).isEqualTo(10)
-                //() -> assertThat(pathsResponse.getFare()).isEqualTo(1250)
+                () -> assertThat(pathsResponse.getDistance()).isEqualTo(10),
+                () -> assertThat(pathsResponse.getFare()).isEqualTo(1790)
         );
     }
 
