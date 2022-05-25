@@ -16,6 +16,7 @@ import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
+import wooteco.subway.dto.request.PathRequest;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.dto.response.StationResponse;
 import wooteco.subway.repository.LineRepository;
@@ -54,7 +55,8 @@ class PathServiceTest {
         lineRepository.save(new LineDto("신분당선", "bg-red-600", upStationId,
                 downStationId, 10));
 
-        final PathResponse actualPathResponse = pathService.findShortestPath(upStationId, downStationId, 30);
+        final PathResponse actualPathResponse = pathService.findShortestPath(
+                new PathRequest(upStationId, downStationId, 30));
         final List<String> stationNames = actualPathResponse.getStations().stream()
                         .map(StationResponse::getName)
                         .collect(Collectors.toList());
