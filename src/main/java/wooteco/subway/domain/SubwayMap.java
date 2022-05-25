@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.domain.distance.Distance;
 import wooteco.subway.exception.IllegalInputException;
 import wooteco.subway.exception.path.NoSuchPathException;
 

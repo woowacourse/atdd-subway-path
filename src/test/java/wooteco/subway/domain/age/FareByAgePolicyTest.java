@@ -1,57 +1,51 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.age;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.domain.DiscountByAgePolicy.ADULT_POLICY;
-import static wooteco.subway.domain.DiscountByAgePolicy.BABY_POLICY;
-import static wooteco.subway.domain.DiscountByAgePolicy.KIDS_POLICY;
-import static wooteco.subway.domain.DiscountByAgePolicy.TEENAGER_POLICY;
+import static wooteco.subway.domain.age.FareByAgePolicy.ADULT_POLICY;
+import static wooteco.subway.domain.age.FareByAgePolicy.BABY_POLICY;
+import static wooteco.subway.domain.age.FareByAgePolicy.KIDS_POLICY;
+import static wooteco.subway.domain.age.FareByAgePolicy.TEENAGER_POLICY;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
-public class DiscountByAgePolicyTest {
+public class FareByAgePolicyTest {
 
-    @ParameterizedTest
-    @DisplayName("나이가 1 이상 6 미만이면 BABY 이다.")
-    @ValueSource(ints = {1, 3, 5})
-    void Find_MoreThan1LessThan6_BABY(int age) {
+    @Test
+    @DisplayName("BABY 이면 BABY_POLICY 를 찾는다.")
+    void Find_MoreThan1LessThan6_BABY() {
         //when
-        DiscountByAgePolicy actual = DiscountByAgePolicy.find(age);
+        FareByAgePolicy actual = FareByAgePolicy.find(Age.BABY);
 
         //then
         assertThat(actual).isEqualTo(BABY_POLICY);
     }
 
-    @ParameterizedTest
-    @DisplayName("나이가 6 이상 13 미만이면 KIDS 이다.")
-    @ValueSource(ints = {6, 9, 12})
-    void Find_MoreThan6LessThan13_KIDS(int age) {
+    @Test
+    @DisplayName("KIDS 이면 KIDS_POLICY 를 찾는다.")
+    void Find_MoreThan6LessThan13_KIDS() {
         //when
-        DiscountByAgePolicy actual = DiscountByAgePolicy.find(age);
+        FareByAgePolicy actual = FareByAgePolicy.find(Age.KIDS);
 
         //then
         assertThat(actual).isEqualTo(KIDS_POLICY);
     }
 
-    @ParameterizedTest
-    @DisplayName("나이가 13 이상 19 미만이면 TEENAGER 이다.")
-    @ValueSource(ints = {13, 16, 18})
-    void Find_MoreThan13LessThan19_TEENAGER(int age) {
+    @Test
+    @DisplayName("TEENAGER 이면 TEENAGER_POLICY 를 찾는다.")
+    void Find_MoreThan13LessThan19_TEENAGER() {
         //when
-        DiscountByAgePolicy actual = DiscountByAgePolicy.find(age);
+        FareByAgePolicy actual = FareByAgePolicy.find(Age.TEENAGER);
 
         //then
         assertThat(actual).isEqualTo(TEENAGER_POLICY);
     }
 
-    @ParameterizedTest
-    @DisplayName("나이가 19 이상이면 ADULT 이다.")
-    @ValueSource(ints = {19, 27, 56})
-    void Find_MoreThan19_ADULT(int age) {
+    @Test
+    @DisplayName("ADULT 이면 ADULT_POLICY 를 찾는다.")
+    void Find_MoreThan19_ADULT() {
         //when
-        DiscountByAgePolicy actual = DiscountByAgePolicy.find(age);
+        FareByAgePolicy actual = FareByAgePolicy.find(Age.ADULT);
 
         //then
         assertThat(actual).isEqualTo(ADULT_POLICY);

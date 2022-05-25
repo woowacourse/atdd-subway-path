@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.distance;
 
 import java.util.Objects;
 import wooteco.subway.exception.IllegalInputException;

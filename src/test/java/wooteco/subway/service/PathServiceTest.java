@@ -9,7 +9,6 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.ExtraFare;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Line;
@@ -17,6 +16,7 @@ import wooteco.subway.domain.Name;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.distance.Distance;
 import wooteco.subway.dto.path.PathRequest;
 import wooteco.subway.dto.path.PathResponse;
 

@@ -13,13 +13,13 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.ExtraFare;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Name;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.distance.Distance;
 
 @Repository
 public class JdbcSectionDao implements SectionDao {

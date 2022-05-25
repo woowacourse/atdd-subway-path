@@ -1,6 +1,9 @@
 package wooteco.subway.domain;
 
 import java.util.Objects;
+import wooteco.subway.domain.age.Age;
+import wooteco.subway.domain.age.FareByAgePolicy;
+import wooteco.subway.domain.distance.Distance;
 import wooteco.subway.exception.IllegalInputException;
 
 public class Fare {
@@ -19,15 +22,9 @@ public class Fare {
         this.value = value;
     }
 
-    private void validateFareValue(final int value) {
-        if (value < 0) {
-            throw new IllegalInputException("요금은 0보다 작을 수 없습니다.");
-        }
-    }
-
     public static Fare from(final Distance distance, final int extraFare, final int age) {
         int fareValue = calculateFareByDistance(distance) + extraFare;
-        return new Fare(DiscountByAgePolicy.find(age).applyDiscount(fareValue));
+        return new Fare(FareByAgePolicy.find(Age.from(age)).applyDiscount(fareValue));
     }
 
     private static int calculateFareByDistance(final Distance distance) {
@@ -47,6 +44,12 @@ public class Fare {
 
     private static int calculateOverFare(final int value, final int standardValue) {
         return (int) ((Math.ceil((value - 1) / standardValue) + 1) * STANDARD_OF_OVER_FARE);
+    }
+
+    private void validateFareValue(final int value) {
+        if (value < 0) {
+            throw new IllegalInputException("요금은 0보다 작을 수 없습니다.");
+        }
     }
 
     public int getValue() {
