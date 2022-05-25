@@ -64,7 +64,7 @@ public class StationService {
 
         for (Entry<Long, List<Section>> sectionsInfo : sectionsMap.entrySet()) {
             Sections lineIdSections = new Sections(sectionsInfo.getValue());
-            sectionService.delete(lineIdSections, stationId);
+            sectionService.delete(sectionsInfo.getKey(), lineIdSections, stationId);
         }
     }
 

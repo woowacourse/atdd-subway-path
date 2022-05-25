@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import wooteco.subway.domain.station.Station;
@@ -90,10 +89,18 @@ public class Sections {
         Station downStation = section.getDownStation();
         Station upStation = section.getUpStation();
 
+        validNoConnectSection(section, allSectionIds, downStation, upStation);
+        validDuplicateSection(allSectionIds, downStation, upStation);
+    }
+
+    private void validNoConnectSection(Section section, Set<Station> allSectionIds, Station downStation,
+                                       Station upStation) {
         if (!allSectionIds.contains(downStation) && !allSectionIds.contains(upStation)) {
             throw new IllegalArgumentException(String.format(NO_STATIONS_IN_LINE_ERROR, section));
         }
+    }
 
+    private void validDuplicateSection(Set<Station> allSectionIds, Station downStation, Station upStation) {
         if (allSectionIds.containsAll(List.of(downStation, upStation))) {
             throw new IllegalArgumentException(
                     String.format(DUPLICATED_SECTION_LIST_ERROR, upStation.getId(), downStation.getId()));
@@ -109,43 +116,22 @@ public class Sections {
         return stations;
     }
 
-    /**
-     * 역 id를 통해 삭제하는 구간의 id를 구하는 메서드.
-     *
-     * @param stationId 삭제하고자 하는 역
-     * @return 삭제되는 구간의 id
-     */
-    public Long findRemoveSectionId(Long stationId) {
+    public void remove(Long stationId) {
         validRemoveCondition();
         validStationId(stationId);
 
-        try {
-            return findByDownStationId(stationId).getId();
-        } catch (IllegalArgumentException e) {
-            return findByUpStationId(stationId).getId();
+        if (!isLastStation(stationId)) {
+            Section removedSection = findByDownStationId(stationId);
+            Section updatedSection = findByUpStationId(stationId);
+            updatedSection.updateUpStationId(removedSection.getUpStation());
+            updatedSection.addDistance(removedSection);
         }
+
+        removeByStationId(stationId);
     }
 
-    /**
-     * 기존 구간을 삭제할 때 변경되는 기존 구간을 찾는 메서드. 종착역이 삭제되는 경우 변경되는 기존 구간은 없다.
-     *
-     * @param stationId 삭제하고자 하는 역
-     * @return 삭제로 인해 변경 사항이 있는 Section
-     */
-    public Optional<Section> findUpdateWhenRemove(Long stationId) {
-        validRemoveCondition();
-        validStationId(stationId);
-
-        if (isLastStation(stationId)) {
-            return Optional.empty();
-        }
-
-        Section removedSection = findByDownStationId(stationId);
-        Section updatedSection = findByUpStationId(stationId);
-        updatedSection.updateUpStationId(removedSection.getUpStation());
-        updatedSection.addDistance(removedSection);
-
-        return Optional.of(updatedSection);
+    private void removeByStationId(Long stationId) {
+        value.removeIf(it -> it.isSameDownStationId(stationId) || it.isSameUpStationId(stationId));
     }
 
     private void validRemoveCondition() {
