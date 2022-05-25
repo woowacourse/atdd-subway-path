@@ -11,15 +11,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import wooteco.subway.dto.LineResponse;
-import wooteco.subway.dto.LineSaveRequest;
-import wooteco.subway.dto.LineUpdateRequest;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationResponse;
+import wooteco.subway.dto.line.LineResponse;
+import wooteco.subway.dto.line.LineUpdateRequest;
 
 class LineAcceptanceTest extends AcceptanceTest {
 
     private static final String DUPLICATE_LINE_ERROR_MESSAGE = "노선이 이미 있습니다";
+    private static final String NEGATIVE_EXTRA_FARE_ERROR_MESSAGE = "추가 요금은 0 이상이어야 합니다";
 
     /*
      * given
@@ -42,17 +42,19 @@ class LineAcceptanceTest extends AcceptanceTest {
         // when
         String lineName = "line1";
         String lineColor = "color1";
+        int distance = 10;
+        int extraFare = 100;
         ExtractableResponse<Response> response = createLineAndReturnResponse(lineName, lineColor, station1.getId(),
-                station2.getId(), 10);
+                station2.getId(), distance, extraFare);
 
         // then
-        List<StationResponse> stations = response.body().jsonPath().getList("stations", StationResponse.class);
+        LineResponse expected = new LineResponse(null, lineName, lineColor, extraFare, List.of(station1, station2));
+        LineResponse actual = response.as(LineResponse.class);
+
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(response.header("Location")).isNotBlank(),
-                () -> assertThat(response.body().jsonPath().getString("name")).isEqualTo(lineName),
-                () -> assertThat(response.body().jsonPath().getString("color")).isEqualTo(lineColor),
-                () -> assertThat(stations).usingRecursiveComparison().isEqualTo(List.of(station1, station2))
+                () -> assertThat(actual).usingRecursiveComparison().ignoringFields("id").isEqualTo(expected)
         );
     }
 
@@ -72,9 +74,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     void createLineWithNonExistLine() {
         // given
         long idWillBeDeleted = createStation("station1").getId();
-        RestAssured.when()
-                .delete("/stations/" + idWillBeDeleted);
-
+        deleteStation(idWillBeDeleted);
         long downStationId = createStation("station2").getId();
 
         // when
@@ -83,7 +83,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value()),
-                () -> assertThat(response.body().jsonPath().getString("message")).contains(NOT_FOUND_ERROR_MESSAGE)
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(NOT_FOUND_ERROR_MESSAGE)
         );
     }
 
@@ -106,13 +106,12 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = createLineAndReturnResponse("line1", "color1", upStationId,
-                downStationId,
-                0);
+                downStationId, 0);
 
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().getString("message")).contains("거리")
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(NUMBER_POSITIVE_ERROR_MESSAGE)
         );
     }
 
@@ -145,7 +144,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().getString("message")).contains(DUPLICATE_LINE_ERROR_MESSAGE)
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(DUPLICATE_LINE_ERROR_MESSAGE)
         );
     }
 
@@ -166,15 +165,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         String lineColor = "color1";
         long id1 = createStation("station1").getId();
         long id2 = createStation("station2").getId();
-
-        LineSaveRequest lineRequest1 = new LineSaveRequest("line1", lineColor, id1, id2, 10);
-        RestAssured.given()
-                .body(lineRequest1)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines")
-                .then()
-                .extract();
+        createLine("line1", lineColor, id1, id2, 10);
 
         // when
         ExtractableResponse<Response> response = createLineAndReturnResponse("line2", lineColor, id1, id2, 10);
@@ -182,7 +173,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().getString("message")).contains(DUPLICATE_LINE_ERROR_MESSAGE)
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(DUPLICATE_LINE_ERROR_MESSAGE)
         );
     }
 
@@ -200,7 +191,8 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().getString("message")).contains(BLANK_OR_NULL_ERROR_MESSAGE)
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(
+                        NAME_NOT_BLANK_ERROR_MESSAGE)
         );
     }
 
@@ -218,7 +210,8 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().getString("message")).contains(BLANK_OR_NULL_ERROR_MESSAGE)
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(
+                        NAME_NOT_BLANK_ERROR_MESSAGE)
         );
     }
 
@@ -236,7 +229,8 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().getString("message")).contains(BLANK_OR_NULL_ERROR_MESSAGE)
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(
+                        COLOR_NOT_BLANK_ERROR_MESSAGE)
         );
     }
 
@@ -254,7 +248,28 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().getString("message")).contains(BLANK_OR_NULL_ERROR_MESSAGE)
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(
+                        COLOR_NOT_BLANK_ERROR_MESSAGE)
+        );
+    }
+
+    @DisplayName("추가 요금을 음수로 생성한다")
+    @Test
+    void createLineWithNegativeExtraFare() {
+        // given
+        long id1 = createStation("station1").getId();
+        long id2 = createStation("station2").getId();
+        int extraFare = -1;
+
+        // when
+        ExtractableResponse<Response> response = createLineAndReturnResponse("line1", "color1", id1, id2,
+                10, extraFare);
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(
+                        EXTRA_FARE_POSITIVE_OR_ZERO_ERROR_MESSAGE)
         );
     }
 
@@ -270,7 +285,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().getString("message")).contains("같은 역")
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains("같은 역")
         );
     }
 
@@ -294,9 +309,9 @@ class LineAcceptanceTest extends AcceptanceTest {
         StationResponse station4 = createStation("지하철역4");
 
         LineResponse line1 = createLine("노선1", "색깔1", station1.getId(),
-                station2.getId(), 10);
+                station2.getId(), 10, 100);
         LineResponse line2 = createLine("노선2", "색깔2", station3.getId(),
-                station4.getId(), 10);
+                station4.getId(), 10, 100);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -330,7 +345,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         /// given
         StationResponse upStation = createStation("서울역");
         StationResponse downStation = createStation("시청");
-        LineResponse line = createLine("1호선", "파란색", upStation.getId(), downStation.getId(), 10);
+        LineResponse line = createLine("1호선", "파란색", upStation.getId(), downStation.getId(), 10, 100);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -377,7 +392,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
-        assertThat(response.body().jsonPath().getString("message")).contains(NOT_FOUND_ERROR_MESSAGE);
+        assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(NOT_FOUND_ERROR_MESSAGE);
     }
 
     /*
@@ -397,10 +412,14 @@ class LineAcceptanceTest extends AcceptanceTest {
         // given
         long id1 = createStation("지하철역1").getId();
         long id2 = createStation("지하철역2").getId();
-        LineResponse originLine = createLine("노선", "색깔", id1, id2, 10);
+        LineResponse originLine = createLine("노선", "색깔", id1, id2, 10, 100);
 
         // when
-        LineUpdateRequest updateRequest = new LineUpdateRequest("changedName", "changedColor");
+        String changedName = "바뀐이름";
+        String changedColor = "바뀐색깔";
+        int extraFare = 50;
+
+        LineUpdateRequest updateRequest = new LineUpdateRequest(changedName, changedColor, extraFare);
         ExtractableResponse<Response> updateResponse = RestAssured.given().log().all()
                 .body(updateRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -420,7 +439,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(line).usingRecursiveComparison().isEqualTo(
-                        new LineResponse(originLine.getId(), "changedName", "changedColor", originLine.getStations()))
+                        new LineResponse(originLine.getId(), changedName, changedColor, extraFare, originLine.getStations()))
         );
     }
 
@@ -458,7 +477,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(response.body().jsonPath().getString("message")).contains(DUPLICATE_LINE_ERROR_MESSAGE);
+        assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(DUPLICATE_LINE_ERROR_MESSAGE);
     }
 
     /*
@@ -494,7 +513,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(response.body().jsonPath().getString("message")).contains(DUPLICATE_LINE_ERROR_MESSAGE);
+        assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(DUPLICATE_LINE_ERROR_MESSAGE);
     }
 
     @DisplayName("존재하지 않는 노선을 수정한다.")
@@ -520,7 +539,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
-        assertThat(response.body().jsonPath().getString("message")).contains(NOT_FOUND_ERROR_MESSAGE);
+        assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(NOT_FOUND_ERROR_MESSAGE);
     }
 
     /*
@@ -561,7 +580,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value()),
-                () -> assertThat(response.body().jsonPath().getString("message")).contains(NOT_FOUND_ERROR_MESSAGE)
+                () -> assertThat(response.body().jsonPath().getString(ERROR_MESSAGE_PATH)).contains(NOT_FOUND_ERROR_MESSAGE)
         );
     }
 

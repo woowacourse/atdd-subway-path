@@ -1,22 +1,24 @@
-package wooteco.subway.service;
+package wooteco.subway.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.application.LineService;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.LineResponse;
-import wooteco.subway.dto.LineSaveRequest;
+import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationResponse;
+import wooteco.subway.dto.line.LineResponse;
+import wooteco.subway.dto.line.LineSaveRequest;
 import wooteco.subway.exception.NoSuchLineException;
 
 @SpringBootTest
@@ -163,5 +165,37 @@ class LineServiceTest {
         LineResponse line = sut.findLine(createdLine.getId());
         assertThat(line).usingRecursiveComparison().isEqualTo(new LineResponse(createdLine.getId(),
                 createdLine.getName(), createdLine.getColor(), createdLine.getStations()));
+    }
+
+    @DisplayName("경로를 계산한다")
+    @Test
+    void calculatePath() {
+        // given
+        Station station1 = stationDao.save(new Station("station1"));
+        Station station2 = stationDao.save(new Station("station2"));
+        Station station3 = stationDao.save(new Station("station3"));
+        Station station4 = stationDao.save(new Station("station4"));
+        Station station5 = stationDao.save(new Station("station5"));
+
+        int line1ExtraFare = 500;
+        LineResponse line1 = sut.createLine(
+                new LineSaveRequest("line1", "color1", station1.getId(), station2.getId(), 1, line1ExtraFare));
+        sut.addSection(line1.getId(), new SectionRequest(station2.getId(), station3.getId(), 1));
+        sut.addSection(line1.getId(), new SectionRequest(station3.getId(), station5.getId(), 2));
+
+        int line2ExtraFare = 600;
+        LineResponse line2 = sut.createLine(
+                new LineSaveRequest("line2", "color2", station2.getId(), station4.getId(), 1, line2ExtraFare));
+        sut.addSection(line2.getId(), new SectionRequest(station4.getId(), station5.getId(), 1));
+
+        // when
+        PathResponse path = sut.calculatePath(station1.getId(), station5.getId(), 30);
+
+        // then
+        PathResponse expected = new PathResponse(
+                Stream.of(station1, station2, station4, station5).map(StationResponse::from).collect(Collectors.toList()),
+                3,
+                1250 + line2ExtraFare);
+        assertThat(path).usingRecursiveComparison().isEqualTo(expected);
     }
 }

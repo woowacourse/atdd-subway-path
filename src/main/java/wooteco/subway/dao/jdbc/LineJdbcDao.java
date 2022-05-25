@@ -22,7 +22,8 @@ public class LineJdbcDao implements LineDao {
     private static final RowMapper<Line> LINE_ROW_MAPPER = (resultSet, rowNum) -> new Line(
             resultSet.getLong("id"),
             resultSet.getString("name"),
-            resultSet.getString("color")
+            resultSet.getString("color"),
+            resultSet.getInt("extra_fare")
     );
 
     private final JdbcTemplate jdbcTemplate;
@@ -40,28 +41,25 @@ public class LineJdbcDao implements LineDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement preparedStatement = connection.prepareStatement(
-                    "INSERT INTO LINE (name, color) VALUES (?, ?)", new String[]{"id"});
+                    "INSERT INTO LINE (name, color, extra_fare) VALUES (?, ?, ?)", new String[]{"id"});
             preparedStatement.setString(1, line.getName());
             preparedStatement.setString(2, line.getColor());
+            preparedStatement.setInt(3, line.getExtraFare());
             return preparedStatement;
         }, keyHolder);
-        return new Line(keyHolder.getKey().longValue(), line.getName(), line.getColor());
+        return new Line(keyHolder.getKey().longValue(), line.getName(), line.getColor(), line.getExtraFare());
     }
 
     @Override
     public List<Line> findAll() {
-        final String sql = "SELECT id, name, color FROM LINE";
+        final String sql = "SELECT id, name, color, extra_fare FROM LINE";
 
-        return jdbcTemplate.query(sql, (resultSet, rowNum) -> new Line(
-                resultSet.getLong("id"),
-                resultSet.getString("name"),
-                resultSet.getString("color")
-        ));
+        return jdbcTemplate.query(sql, LINE_ROW_MAPPER);
     }
 
     @Override
     public Optional<Line> findById(final Long id) {
-        final String sql = "SELECT id, name, color FROM LINE WHERE id = (?)";
+        final String sql = "SELECT id, name, color, extra_fare FROM LINE WHERE id = (?)";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, LINE_ROW_MAPPER, id));
         } catch (EmptyResultDataAccessException exception) {
@@ -75,9 +73,9 @@ public class LineJdbcDao implements LineDao {
             throw new IllegalArgumentException("passed line is null");
         }
 
-        final String sql = "UPDATE LINE SET name = (?), color = (?) WHERE id = (?)";
+        final String sql = "UPDATE LINE SET name = (?), color = (?), extra_fare = (?) WHERE id = (?)";
         try {
-            int affectedRow = jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId());
+            int affectedRow = jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getExtraFare(), line.getId());
             checkUpdated(affectedRow, line.getId());
         } catch (DuplicateKeyException exception) {
             throw new DuplicateLineException();

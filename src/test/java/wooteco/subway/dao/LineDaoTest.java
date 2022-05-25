@@ -62,7 +62,7 @@ class LineDaoTest {
     @Test
     void findById() {
         // given
-        Line savedLine = dao.save(new Line("line2", "color2"));
+        Line savedLine = dao.save(new Line("line2", "color2", 100));
 
         // when
         Line findLine = dao.findById(savedLine.getId()).get();

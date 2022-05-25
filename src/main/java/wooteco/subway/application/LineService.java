@@ -2,21 +2,23 @@ package wooteco.subway.application;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.FarePolicy;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.SubwayMap;
-import wooteco.subway.dto.LineResponse;
-import wooteco.subway.dto.LineSaveRequest;
-import wooteco.subway.dto.LineUpdateRequest;
+import wooteco.subway.domain.fare.FareDiscountPolicyFactory;
+import wooteco.subway.domain.fare.FarePolicy;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.dto.line.LineResponse;
+import wooteco.subway.dto.line.LineSaveRequest;
+import wooteco.subway.dto.line.LineUpdateRequest;
 import wooteco.subway.exception.DuplicateLineException;
 import wooteco.subway.exception.NoSuchLineException;
 import wooteco.subway.exception.NoSuchStationException;
@@ -65,7 +67,9 @@ public class LineService {
     }
 
     public void updateLine(final Long id, final LineUpdateRequest lineRequest) {
-        lineDao.update(new Line(id, lineRequest.getName(), lineRequest.getColor()));
+        Line line = lineDao.findById(id).orElseThrow(() -> new NoSuchLineException(id));
+        line.update(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
+        lineDao.update(new Line(id, lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare()));
     }
 
     public void deleteLineById(final Long id) {
@@ -99,7 +103,7 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findPath(final Long sourceId, final Long targetId) {
+    public PathResponse calculatePath(final Long sourceId, final Long targetId, final int age) {
         SubwayMap subwayMap = new SubwayMap(sectionService.findAll());
 
         Station sourceStation = stationDao.findById(sourceId)
@@ -108,6 +112,27 @@ public class LineService {
                 .orElseThrow(() -> new NoSuchStationException(targetId));
 
         Path path = subwayMap.calculatePath(sourceStation, targetStation);
-        return PathResponse.from(path.getStations(), path.getDistance(), FarePolicy.calculateFare(path.getDistance()));
+
+        List<Line> passingLines = mapLineIdsToLines(path.getPassingLineIds());
+        int extraFare = calculateMostExpensiveExtraFare(passingLines);
+
+        return PathResponse.from(path.getStations(), path.getDistance(),
+                new FarePolicy(FareDiscountPolicyFactory.create(age)).calculateFare(path.getDistance(), extraFare));
+    }
+
+    private int calculateMostExpensiveExtraFare(final List<Line> passingLines) {
+        return passingLines.stream()
+                .map(Line::getExtraFare)
+                .max(Integer::compareTo)
+                .orElse(0);
+    }
+
+    private List<Line> mapLineIdsToLines(final Set<Long> passingLineIds) {
+        List<Line> passingLines = new ArrayList<>();
+        for (Long passingLineId : passingLineIds) {
+            Line line = lineDao.findById(passingLineId).orElseThrow(() -> new NoSuchLineException(passingLineId));
+            passingLines.add(line);
+        }
+        return passingLines;
     }
 }
