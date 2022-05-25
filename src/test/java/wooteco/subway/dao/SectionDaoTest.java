@@ -34,7 +34,7 @@ public class SectionDaoTest {
         // given
         Station 강남역 = stationDao.findById(stationDao.save(new Station("강남역"))).get();
         Station 역삼역 = stationDao.findById(stationDao.save(new Station("역삼역"))).get();
-        Line 이호선 = lineDao.findById(lineDao.save(new Line("2호선", "초록색"))).get();
+        Line 이호선 = lineDao.findById(lineDao.save(new Line("2호선", "초록색", 900))).get();
 
         Section section = new Section(이호선.getId(), 강남역, 역삼역, 10);
 
@@ -54,7 +54,7 @@ public class SectionDaoTest {
         // given
         Station 강남역 = stationDao.findById(stationDao.save(new Station("강남역"))).get();
         Station 역삼역 = stationDao.findById(stationDao.save(new Station("역삼역"))).get();
-        Line 이호선 = lineDao.findById(lineDao.save(new Line("2호선", "초록색"))).get();
+        Line 이호선 = lineDao.findById(lineDao.save(new Line("2호선", "초록색", 900))).get();
 
         Section section = new Section(이호선.getId(), 강남역, 역삼역, 10);
         Long 강남_역삼_id = sectionDao.save(section);
@@ -74,7 +74,7 @@ public class SectionDaoTest {
         // given
         Station 강남역 = stationDao.findById(stationDao.save(new Station("강남역"))).get();
         Station 역삼역 = stationDao.findById(stationDao.save(new Station("역삼역"))).get();
-        Line 이호선 = lineDao.findById(lineDao.save(new Line("2호선", "초록색"))).get();
+        Line 이호선 = lineDao.findById(lineDao.save(new Line("2호선", "초록색", 900))).get();
         Section section = new Section(이호선.getId(), 강남역, 역삼역, 10);
         Long 강남_역삼_id = sectionDao.save(section);
 
@@ -96,7 +96,7 @@ public class SectionDaoTest {
         Station 역삼역 = stationDao.findById(stationDao.save(new Station("역삼역"))).get();
         Station 선릉역 = stationDao.findById(stationDao.save(new Station("선릉역"))).get();
 
-        Line 이호선 = lineDao.findById(lineDao.save(new Line("2호선", "초록색"))).get();
+        Line 이호선 = lineDao.findById(lineDao.save(new Line("2호선", "초록색", 900))).get();
         Section 강남_역삼 = new Section(이호선.getId(), 강남역, 역삼역, 10);
         Section 역삼_선릉 = new Section(이호선.getId(), 역삼역, 선릉역, 10);
         Long 강남_역삼_id = sectionDao.save(강남_역삼);
@@ -121,7 +121,7 @@ public class SectionDaoTest {
         Station 강남역 = stationDao.findById(stationDao.save(new Station("강남역"))).get();
         Station 역삼역 = stationDao.findById(stationDao.save(new Station("역삼역"))).get();
         Station 선릉역 = stationDao.findById(stationDao.save(new Station("선릉역"))).get();
-        Line 이호선 = lineDao.findById(lineDao.save(new Line("2호선", "초록색"))).get();
+        Line 이호선 = lineDao.findById(lineDao.save(new Line("2호선", "초록색", 900))).get();
 
         Section oldSection = new Section(이호선.getId(), 강남역, 역삼역, 10);
         Long 강남_역삼_id = sectionDao.save(oldSection);
@@ -145,7 +145,7 @@ public class SectionDaoTest {
         Station 강남역 = stationDao.findById(stationDao.save(new Station("강남역"))).get();
         Station 역삼역 = stationDao.findById(stationDao.save(new Station("역삼역"))).get();
         Station 선릉역 = stationDao.findById(stationDao.save(new Station("선릉역"))).get();
-        Line 이호선 = lineDao.findById(lineDao.save(new Line("2호선", "초록색"))).get();
+        Line 이호선 = lineDao.findById(lineDao.save(new Line("2호선", "초록색", 900))).get();
 
         Section 강남_역삼_구간 = new Section(이호선.getId(), 강남역, 역삼역, 10);
         Section 역삼_선릉_구간 = new Section(이호선.getId(), 역삼역, 선릉역, 10);

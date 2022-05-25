@@ -34,24 +34,25 @@ public class LineDao {
     public Long save(Line line) {
         SqlParameterSource sqlParameter = new MapSqlParameterSource()
                 .addValue("name", line.getName())
-                .addValue("color", line.getColor());
+                .addValue("color", line.getColor())
+                .addValue("extraFare", line.getExtraFare());
 
         return simpleJdbcInsert.executeAndReturnKey(sqlParameter).longValue();
     }
 
     public Optional<Line> findById(Long id) {
-        String sql = "SELECT * FROM line WHERE id = :id";
+        String sql = "SELECT id, name, color, extraFare FROM line WHERE id = :id";
         SqlParameterSource parameters = new MapSqlParameterSource("id", id);
 
         try {
-            return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(sql, parameters, rowMapper()));
+            return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(sql, parameters, lineRowMapper()));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
     }
 
     public List<Line> findAll() {
-        String sql = "SELECT l.id AS line_id, l.name, l.color,"
+        String sql = "SELECT l.id AS line_id, l.name, l.color, l.extraFare,"
                 + " s.id AS section_id,"
                 + " s.up_station_id, us.name AS up_station_name,"
                 + " s.down_station_id, ds.name AS down_station_name, s.distance"
@@ -65,7 +66,8 @@ public class LineDao {
                 .collect(Collectors.groupingBy(LineSection::getLine));
         return groupByLine.keySet()
                 .stream()
-                .map(key -> new Line(key.getId(), key.getName(), key.getColor(), toSections(groupByLine.get(key))))
+                .map(key -> new Line(key.getId(), key.getName(), key.getColor(), key.getExtraFare(),
+                        toSections(groupByLine.get(key))))
                 .collect(Collectors.toList());
     }
 
@@ -76,7 +78,7 @@ public class LineDao {
     }
 
     public Long updateByLine(final Line line) {
-        String sql = "UPDATE line SET name = :name, color = :color WHERE id = :id";
+        String sql = "UPDATE line SET name = :name, color = :color, extraFare = :extraFare WHERE id = :id";
         SqlParameterSource nameParameters = new BeanPropertySqlParameterSource(line);
 
         namedParameterJdbcTemplate.update(sql, nameParameters);
@@ -91,12 +93,13 @@ public class LineDao {
         return namedParameterJdbcTemplate.update(sql, parameters);
     }
 
-    private RowMapper<Line> rowMapper() {
+    private RowMapper<Line> lineRowMapper() {
         return (resultSet, rowNum) -> {
             Long lineId = resultSet.getLong("id");
             String name = resultSet.getString("name");
             String color = resultSet.getString("color");
-            return new Line(lineId, name, color);
+            int extraFare = resultSet.getInt("extraFare");
+            return new Line(lineId, name, color, extraFare);
         };
     }
 
@@ -105,7 +108,8 @@ public class LineDao {
             Long lineId = resultSet.getLong("line_id");
             String name = resultSet.getString("name");
             String color = resultSet.getString("color");
-            Line line = new Line(lineId, name, color);
+            int extraFare = resultSet.getInt("extraFare");
+            Line line = new Line(lineId, name, color, extraFare);
             Long sectionId = resultSet.getLong("section_id");
             Long upStationId = resultSet.getLong("up_station_id");
             Long downStationId = resultSet.getLong("down_station_id");
@@ -121,10 +125,17 @@ public class LineDao {
         };
     }
 
+    public List<Integer> findLinePricesByIds(List<Long> lineIds) {
+        String sql = "SELECT extraFare FROM line WHERE id IN (:lineIds)";
+        SqlParameterSource nameParameters = new MapSqlParameterSource("lineIds", lineIds);
+
+        return namedParameterJdbcTemplate.query(sql, nameParameters, (rs, rowNum) -> rs.getInt(1));
+    }
+
     static class LineSection {
 
-        private Line line;
-        private Section sectionV2;
+        private final Line line;
+        private final Section sectionV2;
 
         public LineSection(Line line, Section sectionV2) {
             this.line = line;

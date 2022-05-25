@@ -37,7 +37,7 @@ public class LineService {
     public Long save(LineRequest request) {
         validateDuplicateName(request.getName());
         validateDuplicateSections(request);
-        final Line line = new Line(request.getName(), request.getColor());
+        final Line line = new Line(request.getName(), request.getColor(), request.getExtraFare());
         final Long lineId = lineDao.save(line);
 
         final Station upStation = stationDao.findById(request.getUpStationId())
@@ -71,6 +71,7 @@ public class LineService {
                 .map(line -> new LineResponse(line.getId(),
                         line.getName(),
                         line.getColor(),
+                        line.getExtraFare(),
                         sortSections(line.getSections())))
                 .collect(Collectors.toList());
     }
@@ -82,6 +83,7 @@ public class LineService {
         return new LineResponse(line.getId(),
                 line.getName(),
                 line.getColor(),
+                line.getExtraFare(),
                 sortSections(sections));
     }
 
@@ -98,7 +100,7 @@ public class LineService {
     }
 
     public Long updateByLine(Long id, LineRequest request) {
-        final Line updateLine = new Line(id, request.getName(), request.getColor());
+        final Line updateLine = new Line(id, request.getName(), request.getColor(), request.getExtraFare());
 
         return lineDao.updateByLine(updateLine);
     }

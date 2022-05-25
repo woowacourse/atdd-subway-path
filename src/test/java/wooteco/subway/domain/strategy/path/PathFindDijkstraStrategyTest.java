@@ -3,7 +3,6 @@ package wooteco.subway.domain.strategy.path;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static wooteco.subway.Fixture.강남역;
-import static wooteco.subway.Fixture.도곡역;
 import static wooteco.subway.Fixture.삼성역;
 import static wooteco.subway.Fixture.삼전역;
 import static wooteco.subway.Fixture.선릉역;
@@ -28,7 +27,7 @@ class PathFindDijkstraStrategyTest {
         PathFindStrategy pathStrategy = new PathFindDijkstraStrategy();
 
         // when
-        Path path = pathStrategy.calculatePath(강남역, 삼전역, new Sections(전체_구간));
+        Path path = pathStrategy.findPath(강남역, 삼전역, new Sections(전체_구간));
 
         // then
         assertThat(path).isEqualTo(new Path(List.of(강남역, 역삼역, 선릉역, 삼성역, 종합운동장역, 삼전역), 25));
@@ -41,7 +40,7 @@ class PathFindDijkstraStrategyTest {
         PathFindStrategy pathStrategy = new PathFindDijkstraStrategy();
 
         // when & then
-        assertThatThrownBy(() -> pathStrategy.calculatePath(강남역, 강남역, new Sections(전체_구간)))
+        assertThatThrownBy(() -> pathStrategy.findPath(강남역, 강남역, new Sections(전체_구간)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("출발역과 도착역이 같을 수 없습니다.");
     }
@@ -53,7 +52,7 @@ class PathFindDijkstraStrategyTest {
         PathFindStrategy pathStrategy = new PathFindDijkstraStrategy();
 
         // then
-        assertThatThrownBy(() -> pathStrategy.calculatePath(한티역, 삼전역, new Sections(전체_구간)))
+        assertThatThrownBy(() -> pathStrategy.findPath(한티역, 삼전역, new Sections(전체_구간)))
                 .isInstanceOf(PathNotFoundException.class);
     }
 
@@ -64,7 +63,7 @@ class PathFindDijkstraStrategyTest {
         PathFindStrategy pathStrategy = new PathFindDijkstraStrategy();
 
         // then
-        assertThatThrownBy(() -> pathStrategy.calculatePath(강남역, 한티역, new Sections(전체_구간)))
+        assertThatThrownBy(() -> pathStrategy.findPath(강남역, 한티역, new Sections(전체_구간)))
                 .isInstanceOf(PathNotFoundException.class);
     }
 }

@@ -4,8 +4,8 @@ import java.util.Objects;
 
 public class Station {
 
-    private Long id;
-    private String name;
+    private final Long id;
+    private final String name;
 
     public Station(String name) {
         this(null, name);

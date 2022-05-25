@@ -60,7 +60,7 @@ class SectionServiceTest {
         // then
         final LineResponse response = lineService.findById(lineId);
         assertThat(response.getStations()).extracting("name")
-                        .containsExactly("강남역", "역삼역", "선릉역");
+                .containsExactly("강남역", "역삼역", "선릉역");
     }
 
     @Test
