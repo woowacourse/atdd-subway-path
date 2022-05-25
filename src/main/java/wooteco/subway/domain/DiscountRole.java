@@ -10,14 +10,14 @@ import wooteco.subway.domain.strategy.discount.NonDiscountStrategy;
 
 public enum DiscountRole {
 
-    BABY(age -> age < Constants.KID_STANDARD, new FreeDiscountStrategy()),
-    KID(age -> age >= Constants.KID_STANDARD && age < Constants.ADOLESCENT_STANDARD,
+    BABY(age -> Constants.KID_STANDARD > age, new FreeDiscountStrategy()),
+    KID(age -> Constants.KID_STANDARD <= age && age < Constants.ADOLESCENT_STANDARD,
             new KidDiscountStrategy()),
-    ADOLESCENT(age -> age >= Constants.ADOLESCENT_STANDARD && age < Constants.ADULT_STANDARD,
+    ADOLESCENT(age -> Constants.ADOLESCENT_STANDARD <= age && age < Constants.ADULT_STANDARD,
             new AdolescentDiscountStrategy()),
-    ADULT(age -> age > Constants.ADULT_STANDARD && age < Constants.SENIOR_STANDARD,
+    ADULT(age -> Constants.ADULT_STANDARD < age && age < Constants.SENIOR_STANDARD,
             new NonDiscountStrategy()),
-    SENIOR(age -> age >= Constants.SENIOR_STANDARD, new FreeDiscountStrategy());
+    SENIOR(age -> Constants.SENIOR_STANDARD <= age, new FreeDiscountStrategy());
 
     private static class Constants {
         private static final int KID_STANDARD = 6;
