@@ -37,7 +37,7 @@ class AgeDiscountPolicyTest {
         AgeDiscountPolicy baby = AgeDiscountPolicy.BABY;
 
         //when
-        int discountAmount = baby.discountAmount(1350);
+        int discountAmount = baby.calculateDiscountAmount(1350);
 
         //then
         assertThat(discountAmount).isEqualTo(1350);
@@ -50,7 +50,7 @@ class AgeDiscountPolicyTest {
         AgeDiscountPolicy policy = AgeDiscountPolicy.CHILDREN;
 
         //when
-        int discountAmount = policy.discountAmount(1350);
+        int discountAmount = policy.calculateDiscountAmount(1350);
 
         //then
         assertThat(discountAmount).isEqualTo(500);
@@ -63,7 +63,7 @@ class AgeDiscountPolicyTest {
         AgeDiscountPolicy policy = AgeDiscountPolicy.TEENAGER;
 
         //when
-        int discountAmount = policy.discountAmount(1350);
+        int discountAmount = policy.calculateDiscountAmount(1350);
 
         //then
         assertThat(discountAmount).isEqualTo(200);
@@ -76,7 +76,7 @@ class AgeDiscountPolicyTest {
         AgeDiscountPolicy policy = AgeDiscountPolicy.ADULT;
 
         //when
-        int discountAmount = policy.discountAmount(1350);
+        int discountAmount = policy.calculateDiscountAmount(1350);
 
         //then
         assertThat(discountAmount).isEqualTo(0);

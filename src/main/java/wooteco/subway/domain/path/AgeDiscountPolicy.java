@@ -26,7 +26,7 @@ public enum AgeDiscountPolicy {
                 .orElseThrow(() -> new IllegalArgumentException("입력한 나이값이 올바르지 않습니다."));
     }
 
-    public int discountAmount(final int money) {
+    public int calculateDiscountAmount(final int money) {
         return discountPolicy.apply(money);
     }
 

@@ -27,7 +27,7 @@ public class Path {
         if (tempDistance > 10) {
             fare += calculateOverFare(tempDistance - 10, 5);
         }
-        fare -= AgeDiscountPolicy.from(age).discountAmount(fare);
+        fare -= AgeDiscountPolicy.from(age).calculateDiscountAmount(fare);
         return fare;
     }
 
