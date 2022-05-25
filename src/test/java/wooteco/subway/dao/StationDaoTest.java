@@ -9,11 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.ui.dto.LineCreateRequest;
-import wooteco.subway.utils.DaoUtil;
 
 @JdbcTest
 class StationDaoTest {
@@ -32,13 +30,18 @@ class StationDaoTest {
         LineDao lineDao = new LineDao(jdbcTemplate);
         SectionDao sectionDao = new SectionDao(jdbcTemplate);
 
-        station1 = DaoUtil.saveStation(stationDao, "강남역");
-        station2 = DaoUtil.saveStation(stationDao, "왕십리역");
+        station1 = saveStation(stationDao, "강남역");
+        station2 = saveStation(stationDao, "왕십리역");
 
         LineCreateRequest request = new LineCreateRequest("신분당선", "red", station1.getId(), station2.getId(), 10, 500);
         lineId = lineDao.save(request);
 
         sectionDao.save(new Section(lineId, station1, station2, 10));
+    }
+
+    private Station saveStation(StationDao stationDao, String name) {
+        Long id = stationDao.save(new Station(name));
+        return new Station(id, name);
     }
 
     @DisplayName("역 저장")

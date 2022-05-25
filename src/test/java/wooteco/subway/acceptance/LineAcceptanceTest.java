@@ -27,7 +27,6 @@ import wooteco.subway.ui.dto.LineCreateRequest;
 import wooteco.subway.ui.dto.LineRequest;
 import wooteco.subway.ui.dto.SectionRequest;
 import wooteco.subway.ui.dto.StationRequest;
-import wooteco.subway.utils.RestAssuredUtil;
 
 @DisplayName("지하철 노선 관련 기능 - LineAcceptanceTest")
 public class LineAcceptanceTest extends AcceptanceTest {
@@ -73,7 +72,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineCreateRequest request = new LineCreateRequest("2호선", "bg-green-500", stationId1, stationId2, 20, 0);
 
         // when
-        ExtractableResponse<Response> response = RestAssuredUtil.post("/lines", request);
+        ExtractableResponse<Response> response = post("/lines", request);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -87,7 +86,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
 
         // when
-        ExtractableResponse<Response> response = RestAssuredUtil.post("/lines", lineCreateRequest);
+        ExtractableResponse<Response> response = post("/lines", lineCreateRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -121,7 +120,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         List<Long> expectedLineIds = List.of(lineId1, lineId2);
 
         // when
-        ExtractableResponse<Response> response = RestAssuredUtil.get("/lines");
+        ExtractableResponse<Response> response = get("/lines");
         List<Long> resultLineIds = findLineIds(response);
 
         // then
@@ -142,7 +141,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         String id = String.valueOf(lineId1);
 
         //when
-        ExtractableResponse<Response> response = RestAssuredUtil.get("/lines/" + id);
+        ExtractableResponse<Response> response = get("/lines/" + id);
 
         //then
         Integer findId = response.jsonPath().get("id");
@@ -156,7 +155,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         String id = "999999";
 
         //when
-        ExtractableResponse<Response> response = RestAssuredUtil.get("/lines/" + id);
+        ExtractableResponse<Response> response = get("/lines/" + id);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -172,7 +171,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         String name = "다른분당선";
         LineRequest lineRequest = new LineRequest(name, "bg-red-600", 0);
 
-        ExtractableResponse<Response> response = RestAssuredUtil.put("/lines/" + id, lineRequest);
+        ExtractableResponse<Response> response = put("/lines/" + id, lineRequest);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -188,7 +187,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         String name = "분당선";
         LineRequest lineRequest = new LineRequest(name, "bg-red-600", 0);
 
-        ExtractableResponse<Response> response = RestAssuredUtil.put("/lines/" + id, lineRequest);
+        ExtractableResponse<Response> response = put("/lines/" + id, lineRequest);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -201,14 +200,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
         List<Long> expectedIds = selectLines();
 
         //when
-        RestAssuredUtil.delete("/lines/" + lineId1, new HashMap<>());
+        delete("/lines/" + lineId1, new HashMap<>());
 
         //then
         assertThat(expectedIds.size() - 1).isEqualTo(selectLines().size());
     }
 
     private List<Long> selectLines() {
-        ExtractableResponse<Response> response = RestAssuredUtil.get("/lines");
+        ExtractableResponse<Response> response = get("/lines");
         return findLineIds(response);
     }
 
@@ -220,7 +219,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         String url = "/lines/" + lineId1 + "/sections";
 
         // when
-        RestAssuredUtil.post(url, sectionRequest);
+        post(url, sectionRequest);
 
         // then
         List<StationResponse> stations = findStations(lineId1);
@@ -242,7 +241,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         String url = "/lines/" + lineId1 + "/sections";
 
         // when
-        RestAssuredUtil.delete(url, source);
+        delete(url, source);
 
         // then
         List<Long> stationIds = findStationIds(lineId1);
@@ -257,7 +256,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     private List<StationResponse> findStations(Long lineId) {
-        ExtractableResponse<Response> findLine = RestAssuredUtil.get("/lines/" + lineId);
+        ExtractableResponse<Response> findLine = get("/lines/" + lineId);
         return findLine.jsonPath().getList("stations", StationResponse.class);
     }
 }

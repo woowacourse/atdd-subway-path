@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import wooteco.subway.service.StationService;
 import wooteco.subway.service.dto.StationResponse;
 import wooteco.subway.ui.dto.StationRequest;
-import wooteco.subway.utils.RestAssuredUtil;
 
 @DisplayName("지하철역 관련 기능 - StationAcceptanceTest")
 public class StationAcceptanceTest extends AcceptanceTest {
@@ -39,7 +38,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         StationRequest stationRequest = new StationRequest("선릉역");
 
         // when
-        ExtractableResponse<Response> response = RestAssuredUtil.post("/stations", stationRequest);
+        ExtractableResponse<Response> response = post("/stations", stationRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -52,7 +51,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // given
         StationRequest stationRequest = new StationRequest("강남역");
 
-        ExtractableResponse<Response> response = RestAssuredUtil.post("/stations", stationRequest);
+        ExtractableResponse<Response> response = post("/stations", stationRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -64,7 +63,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         /// given
 
         // when
-        ExtractableResponse<Response> response = RestAssuredUtil.get("/stations");
+        ExtractableResponse<Response> response = get("/stations");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -84,11 +83,11 @@ public class StationAcceptanceTest extends AcceptanceTest {
     void deleteStation() {
         // given
         StationRequest stationRequest = new StationRequest("잠실역");
-        ExtractableResponse<Response> createResponse = RestAssuredUtil.post("/stations", stationRequest);
+        ExtractableResponse<Response> createResponse = post("/stations", stationRequest);
 
         // when
         String uri = createResponse.header("Location");
-        ExtractableResponse<Response> response = RestAssuredUtil.delete(uri, new HashMap<>());
+        ExtractableResponse<Response> response = delete(uri, new HashMap<>());
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());

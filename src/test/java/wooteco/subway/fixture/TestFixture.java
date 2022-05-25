@@ -1,4 +1,4 @@
-package wooteco.subway.utils;
+package wooteco.subway.fixture;
 
 import wooteco.subway.domain.station.Station;
 

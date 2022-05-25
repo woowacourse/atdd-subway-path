@@ -17,7 +17,6 @@ import wooteco.subway.service.StationService;
 import wooteco.subway.service.dto.StationResponse;
 import wooteco.subway.ui.dto.LineCreateRequest;
 import wooteco.subway.ui.dto.StationRequest;
-import wooteco.subway.utils.RestAssuredUtil;
 
 @DisplayName("지하철 경로 관련 기능 - PathAcceptanceTest")
 public class PathAcceptanceTest extends AcceptanceTest {
@@ -46,7 +45,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         String url = "/paths?source=" + sourceId + "&target=" + targetId + "&age=20";
 
         //when
-        ExtractableResponse<Response> response = RestAssuredUtil.get(url);
+        ExtractableResponse<Response> response = get(url);
 
         //then
         Integer fare = response.jsonPath().get("fare");
