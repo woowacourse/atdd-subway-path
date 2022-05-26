@@ -3,6 +3,8 @@ package wooteco.subway.acceptance;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static wooteco.subway.TestFixtures.STANDARD_DISTANCE;
+import static wooteco.subway.TestFixtures.STANDARD_EXTRA_FARE;
 
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
@@ -76,10 +78,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Station 강남역 = stationRepository.save(new Station("강남역"));
         Station 역삼역 = stationRepository.save(new Station("역삼역"));
 
-        LineRequest newBundangLine = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5);
+        LineRequest newBundangLine = new
+                LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), STANDARD_DISTANCE, STANDARD_EXTRA_FARE);
         ExtractableResponse<Response> newBundangPostResponse = post(newBundangLine, "/lines");
 
-        LineRequest bundangLine = new LineRequest("분당선", "bg-green-600", 강남역.getId(), 역삼역.getId(), 5);
+        LineRequest bundangLine = new LineRequest("분당선", "bg-green-600", 강남역.getId(), 역삼역.getId(), STANDARD_DISTANCE,
+                STANDARD_EXTRA_FARE);
 
         ExtractableResponse<Response> bundangPostResponse = post(bundangLine, "/lines");
 
@@ -100,7 +104,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Station 강남역 = stationRepository.save(new Station("강남역"));
         Station 역삼역 = stationRepository.save(new Station("역삼역"));
 
-        LineRequest params = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5);
+        LineRequest params = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), STANDARD_DISTANCE,
+                STANDARD_EXTRA_FARE);
         ExtractableResponse<Response> createResponse = post(params, "/lines");
 
         long id = Long.parseLong(createResponse.header(HttpHeaders.LOCATION).split("/")[2]);
@@ -124,12 +129,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Station 강남역 = stationRepository.save(new Station("강남역"));
         Station 역삼역 = stationRepository.save(new Station("역삼역"));
 
-        LineRequest params = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5);
+        LineRequest params = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), STANDARD_DISTANCE,
+                STANDARD_EXTRA_FARE);
         ExtractableResponse<Response> createResponse = post(params, "/lines");
 
         long id = Long.parseLong(createResponse.header(HttpHeaders.LOCATION).split("/")[2]);
 
-        LineRequest updateParam = new LineRequest("다른분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5);
+        LineRequest updateParam = new LineRequest("다른분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), STANDARD_DISTANCE,
+                STANDARD_EXTRA_FARE);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .body(updateParam)
@@ -148,7 +155,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Station 강남역 = stationRepository.save(new Station("강남역"));
         Station 역삼역 = stationRepository.save(new Station("역삼역"));
 
-        LineRequest params = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 5);
+        LineRequest params = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), STANDARD_DISTANCE,
+                STANDARD_EXTRA_FARE);
 
         ExtractableResponse<Response> createResponse = post(params, "/lines");
 

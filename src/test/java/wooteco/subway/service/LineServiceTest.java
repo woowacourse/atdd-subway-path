@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static wooteco.subway.TestFixtures.LINE_SIX_COLOR;
 import static wooteco.subway.TestFixtures.STANDARD_DISTANCE;
+import static wooteco.subway.TestFixtures.STANDARD_EXTRA_FARE;
 import static wooteco.subway.TestFixtures.동묘앞역;
 import static wooteco.subway.TestFixtures.보문역;
 import static wooteco.subway.TestFixtures.신당역;
@@ -50,7 +51,7 @@ public class LineServiceTest {
         Station 선릉역 = stationRepository.save(new Station("선릉역"));
         Station 선정릉역 = stationRepository.save(new Station("선정릉역"));
 
-        LineRequest lineRequest = new LineRequest("분당선", LINE_SIX_COLOR, 선릉역.getId(), 선정릉역.getId(), STANDARD_DISTANCE);
+        LineRequest lineRequest = new LineRequest("분당선", LINE_SIX_COLOR, 선릉역.getId(), 선정릉역.getId(), STANDARD_DISTANCE, STANDARD_EXTRA_FARE);
         LineResponse lineResponse = lineService.create(lineRequest);
 
         assertAll(

@@ -24,4 +24,5 @@ public class TestFixtures {
 
     public static final int STANDARD_DISTANCE = 10;
     public static final int STANDARD_FARE = 1250;
+    public static final int STANDARD_EXTRA_FARE = 0;
 }
