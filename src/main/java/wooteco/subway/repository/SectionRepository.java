@@ -43,7 +43,7 @@ public class SectionRepository {
     }
 
     public Sections findAllByLineId(final Long id) {
-        final List<SectionEntity> entities = sectionDao.findAllByLineId(id);
+        final List<SectionEntity> entities = sectionDao.getAllByLineId(id);
         return new Sections(entities.stream()
                 .map(e -> {
                     final Station upStation = stationRepository.findById(e.getUpStationId());
@@ -53,7 +53,7 @@ public class SectionRepository {
     }
 
     public Section findById(final Long id) {
-        final SectionEntity entity = sectionDao.findById(id);
+        final SectionEntity entity = sectionDao.getById(id);
         final Station upStation = stationRepository.findById(entity.getUpStationId());
         final Station downStation = stationRepository.findById(entity.getDownStationId());
         return new Section(entity.getId(), upStation, downStation, entity.getDistance());
@@ -63,10 +63,10 @@ public class SectionRepository {
         sectionDao.deleteById(id);
     }
 
-    public void batchDelete(final Long lineId, final List<Section> sections) {
-        final List<SectionEntity> entities = sections.stream()
-                .map(s -> SectionEntity.of(lineId, s))
+    public void batchDeleteById(final List<Section> sections) {
+        final List<Long> ids = sections.stream()
+                .map(Section::getId)
                 .collect(Collectors.toList());
-        sectionDao.batchDelete(entities);
+        sectionDao.batchDeleteById(ids);
     }
 }

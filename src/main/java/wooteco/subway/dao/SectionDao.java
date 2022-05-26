@@ -6,6 +6,7 @@ import javax.sql.DataSource;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
@@ -49,10 +50,9 @@ public class SectionDao {
     public List<SectionEntity> findAll() {
         final String sql = "SELECT * FROM SECTION";
         return jdbcTemplate.query(sql, ROW_MAPPER);
-
     }
 
-    public List<SectionEntity> findAllByLineId(final Long id) {
+    public List<SectionEntity> getAllByLineId(final Long id) {
         try {
             final String sql = "SELECT * FROM SECTION WHERE line_id = :id";
             return jdbcTemplate.query(sql, Map.of("id", id), ROW_MAPPER);
@@ -61,7 +61,7 @@ public class SectionDao {
         }
     }
 
-    public SectionEntity findById(final Long id) {
+    public SectionEntity getById(final Long id) {
         try {
             final String sql = "SELECT * FROM SECTION WHERE id = :id";
             return jdbcTemplate.queryForObject(sql, Map.of("id", id), ROW_MAPPER);
@@ -75,8 +75,9 @@ public class SectionDao {
         jdbcTemplate.update(sql, Map.of("id", id));
     }
 
-    public void batchDelete(final List<SectionEntity> sections) {
-        final String sql = "DELETE FROM SECTION WHERE id = :id";
-        jdbcTemplate.batchUpdate(sql, SqlParameterSourceUtils.createBatch(sections));
+    public void batchDeleteById(final List<Long> ids) {
+        final SqlParameterSource params = new MapSqlParameterSource("ids", ids);
+        final String sql = "DELETE FROM SECTION WHERE id IN (:ids)";
+        jdbcTemplate.update(sql, params);
     }
 }

@@ -6,10 +6,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static wooteco.subway.Fixtures.GANGNAM;
+import static wooteco.subway.Fixtures.GREEN;
 import static wooteco.subway.Fixtures.HYEHWA;
+import static wooteco.subway.Fixtures.JAMSIL;
 import static wooteco.subway.Fixtures.LINE_2;
-import static wooteco.subway.Fixtures.RED;
-import static wooteco.subway.Fixtures.SINSA;
+import static wooteco.subway.Fixtures.LINE_4;
+import static wooteco.subway.Fixtures.SKY_BLUE;
+import static wooteco.subway.Fixtures.SUNGSHIN;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Objects;
@@ -42,9 +45,9 @@ public class PathControllerIntegrationTest {
     void find() throws Exception {
         // given
         final Long stationId1 = createStation(HYEHWA);
-        final Long stationId2 = createStation(SINSA);
+        final Long stationId2 = createStation(SUNGSHIN);
         final Long stationId3 = createStation(GANGNAM);
-        final Long lineId = createLine(LINE_2, RED, stationId1, stationId2, 10);
+        final Long lineId = createLine(LINE_2, SKY_BLUE, stationId1, stationId2, 10, 0);
         createSection(lineId, stationId2, stationId3, 10);
 
         // when
@@ -57,11 +60,48 @@ public class PathControllerIntegrationTest {
                 .andExpect(jsonPath("stations[0].id").value(stationId1))
                 .andExpect(jsonPath("stations[0].name").value(HYEHWA))
                 .andExpect(jsonPath("stations[1].id").value(stationId2))
-                .andExpect(jsonPath("stations[1].name").value(SINSA))
+                .andExpect(jsonPath("stations[1].name").value(SUNGSHIN))
                 .andExpect(jsonPath("stations[2].id").value(stationId3))
                 .andExpect(jsonPath("stations[2].name").value(GANGNAM))
                 .andExpect(jsonPath("distance").value(20))
-                .andExpect(jsonPath("fare").value(1450));
+                .andExpect(jsonPath("fare").value(1_450));
+    }
+
+    @Test
+    @DisplayName("출발역과 도착역이 같은 경우, 경로 조회에 실패한다.")
+    void find_sameStations() throws Exception {
+        // given
+        final Long stationId1 = createStation(HYEHWA);
+        final Long stationId2 = createStation(SUNGSHIN);
+        createLine(LINE_2, SKY_BLUE, stationId1, stationId2, 10, 0);
+
+        // when
+        final ResultActions response = mockMvc.perform(
+                        get("/paths?source=" + stationId1 + "&target=" + stationId1 + "&age=" + 26))
+                .andDo(print());
+
+        // then
+        response.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("연결되지 않은 경로를 조회할 경우, 경로 조회에 실패한다.")
+    void find_noPath() throws Exception {
+        // given
+        final Long stationId1 = createStation(HYEHWA);
+        final Long stationId2 = createStation(SUNGSHIN);
+        final Long stationId3 = createStation(GANGNAM);
+        final Long stationId4 = createStation(JAMSIL);
+        createLine(LINE_2, SKY_BLUE, stationId1, stationId2, 10, 0);
+        createLine(LINE_4, GREEN, stationId3, stationId4, 10, 900);
+
+        // when
+        final ResultActions response = mockMvc.perform(
+                        get("/paths?source=" + stationId1 + "&target=" + stationId4 + "&age=" + 26))
+                .andDo(print());
+
+        // then
+        response.andExpect(status().isBadRequest());
     }
 
     private Long createStation(final String name) throws Exception {
@@ -78,8 +118,9 @@ public class PathControllerIntegrationTest {
     }
 
     private Long createLine(final String name, final String color, final Long upStationId, final Long downStationId,
-                            final int distance) throws Exception {
-        final CreateLineRequest request = new CreateLineRequest(name, color, upStationId, downStationId, distance);
+                            final int distance, final int extraFare) throws Exception {
+        final CreateLineRequest request = new CreateLineRequest(name, color, upStationId, downStationId, distance,
+                extraFare);
         final String requestContent = objectMapper.writeValueAsString(request);
 
         return Long.parseLong(Objects.requireNonNull(mockMvc.perform(post("/lines")

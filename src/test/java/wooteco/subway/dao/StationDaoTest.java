@@ -3,7 +3,7 @@ package wooteco.subway.dao;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static wooteco.subway.Fixtures.HYEHWA;
-import static wooteco.subway.Fixtures.SINSA;
+import static wooteco.subway.Fixtures.SUNGSHIN;
 
 import java.util.List;
 import javax.sql.DataSource;
@@ -35,7 +35,7 @@ class StationDaoTest {
         final Long id = stationDao.save(new StationEntity(HYEHWA));
 
         // then
-        assertThat(stationDao.findById(id).getName()).isEqualTo(HYEHWA);
+        assertThat(stationDao.getById(id).getName()).isEqualTo(HYEHWA);
     }
 
     @Test
@@ -45,7 +45,7 @@ class StationDaoTest {
         final long id = stationDao.save(new StationEntity(HYEHWA));
 
         // when
-        final StationEntity foundStation = stationDao.findById(id);
+        final StationEntity foundStation = stationDao.getById(id);
 
         // then
         assertThat(foundStation.getName()).isEqualTo(HYEHWA);
@@ -55,7 +55,7 @@ class StationDaoTest {
     @DisplayName("존재하지 않는 Id 조회 시, 예외를 발생한다.")
     void findNotExistId() {
         // when & then
-        assertThatThrownBy(() -> stationDao.findById(1L))
+        assertThatThrownBy(() -> stationDao.getById(1L))
                 .isInstanceOf(NotFoundStationException.class);
     }
 
@@ -64,7 +64,7 @@ class StationDaoTest {
     void findAll() {
         // given
         stationDao.save(new StationEntity(HYEHWA));
-        stationDao.save(new StationEntity(SINSA));
+        stationDao.save(new StationEntity(SUNGSHIN));
 
         // when
         final List<StationEntity> stations = stationDao.findAll();

@@ -48,7 +48,11 @@ public class Section {
         return this.distance >= section.distance;
     }
 
-    public Boolean hasSameUpStation(final Section section) {
+    public boolean hasSameStation(final Station station) {
+        return this.upStation.equals(station) || this.downStation.equals(station);
+    }
+
+    public boolean hasSameUpStation(final Section section) {
         return this.upStation.equals(section.upStation);
     }
 

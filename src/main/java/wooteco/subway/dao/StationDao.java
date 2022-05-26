@@ -35,18 +35,18 @@ public class StationDao {
         return insertActor.executeAndReturnKey(parameters).longValue();
     }
 
-    public StationEntity findById(final Long id) {
+    public List<StationEntity> findAll() {
+        final String sql = "SELECT * FROM STATION";
+        return namedParameterJdbcTemplate.query(sql, ROW_MAPPER);
+    }
+
+    public StationEntity getById(final Long id) {
         try {
             final String sql = "SELECT * FROM STATION WHERE id = :id";
             return namedParameterJdbcTemplate.queryForObject(sql, Map.of("id", id), ROW_MAPPER);
         } catch (final EmptyResultDataAccessException e) {
             throw new NotFoundStationException();
         }
-    }
-
-    public List<StationEntity> findAll() {
-        final String sql = "SELECT * FROM STATION";
-        return namedParameterJdbcTemplate.query(sql, ROW_MAPPER);
     }
 
     public void deleteById(final Long id) {

@@ -3,17 +3,18 @@ package wooteco.subway.ui;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static wooteco.subway.Fixtures.BLUE;
 import static wooteco.subway.Fixtures.GANGNAM;
+import static wooteco.subway.Fixtures.GREEN;
 import static wooteco.subway.Fixtures.HYEHWA;
 import static wooteco.subway.Fixtures.LINE_2;
 import static wooteco.subway.Fixtures.LINE_4;
-import static wooteco.subway.Fixtures.RED;
-import static wooteco.subway.Fixtures.SINSA;
+import static wooteco.subway.Fixtures.SKY_BLUE;
+import static wooteco.subway.Fixtures.SUNGSHIN;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Objects;
@@ -30,6 +31,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import wooteco.subway.dto.request.CreateLineRequest;
 import wooteco.subway.dto.request.CreateSectionRequest;
 import wooteco.subway.dto.request.CreateStationRequest;
+import wooteco.subway.dto.request.UpdateLineRequest;
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -47,9 +49,9 @@ public class LineControllerIntegrationTest {
     void create() throws Exception {
         // given
         final Long upStationId = createStation(HYEHWA);
-        final Long downStationId = createStation(SINSA);
+        final Long downStationId = createStation(SUNGSHIN);
 
-        final CreateLineRequest request = new CreateLineRequest(LINE_2, RED, upStationId, downStationId, 10);
+        final CreateLineRequest request = new CreateLineRequest(LINE_4, SKY_BLUE, upStationId, downStationId, 10, 0);
         final String requestContent = objectMapper.writeValueAsString(request);
 
         // when
@@ -62,12 +64,13 @@ public class LineControllerIntegrationTest {
         response
                 .andExpect(status().isCreated())
                 .andExpect(header().string(HttpHeaders.LOCATION, "/lines/1"))
-                .andExpect(jsonPath("name").value(LINE_2))
-                .andExpect(jsonPath("color").value(RED))
-                .andExpect(jsonPath("stations[0].id").value(1L))
+                .andExpect(jsonPath("name").value(LINE_4))
+                .andExpect(jsonPath("color").value(SKY_BLUE))
+                .andExpect(jsonPath("extraFare").value(0))
+                .andExpect(jsonPath("stations[0].id").value(upStationId))
                 .andExpect(jsonPath("stations[0].name").value(HYEHWA))
-                .andExpect(jsonPath("stations[1].id").value(2L))
-                .andExpect(jsonPath("stations[1].name").value(SINSA));
+                .andExpect(jsonPath("stations[1].id").value(downStationId))
+                .andExpect(jsonPath("stations[1].name").value(SUNGSHIN));
     }
 
     @Test
@@ -75,10 +78,10 @@ public class LineControllerIntegrationTest {
     void showAll() throws Exception {
         // given
         final Long upStationId = createStation(HYEHWA);
-        final Long downStationId = createStation(SINSA);
+        final Long downStationId = createStation(SUNGSHIN);
 
-        createLine(LINE_2, RED, upStationId, downStationId, 10);
-        createLine(LINE_4, BLUE, upStationId, downStationId, 10);
+        createLine(LINE_4, SKY_BLUE, upStationId, downStationId, 10, 900);
+        createLine(LINE_2, GREEN, upStationId, downStationId, 10, 0);
 
         // when
         final ResultActions response = mockMvc.perform(get("/lines"))
@@ -87,14 +90,16 @@ public class LineControllerIntegrationTest {
         // then
         response
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name").value(LINE_2))
-                .andExpect(jsonPath("$[0].color").value(RED))
+                .andExpect(jsonPath("$[0].name").value(LINE_4))
+                .andExpect(jsonPath("$[0].color").value(SKY_BLUE))
+                .andExpect(jsonPath("$[0].extraFare").value(900))
                 .andExpect(jsonPath("$[0].stations[0].name").value(HYEHWA))
-                .andExpect(jsonPath("$[0].stations[1].name").value(SINSA))
-                .andExpect(jsonPath("$[1].name").value(LINE_4))
-                .andExpect(jsonPath("$[1].color").value(BLUE))
+                .andExpect(jsonPath("$[0].stations[1].name").value(SUNGSHIN))
+                .andExpect(jsonPath("$[1].name").value(LINE_2))
+                .andExpect(jsonPath("$[1].color").value(GREEN))
+                .andExpect(jsonPath("$[1].extraFare").value(0))
                 .andExpect(jsonPath("$[1].stations[0].name").value(HYEHWA))
-                .andExpect(jsonPath("$[1].stations[1].name").value(SINSA));
+                .andExpect(jsonPath("$[1].stations[1].name").value(SUNGSHIN));
     }
 
     @Test
@@ -102,9 +107,9 @@ public class LineControllerIntegrationTest {
     void show() throws Exception {
         // given
         final Long upStationId = createStation(HYEHWA);
-        final Long downStationId = createStation(SINSA);
+        final Long downStationId = createStation(SUNGSHIN);
 
-        final Long lineId = createLine(LINE_2, RED, upStationId, downStationId, 10);
+        final Long lineId = createLine(LINE_4, SKY_BLUE, upStationId, downStationId, 10, 900);
 
         // when
         final ResultActions response = mockMvc.perform(get("/lines/" + lineId))
@@ -113,12 +118,13 @@ public class LineControllerIntegrationTest {
         // then
         response
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("name").value(LINE_2))
-                .andExpect(jsonPath("color").value(RED))
+                .andExpect(jsonPath("name").value(LINE_4))
+                .andExpect(jsonPath("color").value(SKY_BLUE))
+                .andExpect(jsonPath("extraFare").value(900))
                 .andExpect(jsonPath("stations[0].id").value(upStationId))
                 .andExpect(jsonPath("stations[0].name").value(HYEHWA))
                 .andExpect(jsonPath("stations[1].id").value(downStationId))
-                .andExpect(jsonPath("stations[1].name").value(SINSA));
+                .andExpect(jsonPath("stations[1].name").value(SUNGSHIN));
     }
 
     @Test
@@ -134,13 +140,49 @@ public class LineControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("노선을 수정한다.")
+    void update() throws Exception {
+        // given
+        final Long stationId1 = createStation(HYEHWA);
+        final Long stationId2 = createStation(SUNGSHIN);
+        final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10, 900);
+
+        final UpdateLineRequest request = new UpdateLineRequest(LINE_2, GREEN, 0);
+        final String requestContent = objectMapper.writeValueAsString(request);
+
+        // when
+        final ResultActions response = mockMvc.perform(put("/lines/" + lineId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestContent))
+                .andDo(print());
+
+        // then
+        response
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("노선을 삭제한다.")
+    void deleteLine() throws Exception {
+        // given
+        final Long stationId1 = createStation(HYEHWA);
+        final Long stationId2 = createStation(SUNGSHIN);
+        final Long lineId = createLine(LINE_4, SKY_BLUE, stationId1, stationId2, 10, 900);
+
+        // when
+        final ResultActions response = mockMvc.perform(delete("/lines/" + lineId))
+                .andDo(print());
+
+    }
+
+    @Test
     @DisplayName("구간을 등록한다.")
     void createSection() throws Exception {
         // given
         final Long stationId1 = createStation(HYEHWA);
-        final Long stationId2 = createStation(SINSA);
+        final Long stationId2 = createStation(SUNGSHIN);
         final Long stationId3 = createStation(GANGNAM);
-        final Long lineId = createLine(LINE_2, RED, stationId1, stationId2, 10);
+        final Long lineId = createLine(LINE_2, SKY_BLUE, stationId1, stationId2, 10, 900);
 
         final CreateSectionRequest request = new CreateSectionRequest(stationId2, stationId3, 5);
         final String requestContent = objectMapper.writeValueAsString(request);
@@ -161,9 +203,9 @@ public class LineControllerIntegrationTest {
     void createSectionWithLongDistance() throws Exception {
         // given
         final Long stationId1 = createStation(HYEHWA);
-        final Long stationId2 = createStation(SINSA);
+        final Long stationId2 = createStation(SUNGSHIN);
         final Long stationId3 = createStation(GANGNAM);
-        final Long lineId = createLine(LINE_2, RED, stationId1, stationId3, 10);
+        final Long lineId = createLine(LINE_2, SKY_BLUE, stationId1, stationId3, 10, 900);
 
         final CreateSectionRequest request = new CreateSectionRequest(stationId1, stationId2, 20);
         final String requestContent = objectMapper.writeValueAsString(request);
@@ -183,9 +225,9 @@ public class LineControllerIntegrationTest {
     void deleteSection() throws Exception {
         // given
         final Long stationId1 = createStation(HYEHWA);
-        final Long stationId2 = createStation(SINSA);
+        final Long stationId2 = createStation(SUNGSHIN);
         final Long stationId3 = createStation(GANGNAM);
-        final Long lineId = createLine(LINE_2, RED, stationId1, stationId2, 10);
+        final Long lineId = createLine(LINE_2, SKY_BLUE, stationId1, stationId2, 10, 900);
         createSection(lineId, stationId2, stationId3, 10);
 
         // when
@@ -211,8 +253,9 @@ public class LineControllerIntegrationTest {
     }
 
     private Long createLine(final String name, final String color, final Long upStationId, final Long downStationId,
-                            final int distance) throws Exception {
-        final CreateLineRequest request = new CreateLineRequest(name, color, upStationId, downStationId, distance);
+                            final int distance, final int extraFare) throws Exception {
+        final CreateLineRequest request = new CreateLineRequest(name, color, upStationId, downStationId, distance,
+                extraFare);
         final String requestContent = objectMapper.writeValueAsString(request);
 
         return Long.parseLong(Objects.requireNonNull(mockMvc.perform(post("/lines")
