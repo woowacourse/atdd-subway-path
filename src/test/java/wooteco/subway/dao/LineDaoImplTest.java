@@ -161,4 +161,23 @@ class LineDaoImplTest {
         // then
         assertThat(line).isEqualTo(newLine);
     }
+
+    @Test
+    @DisplayName("노선의 id를 받아 노선별 추가요금을 가져옵니다.")
+    void findExtraFareByIds() {
+        // given
+        Line line1 = new Line("1호선", "bg-red-600", 500);
+        Line line2 = new Line("2호선", "bg-green-600", 900);
+        Long savedId1 = lineDao.save(line1);
+        sectionDao.save(new Section(station1, station2, 10), savedId1);
+        Long savedId2 = lineDao.save(line2);
+        sectionDao.save(new Section(station3, station4, 10), savedId2);
+
+        //when
+        List<Integer> extraFareByIds = lineDao.findExtraFareByIds(List.of(savedId1, savedId2));
+
+        //then
+        assertThat(extraFareByIds).containsExactly(500, 900);
+
+    }
 }
