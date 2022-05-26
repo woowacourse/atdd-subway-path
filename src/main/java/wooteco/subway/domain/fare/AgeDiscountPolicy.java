@@ -1,24 +1,24 @@
 package wooteco.subway.domain.fare;
 
-import static wooteco.subway.domain.fare.DiscountPolicyByAge.Constants.CHILD_FARE_PERCENT;
-import static wooteco.subway.domain.fare.DiscountPolicyByAge.Constants.CHILD_MAX_AGE;
-import static wooteco.subway.domain.fare.DiscountPolicyByAge.Constants.CHILD_MIN_AGE;
-import static wooteco.subway.domain.fare.DiscountPolicyByAge.Constants.DEFAULT_DISCOUNT_FARE;
-import static wooteco.subway.domain.fare.DiscountPolicyByAge.Constants.GENERAL_MAX_AGE;
-import static wooteco.subway.domain.fare.DiscountPolicyByAge.Constants.GENERAL_MIN_AGE;
-import static wooteco.subway.domain.fare.DiscountPolicyByAge.Constants.MAX_AGE;
-import static wooteco.subway.domain.fare.DiscountPolicyByAge.Constants.MIN_AGE;
-import static wooteco.subway.domain.fare.DiscountPolicyByAge.Constants.SENIOR_MIN_AGE;
-import static wooteco.subway.domain.fare.DiscountPolicyByAge.Constants.TEEN_FARE_PERCENT;
-import static wooteco.subway.domain.fare.DiscountPolicyByAge.Constants.TEEN_MAX_AGE;
-import static wooteco.subway.domain.fare.DiscountPolicyByAge.Constants.TEEN_MIN_AGE;
-import static wooteco.subway.domain.fare.DiscountPolicyByAge.Constants.TODDLER_MAX_AGE;
+import static wooteco.subway.domain.fare.AgeDiscountPolicy.Constants.CHILD_FARE_PERCENT;
+import static wooteco.subway.domain.fare.AgeDiscountPolicy.Constants.CHILD_MAX_AGE;
+import static wooteco.subway.domain.fare.AgeDiscountPolicy.Constants.CHILD_MIN_AGE;
+import static wooteco.subway.domain.fare.AgeDiscountPolicy.Constants.DEFAULT_DISCOUNT_FARE;
+import static wooteco.subway.domain.fare.AgeDiscountPolicy.Constants.GENERAL_MAX_AGE;
+import static wooteco.subway.domain.fare.AgeDiscountPolicy.Constants.GENERAL_MIN_AGE;
+import static wooteco.subway.domain.fare.AgeDiscountPolicy.Constants.MAX_AGE;
+import static wooteco.subway.domain.fare.AgeDiscountPolicy.Constants.MIN_AGE;
+import static wooteco.subway.domain.fare.AgeDiscountPolicy.Constants.SENIOR_MIN_AGE;
+import static wooteco.subway.domain.fare.AgeDiscountPolicy.Constants.TEEN_FARE_PERCENT;
+import static wooteco.subway.domain.fare.AgeDiscountPolicy.Constants.TEEN_MAX_AGE;
+import static wooteco.subway.domain.fare.AgeDiscountPolicy.Constants.TEEN_MIN_AGE;
+import static wooteco.subway.domain.fare.AgeDiscountPolicy.Constants.TODDLER_MAX_AGE;
 
 import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public enum DiscountPolicyByAge {
+public enum AgeDiscountPolicy {
 
     GENERAL(
             age -> age >= GENERAL_MIN_AGE && age <= GENERAL_MAX_AGE,
@@ -45,14 +45,14 @@ public enum DiscountPolicyByAge {
     private final Predicate<Integer> ageRange;
     private final Function<Integer, Integer> discountCondition;
 
-    DiscountPolicyByAge(Predicate<Integer> ageRange, Function<Integer, Integer> discountCondition) {
+    AgeDiscountPolicy(Predicate<Integer> ageRange, Function<Integer, Integer> discountCondition) {
         this.ageRange = ageRange;
         this.discountCondition = discountCondition;
     }
 
-    public static DiscountPolicyByAge from(final int age) {
+    public static AgeDiscountPolicy from(final int age) {
         validateAgeRange(age);
-        return Arrays.stream(DiscountPolicyByAge.values())
+        return Arrays.stream(AgeDiscountPolicy.values())
                 .filter(it -> it.ageRange.test(age))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("해당 나이의 할인 정책을 찾을 수 없습니다."));
@@ -64,7 +64,7 @@ public enum DiscountPolicyByAge {
         }
     }
 
-    public static int discount(final int fare, final DiscountPolicyByAge discountPolicy) {
+    public static int discount(final int fare, final AgeDiscountPolicy discountPolicy) {
         if (discountPolicy == TEEN || discountPolicy == CHILD) {
             validateOverDefaultDiscountFare(fare);
         }

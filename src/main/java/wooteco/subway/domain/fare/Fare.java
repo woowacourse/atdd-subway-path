@@ -23,9 +23,9 @@ public class Fare {
 
     public static Fare of(final int distance, final int extraFare, final int age) {
         final int fare = calculateFare(distance, extraFare);
-        final DiscountPolicyByAge discountPolicy = DiscountPolicyByAge.from
+        final AgeDiscountPolicy discountPolicy = AgeDiscountPolicy.from
                 (age);
-        return new Fare(DiscountPolicyByAge.discount(fare, discountPolicy));
+        return new Fare(AgeDiscountPolicy.discount(fare, discountPolicy));
     }
 
     private static int calculateFare(final int distance, final int extraFare) {

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class DiscountPolicyByAgeTest {
+class AgeDiscountPolicyTest {
 
     private static final int DEFAULT_FARE = 1250;
     private static final int DEFAULT_DISCOUNT_FARE = 350;
@@ -16,13 +16,13 @@ class DiscountPolicyByAgeTest {
     @ParameterizedTest
     @ValueSource(ints = {19, 64})
     void generalAge(final int age) {
-        assertThat(DiscountPolicyByAge.from(age)).isEqualTo(DiscountPolicyByAge.GENERAL);
+        assertThat(AgeDiscountPolicy.from(age)).isEqualTo(AgeDiscountPolicy.GENERAL);
     }
 
     @DisplayName("일반인의 요금 할인이 없습니다.")
     @Test
     void discountGeneralAge() {
-        final int actual = DiscountPolicyByAge.discount(DEFAULT_FARE, DiscountPolicyByAge.GENERAL);
+        final int actual = AgeDiscountPolicy.discount(DEFAULT_FARE, AgeDiscountPolicy.GENERAL);
         assertThat(actual).isEqualTo(DEFAULT_FARE);
     }
 
@@ -30,13 +30,13 @@ class DiscountPolicyByAgeTest {
     @ParameterizedTest
     @ValueSource(ints = {13, 18})
     void teenAge(final int age) {
-        assertThat(DiscountPolicyByAge.from(age)).isEqualTo(DiscountPolicyByAge.TEEN);
+        assertThat(AgeDiscountPolicy.from(age)).isEqualTo(AgeDiscountPolicy.TEEN);
     }
 
     @DisplayName("청소년의 요금은 350원을 공제하고, 20% 할인된다.")
     @Test
     void discountTeenAge() {
-        final int actual = DiscountPolicyByAge.discount(DEFAULT_FARE, DiscountPolicyByAge.TEEN);
+        final int actual = AgeDiscountPolicy.discount(DEFAULT_FARE, AgeDiscountPolicy.TEEN);
         assertThat(actual).isEqualTo((int) ((DEFAULT_FARE - DEFAULT_DISCOUNT_FARE) * 0.8));
     }
 
@@ -44,39 +44,39 @@ class DiscountPolicyByAgeTest {
     @ParameterizedTest
     @ValueSource(ints = {6, 12})
     void childAge(final int age) {
-        assertThat(DiscountPolicyByAge.from(age)).isEqualTo(DiscountPolicyByAge.CHILD);
+        assertThat(AgeDiscountPolicy.from(age)).isEqualTo(AgeDiscountPolicy.CHILD);
     }
 
     @DisplayName("어린이의 요금은 350원을 공제하고, 50% 할인된다.")
     @Test
     void discountChildAge() {
-        final int actual = DiscountPolicyByAge.discount(DEFAULT_FARE, DiscountPolicyByAge.CHILD);
+        final int actual = AgeDiscountPolicy.discount(DEFAULT_FARE, AgeDiscountPolicy.CHILD);
         assertThat(actual).isEqualTo((int) ((DEFAULT_FARE - DEFAULT_DISCOUNT_FARE) * 0.5));
     }
 
     @DisplayName("65세 이상이라면, 노인이다.")
     @Test
     void seniorAge() {
-        assertThat(DiscountPolicyByAge.from(65)).isEqualTo(DiscountPolicyByAge.SENIOR);
+        assertThat(AgeDiscountPolicy.from(65)).isEqualTo(AgeDiscountPolicy.SENIOR);
     }
 
     @DisplayName("노인의 요금은 무료이다.")
     @Test
     void discountSeniorAge() {
-        final int actual = DiscountPolicyByAge.discount(DEFAULT_FARE, DiscountPolicyByAge.SENIOR);
+        final int actual = AgeDiscountPolicy.discount(DEFAULT_FARE, AgeDiscountPolicy.SENIOR);
         assertThat(actual).isEqualTo(0);
     }
 
     @DisplayName("6세 미만이라면, 유아이다.")
     @Test
     void toddlerAge() {
-        assertThat(DiscountPolicyByAge.from(5)).isEqualTo(DiscountPolicyByAge.TODDLER);
+        assertThat(AgeDiscountPolicy.from(5)).isEqualTo(AgeDiscountPolicy.TODDLER);
     }
 
     @DisplayName("유아의 요금은 무료이다.")
     @Test
     void discountToddlerAge() {
-        final int actual = DiscountPolicyByAge.discount(DEFAULT_FARE, DiscountPolicyByAge.TODDLER);
+        final int actual = AgeDiscountPolicy.discount(DEFAULT_FARE, AgeDiscountPolicy.TODDLER);
         assertThat(actual).isEqualTo(0);
     }
 }
