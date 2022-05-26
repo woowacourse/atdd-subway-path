@@ -36,18 +36,4 @@ class FareCalculatorTest {
         // then
         assertThat(result).isEqualTo(expected);
     }
-
-    @DisplayName("나이별 요금 계산")
-    @ParameterizedTest(name = "{0} 살 -> 요금 {1}원 예상")
-    @CsvSource(value = {"12,800", "18,1070", "20,1250"})
-    void calculateCostByAge(int age, int expected) {
-        // given
-        FareCalculator fareCalculator = new FareCalculator(10, 0, age);
-
-        // when
-        int result = fareCalculator.calculate();
-
-        // then
-        assertThat(result).isEqualTo(expected);
-    }
 }
