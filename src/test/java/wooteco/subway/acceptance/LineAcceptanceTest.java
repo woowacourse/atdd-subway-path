@@ -75,18 +75,18 @@ public class LineAcceptanceTest extends AcceptanceTest {
         select("/lines/" + id, 200).body("stations.size()", is(2));
     }
 
-    @DisplayName("지하철 노선 목록 조회")
     @Test
+    @DisplayName("지하철 노선 목록 조회")
     void getLines() {
-        // given
+        //given
         ExtractableResponse<Response> createResponse = insert(new LineRequest("신분당선", "bg-red-600",
                 1L, 2L, 10, 100), "/lines", 201).extract();
         ExtractableResponse<Response> newCreateResponse = insert(new LineRequest("분당선", "bg-green-600",
                 1L, 2L, 10, 100), "/lines", 201).extract();
 
+        //when
         ExtractableResponse<Response> response = select("/lines", 200).extract();
 
-        // then
         List<Long> expectedLineIds = Stream.of(createResponse, newCreateResponse)
                 .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
                 .collect(Collectors.toList());
@@ -94,6 +94,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .map(LineResponse::getId)
                 .collect(Collectors.toList());
 
+        //then
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
 

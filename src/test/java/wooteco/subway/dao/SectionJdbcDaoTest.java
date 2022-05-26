@@ -1,6 +1,7 @@
 package wooteco.subway.dao;
 
-import org.junit.jupiter.api.BeforeEach;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,6 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @JdbcTest
 class SectionJdbcDaoTest {
 
@@ -20,13 +19,10 @@ class SectionJdbcDaoTest {
     private StationDao stationJdbcDao;
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @BeforeEach
-    void setUp() {
-        sectionJdbcDao = new SectionJdbcDao(jdbcTemplate);
-        lineJdbcDao = new LineJdbcDao(jdbcTemplate);
-        stationJdbcDao = new StationJdbcDao(jdbcTemplate);
+    public SectionJdbcDaoTest(JdbcTemplate jdbcTemplate) {
+        this.sectionJdbcDao = new SectionJdbcDao(jdbcTemplate);
+        this.lineJdbcDao = new LineJdbcDao(jdbcTemplate);
+        this.stationJdbcDao = new StationJdbcDao(jdbcTemplate);
     }
 
     @DisplayName("구간 정보 저장")

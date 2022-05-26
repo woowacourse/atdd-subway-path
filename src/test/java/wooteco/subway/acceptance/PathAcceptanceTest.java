@@ -27,6 +27,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         select("/paths?source=1&target=3&age=15", 200)
                 .body("stations.size()", is(3))
                 .body("distance", is(50))
-                .body("fare", is(2050));
+                .body("fare", is(1720));
     }
 }

@@ -1,5 +1,6 @@
 package wooteco.subway.dao;
 
+import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.LineSections;
 

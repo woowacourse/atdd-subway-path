@@ -94,6 +94,7 @@ public class LineSections {
         return line.getStations()
                 .stream()
                 .filter(station -> station.getId() == id)
+                .map(it -> new Station(it.getId(), it.getName()))
                 .findAny();
     }
 
