@@ -10,6 +10,7 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.Stations;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.exception.duplicate.DuplicateStationException;
 import wooteco.subway.exception.invalidrequest.InvalidPathRequestException;
@@ -31,7 +32,7 @@ class DijkstraPathStrategyTest {
         Sections sections = new Sections(List.of(gangnam_yeoksam, yeoksam_seolleung));
 
         Path shortestPath = pathStrategy.calculatePath(gangnam, seolleung, sections);
-        Path expected = new Path(List.of(gangnam, yeoksam, seolleung), List.of(line), 2);
+        Path expected = new Path(new Stations(List.of(gangnam, yeoksam, seolleung)), List.of(line), 2);
 
         assertThat(shortestPath).isEqualTo(expected);
     }

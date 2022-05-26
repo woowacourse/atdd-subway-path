@@ -4,30 +4,24 @@ import java.util.List;
 import java.util.Objects;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.Stations;
 
 public class Path {
 
-    private final List<Station> stations;
+    private final Stations stations;
     private final List<Line> lines;
     private final int distance;
 
-    public Path(List<Station> stations, List<Line> lines, int distance) {
-        validate(stations, lines, distance);
+    public Path(Stations stations, List<Line> lines, int distance) {
+        validate(lines, distance);
         this.stations = stations;
         this.lines = lines;
         this.distance = distance;
     }
 
-    private void validate(List<Station> stations, List<Line> lines, int distance) {
-        validateStations(stations);
+    private void validate(List<Line> lines, int distance) {
         validateLines(lines);
         validateDistance(distance);
-    }
-
-    private void validateStations(List<Station> stations) {
-        if (stations == null || stations.stream().anyMatch(Objects::isNull)) {
-            throw new IllegalArgumentException("지나간 역들은 null일 수 없습니다.");
-        }
     }
 
     private void validateLines(List<Line> lines) {
@@ -50,7 +44,7 @@ public class Path {
     }
 
     public List<Station> getStations() {
-        return stations;
+        return stations.getValues();
     }
 
     public int getDistance() {

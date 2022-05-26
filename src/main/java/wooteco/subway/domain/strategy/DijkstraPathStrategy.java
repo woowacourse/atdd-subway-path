@@ -9,6 +9,7 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.Stations;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.ShortestPathEdge;
 import wooteco.subway.exception.duplicate.DuplicateStationException;
@@ -27,7 +28,7 @@ public class DijkstraPathStrategy implements PathStrategy {
         DijkstraShortestPath<Station, ShortestPathEdge> shortestPath = new DijkstraShortestPath<>(graph);
         try {
             GraphPath<Station, ShortestPathEdge> graphPath = shortestPath.getPath(source, target);
-            List<Station> passedStations = graphPath.getVertexList();
+            Stations passedStations = new Stations(graphPath.getVertexList());
             List<Line> passedLines = findPassedLines(graphPath);
             int distance = (int) shortestPath.getPathWeight(source, target);
 
