@@ -1,6 +1,9 @@
 package wooteco.subway.domain;
 
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public enum Age {
 
@@ -21,7 +24,11 @@ public enum Age {
     }
 
     public static Age findByAge(Long number) {
-        return Arrays.stream(Age.values())
+        List<Age> sortAges = Arrays.stream(Age.values())
+                .sorted(Comparator.comparing(Age::getBoundary))
+                .collect(Collectors.toList());
+
+        return sortAges.stream()
                 .filter(age -> number <= age.boundary)
                 .findFirst()
                 .orElse(ELDER);
