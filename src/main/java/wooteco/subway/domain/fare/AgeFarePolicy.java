@@ -6,33 +6,33 @@ import java.util.function.Predicate;
 public enum AgeFarePolicy {
     INFANT(age -> age.lessThan(6)) {
         @Override
-        public Fare apply(Fare fare, Age age) {
+        public Fare apply(Fare fare) {
             return FREE;
         }
     },
     CHILDREN(age -> age.moreThan(6) && age.lessThan(13)) {
         @Override
-        public Fare apply(Fare fare, Age age) {
+        public Fare apply(Fare fare) {
             return fare.minus(350)
                     .discountPercent(50);
         }
     },
     TEENAGER(age -> age.moreThan(13) && age.lessThan(19)) {
         @Override
-        public Fare apply(Fare fare, Age age) {
+        public Fare apply(Fare fare) {
             return fare.minus(350)
                     .discountPercent(20);
         }
     },
     GENERAL(age -> age.moreThan(19) && age.lessThan(65)) {
         @Override
-        public Fare apply(Fare fare, Age age) {
+        public Fare apply(Fare fare) {
             return fare;
         }
     },
     SENIOR(age -> age.moreThan(65)) {
         @Override
-        public Fare apply(Fare fare, Age age) {
+        public Fare apply(Fare fare) {
             return FREE;
         }
     };
@@ -44,11 +44,11 @@ public enum AgeFarePolicy {
         this.condition = condition;
     }
 
-    abstract public Fare apply(Fare fare, Age age);
+    abstract public Fare apply(Fare fare);
 
     public static Fare getFare(Fare fare, Age age) {
         AgeFarePolicy farePolicy = findFarePolicy(age);
-        return farePolicy.apply(fare, age);
+        return farePolicy.apply(fare);
     }
 
     private static AgeFarePolicy findFarePolicy(Age age) {
