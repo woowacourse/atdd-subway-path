@@ -5,7 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
+import wooteco.subway.domain.Station;
 import wooteco.subway.dto.*;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,11 +30,13 @@ class PathServiceTest {
     void findShortestPath() {
         StationResponse firstStation = stationService.save(new StationRequest("역삼역"));
         StationResponse secondStation = stationService.save(new StationRequest("삼성역"));
+
         LineRequest line = new LineRequest("9호선", "red", firstStation.getId(), secondStation.getId(), 10, 100);
-
         lineService.save(line);
-        PathResponse shortestPath = pathService.findShortestPath(new PathRequest(firstStation.getId(), secondStation.getId(), 0L));
 
-        assertThat(shortestPath.getDistance()).isEqualTo(10);
+        PathResponse shortestPath = pathService.findShortestPath(new PathRequest(firstStation.getId(), secondStation.getId(), 20L));
+        PathResponse expected = new PathResponse(List.of(new Station(1L, "역삼역"), new Station(2L, "삼성역")), 10, 1450);
+        assertThat(shortestPath).usingRecursiveComparison()
+                .isEqualTo(expected);
     }
 }
