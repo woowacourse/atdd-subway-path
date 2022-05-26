@@ -7,6 +7,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -43,16 +44,12 @@ public class SectionDao {
 
     public Sections findAllByLineId(long id) {
         String sql = "SELECT * FROM section WHERE line_id = :line_id";
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("line_id", id);
-
+        SqlParameterSource params = new MapSqlParameterSource("line_id", id);
         return new Sections(jdbcTemplate.query(sql, params, getRowMapper()));
     }
 
     public Sections findAll() {
         String sql = "SELECT * FROM section";
-
         return new Sections(jdbcTemplate.query(sql, getRowMapper()));
     }
 
@@ -74,10 +71,7 @@ public class SectionDao {
 
     public void deleteById(long id) {
         String sql = "DELETE FROM section WHERE id = :id";
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("id", id);
-
+        SqlParameterSource params = new MapSqlParameterSource("id", id);
         jdbcTemplate.update(sql, params);
     }
 

@@ -46,10 +46,7 @@ public class LineDao {
 
     public Line findById(long id) {
         String sql = "SELECT id, name, color, extra_fare FROM line WHERE id=:id";
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("id", id);
-
+        SqlParameterSource params = new MapSqlParameterSource("id", id);
         return jdbcTemplate.queryForObject(sql, params, getRowMapper());
     }
 
@@ -67,10 +64,7 @@ public class LineDao {
 
     public void deleteById(long id) {
         String sql = "DELETE FROM line WHERE id=:id";
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("id", id);
-
+        SqlParameterSource params = new MapSqlParameterSource("id", id);
         jdbcTemplate.update(sql, params);
     }
 
@@ -82,7 +76,7 @@ public class LineDao {
     public List<Integer> findExtraFaresByIds(List<Long> ids) {
         String sql = "select extra_fare from line where id in (:ids)";
         RowMapper<Integer> rowMapper = (resultSet, rowNum) -> resultSet.getInt("extra_fare");
-        SqlParameterSource parameters = new MapSqlParameterSource("ids", ids);
-        return jdbcTemplate.query(sql, parameters, rowMapper);
+        SqlParameterSource params = new MapSqlParameterSource("ids", ids);
+        return jdbcTemplate.query(sql, params, rowMapper);
     }
 }
