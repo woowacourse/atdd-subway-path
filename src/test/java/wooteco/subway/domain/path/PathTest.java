@@ -8,23 +8,11 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.line.Line;
 
 class PathTest {
-
-    @DisplayName("거리에 따른 요금을 계산한다.")
-    @ParameterizedTest
-    @CsvSource(value = {"10,1250", "11,1350", "15,1350", "16,1450", "50,2050", "51,2150", "58,2150", "59,2250"})
-    void calculateFareByDistance(long distance, long expected) {
-        Path path = new Path(Collections.emptyList(), Collections.emptyList(), distance);
-
-        Fare actual = path.calculateFare();
-        assertThat(actual.getFare()).isEqualTo(expected);
-    }
 
     @DisplayName("거쳐온 노선 중 가장 높은 금액의 추가 요금을 구한다.")
     @Test

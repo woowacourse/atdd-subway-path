@@ -27,23 +27,9 @@ public class Path {
     }
 
     public Fare calculateFare() {
-        long fare = calculateFareByDistance(distance.getDistance());
+        long fare = DistanceFarePolicy.calculateByPolicy(distance.getDistance());
         fare += calculateMaximumExtraFare();
         return new Fare(fare);
-    }
-
-    private long calculateFareByDistance(long distance) {
-        if (distance <= 10) {
-            return BASE_FARE;
-        }
-
-        if (distance <= 50) {
-            return BASE_FARE + ((distance - 10 - 1) / 5 + 1) * 100;
-        }
-
-        long baseOverFifty = BASE_FARE + 40 / 5 * 100L;
-        baseOverFifty += ((distance - 50 - 1) / 8 + 1) * 100L;
-        return baseOverFifty;
     }
 
     private long calculateMaximumExtraFare() {

@@ -3,6 +3,7 @@ package wooteco.subway.service;
 import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.path.Path;
@@ -13,6 +14,7 @@ import wooteco.subway.service.dto.response.PathResponse;
 import wooteco.subway.service.dto.response.ResponseAssembler;
 
 @Service
+@Transactional
 public class PathService {
 
     private final LineService lineService;
