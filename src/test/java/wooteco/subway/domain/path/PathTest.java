@@ -15,7 +15,7 @@ class PathTest {
     @CsvSource(value = {"9:1250", "10:1250", "11:1350", "33:1750", "50:2050", "58:2150"}, delimiter = ':')
     @ParameterizedTest
     void calculate(int distance, int expected) {
-        Path path = new Path(distance, Set.of(1L, 2L), List.of(1L, 2L, 3L));
+        Path path = new Path(distance, Set.of(1L, 2L), Set.of(1L, 2L, 3L));
         int fare = path.calculateFare(20, 0);
 
         assertThat(fare).isEqualTo(expected);
@@ -25,7 +25,7 @@ class PathTest {
     @CsvSource(value = {"9:1750", "10:1750", "11:1850", "33:2250", "50:2550", "58:2650"}, delimiter = ':')
     @ParameterizedTest
     void calculateWithExtraCharge(int distance, int expected) {
-        Path path = new Path(distance, Set.of(1L, 2L), List.of(1L, 2L, 3L));
+        Path path = new Path(distance, Set.of(1L, 2L), Set.of(1L, 2L, 3L));
         int fare = path.calculateFare(20, 500);
 
         assertThat(fare).isEqualTo(expected);
@@ -34,7 +34,7 @@ class PathTest {
     @DisplayName("6세 미만의 경우는 무료이다.")
     @Test
     void calculateInfantCharge() {
-        Path path = new Path(9, Set.of(1L, 2L), List.of(1L, 2L, 3L));
+        Path path = new Path(9, Set.of(1L, 2L), Set.of(1L, 2L, 3L));
         int fare = path.calculateFare(5, 500);
 
         assertThat(fare).isZero();
@@ -44,7 +44,7 @@ class PathTest {
     @CsvSource(value = {"6:700", "7:700", "12:700"}, delimiter = ':')
     @ParameterizedTest
     void calculateChildCharge(int age, int expected) {
-        Path path = new Path(9, Set.of(1L, 2L), List.of(1L, 2L, 3L));
+        Path path = new Path(9, Set.of(1L, 2L), Set.of(1L, 2L, 3L));
         int fare = path.calculateFare(age, 500);
 
         assertThat(fare).isEqualTo(expected);
@@ -54,7 +54,7 @@ class PathTest {
     @CsvSource(value = {"13:1120", "14:1120", "18:1120", "19:1750"}, delimiter = ':')
     @ParameterizedTest
     void calculateAdolescentCharge(int age, int expected) {
-        Path path = new Path(9, Set.of(1L, 2L), List.of(1L, 2L, 3L));
+        Path path = new Path(9, Set.of(1L, 2L), Set.of(1L, 2L, 3L));
         int fare = path.calculateFare(age, 500);
 
         assertThat(fare).isEqualTo(expected);

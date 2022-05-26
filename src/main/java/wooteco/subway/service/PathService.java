@@ -58,7 +58,7 @@ public class PathService {
         }
     }
 
-    private List<StationResponse> getStationsResponses(Stations stations, List<Long> shortestPath) {
+    private List<StationResponse> getStationsResponses(Stations stations, Set<Long> shortestPath) {
         return shortestPath.stream()
                 .map(stations::findStationById)
                 .map(StationResponse::new)

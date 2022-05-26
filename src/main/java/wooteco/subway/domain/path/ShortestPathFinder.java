@@ -1,5 +1,6 @@
 package wooteco.subway.domain.path;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -21,14 +22,7 @@ public class ShortestPathFinder implements PathFinder {
         GraphPath<Long, ShortestPathEdge> graphPath = Optional.ofNullable(shortestPath.getPath(source, target))
                 .orElseThrow(() -> new SubwayException("경로가 존재하지 않습니다."));
 
-        return new Path((int) graphPath.getWeight(), getLineIds(graphPath), graphPath.getVertexList());
-    }
-
-    private Set<Long> getLineIds(GraphPath<Long, ShortestPathEdge> graphPath) {
-        return graphPath.getEdgeList()
-                .stream()
-                .map(ShortestPathEdge::getLineId)
-                .collect(Collectors.toUnmodifiableSet());
+        return new Path((int) graphPath.getWeight(), getLineIds(graphPath), getStations(graphPath));
     }
 
     private DijkstraShortestPath<Long, ShortestPathEdge> initializePathGraph(List<Long> stationIds,
@@ -50,5 +44,16 @@ public class ShortestPathFinder implements PathFinder {
             graph.addEdge(section.getUpStationId(), section.getDownStationId(),
                     new ShortestPathEdge(section.getLineId(), section.getDistance()));
         }
+    }
+
+    private Set<Long> getLineIds(GraphPath<Long, ShortestPathEdge> graphPath) {
+        return graphPath.getEdgeList()
+                .stream()
+                .map(ShortestPathEdge::getLineId)
+                .collect(Collectors.toUnmodifiableSet());
+    }
+
+    private Set<Long> getStations(GraphPath<Long, ShortestPathEdge> graphPath) {
+        return new LinkedHashSet<>(graphPath.getVertexList());
     }
 }

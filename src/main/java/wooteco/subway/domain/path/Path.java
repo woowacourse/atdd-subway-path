@@ -1,6 +1,6 @@
 package wooteco.subway.domain.path;
 
-import java.util.List;
+import java.util.Collections;
 import java.util.Set;
 
 public class Path {
@@ -13,9 +13,9 @@ public class Path {
 
     private final int distance;
     private final Set<Long> lineIds;
-    private final List<Long> stationIds;
+    private final Set<Long> stationIds;
 
-    public Path(int distance, Set<Long> lineIds, List<Long> stationIds) {
+    public Path(int distance, Set<Long> lineIds, Set<Long> stationIds) {
         this.distance = distance;
         this.lineIds = lineIds;
         this.stationIds = stationIds;
@@ -48,10 +48,10 @@ public class Path {
     }
 
     public Set<Long> getLineIds() {
-        return lineIds;
+        return Collections.unmodifiableSet(lineIds);
     }
 
-    public List<Long> getStationIds() {
-        return stationIds;
+    public Set<Long> getStationIds() {
+        return Collections.unmodifiableSet(stationIds);
     }
 }
