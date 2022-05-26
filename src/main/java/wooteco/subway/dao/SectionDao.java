@@ -15,12 +15,6 @@ import wooteco.subway.domain.station.Station;
 @Repository
 public class SectionDao {
 
-    private static final String selectSql = "select sc.id, sc.line_id, sc.distance "
-            + ", up.id as up_station_id, up.name as up_station_name "
-            + ", down.id as down_station_id, down.name as down_station_name "
-            + "from SECTION sc, STATION up, STATION down "
-            + "where sc.up_station_id = up.id and sc.down_station_id = down.id ";
-
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     public SectionDao(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -36,24 +30,43 @@ public class SectionDao {
     );
 
     public List<Section> findAll() {
-        return jdbcTemplate.query(selectSql, eventRowMapper);
+        String sql = "select sc.id, sc.line_id, sc.distance "
+                + ", up.id as up_station_id, up.name as up_station_name "
+                + ", down.id as down_station_id, down.name as down_station_name "
+                + "from SECTION sc, STATION up, STATION down "
+                + "where sc.up_station_id = up.id and sc.down_station_id = down.id ";
+        return jdbcTemplate.query(sql, eventRowMapper);
     }
 
     public List<Section> findByLineId(Long id) {
-        String sql = selectSql + "and sc.line_id = :id";
+        String sql = "select sc.id, sc.line_id, sc.distance "
+                + ", up.id as up_station_id, up.name as up_station_name "
+                + ", down.id as down_station_id, down.name as down_station_name "
+                + "from SECTION sc, STATION up, STATION down "
+                + "where sc.up_station_id = up.id and sc.down_station_id = down.id "
+                + "and sc.line_id = :id";
         SqlParameterSource source = new MapSqlParameterSource("id", id);
         return jdbcTemplate.query(sql, source, eventRowMapper);
     }
 
     public List<Section> findByStationId(Long id) {
-        String sql = selectSql + "and sc.up_station_id = :id or sc.down_station_id = :id";
+        String sql = "select sc.id, sc.line_id, sc.distance "
+                + ", up.id as up_station_id, up.name as up_station_name "
+                + ", down.id as down_station_id, down.name as down_station_name "
+                + "from SECTION sc, STATION up, STATION down "
+                + "where sc.up_station_id = up.id and sc.down_station_id = down.id "
+                + "and sc.up_station_id = :id or sc.down_station_id = :id";
         SqlParameterSource source = new MapSqlParameterSource("id", id);
         return jdbcTemplate.query(sql, source, eventRowMapper);
     }
 
     public List<Section> findByLineIdAndStationId(Long lineId, Long stationId) {
         String sql =
-                selectSql
+                "select sc.id, sc.line_id, sc.distance "
+                        + ", up.id as up_station_id, up.name as up_station_name "
+                        + ", down.id as down_station_id, down.name as down_station_name "
+                        + "from SECTION sc, STATION up, STATION down "
+                        + "where sc.up_station_id = up.id and sc.down_station_id = down.id "
                         + "and sc.line_id = :lineId and (sc.up_station_id = :stationId or sc.down_station_id = :stationId)";
         SqlParameterSource source = new MapSqlParameterSource()
                 .addValue("lineId", lineId)
@@ -77,7 +90,9 @@ public class SectionDao {
     }
 
     public void update(Section section) {
-        String sql = "update SECTION set down_station_id = :downStationId, up_station_id = :upStationId, distance = :distance where id = :id";
+        String sql =
+                "update SECTION set down_station_id = :downStationId, up_station_id = :upStationId, distance = :distance "
+                        + "where id = :id";
 
         SqlParameterSource source = new MapSqlParameterSource()
                 .addValue("id", section.getId())
