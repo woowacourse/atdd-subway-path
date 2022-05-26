@@ -1,9 +1,10 @@
 package wooteco.subway.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
-import wooteco.subway.service.dto.station.StationResponseDto;
+import wooteco.subway.service.dto.station.StationResponse;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -18,11 +19,11 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
-    public StationResponseDto createStation(String name) {
+    public StationResponse createStation(String name) {
         validateExistName(name);
         Station station = stationDao.create(new Station(name));
 
-        return new StationResponseDto(station);
+        return new StationResponse(station);
     }
 
     private void validateExistName(String name) {
@@ -31,12 +32,22 @@ public class StationService {
         }
     }
 
-    public List<StationResponseDto> findStations() {
+
+    @Transactional(readOnly = true)
+    public List<StationResponse> findStations() {
         return stationDao.findAll().stream()
-                .map(StationResponseDto::new)
+                .map(StationResponse::new)
                 .collect(Collectors.toList());
     }
 
+
+    @Transactional(readOnly = true)
+    public List<Station> findAll() {
+        return stationDao.findAll();
+    }
+
+
+    @Transactional(readOnly = true)
     public Station findById(Long id) {
         return stationDao.findById(id);
     }
@@ -51,5 +62,9 @@ public class StationService {
         if (!stationDao.existById(id)) {
             throw new NoSuchElementException("[ERROR] 존재하지 않는 역 입니다.");
         }
+    }
+
+    public List<Station> findByIds(List<Long> ids) {
+        return stationDao.findByIds(ids);
     }
 }

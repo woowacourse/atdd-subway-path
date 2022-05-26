@@ -1,24 +1,19 @@
 package wooteco.subway.acceptance;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.acceptance.AcceptanceFixture.낙성대;
-import static wooteco.subway.acceptance.AcceptanceFixture.봉천;
-import static wooteco.subway.acceptance.AcceptanceFixture.서울대입구;
-import static wooteco.subway.acceptance.ResponseCreator.createDeleteStationResponseById;
-import static wooteco.subway.acceptance.ResponseCreator.createGetStationResponse;
-import static wooteco.subway.acceptance.ResponseCreator.createPostStationResponse;
-import static wooteco.subway.acceptance.ResponseCreator.postIds;
-import static wooteco.subway.acceptance.ResponseCreator.responseIds;
-
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import wooteco.subway.controller.dto.station.StationResponse;
+import wooteco.subway.service.dto.station.StationResponse;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static wooteco.subway.acceptance.AcceptanceFixture.*;
+import static wooteco.subway.acceptance.ResponseCreator.*;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {

@@ -10,6 +10,7 @@ import wooteco.subway.domain.Station;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class JdbcStationDao implements StationDao {
@@ -72,5 +73,15 @@ public class JdbcStationDao implements StationDao {
         String sql = "SELECT exists (select * from station where id =?)";
         int count = jdbcTemplate.queryForObject(sql, Integer.class, id);
         return count != 0;
+    }
+
+    @Override
+    public List<Station> findByIds(List<Long> ids) {
+        String stationIds = ids.stream()
+                .map(it -> String.valueOf(it))
+                .collect(Collectors.joining(",", "(", ")"));
+        String sql = "SELECT * FROM station WHERE id in " + stationIds;
+
+        return jdbcTemplate.query(sql, STATION_ROW_MAPPER);
     }
 }

@@ -52,6 +52,11 @@ public class Section {
         }
     }
 
+    public boolean containStationId(Long upStationId, Long downStationId) {
+        return (this.upStationId.equals(upStationId) && this.downStationId.equals(downStationId)) ||
+                (this.upStationId.equals(downStationId) && this.downStationId.equals(upStationId));
+    }
+
     @Override
     public String toString() {
         return "Section{" +

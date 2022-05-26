@@ -1,13 +1,16 @@
 package wooteco.subway.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.path.PathFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class PathTest {
 
@@ -21,9 +24,9 @@ class PathTest {
         sections.add(new Section(1L, 1L, 1L, 3L, 10));
         sections.add(new Section(1L, 1L, 3L, 5L, 10));
         sections.add(new Section(1L, 1L, 4L, 5L, 10));
-        Path path = new Path(1L, 5L, stationIds, new Sections(sections));
+        Path path = makePath(1L, 5L, stationIds, new Sections(sections));
         //when
-        List<Long> actualPath = path.getShortestPath();
+        List<Long> actualPath = path.getShortestPathByStationId();
         int actualTotalDistance = path.getTotalDistance();
         //then
         assertAll(
@@ -43,9 +46,9 @@ class PathTest {
         sections.add(new Section(1L, 1L, 1L, 3L, 5));
         sections.add(new Section(1L, 1L, 3L, 5L, 10));
         sections.add(new Section(1L, 1L, 4L, 5L, 10));
-        Path path = new Path(1L, 5L, stationIds, new Sections(sections));
+        Path path = makePath(1L, 5L, stationIds, new Sections(sections));
         //when
-        List<Long> actualPath = path.getShortestPath();
+        List<Long> actualPath = path.getShortestPathByStationId();
         int actualTotalDistance = path.getTotalDistance();
         //then
         assertAll(
@@ -63,7 +66,7 @@ class PathTest {
         sections.add(new Section(1L, 1L, 1L, 2L, 10));
         //when
         //then
-        assertThatThrownBy(() -> new Path(1L, -1L, stationIds, new Sections(sections)))
+        assertThatThrownBy(() -> makePath(1L, -1L, stationIds, new Sections(sections)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 역을 찾을 수 없습니다");
     }
@@ -78,8 +81,14 @@ class PathTest {
         sections.add(new Section(1L, 1L, 3L, 4L, 10));
         //when
         //then
-        assertThatThrownBy(() -> new Path(1L, 4L, stationIds, new Sections(sections)))
+        assertThatThrownBy(() -> makePath(1L, 4L, stationIds, new Sections(sections)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 경로를 찾을 수 없습니다");
+    }
+
+    private Path makePath(Long source, Long target, List<Long> stationIds, Sections sections) {
+        PathFactory pathFactory = new PathFactory();
+        Path path = pathFactory.makePath(source, target, stationIds, sections);
+        return path;
     }
 }

@@ -12,7 +12,7 @@ public interface LineDao {
 
     List<Line> findAll();
 
-    void update(Long id, String name, String color);
+    void update(Long id, Line line);
 
     void deleteById(Long id);
 

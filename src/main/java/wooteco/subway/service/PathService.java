@@ -1,37 +1,72 @@
 package wooteco.subway.service;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.Station;
+import wooteco.subway.domain.fare.FareCalculator;
+import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.path.PathFactory;
+import wooteco.subway.service.dto.path.PathRequestDto;
+import wooteco.subway.service.dto.path.PathResponse;
+import wooteco.subway.service.dto.station.StationResponse;
+
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.stereotype.Service;
-import wooteco.subway.domain.Fare;
-import wooteco.subway.domain.Path;
-import wooteco.subway.domain.Sections;
-import wooteco.subway.service.dto.path.PathRequestDto;
-import wooteco.subway.service.dto.path.PathResponseDto;
-import wooteco.subway.service.dto.station.StationResponseDto;
 
 @Service
 public class PathService {
 
+    private final LineService lineService;
     private final StationService stationService;
     private final SectionService sectionService;
+    private final PathFactory pathFactory;
+    private final FareCalculator fareCalculator;
 
-    public PathService(StationService stationService, SectionService sectionService) {
+    public PathService(LineService lineService, StationService stationService, SectionService sectionService, PathFactory pathFactory, FareCalculator fareCalculator) {
+        this.lineService = lineService;
         this.stationService = stationService;
         this.sectionService = sectionService;
+        this.pathFactory = pathFactory;
+        this.fareCalculator = fareCalculator;
     }
 
-    public PathResponseDto getPath(PathRequestDto pathRequestDto) {
-        List<Long> stationIds = stationService.findStations().stream()
-                .map(StationResponseDto::getId)
-                .collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public PathResponse getPath(PathRequestDto pathRequestDto) {
+        Path path = makePath(pathRequestDto);
+        int fare = makeFare(pathRequestDto, path);
+        List<StationResponse> stations = toStationResponse(path);
+        return new PathResponse(stations, path.getTotalDistance(), fare);
+    }
+
+    private Path makePath(PathRequestDto pathRequestDto) {
+        List<Long> stationIds = getStationIds();
         Sections sections = sectionService.findAll();
-        Path path = new Path(pathRequestDto.getSource(), pathRequestDto.getTarget(), stationIds, sections);
-        Fare fare = new Fare();
-        List<StationResponseDto> stations = path.getShortestPath().stream()
-                .map(stationService::findById)
-                .map(StationResponseDto::new)
+        return pathFactory.makePath(pathRequestDto.getSource(), pathRequestDto.getTarget(), stationIds, sections);
+    }
+
+    private List<Long> getStationIds() {
+        return stationService.findStations().stream()
+                .map(StationResponse::getId)
                 .collect(Collectors.toList());
-        return new PathResponseDto(stations, path.getTotalDistance(), fare.calculateFare(path.getTotalDistance()));
+    }
+
+    private int makeFare(PathRequestDto pathRequestDto, Path path) {
+        return fareCalculator.makeFare(path.getTotalDistance(), findMaxExtraFare(path), pathRequestDto.getAge());
+    }
+
+    private int findMaxExtraFare(Path path) {
+        return path.getShortestSections().stream()
+                .mapToInt(section -> lineService.getExtraFareById(section.getLineId()))
+                .max()
+                .orElseThrow(() -> new IllegalArgumentException("추가 요금을 찾을 수 없습니다."));
+    }
+
+    private List<StationResponse> toStationResponse(Path path) {
+        List<Station> stations = stationService.findByIds(path.getShortestPathByStationId());
+
+        return stations.stream()
+                .map(StationResponse::new)
+                .collect(Collectors.toList());
     }
 }

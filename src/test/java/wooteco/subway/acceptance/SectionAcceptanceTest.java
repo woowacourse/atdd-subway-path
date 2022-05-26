@@ -1,34 +1,21 @@
 package wooteco.subway.acceptance;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.acceptance.AcceptanceFixture.낙성대;
-import static wooteco.subway.acceptance.AcceptanceFixture.낙성대_사당;
-import static wooteco.subway.acceptance.AcceptanceFixture.방배;
-import static wooteco.subway.acceptance.AcceptanceFixture.방배_서초;
-import static wooteco.subway.acceptance.AcceptanceFixture.봉천;
-import static wooteco.subway.acceptance.AcceptanceFixture.봉천_낙성대;
-import static wooteco.subway.acceptance.AcceptanceFixture.봉천_사당;
-import static wooteco.subway.acceptance.AcceptanceFixture.사당;
-import static wooteco.subway.acceptance.AcceptanceFixture.사당_방배;
-import static wooteco.subway.acceptance.AcceptanceFixture.사당_서초;
-import static wooteco.subway.acceptance.AcceptanceFixture.서울대입구;
-import static wooteco.subway.acceptance.AcceptanceFixture.서초;
-import static wooteco.subway.acceptance.AcceptanceFixture.이호선;
-import static wooteco.subway.acceptance.ResponseCreator.createPostLineResponse;
-import static wooteco.subway.acceptance.ResponseCreator.createPostSectionResponse;
-import static wooteco.subway.acceptance.ResponseCreator.createPostStationResponse;
-import static wooteco.subway.acceptance.ResponseCreator.deleteSectionResponse;
-
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import wooteco.subway.controller.dto.line.LineResponse;
-import wooteco.subway.controller.dto.station.StationResponse;
+import wooteco.subway.service.dto.line.LineResponse;
+import wooteco.subway.service.dto.station.StationResponse;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.acceptance.AcceptanceFixture.*;
+import static wooteco.subway.acceptance.ResponseCreator.*;
 
 @DisplayName("지하철 구간 기능")
 public class SectionAcceptanceTest extends AcceptanceTest {
@@ -211,7 +198,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 .get("/lines/" + lineId)
                 .then().log().all()
                 .extract();
-        final LineResponse expected = new LineResponse(lineId, 이호선.getName(), 이호선.getColor(), List.of(stationResponses));
+//        final LineResponse expected = new LineResponse(lineId, 이호선.getName(), 이호선.getColor(), List.of(stationResponses));
+        final LineResponse expected = new LineResponse(lineId, 이호선.getName(), 이호선.getColor(), List.of(stationResponses).stream().map(it -> new StationResponse(it.getId(), it.getName())).collect(Collectors.toList()));
         final LineResponse actual = response.body().jsonPath().getObject(".", LineResponse.class);
 
         assertThat(expected)

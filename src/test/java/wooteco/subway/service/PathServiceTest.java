@@ -1,9 +1,5 @@
 package wooteco.subway.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,10 +10,16 @@ import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.dao.jdbc.JdbcLineDao;
 import wooteco.subway.dao.jdbc.JdbcSectionDao;
 import wooteco.subway.dao.jdbc.JdbcStationDao;
-import wooteco.subway.service.dto.path.PathRequestDto;
-import wooteco.subway.service.dto.path.PathResponseDto;
+import wooteco.subway.domain.fare.FareCalculator;
+import wooteco.subway.domain.path.PathFactory;
 import wooteco.subway.service.dto.line.LineRequestDto;
+import wooteco.subway.service.dto.path.PathRequestDto;
+import wooteco.subway.service.dto.path.PathResponse;
 import wooteco.subway.service.dto.section.SectionRequestDto;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @JdbcTest
 @Sql(scripts = {"classpath:schema.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -27,6 +29,8 @@ class PathServiceTest {
     private StationService stationService;
     private SectionService sectionService;
     private PathService pathService;
+    private PathFactory pathFactory;
+    private FareCalculator fareCalculator;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -38,7 +42,10 @@ class PathServiceTest {
                 new SectionService(new JdbcSectionDao(jdbcTemplate)));
         stationService = new StationService(new JdbcStationDao(jdbcTemplate));
         sectionService = new SectionService(new JdbcSectionDao(jdbcTemplate));
-        pathService = new PathService(stationService, sectionService);
+        pathFactory = new PathFactory();
+        fareCalculator = new FareCalculator();
+        pathService = new PathService(lineService, stationService, sectionService, pathFactory, fareCalculator);
+
         stationService.createStation("에덴");
         stationService.createStation("제로");
         stationService.createStation("서초");
@@ -56,14 +63,14 @@ class PathServiceTest {
         //given
         Long source = 1L;
         Long target = 5L;
-        int age = 15;
+        int age = 20;
         //when
-        PathResponseDto pathResponseDto = pathService.getPath(new PathRequestDto(source, target, age));
+        PathResponse pathResponse = pathService.getPath(new PathRequestDto(source, target, age));
         //then
         assertAll(
-                () -> assertThat(pathResponseDto.getStations().size()).isEqualTo(4),
-                () -> assertThat(pathResponseDto.getDistance()).isEqualTo(30),
-                () -> assertThat(pathResponseDto.getFare()).isEqualTo(1650)
+                () -> assertThat(pathResponse.getStations().size()).isEqualTo(4),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(30),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1650)
         );
     }
 
@@ -74,14 +81,14 @@ class PathServiceTest {
         lineService.create(new LineRequestDto("3호선", "bg-black-100", 1L, 3L, 5));
         Long source = 1L;
         Long target = 5L;
-        int age = 15;
+        int age = 20;
         //when
-        PathResponseDto pathResponseDto = pathService.getPath(new PathRequestDto(source, target, age));
+        PathResponse pathResponse = pathService.getPath(new PathRequestDto(source, target, age));
         //then
         assertAll(
-                () -> assertThat(pathResponseDto.getStations().size()).isEqualTo(4),
-                () -> assertThat(pathResponseDto.getDistance()).isEqualTo(25),
-                () -> assertThat(pathResponseDto.getFare()).isEqualTo(1550)
+                () -> assertThat(pathResponse.getStations().size()).isEqualTo(4),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(25),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1550)
         );
     }
 

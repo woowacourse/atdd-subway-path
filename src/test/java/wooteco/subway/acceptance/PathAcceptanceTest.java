@@ -1,37 +1,22 @@
 package wooteco.subway.acceptance;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.acceptance.AcceptanceFixture.낙성대;
-import static wooteco.subway.acceptance.AcceptanceFixture.방배;
-import static wooteco.subway.acceptance.AcceptanceFixture.봉천;
-import static wooteco.subway.acceptance.AcceptanceFixture.봉천_낙성대;
-import static wooteco.subway.acceptance.AcceptanceFixture.사당;
-import static wooteco.subway.acceptance.AcceptanceFixture.사당_방배;
-import static wooteco.subway.acceptance.AcceptanceFixture.사당_서초;
-import static wooteco.subway.acceptance.AcceptanceFixture.삼호선;
-import static wooteco.subway.acceptance.AcceptanceFixture.서울대입구;
-import static wooteco.subway.acceptance.AcceptanceFixture.서초;
-import static wooteco.subway.acceptance.AcceptanceFixture.에덴;
-import static wooteco.subway.acceptance.AcceptanceFixture.이호선;
-import static wooteco.subway.acceptance.AcceptanceFixture.일호선;
-import static wooteco.subway.acceptance.AcceptanceFixture.제로;
-import static wooteco.subway.acceptance.ResponseCreator.createGetPathResponse;
-import static wooteco.subway.acceptance.ResponseCreator.createPostLineResponse;
-import static wooteco.subway.acceptance.ResponseCreator.createPostSectionResponse;
-import static wooteco.subway.acceptance.ResponseCreator.createPostStationResponse;
-
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import wooteco.subway.controller.dto.path.PathRequest;
-import wooteco.subway.controller.dto.path.PathResponse;
-import wooteco.subway.controller.dto.station.StationResponse;
+import wooteco.subway.service.dto.path.PathResponse;
+import wooteco.subway.service.dto.station.StationResponse;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static wooteco.subway.acceptance.AcceptanceFixture.*;
+import static wooteco.subway.acceptance.ResponseCreator.*;
 
 @DisplayName("경로 관련 기능")
 public class PathAcceptanceTest extends AcceptanceTest {
@@ -52,33 +37,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         createPostSectionResponse(2L, 봉천_낙성대);
     }
 
-    @DisplayName("경로를 구한다.")
-    @Test
-    void createPath() {
-        // given
-        // when
-        ExtractableResponse<Response> response = createGetPathResponse(new PathRequest(1L, 4L, 15));
-        PathResponse 경로응답 = response.body().jsonPath().getObject(".", PathResponse.class);
-        List<String> 실제경로 = 경로응답.getStations().stream()
-                .map(StationResponse::getName)
-                .collect(Collectors.toList());
-        // then
-        assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(실제경로).containsExactly("낙성대", "사당", "방배", "서초"),
-                () -> assertThat(경로응답.getDistance()).isEqualTo(40),
-                () -> assertThat(경로응답.getFare()).isEqualTo(1850)
-        );
-    }
-
-
     @Test
     @DisplayName("중복된 경로가 있다면 가중치가 낮은 거리가 선택된다")
     void FindPathWithDuplicatedNodes() {
         //given
         createPostLineResponse(일호선);
         //when
-        ExtractableResponse<Response> response = createGetPathResponse(new PathRequest(1L, 4L, 15));
+        ExtractableResponse<Response> response = createGetPathResponse(new PathRequest(1L, 4L, 20));
         PathResponse 경로응답 = response.body().jsonPath().getObject(".", PathResponse.class);
         List<String> 실제경로 = 경로응답.getStations().stream()
                 .map(StationResponse::getName)
@@ -97,7 +62,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void FindPathWithNotExistsStationId() {
         //given
         //when
-        ExtractableResponse<Response> response = createGetPathResponse(new PathRequest(-1L, 4L, 15));
+        ExtractableResponse<Response> response = createGetPathResponse(new PathRequest(30000L, 40000L, 15));
         //then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),

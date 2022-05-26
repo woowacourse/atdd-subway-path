@@ -19,9 +19,9 @@ import wooteco.subway.dao.jdbc.JdbcLineDao;
 import wooteco.subway.dao.jdbc.JdbcSectionDao;
 import wooteco.subway.dao.jdbc.JdbcStationDao;
 import wooteco.subway.service.dto.line.LineRequestDto;
-import wooteco.subway.service.dto.line.LineResponseDto;
+import wooteco.subway.service.dto.line.LineResponse;
 import wooteco.subway.service.dto.section.SectionRequestDto;
-import wooteco.subway.service.dto.station.StationResponseDto;
+import wooteco.subway.service.dto.station.StationResponse;
 
 @JdbcTest
 @Sql(scripts = {"classpath:schema.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -54,18 +54,18 @@ class LineServiceTest {
         LineRequestDto lineRequestDto = new LineRequestDto("2호선", "bg-green-300", 1L, 2L, 10);
         lineService.create(lineRequestDto);
         sectionService.create(new SectionRequestDto(1L, 2L, 3L, 20));
-        List<StationResponseDto> expected = new ArrayList<>();
-        expected.add(new StationResponseDto(1L, "낙성대"));
-        expected.add(new StationResponseDto(2L, "교대"));
-        expected.add(new StationResponseDto(3L, "선릉"));
+        List<StationResponse> expected = new ArrayList<>();
+        expected.add(new StationResponse(1L, "낙성대"));
+        expected.add(new StationResponse(2L, "교대"));
+        expected.add(new StationResponse(3L, "선릉"));
         //when
-        LineResponseDto findLineResponseDto = lineService.findById(1L);
-        List<StationResponseDto> actual = findLineResponseDto.getStations();
+        LineResponse findLineResponse = lineService.findById(1L);
+        List<StationResponse> actual = findLineResponse.getStations();
         //then
         assertAll(
-                () -> assertThat(findLineResponseDto.getId()).isEqualTo(1L),
-                () -> assertThat(findLineResponseDto.getName()).isEqualTo("2호선"),
-                () -> assertThat(findLineResponseDto.getColor()).isEqualTo("bg-green-300"),
+                () -> assertThat(findLineResponse.getId()).isEqualTo(1L),
+                () -> assertThat(findLineResponse.getName()).isEqualTo("2호선"),
+                () -> assertThat(findLineResponse.getColor()).isEqualTo("bg-green-300"),
                 () -> assertThat(expected).isEqualTo(actual)
         );
     }
@@ -87,11 +87,11 @@ class LineServiceTest {
         //given
         LineRequestDto lineRequestDto = new LineRequestDto("2호선", "bg-green-300", 1L, 2L, 10);
         //when
-        LineResponseDto lineResponseDto = lineService.create(lineRequestDto);
-        LineResponseDto findResult = lineService.findById(lineResponseDto.getId());
+        LineResponse lineResponse = lineService.create(lineRequestDto);
+        LineResponse findResult = lineService.findById(lineResponse.getId());
 
         assertAll(
-                () -> assertThat(findResult.getId()).isEqualTo(lineResponseDto.getId()),
+                () -> assertThat(findResult.getId()).isEqualTo(lineResponse.getId()),
                 () -> assertThat(findResult.getName()).isEqualTo("2호선"),
                 () -> assertThat(findResult.getColor()).isEqualTo("bg-green-300")
         );
@@ -113,11 +113,11 @@ class LineServiceTest {
         //given
         LineRequestDto lineRequest1 = new LineRequestDto("1호선", "bg-blue-200", 1L, 2L, 10);
         LineRequestDto lineRequest2 = new LineRequestDto("2호선", "bg-green-300", 2L, 3L, 20);
-        LineResponseDto lineResponse1 = lineService.create(lineRequest1);
-        LineResponseDto lineResponse2 = lineService.create(lineRequest2);
+        LineResponse lineResponse1 = lineService.create(lineRequest1);
+        LineResponse lineResponse2 = lineService.create(lineRequest2);
         //when
         List<Long> ids = lineService.findAll().stream()
-                .map(LineResponseDto::getId)
+                .map(LineResponse::getId)
                 .collect(Collectors.toList());
         //then
         assertAll(
@@ -131,11 +131,11 @@ class LineServiceTest {
     void updateLine() {
         //given
         LineRequestDto lineRequestDto = new LineRequestDto("1호선", "bg-blue-200", 1L, 2L, 10);
-        LineResponseDto lineResponseDto = lineService.create(lineRequestDto);
+        LineResponse lineResponse = lineService.create(lineRequestDto);
         //when
         LineRequestDto newLineRequestDto = new LineRequestDto("2호선", "bg-green-300", 1L, 2L, 10);
-        lineService.updateById(lineResponseDto.getId(), newLineRequestDto);
-        LineResponseDto response = lineService.findById(lineResponseDto.getId());
+        lineService.updateById(lineResponse.getId(), newLineRequestDto);
+        LineResponse response = lineService.findById(lineResponse.getId());
         //then
         assertThat(response.getName()).isEqualTo("2호선");
         assertThat(response.getColor()).isEqualTo("bg-green-300");
@@ -149,16 +149,16 @@ class LineServiceTest {
         lineService.create(lineRequestDto1);
         //when
         LineRequestDto lineRequestDto2 = new LineRequestDto("2호선", "bg-green-300", 2L, 3L, 20);
-        LineResponseDto lineResponseDto = lineService.create(lineRequestDto2);
+        LineResponse lineResponse = lineService.create(lineRequestDto2);
         //then
         assertAll(
                 () -> assertThatThrownBy(
                         () -> lineService.updateById(-1L, new LineRequestDto("2호선", "bg-black-500", 1L, 2L, 10)))
                         .isInstanceOf(NoSuchElementException.class),
-                () -> assertThatThrownBy(() -> lineService.updateById(lineResponseDto.getId(),
+                () -> assertThatThrownBy(() -> lineService.updateById(lineResponse.getId(),
                         new LineRequestDto("1호선", "bg-black-500", 1L, 2L, 10)))
                         .isInstanceOf(NoSuchElementException.class),
-                () -> assertThatThrownBy(() -> lineService.updateById(lineResponseDto.getId(),
+                () -> assertThatThrownBy(() -> lineService.updateById(lineResponse.getId(),
                         new LineRequestDto("3호선", "bg-blue-200", 1L, 2L, 10)))
                         .isInstanceOf(NoSuchElementException.class)
         );
@@ -174,7 +174,7 @@ class LineServiceTest {
         lineService.deleteById(id);
         //then
         List<Long> ids = lineService.findAll().stream()
-                .map(LineResponseDto::getId)
+                .map(LineResponse::getId)
                 .collect(Collectors.toList());
         assertThat(ids).doesNotContain(id);
     }

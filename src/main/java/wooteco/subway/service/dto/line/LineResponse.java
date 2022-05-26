@@ -1,6 +1,7 @@
-package wooteco.subway.controller.dto.line;
+package wooteco.subway.service.dto.line;
 
-import wooteco.subway.controller.dto.station.StationResponse;
+import wooteco.subway.domain.Line;
+import wooteco.subway.service.dto.station.StationResponse;
 
 import java.util.List;
 
@@ -11,6 +12,13 @@ public class LineResponse {
     private List<StationResponse> stations;
 
     private LineResponse() {
+    }
+
+    public LineResponse(Line line, List<StationResponse> stations) {
+        this.id = line.getId();
+        this.name = line.getName();
+        this.color = line.getColor();
+        this.stations = stations;
     }
 
     public LineResponse(Long id, String name, String color, List<StationResponse> stations) {
