@@ -1,6 +1,7 @@
 package wooteco.subway.domain.distance;
 
 import java.util.Arrays;
+import wooteco.subway.exception.IllegalInputException;
 
 public enum DistanceType {
 
@@ -20,6 +21,6 @@ public enum DistanceType {
         return Arrays.stream(values())
                 .filter(distanceType -> distance.isBetween(distanceType.minValue, distanceType.maxValue))
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalInputException("해당하는 거리 유형을 찾을 수 없습니다."));
     }
 }
