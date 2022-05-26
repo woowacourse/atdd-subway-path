@@ -1,13 +1,16 @@
 package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import wooteco.subway.dto.line.LineRequest;
 import wooteco.subway.dto.section.SectionRequest;
 
@@ -127,5 +130,43 @@ class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("상행역과 하행역이 같은 구간을 생성하면 예외가 발생한다.")
+    @Test
+    void saveSameNameLine() {
+        // given
+        Long stationId1 = postStationId(대흥역);
+        Long stationId2 = postStationId(공덕역);
+        Long lineId = getLineId(stationId1, stationId2);
+
+        // when
+        SectionRequest sectionRequest = new SectionRequest(stationId1, stationId1, 4);
+        ValidatableResponse validateResponse = RestAssured.given().log().all()
+                .body(sectionRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines/" + lineId + "/sections")
+                .then().log().all();
+
+        // then
+        assertThat(validateResponse.extract().statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        validateResponse.body("message", equalTo("상행역과 하행역은 같을 수 없습니다."));
+    }
+
+    @Test
+    @DisplayName("잘못된 uri로 요청하면 예외가 발생한다.")
+    void invalidUrl() {
+        // given
+
+        // when
+        ExtractableResponse<Response> extract = RestAssured.given().log().all()
+                .when()
+                .get("/section")
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(extract.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 }

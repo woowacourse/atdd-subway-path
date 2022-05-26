@@ -5,6 +5,8 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 
 import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -125,5 +127,60 @@ class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(validatableResponse.extract().statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("존재하지 않는 역에 대한 경로를 조회하면 예외가 발생한다.")
+    @Test
+    void getNotExistStationPath() {
+        /// given
+
+        // when
+        ValidatableResponse validatableResponse = RestAssured.given()
+                .log().all()
+                .param("source", 0)
+                .param("target", stationId1)
+                .param("age", 20)
+                .when()
+                .get("/paths")
+                .then().log().all();
+
+        // then
+        assertThat(validatableResponse.extract().statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        validatableResponse.body("message", equalTo("존재하지 않는 역입니다."));
+    }
+
+    @DisplayName("출발역과 도착역이 같은 경로를 검색하면 예외가 발생한다.")
+    @Test
+    void equalSourceAndTargetStation() {
+        // given
+
+        // when
+        ValidatableResponse validatableResponse = RestAssured.given()
+                .log().all()
+                .param("source", stationId1)
+                .param("target", stationId1)
+                .param("age", 20)
+                .when()
+                .get("/paths")
+                .then().log().all();
+
+        assertThat(validatableResponse.extract().statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        validatableResponse.body("message", equalTo("출발역과 도착역이 같을 수 없습니다."));
+    }
+
+    @Test
+    @DisplayName("잘못된 uri로 요청하면 예외가 발생한다.")
+    void invalidUrl() {
+        // given
+
+        // when
+        ExtractableResponse<Response> extract = RestAssured.given().log().all()
+                .when()
+                .get("/path")
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(extract.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 }

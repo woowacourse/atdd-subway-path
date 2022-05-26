@@ -166,4 +166,52 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
+    @DisplayName("존재하지 않는 노선을 조회하면 예외가 발생한다.")
+    @Test
+    void deleteNotExistLine() {
+        /// given
+
+        // when
+        ValidatableResponse validatableResponse = getLineById(10);
+
+        // then
+        assertThat(validatableResponse.extract().statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        validatableResponse.body("message", equalTo("존재하지 않는 지하철 노선입니다."));
+    }
+
+    @DisplayName("중복되는 이름의 지하철 노선을 저장하면 예외가 발생한다.")
+    @Test
+    void saveSameNameLine() {
+        // given
+        postLineResponse(this.신분당선);
+        LineRequest 신분당선2 = new LineRequest("신분당선", "bg-red-600", postStationId(광흥창역), postStationId(상수역), 10, 900);
+
+        // when
+        ValidatableResponse validatableResponse = RestAssured.given().log().all()
+                .body(신분당선2)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines")
+                .then().log().all();
+
+        assertThat(validatableResponse.extract().statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        validatableResponse.body("message", equalTo("지하철 노선 이름이 중복됩니다."));
+    }
+
+    @Test
+    @DisplayName("잘못된 uri로 요청하면 예외가 발생한다.")
+    void invalidUrl() {
+        // given
+
+        // when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .when()
+                .get("/line")
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
 }
