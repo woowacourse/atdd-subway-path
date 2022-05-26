@@ -4,10 +4,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import wooteco.subway.exception.ClientException;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PathTest {
 
@@ -25,7 +27,7 @@ class PathTest {
     }
 
     @Test
-    @DisplayName("최단 경로를 조회한다. - 선택지가 여러 개인 경우 최단 선택")
+    @DisplayName("최단 경로를 조회한다. - 선택지가 여러 개인 경우 최단 거리 선택")
     void findShortestPathFromVarious() {
         Section section1 = new Section(1L, 1L, 1L, 2L, 10);
         Section section2 = new Section(2L, 1L, 2L, 3L, 20);
@@ -61,5 +63,27 @@ class PathTest {
     void calcAgeFare(int distance, int fare, Long age) {
         assertThat(new DijkstraPathStrategy().findPath(List.of(new Section(1L, 1L, 2L, distance)), 1L, 2L)
                 .calculateFare(List.of(new Line(1L, "2호선", "green", 0)), age)).isEqualTo(fare);
+    }
+
+    @Test
+    @DisplayName("갈 수 없는 경로 예외")
+    void impossiblePath() {
+        Section section1 = new Section(1L, 1L, 1L, 2L, 10);
+        Section section2 = new Section(2L, 1L, 3L, 4L, 20);
+
+        assertThatThrownBy(() -> new DijkstraPathStrategy().findPath(List.of(section1, section2), 1L, 4L))
+                .isInstanceOf(ClientException.class)
+                        .hasMessageContaining("갈 수 없는 경로입니다.");
+    }
+
+    @Test
+    @DisplayName("구간에 등록되지 않은 역 예외")
+    void notExistInSection() {
+        Section section1 = new Section(1L, 1L, 1L, 2L, 10);
+        Section section2 = new Section(2L, 1L, 3L, 4L, 20);
+
+        assertThatThrownBy(() -> new DijkstraPathStrategy().findPath(List.of(section1, section2), 1L, 5L))
+                .isInstanceOf(ClientException.class)
+                .hasMessageContaining("구간에 등록되지 않은 역입니다.");
     }
 }
