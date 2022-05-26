@@ -1,7 +1,5 @@
 package wooteco.subway.domain.section;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import wooteco.subway.domain.station.Station;
 
@@ -58,8 +56,10 @@ public class Section {
     }
 
     public boolean hasSameStation(Section other) {
-        HashSet<Station> stations = new HashSet<>(List.of(upStation, downStation, other.upStation, other.downStation));
-        return stations.size() < 4;
+        return upStation.equals(other.upStation)
+                || upStation.equals(other.downStation)
+                || downStation.equals(other.upStation)
+                || downStation.equals(other.downStation);
     }
 
     public boolean hasStationIdAsUpStation(Station station) {
