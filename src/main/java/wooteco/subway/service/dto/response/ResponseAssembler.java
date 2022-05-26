@@ -5,9 +5,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
+import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.section.Section;
-import wooteco.subway.domain.line.Fare;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.station.Station;
 

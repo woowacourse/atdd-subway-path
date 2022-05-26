@@ -2,6 +2,7 @@ package wooteco.subway.domain.line;
 
 import java.util.List;
 
+import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Id;
 import wooteco.subway.domain.line.section.OrderedSections;
 import wooteco.subway.domain.line.section.Section;

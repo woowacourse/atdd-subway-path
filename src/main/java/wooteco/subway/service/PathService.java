@@ -4,7 +4,7 @@ import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
-import wooteco.subway.domain.line.Fare;
+import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.graph.SubwayGraph;
 import wooteco.subway.infrastructure.jgraph.SubwayJGraph;

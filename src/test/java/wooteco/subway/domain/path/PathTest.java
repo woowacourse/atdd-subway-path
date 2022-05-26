@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import wooteco.subway.domain.line.Fare;
+import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.line.Line;
 
 class PathTest {
