@@ -11,6 +11,7 @@ import wooteco.subway.infra.path.PathFinder;
 import wooteco.subway.dto.path.PathRequest;
 import wooteco.subway.dto.path.PathResponse;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -45,11 +46,9 @@ public class PathService {
     }
 
     private Integer findLineFare(Path path) {
-        List<Long> shortestPathLines = path.findShortestPathLines();
-        return shortestPathLines.stream()
-                .map(lineDao::findExtraFareById)
-                .max(Comparator.comparingInt(extraFare -> extraFare))
-                .orElseThrow(() -> new IllegalArgumentException("추가 요금이 존재하지 않습니다. 라인을 다시 추가해주세요."));
+        List<Long> shortestPathLineIds = path.findShortestPathLines();
+        List<Integer> extraFares = lineDao.findExtraFareByIds(shortestPathLineIds);
+        return Collections.max(extraFares);
     }
 
     private void validateSameStation(Long sourceStationId, Long targetStationId) {

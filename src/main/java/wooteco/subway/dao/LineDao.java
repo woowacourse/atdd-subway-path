@@ -17,5 +17,5 @@ public interface LineDao {
 
     boolean updateById(Long id, Line line);
 
-    Integer findExtraFareById(Long id);
+    List<Integer> findExtraFareByIds(List<Long> id);
 }

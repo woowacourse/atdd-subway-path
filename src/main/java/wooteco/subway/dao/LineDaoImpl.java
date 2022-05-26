@@ -13,6 +13,8 @@ import wooteco.subway.domain.Station;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -134,14 +136,11 @@ public class LineDaoImpl implements LineDao {
         return updateSize != 0;
     }
 
-    @Override
-    public Integer findExtraFareById(Long id) {
-        try {
-            final String sql = "SELECT extraFare FROM LINE WHERE id = ?";
-            return jdbcTemplate.queryForObject(sql, Integer.class, id);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("해당 라인에 책정된 추가요금이 없습니다. 라인을 다시 저장해주세요.");
-        }
+    public List<Integer> findExtraFareByIds(List<Long> shortestPathLineIds) {
+        final String inSql = String.join(",", Collections.nCopies(shortestPathLineIds.size(), "?"));
+        final String sql = String.format("SELECT extraFare FROM LINE WHERE id in (%s)", inSql);
+
+        return jdbcTemplate.query(sql,(resultSet, rowNum) -> resultSet.getInt("extraFare"), shortestPathLineIds.toArray());
     }
 
     private static class LineSection {
