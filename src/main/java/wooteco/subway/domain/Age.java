@@ -7,7 +7,8 @@ public enum Age {
     INFANT(5, 0, 0),
     CHILDREN(12, 350, 0.5),
     TEENAGER(18, 350, 0.8),
-    ADULT(0, 0, 1);
+    ADULT(79, 0, 1),
+    ELDER(80, 0, 0);
 
     private final int boundary;
     private final int deduction;
@@ -23,7 +24,7 @@ public enum Age {
         return Arrays.stream(Age.values())
                 .filter(age -> number <= age.boundary)
                 .findFirst()
-                .orElse(ADULT);
+                .orElse(ELDER);
     }
 
     public double calc(int money) {
