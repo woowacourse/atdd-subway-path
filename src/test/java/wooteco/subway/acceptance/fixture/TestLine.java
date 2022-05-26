@@ -12,7 +12,9 @@ public enum TestLine {
 
     LINE_2("2호선", "초록색", 0),
     LINE_9("9호선", "금색", 0),
-    SUIN_BUNDANG_LINE("수인분당선", "노란색", 0);
+    SUIN_BUNDANG_LINE("수인분당선", "노란색", 0),
+    EXPENSIVE_LINE("비싼노선", "빨간색", 500),
+    MORE_EXPENSIVE_LINE("더비싼노선", "검은색", 900);
 
     private final String name;
     private final String color;
