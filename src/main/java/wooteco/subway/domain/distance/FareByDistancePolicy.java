@@ -28,7 +28,7 @@ public enum FareByDistancePolicy {
 
     public static Fare apply(final Distance distance) {
         return Arrays.stream(values())
-                .filter(it -> it.distanceType.equals(DistanceType.from(distance)))
+                .filter(policy -> policy.distanceType == DistanceType.from(distance))
                 .findFirst()
                 .orElseThrow(() -> new IllegalInputException("해당하는 거리 타입을 찾을 수 없습니다."))
                 .calculatorFunction.apply(distance);

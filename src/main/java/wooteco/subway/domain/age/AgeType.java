@@ -19,7 +19,7 @@ public enum AgeType {
 
     public static AgeType from(final int age) {
         return Arrays.stream(values())
-                .filter(it -> it.isType(age))
+                .filter(ageType -> ageType.isType(age))
                 .findFirst()
                 .orElseThrow();
     }

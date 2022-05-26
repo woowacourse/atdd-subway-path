@@ -21,7 +21,7 @@ public enum FareByAgePolicy {
 
     public static FareByAgePolicy from(final AgeType ageType) {
         return Arrays.stream(values())
-                .filter(it -> it.ageType.equals(ageType))
+                .filter(policy -> policy.ageType == ageType)
                 .findFirst()
                 .orElseThrow(() -> new IllegalInputException("해당하는 나이 타입을 찾을 수 없습니다."));
     }

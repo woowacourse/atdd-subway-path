@@ -18,7 +18,7 @@ public enum DistanceType {
 
     public static DistanceType from(final Distance distance) {
         return Arrays.stream(values())
-                .filter(it -> distance.isBetween(it.minValue, it.maxValue))
+                .filter(distanceType -> distance.isBetween(distanceType.minValue, distanceType.maxValue))
                 .findFirst()
                 .orElseThrow();
     }
