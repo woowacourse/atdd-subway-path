@@ -17,9 +17,9 @@ public class PathsResponse {
         this.fare = fare;
     }
 
-    public static PathsResponse of(final Paths paths) {
+    public static PathsResponse of(final Paths paths, final int fare) {
         List<StationResponse> stationResponses = convertToStationResponses(paths.getStations());
-        return new PathsResponse(stationResponses, paths.getDistance(), paths.getFare());
+        return new PathsResponse(stationResponses, paths.getDistance(), fare);
     }
 
     private static List<StationResponse> convertToStationResponses(final List<Station> stations) {

@@ -1,6 +1,7 @@
 package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.PathsResponse;
+import wooteco.subway.exception.requestvalue.AgeValueException;
 
 class PathsServiceTest {
 
@@ -24,7 +26,7 @@ class PathsServiceTest {
     void setUp() {
         FakeSectionDao.init();
         FakeStationDao.init();
-        pathService = new PathService(new FakeSectionDao(), new FakeStationDao());
+        pathService = new PathService(new FakeSectionDao(), new FakeStationDao(), new FakeLineDao());
     }
 
     @DisplayName("경로를 조회한다.")
@@ -62,8 +64,32 @@ class PathsServiceTest {
                                 , new Station(6L, "이수역"), new Station(7L, "건대역"))
                 ),
                 () -> assertThat(pathsResponse.getDistance()).isEqualTo(10),
-                () -> assertThat(pathsResponse.getFare()).isEqualTo(1250)
+                () -> assertThat(pathsResponse.getFare()).isEqualTo(1790)
         );
+    }
+
+    @DisplayName("승객의 나이가 0살 이면 예외를 발생한다.")
+    @Test
+    void age_exception_zero() {
+        Long sourceStationId = 4L;
+        Long targetStationId = 7L;
+        int age = 0;
+
+        assertThatThrownBy(() -> pathService.createPaths(sourceStationId, targetStationId, age))
+                .isInstanceOf(AgeValueException.class)
+                .hasMessage("승객의 연령은 한살 이상이여야 합니다.");
+    }
+
+    @DisplayName("승객의 나이가 음수 이면 예외를 발생한다.")
+    @Test
+    void age_exception_under_zero() {
+        Long sourceStationId = 4L;
+        Long targetStationId = 7L;
+        int age = -3;
+
+        assertThatThrownBy(() -> pathService.createPaths(sourceStationId, targetStationId, age))
+                .isInstanceOf(AgeValueException.class)
+                .hasMessage("승객의 연령은 한살 이상이여야 합니다.");
     }
 
     private List<Station> createStation(final PathsResponse pathsResponse) {

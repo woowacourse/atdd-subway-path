@@ -5,13 +5,13 @@ import java.util.List;
 public class Paths {
 
     private final List<Station> stations;
+    private final List<Long> lineIds;
     private final double distance;
-    private final int fare;
 
-    public Paths(final List<Station> stations, final double distance, final int fare) {
+    public Paths(final List<Station> stations, final List<Long> lineIds, final double distance) {
         this.stations = stations;
+        this.lineIds = lineIds;
         this.distance = distance;
-        this.fare = fare;
     }
 
     public List<Station> getStations() {
@@ -22,7 +22,7 @@ public class Paths {
         return distance;
     }
 
-    public int getFare() {
-        return fare;
+    public List<Long> getLineIds() {
+        return lineIds;
     }
 }

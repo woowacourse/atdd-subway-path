@@ -8,6 +8,7 @@ import wooteco.subway.exception.AddSectionException;
 import wooteco.subway.exception.CalculatePathsException;
 import wooteco.subway.exception.ClientException;
 import wooteco.subway.exception.DeleteSectionException;
+import wooteco.subway.exception.requestvalue.RequestValueException;
 import wooteco.subway.exception.datanotfound.DataNotFoundException;
 import wooteco.subway.exception.duplicatename.DuplicateNameException;
 
@@ -16,7 +17,7 @@ import wooteco.subway.exception.duplicatename.DuplicateNameException;
 public class ControllerAdvice {
 
     @ExceptionHandler({DuplicateNameException.class, CalculatePathsException.class,
-            AddSectionException.class, DeleteSectionException.class})
+            AddSectionException.class, DeleteSectionException.class, RequestValueException.class})
     public ResponseEntity<String> handleDuplicateNameException(ClientException exception) {
         return ResponseEntity.badRequest().body(exception.getMessage());
     }
