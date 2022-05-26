@@ -34,10 +34,14 @@ public enum Fare {
     }
 
     private int calc(final int distance) {
-        int calcDistance = distance;
         if (this == BASIC) {
             return BASIC_FARE;
         }
+        return sumAdditionalFare(distance);
+    }
+
+    private int sumAdditionalFare(int distance) {
+        int calcDistance = distance;
         calcDistance -= previousSection;
         int fare = 0;
         fare += (calcDistance / unit) * 100;
