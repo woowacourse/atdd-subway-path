@@ -24,10 +24,16 @@ public enum AgeFarePolicy {
                     .discountPercent(20);
         }
     },
-    ADULT(age -> age.moreThan(19)) {
+    GENERAL(age -> age.moreThan(19) && age.lessThan(65)) {
         @Override
         public Fare apply(Fare fare, Age age) {
             return fare;
+        }
+    },
+    SENIOR(age -> age.moreThan(65)) {
+        @Override
+        public Fare apply(Fare fare, Age age) {
+            return FREE;
         }
     };
 
