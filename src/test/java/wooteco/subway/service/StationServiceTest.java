@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.StationResponse;
+import wooteco.subway.exception.station.DuplicateStationNameException;
+import wooteco.subway.exception.station.NoSuchStationException;
 
 @SpringBootTest
 @Sql("/testSchema.sql")
@@ -41,8 +43,7 @@ class StationServiceTest {
         stationService.save(station);
 
         assertThatThrownBy(() -> stationService.save(duplicatedNameStation))
-                .isInstanceOf(DuplicateKeyException.class)
-                .hasMessageContaining("이미 존재하는 역 이름");
+                .isInstanceOf(DuplicateStationNameException.class);
     }
 
     @DisplayName("역을 조회한다")
@@ -59,8 +60,7 @@ class StationServiceTest {
     @Test
     void 존재하지_않는_역_조회_예외발생() {
         assertThatThrownBy(() -> stationService.findById(1L))
-                .isInstanceOf(EmptyResultDataAccessException.class)
-                .hasMessageContaining("존재하지 않는 역");
+                .isInstanceOf(NoSuchStationException.class);
     }
 
     @DisplayName("모든 역을 조회한다")

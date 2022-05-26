@@ -1,5 +1,7 @@
 package wooteco.subway.domain;
 
+import wooteco.subway.exception.NotEmptyFieldException;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -51,13 +53,13 @@ public class Line {
 
     private void validateNameNotEmpty(String name) {
         if (name.isBlank()) {
-            throw new IllegalArgumentException("이름은 비워둘 수 없습니다.");
+            throw new NotEmptyFieldException();
         }
     }
 
     private void validateColorNotEmpty(String color) {
         if (color.isBlank()) {
-            throw new IllegalArgumentException("색상은 비워둘 수 없습니다.");
+            throw new NotEmptyFieldException();
         }
     }
 

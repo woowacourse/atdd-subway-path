@@ -14,7 +14,7 @@ public class Fare {
     }
 
     private static int calculateFareByAge(int age, int fare) {
-        return DiscountPolicy.calculateFareByAge(age, fare);
+        return AgeDiscountPolicy.calculateFareByAge(age, fare);
     }
 
     private static int findExtraLineFare(Path path) {

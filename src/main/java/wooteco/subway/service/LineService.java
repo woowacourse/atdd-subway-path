@@ -15,6 +15,8 @@ import wooteco.subway.dto.LineEditRequest;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.exception.line.DuplicateLineNameException;
+import wooteco.subway.exception.line.NoSuchLineException;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
@@ -45,7 +47,7 @@ public class LineService {
             Line savedLine = lineRepository.save(line);
             return LineResponse.from(savedLine);
         } catch (DuplicateKeyException e) {
-            throw new DuplicateKeyException("이미 존재하는 노선 이름입니다.");
+            throw new DuplicateLineNameException();
         }
     }
 
@@ -61,7 +63,7 @@ public class LineService {
         try {
             return LineResponse.from(lineRepository.findById(lineId));
         } catch (EmptyResultDataAccessException e) {
-            throw new EmptyResultDataAccessException("존재하지 않는 노선입니다", 1);
+            throw new NoSuchLineException();
         }
     }
 
@@ -72,7 +74,7 @@ public class LineService {
         try {
             lineRepository.update(line);
         } catch (DuplicateKeyException e) {
-            throw new DuplicateKeyException("이미 존재하는 노선 이름입니다.");
+            throw new DuplicateLineNameException();
         }
     }
 

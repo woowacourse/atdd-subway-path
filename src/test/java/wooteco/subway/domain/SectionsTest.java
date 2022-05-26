@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.exception.SubwayException;
 
 class SectionsTest {
 
@@ -22,7 +23,7 @@ class SectionsTest {
         Section target = new Section(new Station("당산역"), new Station("홍대입구역"), 1);
 
         assertThatThrownBy(() -> sections.add(target))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(SubwayException.class);
 
     }
 
@@ -36,7 +37,7 @@ class SectionsTest {
         Section target = new Section(new Station("강남역"), new Station("선릉역"), 1);
 
         assertThatThrownBy(() -> sections.add(target))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(SubwayException.class);
 
     }
 

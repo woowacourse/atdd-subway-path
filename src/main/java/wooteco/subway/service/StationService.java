@@ -11,6 +11,8 @@ import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.StationResponse;
+import wooteco.subway.exception.station.DuplicateStationNameException;
+import wooteco.subway.exception.station.NoSuchStationException;
 import wooteco.subway.repository.StationRepository;
 
 @Service
@@ -29,7 +31,7 @@ public class StationService {
             Station station = stationRequest.toStation();
             return StationResponse.from(stationRepository.save(station));
         } catch (DuplicateKeyException e) {
-            throw new DuplicateKeyException("이미 존재하는 역 이름입니다.");
+            throw new DuplicateStationNameException();
         }
     }
 
@@ -37,7 +39,7 @@ public class StationService {
         try {
             return StationResponse.from(stationRepository.findById(stationId));
         } catch (EmptyResultDataAccessException e) {
-            throw new EmptyResultDataAccessException("존재하지 않는 역입니다.", 1);
+            throw new NoSuchStationException();
         }
     }
 

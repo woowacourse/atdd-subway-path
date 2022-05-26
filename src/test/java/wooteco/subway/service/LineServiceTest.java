@@ -22,6 +22,9 @@ import wooteco.subway.dao.entity.LineEntity;
 import wooteco.subway.dto.LineEditRequest;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
+import wooteco.subway.exception.DuplicateNameException;
+import wooteco.subway.exception.line.DuplicateLineNameException;
+import wooteco.subway.exception.line.NoSuchLineException;
 
 @SpringBootTest
 @Sql("/testSchema.sql")
@@ -59,8 +62,7 @@ class LineServiceTest {
         lineService.save(new LineRequest("1호선", "bg-darkblue-600", up.getId(), down.getId(), 3, 0));
 
         assertThatThrownBy(() -> lineService.save(new LineRequest("1호선", "bg-darkblue-600", up.getId(), down.getId(), 3, 0)))
-                .isInstanceOf(DuplicateKeyException.class)
-                .hasMessageContaining("이미 존재하는 노선");
+                .isInstanceOf(DuplicateLineNameException.class);
     }
 
     @DisplayName("모든 노선을 조회한다")
@@ -98,8 +100,7 @@ class LineServiceTest {
     @Test
     void 존재하지않는_노선_조회_예외발생() {
         assertThatThrownBy(() -> lineService.findById(1L))
-                .isInstanceOf(EmptyResultDataAccessException.class)
-                .hasMessageContaining("존재하지 않는 노선");
+                .isInstanceOf(NoSuchLineException.class);
     }
 
     @DisplayName("노선을 업데이트한다")
@@ -127,8 +128,7 @@ class LineServiceTest {
         LineResponse savedLine = lineService.save(new LineRequest("4호선", "bg-purple-600", up.getId(), down.getId(), 3, 0));
 
         assertThatThrownBy(() -> lineService.update(savedLine.getId(), new LineEditRequest("2호선", "bg-brown-600")))
-                .isInstanceOf(DuplicateKeyException.class)
-                .hasMessageContaining("이미 존재하는 노선");
+                .isInstanceOf(DuplicateLineNameException.class);
     }
 
     @DisplayName("노선 삭제")

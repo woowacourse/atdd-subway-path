@@ -6,6 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import wooteco.subway.exception.DuplicateNameException;
+import wooteco.subway.exception.NoSuchContentException;
+import wooteco.subway.exception.SubwayException;
 
 @RestControllerAdvice
 public class ExceptionAdviser {
@@ -29,5 +32,21 @@ public class ExceptionAdviser {
     public ResponseEntity<ErrorResponse> exceptionHandler(RuntimeException e) {
         e.printStackTrace();
         return ResponseEntity.internalServerError().body(new ErrorResponse("런타임 에러", "현재 서버에 문제가 발생해 응답할 수 없습니다."));
+    }
+
+    @ExceptionHandler(NoSuchContentException.class)
+    public ResponseEntity<String> handleNoSuchElementException(NoSuchContentException e) {
+        return ResponseEntity.status(e.getStatus())
+                .body(e.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateNameException.class)
+    public ResponseEntity<String> handleDuplicateLineNameException(DuplicateNameException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(SubwayException.class)
+    public ResponseEntity<String> handleSubwayException(SubwayException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
