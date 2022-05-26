@@ -28,7 +28,7 @@ public enum FareByDistance {
     }
 
 
-    public static int findFare(final double distance) {
+    public static int calculateFare(final double distance) {
         return Arrays.stream(values())
                 .filter(fareByDistance -> fareByDistance.predicate.test(distance))
                 .findFirst()

@@ -69,8 +69,8 @@ public class PathFinder {
     }
 
     private int calculateFare(final int age, final double distance, final int maxExtraFare) {
-        int distanceFare = FareByDistance.findFare(distance);
-        return FareByAge.findFare(age, distanceFare + maxExtraFare);
+        int distanceFare = FareByDistance.calculateFare(distance);
+        return FareByAge.calculateFare(age, distanceFare + maxExtraFare);
     }
 
     private int getMaxExtraFare(final GraphPath<Station, ShortestPathEdge> graph, final Lines lines) {

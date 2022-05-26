@@ -24,7 +24,7 @@ public enum FareByAge {
         this.function = function;
     }
 
-    public static int findFare(final int age, final int fare) {
+    public static int calculateFare(final int age, final int fare) {
         return Arrays.stream(values())
                 .filter(fareByAge -> fareByAge.predicate.test(age))
                 .findFirst()

@@ -15,7 +15,7 @@ class FareByAgeTest {
     @ParameterizedTest
     @ValueSource(ints = {5, 65})
     void calculateFreeAgeFare(int age) {
-        int fare = FareByAge.findFare(age, 1250);
+        int fare = FareByAge.calculateFare(age, 1250);
 
         assertThat(fare).isEqualTo(0);
     }
@@ -24,7 +24,7 @@ class FareByAgeTest {
     @ParameterizedTest
     @ValueSource(ints = {6, 12})
     void calculateChildrenAgeFare(int age) {
-        int fare = FareByAge.findFare(age, 1250);
+        int fare = FareByAge.calculateFare(age, 1250);
 
         assertThat(fare).isEqualTo(450);
     }
@@ -33,7 +33,7 @@ class FareByAgeTest {
     @ParameterizedTest
     @ValueSource(ints = {13, 18})
     void calculateTeenagerAgeFare(int age) {
-        int fare = FareByAge.findFare(age, 1250);
+        int fare = FareByAge.calculateFare(age, 1250);
 
         assertThat(fare).isEqualTo(720);
     }
@@ -41,7 +41,7 @@ class FareByAgeTest {
     @DisplayName("나이가 양수가 아닐 경우 예외를 발생시킨다.")
     @Test
     void calculateAgeFareExceptionNotPositiveAge() {
-        assertThatThrownBy(() -> FareByAge.findFare(0, 1250))
+        assertThatThrownBy(() -> FareByAge.calculateFare(0, 1250))
                 .isInstanceOf(PositiveDigitException.class)
                 .hasMessage("나이는 양수여야 합니다.");
     }

@@ -16,7 +16,7 @@ class FareByDistanceTest {
     @ParameterizedTest
     @ValueSource(ints = {1, 10})
     void calculateFreeAgeFare(int distance) {
-        int fare = FareByDistance.findFare(distance);
+        int fare = FareByDistance.calculateFare(distance);
 
         assertThat(fare).isEqualTo(1250);
     }
@@ -25,7 +25,7 @@ class FareByDistanceTest {
     @ParameterizedTest
     @CsvSource({"11,1350", "15,1350", "16,1450", "50,2050"})
     void calculateChildrenAgeFare(int distance, int expectFare) {
-        int fare = FareByDistance.findFare(distance);
+        int fare = FareByDistance.calculateFare(distance);
 
         assertThat(fare).isEqualTo(expectFare);
     }
@@ -34,7 +34,7 @@ class FareByDistanceTest {
     @ParameterizedTest
     @CsvSource({"51,2150", "58,2150", "59,2250"})
     void calculateTeenagerAgeFare(int distance, int expectFare) {
-        int fare = FareByDistance.findFare(distance);
+        int fare = FareByDistance.calculateFare(distance);
 
         assertThat(fare).isEqualTo(expectFare);
     }
@@ -42,7 +42,7 @@ class FareByDistanceTest {
     @DisplayName("distance 가 양수가 아닐 경우 예외를 발생시킨다.")
     @Test
     void calculateDistanceFareExceptionNotPositiveDistance() {
-        assertThatThrownBy(() -> FareByDistance.findFare(0))
+        assertThatThrownBy(() -> FareByDistance.calculateFare(0))
                 .isInstanceOf(PositiveDigitException.class)
                 .hasMessage("구간의 길이는 양수여야 합니다.");
     }
