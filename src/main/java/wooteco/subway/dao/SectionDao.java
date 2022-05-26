@@ -2,28 +2,27 @@ package wooteco.subway.dao;
 
 import java.util.List;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.stereotype.Repository;
-import wooteco.subway.entity.SectionEntity;
-import wooteco.subway.entity.StationEntity;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.station.Station;
 
 @Repository
 public class SectionDao {
 
-    private static final RowMapper<SectionEntity> ROW_MAPPER = (resultSet, rowNum) -> {
+    private static final RowMapper<Section> ROW_MAPPER = (resultSet, rowNum) -> {
         Long lineId = resultSet.getLong("line_id");
-        StationEntity upStation = new StationEntity(
+        Station upStation = new Station(
                 resultSet.getLong("up_station_id"),
                 resultSet.getString("up_station_name"));
-        StationEntity downStation = new StationEntity(
+        Station downStation = new Station(
                 resultSet.getLong("down_station_id"),
                 resultSet.getString("down_station_name"));
         int distance = resultSet.getInt("distance");
-        return new SectionEntity(lineId, upStation, downStation, distance);
+        return new Section(lineId, upStation, downStation, distance);
     };
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
@@ -32,7 +31,7 @@ public class SectionDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<SectionEntity> findAll() {
+    public List<Section> findAll() {
         final String sql = "SELECT A.line_id AS line_id, A.distance AS distance, "
                 + "B.id AS up_station_id, B.name AS up_station_name, "
                 + "C.id AS down_station_id, C.name AS down_station_name "
@@ -42,7 +41,7 @@ public class SectionDao {
         return jdbcTemplate.query(sql, new EmptySqlParameterSource(), ROW_MAPPER);
     }
 
-    public List<SectionEntity> findAllByLineId(Long lineId) {
+    public List<Section> findAllByLineId(Long lineId) {
         final String sql = "SELECT A.line_id AS line_id, A.distance AS distance, "
                 + "B.id AS up_station_id, B.name AS up_station_name, "
                 + "C.id AS down_station_id, C.name AS down_station_name "
@@ -55,7 +54,7 @@ public class SectionDao {
         return jdbcTemplate.query(sql, paramSource, ROW_MAPPER);
     }
 
-    public List<SectionEntity> findAllByStationId(Long stationId) {
+    public List<Section> findAllByStationId(Long stationId) {
         final String sql = "SELECT DISTINCT A.line_id AS line_id, A.distance AS distance, "
                 + "B.id AS up_station_id, B.name AS up_station_name, "
                 + "C.id AS down_station_id, C.name AS down_station_name "
@@ -68,20 +67,18 @@ public class SectionDao {
         return jdbcTemplate.query(sql, paramSource, ROW_MAPPER);
     }
 
-    public void save(SectionEntity sectionEntity) {
+    public void save(List<Section> sectionEntities) {
         final String sql = "INSERT INTO section(line_id, up_station_id, down_station_id, distance) "
                 + "VALUES(:lineId, :upStationId, :downStationId, :distance)";
-        SqlParameterSource paramSource = new BeanPropertySqlParameterSource(sectionEntity);
 
-        jdbcTemplate.update(sql, paramSource);
+        jdbcTemplate.batchUpdate(sql, SqlParameterSourceUtils.createBatch(sectionEntities));
     }
 
-    public void delete(SectionEntity sectionEntity) {
+    public void delete(List<Section> sectionEntities) {
         final String sql = "DELETE FROM section WHERE line_id = :lineId "
                 + "AND (up_station_id = :upStationId OR down_station_id = :downStationId)";
-        SqlParameterSource paramSource = new BeanPropertySqlParameterSource(sectionEntity);
 
-        jdbcTemplate.update(sql, paramSource);
+        jdbcTemplate.batchUpdate(sql, SqlParameterSourceUtils.createBatch(sectionEntities));
     }
 
     public void deleteAllByLineId(Long lineId) {

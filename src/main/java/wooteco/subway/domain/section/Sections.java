@@ -25,6 +25,10 @@ public class Sections {
         this.value = Collections.unmodifiableList(sortedSections);
     }
 
+    public Sections(Section... sections) {
+        this(List.of(sections));
+    }
+
     private void validateLineExistence(List<Section> value) {
         if (value.isEmpty()) {
             throw new NotFoundException(ExceptionType.LINE_NOT_FOUND);

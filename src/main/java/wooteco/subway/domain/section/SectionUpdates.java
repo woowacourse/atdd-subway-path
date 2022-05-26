@@ -3,13 +3,13 @@ package wooteco.subway.domain.section;
 import java.util.List;
 import java.util.Objects;
 
-public class SectionsCompareResult {
+public class SectionUpdates {
 
     private final List<Section> newSections;
     private final List<Section> oldSections;
 
-    public SectionsCompareResult(List<Section> newSections,
-                                 List<Section> oldSections) {
+    public SectionUpdates(List<Section> newSections,
+                          List<Section> oldSections) {
         this.newSections = newSections;
         this.oldSections = oldSections;
     }
@@ -30,7 +30,7 @@ public class SectionsCompareResult {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        SectionsCompareResult that = (SectionsCompareResult) o;
+        SectionUpdates that = (SectionUpdates) o;
         return Objects.equals(newSections, that.newSections)
                 && Objects.equals(oldSections, that.oldSections);
     }

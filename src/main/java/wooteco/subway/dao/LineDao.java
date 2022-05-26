@@ -19,7 +19,8 @@ public class LineDao {
     private static final RowMapper<LineEntity> ROW_MAPPER = (resultSet, rowNum) ->
             new LineEntity(resultSet.getLong("id"),
                     resultSet.getString("name"),
-                    resultSet.getString("color"));
+                    resultSet.getString("color"),
+                    resultSet.getInt("extra_fare"));
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
@@ -43,6 +44,13 @@ public class LineDao {
                 .findFirst();
     }
 
+    public List<LineEntity> findAllByIds(List<Long> ids) {
+        final String sql = "SELECT * FROM line WHERE id in (:ids)";
+        SqlParameterSource params = new MapSqlParameterSource("ids", ids);
+
+        return jdbcTemplate.query(sql, params, ROW_MAPPER);
+    }
+
     public Optional<LineEntity> findByName(String name) {
         final String sql = "SELECT * FROM line WHERE name = :name";
         MapSqlParameterSource paramSource = new MapSqlParameterSource();
@@ -53,19 +61,19 @@ public class LineDao {
                 .findFirst();
     }
 
-    public LineEntity save(LineEntity lineEntity) {
-        final String sql = "INSERT INTO line(name, color) VALUES(:name, :color)";
+    public LineEntity save(LineEntity line) {
+        final String sql = "INSERT INTO line(name, color, extra_fare) VALUES(:name, :color, :extraFare)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        SqlParameterSource paramSource = new BeanPropertySqlParameterSource(lineEntity);
+        SqlParameterSource paramSource = new BeanPropertySqlParameterSource(line);
 
         jdbcTemplate.update(sql, paramSource, keyHolder);
         Number generatedId = keyHolder.getKey();
-        return new LineEntity(generatedId.longValue(), lineEntity.getName(), lineEntity.getColor());
+        return new LineEntity(generatedId.longValue(), line.getName(), line.getColor(), line.getExtraFare());
     }
 
-    public void update(LineEntity lineEntity) {
-        final String sql = "UPDATE line SET name = :name, color = :color WHERE id = :id";
-        SqlParameterSource paramSource = new BeanPropertySqlParameterSource(lineEntity);
+    public void update(LineEntity line) {
+        final String sql = "UPDATE line SET name = :name, color = :color, extra_fare = :extraFare WHERE id = :id";
+        SqlParameterSource paramSource = new BeanPropertySqlParameterSource(line);
 
         jdbcTemplate.update(sql, paramSource);
     }

@@ -7,22 +7,27 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
-import wooteco.subway.test_utils.TestFixtureManager;
+import wooteco.subway.fixture.DatabaseFixtureUtils;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(Lifecycle.PER_CLASS)
 public class AcceptanceTest {
 
     @Autowired
     protected DataSource dataSource;
 
     @Autowired
-    protected TestFixtureManager testFixtureManager;
+    protected JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    protected DatabaseFixtureUtils databaseFixtureUtils;
 
     @LocalServerPort
     private int port;

@@ -8,24 +8,42 @@ import wooteco.subway.domain.station.Station;
 
 public class Line {
 
-    private final LineInfo lineInfo;
+    private final Long id;
+    private final String name;
+    private final String color;
+    private final LineExtraFare extraFare;
     private final Sections sections;
 
-    public Line(LineInfo lineInfo, Sections sections) {
-        this.lineInfo = lineInfo;
+    private Line(Long id, String name, String color, LineExtraFare extraFare, Sections sections) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
         this.sections = sections;
     }
 
-    public static Line of(LineInfo lineInfo, Section section) {
-        return new Line(lineInfo, new Sections(List.of(section)));
+    public Line(Long id, String name, String color, int extraFare, Sections sections) {
+        this(id, name, color, new LineExtraFare(extraFare), sections);
+    }
+
+    public Line(String name, String color, int extraFare, Section section) {
+        this(null, name, color, extraFare, new Sections(section));
     }
 
     public Long getId() {
-        return lineInfo.getId();
+        return id;
     }
 
-    public LineInfo getLineInfo() {
-        return lineInfo;
+    public String getName() {
+        return name;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare.getValue();
     }
 
     public Sections getSections() {
@@ -34,6 +52,10 @@ public class Line {
 
     public List<Station> getSortedStations() {
         return sections.toSortedStations();
+    }
+
+    public List<Section> toSectionList() {
+        return sections.toSortedList();
     }
 
     @Override
@@ -45,17 +67,26 @@ public class Line {
             return false;
         }
         Line line = (Line) o;
-        return Objects.equals(lineInfo, line.lineInfo)
+        return Objects.equals(id, line.id)
+                && Objects.equals(name, line.name)
+                && Objects.equals(color, line.color)
+                && Objects.equals(extraFare, line.extraFare)
                 && Objects.equals(sections, line.sections);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(lineInfo, sections);
+        return Objects.hash(id, name, color, extraFare, sections);
     }
 
     @Override
     public String toString() {
-        return "Line{" + "lineInfo=" + lineInfo + ", sections=" + sections + '}';
+        return "Line{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                ", extraFare=" + extraFare +
+                ", sections=" + sections +
+                '}';
     }
 }

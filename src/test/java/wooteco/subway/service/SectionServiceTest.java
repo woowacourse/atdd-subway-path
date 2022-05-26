@@ -10,13 +10,15 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import wooteco.subway.dao.SectionDao;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.request.CreateSectionRequest;
-import wooteco.subway.entity.SectionEntity;
-import wooteco.subway.entity.StationEntity;
+import wooteco.subway.entity.LineEntity;
 import wooteco.subway.exception.NotFoundException;
+import wooteco.subway.fixture.DatabaseUsageTest;
 
 @SuppressWarnings("NonAsciiCharacters")
-class SectionServiceTest extends ServiceTest {
+class SectionServiceTest extends DatabaseUsageTest {
 
     @Autowired
     private SectionService service;
@@ -28,38 +30,49 @@ class SectionServiceTest extends ServiceTest {
     @Nested
     class SaveTest {
 
-        private final StationEntity STATION1 = new StationEntity(1L, "강남역");
-        private final StationEntity STATION2 = new StationEntity(2L, "선릉역");
-        private final StationEntity STATION3 = new StationEntity(3L, "잠실역");
+        private final Station 강남역 = new Station(1L, "강남역");
+        private final Station 선릉역 = new Station(2L, "선릉역");
+        private final Station 잠실역 = new Station(3L, "잠실역");
 
         @BeforeEach
         void setupStations() {
-            testFixtureManager.saveStations("강남역", "선릉역", "잠실역");
-            testFixtureManager.saveLine("존재하는 노선", "색깔");
+            databaseFixtureUtils.saveStations(강남역, 선릉역, 잠실역);
+            saveLineTestFixture("존재하는 노선", "색깔", 0);
         }
 
         @Test
         void 상행_종점_등록시_그대로_저장() {
-            testFixtureManager.saveSection(1L, 2L, 3L, 10);
+            Section 선릉_잠실 = new Section(1L, 선릉역, 잠실역, 10);
+            databaseFixtureUtils.saveSections(선릉_잠실);
 
-            service.save(1L, new CreateSectionRequest(1L, 2L, 20));
-            List<SectionEntity> actual = dao.findAllByLineId(1L);
-            List<SectionEntity> expected = List.of(
-                    new SectionEntity(1L, STATION1, STATION2, 20),
-                    new SectionEntity(1L, STATION2, STATION3, 10));
+            service.save(1L, generateCreateSectionRequest(강남역, 선릉역, 20));
+            List<Section> actual = dao.findAllByLineId(1L);
+            List<Section> expected = List.of(
+                    new Section(1L, 강남역, 선릉역, 20),
+                    선릉_잠실);
 
             assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
         }
 
+        private CreateSectionRequest generateCreateSectionRequest(Station upStation,
+                                                                  Station downStation,
+                                                                  int distance) {
+            CreateSectionRequest request = new CreateSectionRequest();
+            request.setUpStationId(upStation.getId());
+            request.setDownStationId(downStation.getId());
+            request.setDistance(distance);
+            return request;
+        }
+
         @Test
         void 하행_종점_등록시_그대로_저장() {
-            testFixtureManager.saveSection(1L, 1L, 2L, 10);
+            Section 강남_선릉 = new Section(1L, 강남역, 선릉역, 10);
+            databaseFixtureUtils.saveSections(강남_선릉);
 
-            service.save(1L, new CreateSectionRequest(2L, 3L, 30));
-            List<SectionEntity> actual = dao.findAllByLineId(1L);
-            List<SectionEntity> expected = List.of(
-                    new SectionEntity(1L, STATION1, STATION2, 10),
-                    new SectionEntity(1L, STATION2, STATION3, 30));
+            service.save(1L, generateCreateSectionRequest(선릉역, 잠실역, 30));
+            List<Section> actual = dao.findAllByLineId(1L);
+            List<Section> expected = List.of(강남_선릉,
+                    new Section(1L, 선릉역, 잠실역, 30));
 
             assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
         }
@@ -68,13 +81,13 @@ class SectionServiceTest extends ServiceTest {
         void 저장하려는_구간의_상행역이_이미_상행역으로_등록된_경우_저장_후_기존_구간은_수정() {
             int existingSectionDistance = 10;
             int newSectionDistance = 2;
-            testFixtureManager.saveSection(1L, 1L, 3L, existingSectionDistance);
+            Section 선릉_잠실 = new Section(1L, 선릉역, 잠실역, existingSectionDistance - newSectionDistance);
+            databaseFixtureUtils.saveSections(선릉_잠실);
 
-            service.save(1L, new CreateSectionRequest(1L, 2L, newSectionDistance));
-            List<SectionEntity> actual = dao.findAllByLineId(1L);
-            List<SectionEntity> expected = List.of(
-                    new SectionEntity(1L, STATION1, STATION2, newSectionDistance),
-                    new SectionEntity(1L, STATION2, STATION3, existingSectionDistance - newSectionDistance));
+            service.save(1L, generateCreateSectionRequest(강남역, 선릉역, newSectionDistance));
+            List<Section> actual = dao.findAllByLineId(1L);
+            List<Section> expected = List.of(
+                    new Section(1L, 강남역, 선릉역, newSectionDistance), 선릉_잠실);
 
             assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
         }
@@ -83,13 +96,13 @@ class SectionServiceTest extends ServiceTest {
         void 저장하려는_구간의_히행역이_이미_하행역으로_등록된_경우_저장_후_기존_구간은_수정() {
             int existingSectionDistance = 10;
             int newSectionDistance = 3;
-            testFixtureManager.saveSection(1L, 1L, 3L, existingSectionDistance);
+            saveSectionTestFixture(1L, 강남역, 잠실역, existingSectionDistance);
 
-            service.save(1L, new CreateSectionRequest(2L, 3L, newSectionDistance));
-            List<SectionEntity> actual = dao.findAllByLineId(1L);
-            List<SectionEntity> expected = List.of(
-                    new SectionEntity(1L, STATION1, STATION2, existingSectionDistance - newSectionDistance),
-                    new SectionEntity(1L, STATION2, STATION3, newSectionDistance));
+            service.save(1L, generateCreateSectionRequest(선릉역, 잠실역, newSectionDistance));
+            List<Section> actual = dao.findAllByLineId(1L);
+            List<Section> expected = List.of(
+                    new Section(1L, 강남역, 선릉역, existingSectionDistance - newSectionDistance),
+                    new Section(1L, 선릉역, 잠실역, newSectionDistance));
 
             assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
         }
@@ -99,52 +112,52 @@ class SectionServiceTest extends ServiceTest {
     @Nested
     class DeleteTest {
 
-        private final StationEntity STATION1 = new StationEntity(1L, "강남역");
-        private final StationEntity STATION2 = new StationEntity(2L, "선릉역");
-        private final StationEntity STATION3 = new StationEntity(3L, "잠실역");
+        private final Station 강남역 = new Station(1L, "강남역");
+        private final Station 선릉역 = new Station(2L, "선릉역");
+        private final Station 잠실역 = new Station(3L, "잠실역");
 
         @Test
         void 노선의_종점을_제거하려는_경우_그와_연결된_구간만_하나_제거() {
-            testFixtureManager.saveStations("강남역", "선릉역", "잠실역");
-            testFixtureManager.saveLine("노선", "색깔");
-            testFixtureManager.saveSection(1L, 1L, 2L);
-            testFixtureManager.saveSection(1L, 2L, 3L, 10);
+            databaseFixtureUtils.saveStations(강남역, 선릉역, 잠실역);
+            saveLineTestFixture("노선", "색깔", 0);
+            Section 선릉_잠실 = new Section(1L, 선릉역, 잠실역, 10);
+            saveSectionTestFixture(1L, 강남역, 선릉역, 10);
+            databaseFixtureUtils.saveSections(선릉_잠실);
 
             service.delete(1L, 1L);
-            List<SectionEntity> actual = dao.findAllByLineId(1L);
-            List<SectionEntity> expected = List.of(
-                    new SectionEntity(1L, STATION2, STATION3, 10));
+            List<Section> actual = dao.findAllByLineId(1L);
+            List<Section> expected = List.of(선릉_잠실);
 
             assertThat(actual).isEqualTo(expected);
         }
 
         @Test
         void 노선의_중앙에_있는_역을_제거한_경우_그_사이를_잇는_구간을_새로_생성() {
-            testFixtureManager.saveStations("강남역", "선릉역", "잠실역");
-            testFixtureManager.saveLine("노선", "색깔");
-            testFixtureManager.saveSection(1L, 1L, 2L, 5);
-            testFixtureManager.saveSection(1L, 2L, 3L, 10);
+            databaseFixtureUtils.saveStations(강남역, 선릉역, 잠실역);
+            saveLineTestFixture("노선", "색깔", 0);
+            saveSectionTestFixture(1L, 강남역, 선릉역, 5);
+            saveSectionTestFixture(1L, 선릉역, 잠실역, 10);
 
             service.delete(1L, 2L);
-            List<SectionEntity> actual = dao.findAllByLineId(1L);
-            List<SectionEntity> expected = List.of(
-                    new SectionEntity(1L, STATION1, STATION3, 15));
+            List<Section> actual = dao.findAllByLineId(1L);
+            List<Section> expected = List.of(
+                    new Section(1L, 강남역, 잠실역, 15));
 
             assertThat(actual).isEqualTo(expected);
         }
 
         @Test
         void 등록되지_않은_노선_id가_입력된_경우_예외발생() {
-            testFixtureManager.saveStations("강남역", "선릉역", "잠실역");
+            databaseFixtureUtils.saveStations(강남역, 선릉역, 잠실역);
             assertThatThrownBy(() -> service.delete(99999L, 1L))
                     .isInstanceOf(NotFoundException.class);
         }
 
         @Test
         void 노선에_구간으로_등록되지_않은_지하철역_id가_입력된_경우_예외발생() {
-            testFixtureManager.saveStations("강남역", "선릉역", "잠실역");
-            testFixtureManager.saveLine("노선", "색깔");
-            testFixtureManager.saveSection(1L, 1L, 2L);
+            databaseFixtureUtils.saveStations(강남역, 선릉역, 잠실역);
+            saveLineTestFixture("노선", "색깔", 0);
+            saveSectionTestFixture(1L, 강남역, 선릉역, 10);
 
             assertThatThrownBy(() -> service.delete(1L, 3L))
                     .isInstanceOf(IllegalArgumentException.class);
@@ -152,12 +165,20 @@ class SectionServiceTest extends ServiceTest {
 
         @Test
         void 노선의_구간이_하나_남은_경우_구간_제거_시도시_예외발생() {
-            testFixtureManager.saveStations("강남역", "선릉역", "잠실역");
-            testFixtureManager.saveLine("노선", "색깔");
-            testFixtureManager.saveSection(1L, 1L, 2L);
+            databaseFixtureUtils.saveStations(강남역, 선릉역, 잠실역);
+            saveLineTestFixture("노선", "색깔", 0);
+            saveSectionTestFixture(1L, 강남역, 선릉역, 10);
 
             assertThatThrownBy(() -> service.delete(1L, 1L))
                     .isInstanceOf(IllegalArgumentException.class);
         }
+    }
+
+    private void saveLineTestFixture(String name, String color, int extraFare) {
+        databaseFixtureUtils.saveLines(new LineEntity(name, color, extraFare));
+    }
+
+    private void saveSectionTestFixture(Long lineId, Station upStation, Station downStation, int distance) {
+        databaseFixtureUtils.saveSections(new Section(lineId, upStation,downStation, distance));
     }
 }

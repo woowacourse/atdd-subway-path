@@ -1,87 +1,81 @@
 package wooteco.subway.service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.line.Line;
-import wooteco.subway.domain.line.LineInfo;
-import wooteco.subway.domain.line.Lines;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.section.Sections;
 import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.request.CreateLineRequest;
 import wooteco.subway.dto.request.UpdateLineRequest;
-import wooteco.subway.dto.response.DtoAssembler;
 import wooteco.subway.dto.response.LineResponse;
-import wooteco.subway.exception.ExceptionType;
-import wooteco.subway.exception.NotFoundException;
+import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.StationRepository;
-import wooteco.subway.repository.SubwayRepository;
 
 @Service
 public class LineService {
 
     private static final String DUPLICATE_LINE_NAME_EXCEPTION_MESSAGE = "중복되는 이름의 지하철 노선이 존재합니다.";
 
-    private final SubwayRepository subwayRepository;
+    private final LineRepository lineRepository;
     private final StationRepository stationRepository;
 
-    public LineService(SubwayRepository subwayRepository, StationRepository stationRepository) {
-        this.subwayRepository = subwayRepository;
+    public LineService(LineRepository lineRepository, StationRepository stationRepository) {
+        this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
     }
 
     public List<LineResponse> findAll() {
-        return Lines.of(subwayRepository.findAllLines(), subwayRepository.findAllSections())
-                .toSortedList()
+        return lineRepository.findAllLines()
                 .stream()
-                .map(DtoAssembler::assemble)
+                .map(LineResponse::of)
+                .sorted(Comparator.comparingLong(LineResponse::getId))
                 .collect(Collectors.toUnmodifiableList());
     }
 
     public LineResponse find(Long id) {
-        LineInfo lineInfo = subwayRepository.findExistingLine(id);
-        Sections sections = new Sections(subwayRepository.findAllSectionsByLineId(id));
-        return DtoAssembler.assemble(new Line(lineInfo, sections));
+        Line line = lineRepository.findExistingLine(id);
+        return LineResponse.of(line);
     }
 
     @Transactional
     public LineResponse save(CreateLineRequest lineRequest) {
-        validateUniqueLineName(lineRequest.getName());
+        String name = validateUniqueLineName(lineRequest.getName());
+        String color = lineRequest.getColor();
+        int extraFare = lineRequest.getExtraFare();
         Station upStation = stationRepository.findExistingStation(lineRequest.getUpStationId());
         Station downStation = stationRepository.findExistingStation(lineRequest.getDownStationId());
         Section newSection = new Section(upStation, downStation, lineRequest.getDistance());
 
-        LineInfo newLine = new LineInfo(lineRequest.getName(), lineRequest.getColor());
-        return DtoAssembler.assemble(subwayRepository.saveLine(newLine, newSection));
+        Line newLine = new Line(name, color, extraFare, newSection);
+        return LineResponse.of(lineRepository.saveLine(newLine));
     }
 
     @Transactional
     public void update(Long id, UpdateLineRequest lineRequest) {
-        String name = lineRequest.getName();
-        validateExistingLine(id);
-        validateUniqueLineName(name);
-        subwayRepository.updateLine(new LineInfo(id, name, lineRequest.getColor()));
+        Line line = lineRepository.findExistingLine(id);
+        String name = validateUniqueLineName(lineRequest.getName());
+        String color = lineRequest.getColor();
+        int extraFare = lineRequest.getExtraFare();
+        Sections sections = line.getSections();
+
+        lineRepository.updateLine(new Line(id, name, color, extraFare, sections));
     }
 
     @Transactional
     public void delete(Long id) {
-        LineInfo line = subwayRepository.findExistingLine(id);
-        subwayRepository.deleteLine(line);
+        Line line = lineRepository.findExistingLine(id);
+        lineRepository.deleteLine(line);
     }
 
-    private void validateExistingLine(Long id) {
-        boolean isExistingLine = subwayRepository.checkExistingLine(id);
-        if (!isExistingLine) {
-            throw new NotFoundException(ExceptionType.LINE_NOT_FOUND);
-        }
-    }
-
-    private void validateUniqueLineName(String name) {
-        boolean isDuplicateName = subwayRepository.checkExistingLineName(name);
+    private String validateUniqueLineName(String name) {
+        boolean isDuplicateName = lineRepository.checkExistingLineName(name);
         if (isDuplicateName) {
             throw new IllegalArgumentException(DUPLICATE_LINE_NAME_EXCEPTION_MESSAGE);
         }
+        return name;
     }
 }
