@@ -2,6 +2,7 @@ package wooteco.subway.domain.line;
 
 public class Line {
 
+    private static final int FARE_UNIT = 10;
     private final Long id;
     private final String name;
     private final String color;
@@ -16,8 +17,8 @@ public class Line {
     }
 
     private void validateExtraFare(int extraFare) {
-        if (extraFare % 10 != 0) {
-            throw new IllegalArgumentException("추가 요금은 10원 단위로 입력해야합니다.");
+        if (extraFare % FARE_UNIT != 0) {
+            throw new IllegalArgumentException(String.format("추가 요금은 %s원 단위로 입력해야합니다.", FARE_UNIT));
         }
     }
 
