@@ -11,6 +11,7 @@ public class PathRequest {
     @NotNull
     private final Long target;
 
+    @NotNull
     @Positive
     private final Integer age;
 

@@ -161,10 +161,21 @@ class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("경로 조회시 파라미터 데이터가 정확하지 않은 경우 400 을 응답한다.")
-    void ShowPath_InvalidParameter_BadRequestReturned() {
+    @DisplayName("경로 조회시 역 관련 파라미터 데이터가 정확하지 않은 경우 400 을 응답한다.")
+    void ShowPath_InvalidStationParameter_BadRequestReturned() {
         // when
         final ExtractableResponse<Response> response = findPath(getPathQueryParams(gangnam.getId(), null, 10));
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    @DisplayName("경로 조회시 나이 관련 파라미터 데이터가 정확하지 않은 경우 400 을 응답한다.")
+    void ShowPath_InvalidAgeParameter_BadRequestReturned() {
+        // when
+        final ExtractableResponse<Response> response = findPath(
+                getPathQueryParams(gangnam.getId(), seoulForest.getId(), null));
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
