@@ -3,8 +3,8 @@ package wooteco.subway.domain;
 import java.util.List;
 
 public class Line {
-    private final Long id;
-    private final Sections sections;
+    private Long id;
+    private Sections sections;
     private final int extraFare;
     private String name;
     private String color;
@@ -18,11 +18,16 @@ public class Line {
     }
 
     public Line(String name, String color, int extraFare) {
-        this(null, name, color, null, extraFare);
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
     }
 
     public Line(Long id, String name, String color, int extraFare) {
-        this(id, name, color, null, extraFare);
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
     }
 
     public static Line from(Line line, List<Section> sections) {
