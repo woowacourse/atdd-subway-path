@@ -1,6 +1,5 @@
 package wooteco.subway.dao;
 
-import java.util.List;
 import java.util.Optional;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.RowMapper;
@@ -11,6 +10,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.Stations;
 
 @Repository
 public class StationDao {
@@ -36,9 +36,9 @@ public class StationDao {
         return new Station(id, station.getName());
     }
 
-    public List<Station> findAll() {
+    public Stations findAll() {
         String sql = "SELECT * FROM STATION";
-        return jdbcTemplate.query(sql, STATION_MAPPER);
+        return new Stations(jdbcTemplate.query(sql, STATION_MAPPER));
     }
 
     public Optional<Station> findById(Long id) {

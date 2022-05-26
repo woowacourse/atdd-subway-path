@@ -9,22 +9,24 @@ public class LineResponse {
     private final Long id;
     private final String name;
     private final String color;
+    private final int extraFare;
     private final List<StationResponse> stations;
 
     private LineResponse() {
-        this(null, null, null, null);
+        this(null, null, null, 0, null);
     }
 
     public LineResponse(Line line, List<Station> stations) {
-        this(line.getId(), line.getName(), line.getColor(), stations.stream()
+        this(line.getId(), line.getName(), line.getColor(), line.getExtraFare(), stations.stream()
                 .map(StationResponse::new)
                 .collect(Collectors.toUnmodifiableList()));
     }
 
-    public LineResponse(Long id, String name, String color, List<StationResponse> stations) {
+    public LineResponse(Long id, String name, String color, int extraFare, List<StationResponse> stations) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
         this.stations = stations;
     }
 
@@ -38,6 +40,10 @@ public class LineResponse {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     public List<StationResponse> getStations() {

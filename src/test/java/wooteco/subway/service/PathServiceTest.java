@@ -33,9 +33,9 @@ class PathServiceTest {
     @DisplayName("시작역과 도착역을 통해서 Path를 생성한다.")
     @Test
     void createPath() {
-        Line line2 = lineDao.save(new Line("2호선", "초록색"));
-        Line line9 = lineDao.save(new Line("9호선", "금색"));
-        Line bundangLine = lineDao.save(new Line("수인분당선", "노란색"));
+        Line line2 = lineDao.save(new Line("2호선", "초록색", 0));
+        Line line9 = lineDao.save(new Line("9호선", "금색", 0));
+        Line bundangLine = lineDao.save(new Line("수인분당선", "노란색", 0));
 
         Station seolleung = stationDao.save(new Station("선릉역"));
         Station sportscomplex = stationDao.save(new Station("종합운동장역"));

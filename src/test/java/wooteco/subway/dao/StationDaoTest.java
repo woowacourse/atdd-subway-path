@@ -56,7 +56,7 @@ class StationDaoTest {
         stationDao.save(gangNam);
         stationDao.save(jamSil);
 
-        assertThat(stationDao.findAll()).hasSize(2);
+        assertThat(stationDao.findAll().getValues()).hasSize(2);
     }
 
     @DisplayName("특정 id를 가지는 역을 조회한다.")
@@ -78,7 +78,7 @@ class StationDaoTest {
         Station persistStation = stationDao.save(station);
         stationDao.deleteById(persistStation.getId());
 
-        assertThat(stationDao.findAll()).isEmpty();
+        assertThat(stationDao.findAll().getValues()).isEmpty();
     }
 
     @DisplayName("id 값이 저장되어 있는지 확인한다.")

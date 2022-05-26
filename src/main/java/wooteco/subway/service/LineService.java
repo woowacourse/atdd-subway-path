@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Lines;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
@@ -42,7 +43,8 @@ public class LineService {
     }
 
     private Line saveLine(LineCreateRequest lineCreateRequest) {
-        Line line = new Line(lineCreateRequest.getName(), lineCreateRequest.getColor());
+        Line line = new Line(lineCreateRequest.getName(), lineCreateRequest.getColor(),
+                lineCreateRequest.getExtraFare());
         validateUnique(line);
         return lineDao.save(line);
     }
@@ -79,7 +81,7 @@ public class LineService {
     }
 
     private void addNewSection(Line line, Section newSection) {
-        Sections originSections = new Sections(sectionDao.findAllByLine(line));
+        Sections originSections = sectionDao.findAllByLine(line);
         Sections newSections = new Sections(originSections.getValues());
 
         newSections.addSection(newSection);
@@ -90,7 +92,7 @@ public class LineService {
         List<Section> removedSections = originSections.getNotContainSections(newSections);
         deleteRemovedSections(line, removedSections);
         List<Section> addedSections = newSections.getNotContainSections(originSections);
-        saveAddedLine(line, addedSections);
+        saveAddedLine(addedSections);
     }
 
     private void deleteRemovedSections(Line line, List<Section> deleteSections) {
@@ -99,7 +101,7 @@ public class LineService {
         }
     }
 
-    private void saveAddedLine(Line line, List<Section> insertSections) {
+    private void saveAddedLine(List<Section> insertSections) {
         for (Section section : insertSections) {
             sectionDao.save(section);
         }
@@ -107,14 +109,15 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public List<LineResponse> findAll() {
-        List<Line> lines = lineDao.findAll();
-        return lines.stream()
+        Lines lines = lineDao.findAll();
+        return lines.getValues()
+                .stream()
                 .map(this::createLineResponse)
                 .collect(Collectors.toList());
     }
 
     private LineResponse createLineResponse(Line line) {
-        Sections sections = new Sections(sectionDao.findAllByLine(line));
+        Sections sections = sectionDao.findAllByLine(line);
         List<Station> sortedStations = sections.getSortedStations();
         return new LineResponse(line, sortedStations);
     }
@@ -123,14 +126,15 @@ public class LineService {
     public LineResponse find(Long id) {
         Line line = lineDao.findById(id)
                 .orElseThrow(() -> new LineNotFoundException("존재하지 않는 노선입니다."));
-        Sections sections = new Sections(sectionDao.findAllByLine(line));
+        Sections sections = sectionDao.findAllByLine(line);
         return new LineResponse(line, sections.getSortedStations());
     }
 
     @Transactional
     public void update(Long id, LineUpdateRequest lineUpdateRequest) {
         validateExist(id);
-        Line line = new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor());
+        Line line = new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor(),
+                lineUpdateRequest.getExtraFare());
         validateUnique(line);
         lineDao.updateById(id, line);
     }
@@ -152,7 +156,7 @@ public class LineService {
         Station station = stationService.findById(stationId);
         Line line = lineDao.findById(lineId)
                 .orElseThrow(() -> new LineNotFoundException("존재하지 않는 노선입니다."));
-        Sections originSections = new Sections(sectionDao.findAllByLine(line));
+        Sections originSections = sectionDao.findAllByLine(line);
         Sections newSections = new Sections(originSections.getValues());
 
         newSections.removeSectionByStation(station);

@@ -7,10 +7,12 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Path;
+import wooteco.subway.domain.Lines;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.Stations;
+import wooteco.subway.domain.path.Path;
 import wooteco.subway.exception.duplicate.DuplicateStationException;
 import wooteco.subway.exception.invalidrequest.InvalidPathRequestException;
 
@@ -19,7 +21,7 @@ class DijkstraPathStrategyTest {
     private final Station gangnam = new Station("강남역");
     private final Station yeoksam = new Station("역삼역");
     private final Station seolleung = new Station("선릉역");
-    private final Line line = new Line("2호선", "초록색");
+    private final Line line = new Line("2호선", "초록색", 0);
 
     @DisplayName("각 구간 리스트들을 통해서 최단 경로를 조회한다.")
     @Test
@@ -31,13 +33,13 @@ class DijkstraPathStrategyTest {
         Sections sections = new Sections(List.of(gangnam_yeoksam, yeoksam_seolleung));
 
         Path shortestPath = pathStrategy.calculatePath(gangnam, seolleung, sections);
-        Path expected = new Path(List.of(gangnam, yeoksam, seolleung), 2);
+        Path expected = new Path(new Stations(List.of(gangnam, yeoksam, seolleung)), new Lines(List.of(line)), 2);
 
         assertThat(shortestPath).isEqualTo(expected);
     }
 
-    @Test
     @DisplayName("경로의 시작역과 종점역이 같을 경우 예외가 발생한다.")
+    @Test
     void sameSourceTarget() {
         PathStrategy pathStrategy = new DijkstraPathStrategy();
 
@@ -50,8 +52,8 @@ class DijkstraPathStrategyTest {
                 .hasMessage("경로의 시작과 끝은 같은 역일 수 없습니다.");
     }
 
-    @Test
     @DisplayName("경로가 끊겨 있어 목적지까지 도착할 수 없을 경우 예외가 발생한다.")
+    @Test
     void disconnectedPath() {
         PathStrategy pathStrategy = new DijkstraPathStrategy();
 

@@ -3,10 +3,10 @@ package wooteco.subway.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import wooteco.subway.exception.duplicate.DuplicateSectionException;
@@ -18,6 +18,9 @@ public class Sections {
     private final List<Section> values;
 
     public Sections(List<Section> values) {
+        if (values == null || values.stream().anyMatch(Objects::isNull)) {
+            throw new IllegalArgumentException("구간들은 null일 수 없습니다.");
+        }
         this.values = new ArrayList<>(values);
     }
 
@@ -33,8 +36,8 @@ public class Sections {
         return Collections.unmodifiableList(sortStations(goesDownStations, goesUpStations));
     }
 
-    private LinkedList<Station> sortStations(Map<Station, Station> goesDownStations,
-                                             Map<Station, Station> goesUpStations) {
+    private List<Station> sortStations(Map<Station, Station> goesDownStations,
+                                       Map<Station, Station> goesUpStations) {
         LinkedList<Station> stations = new LinkedList<>();
         Station station = values.get(0).getUpStation();
         stations.add(station);
@@ -217,13 +220,21 @@ public class Sections {
     }
 
     public Set<Station> getDistinctStations() {
-        Set<Station> stations = new HashSet<>();
-        for (Section section : values) {
-            stations.add(section.getUpStation());
-            stations.add(section.getDownStation());
-        }
-
+        Set<Station> stations = getUpStations();
+        stations.addAll(getDownStations());
         return stations;
+    }
+
+    private Set<Station> getUpStations() {
+        return values.stream()
+                .map(Section::getUpStation)
+                .collect(Collectors.toSet());
+    }
+
+    private Set<Station> getDownStations() {
+        return values.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toSet());
     }
 
     public List<Section> getValues() {

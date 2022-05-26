@@ -12,8 +12,15 @@ public class Station {
     }
 
     public Station(Long id, String name) {
+        validateName(name);
         this.id = id;
         this.name = name;
+    }
+
+    private void validateName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("역 이름은 빈 값일 수 없습니다.");
+        }
     }
 
     public boolean hasSameName(Station station) {
@@ -44,5 +51,5 @@ public class Station {
     public int hashCode() {
         return Objects.hash(id, name);
     }
-    
+
 }
