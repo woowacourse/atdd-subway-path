@@ -17,13 +17,13 @@ import java.util.List;
 @Component
 public class DijkstraShortestPathFinder implements PathFinder {
 
-    private static void addVertex(WeightedMultigraph<Station, CustomEdge> graph, List<Station> stations) {
+    private void addVertex(WeightedMultigraph<Station, CustomEdge> graph, List<Station> stations) {
         for (Station station : stations) {
             graph.addVertex(station);
         }
     }
 
-    private static void addEdge(WeightedMultigraph<Station, CustomEdge> graph, List<Section> sections, Long lineId) {
+    private void addEdge(WeightedMultigraph<Station, CustomEdge> graph, List<Section> sections, Long lineId) {
         for (Section section : sections) {
             graph.addEdge(section.getUpStation(), section.getDownStation(), new CustomEdge(lineId, section.getDistance()));
         }
@@ -33,7 +33,7 @@ public class DijkstraShortestPathFinder implements PathFinder {
     public Path findShortestPath(Station source, Station target, List<Line> lines) {
         WeightedMultigraph<Station, CustomEdge> graph = new WeightedMultigraph<>(CustomEdge.class);
 
-        setGraph(lines, graph);
+        makeGraph(lines, graph);
 
         DijkstraShortestPath<Station, CustomEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, CustomEdge> path = dijkstraShortestPath.getPath(source, target);
@@ -42,7 +42,7 @@ public class DijkstraShortestPathFinder implements PathFinder {
         return Path.of(path.getVertexList(), path.getWeight(), path.getEdgeList());
     }
 
-    private void setGraph(List<Line> lines, WeightedMultigraph<Station, CustomEdge> graph) {
+    private void makeGraph(List<Line> lines, WeightedMultigraph<Station, CustomEdge> graph) {
         for (Line line : lines) {
             addVertex(graph, line.getStations());
         }
