@@ -1,4 +1,4 @@
-package wooteco.subway.domain.path;
+package wooteco.subway.infrastructure;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -8,14 +8,15 @@ import wooteco.subway.domain.fare.AgeDecorator;
 import wooteco.subway.domain.fare.BaseFare;
 import wooteco.subway.domain.fare.DistanceDecorator;
 import wooteco.subway.domain.fare.Fare;
+import wooteco.subway.domain.Path;
+import wooteco.subway.domain.PathFinder;
 import wooteco.subway.exception.NoSuchPathException;
-import wooteco.subway.utils.DefaultWeightedEdgeCustom;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
-public class SubwayGraph implements ShortestPath {
+public class SubwayGraph implements PathFinder {
 
     private final DijkstraShortestPath<Station, DefaultWeightedEdgeCustom> graph;
 

@@ -6,10 +6,10 @@ import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.*;
-import wooteco.subway.domain.path.Path;
-import wooteco.subway.domain.path.PathAdapter;
-import wooteco.subway.domain.path.ShortestPath;
-import wooteco.subway.domain.path.SubwayGraph;
+import wooteco.subway.domain.Path;
+import wooteco.subway.infrastructure.PathAdapter;
+import wooteco.subway.domain.PathFinder;
+import wooteco.subway.infrastructure.SubwayGraph;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.exception.NoSuchLineException;
 import wooteco.subway.exception.NoSuchStationException;
@@ -28,7 +28,7 @@ public class PathService {
     }
 
     public PathResponse findPath(final Long sourceId, final Long targetId, final int age) {
-        ShortestPath subwayGraph = new SubwayGraph(sectionDao.findAll());
+        PathFinder subwayGraph = new SubwayGraph(sectionDao.findAll());
         PathAdapter pathAdapter = new PathAdapter(subwayGraph);
 
         Station sourceStation = stationDao.findById(sourceId)

@@ -6,8 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import wooteco.subway.domain.path.ShortestPath;
-import wooteco.subway.domain.path.SubwayGraph;
+import wooteco.subway.infrastructure.SubwayGraph;
 
 import java.util.List;
 
@@ -50,7 +49,7 @@ class PathTest {
         line1.addSection(section3To5);
 
         //when
-        ShortestPath path = new SubwayGraph(List.of(section1To2, section2To3, section3To5));
+        PathFinder path = new SubwayGraph(List.of(section1To2, section2To3, section3To5));
         List<Station> stations = path.getPath(station1, station5, 0, 50).getStations();
 
         //then
@@ -74,7 +73,7 @@ class PathTest {
         line2.addSection(section4To5);
 
         //when
-        ShortestPath path = new SubwayGraph(List.of(section1To2, section2To3, section3To5, section2To4, section4To5));
+        PathFinder path = new SubwayGraph(List.of(section1To2, section2To3, section3To5, section2To4, section4To5));
         List<Station> stations = path.getPath(station1, station5, 0, 50).getStations();
 
         //then
@@ -102,7 +101,7 @@ class PathTest {
         line3.addSection(section2To5);
 
         //when
-        ShortestPath path = new SubwayGraph(List.of(
+        PathFinder path = new SubwayGraph(List.of(
                 section1To2, section2To3, section3To5,
                 section2To4, section4To5, section2To5));
         List<Station> stations = path.getPath(station1, station5, 0, 50).getStations();
@@ -122,7 +121,7 @@ class PathTest {
         line1.addSection(section2To3);
 
         // when
-        ShortestPath path = new SubwayGraph(List.of(section1To2, section2To3));
+        PathFinder path = new SubwayGraph(List.of(section1To2, section2To3));
         double fare = path.getPath(station1, station3, 0, 50).getFare();
         // then
         assertThat(fare).isEqualTo(1250D);
@@ -139,7 +138,7 @@ class PathTest {
         line1.addSection(section2To3);
 
         // when
-        ShortestPath path = new SubwayGraph(List.of(section1To2, section2To3));
+        PathFinder path = new SubwayGraph(List.of(section1To2, section2To3));
         double fare = path.getPath(station1, station3, 0, 50).getFare();
 
         // then
@@ -158,7 +157,7 @@ class PathTest {
         line1.addSection(section2To3);
 
         // when
-        ShortestPath path = new SubwayGraph(List.of(section1To2, section2To3));
+        PathFinder path = new SubwayGraph(List.of(section1To2, section2To3));
         double fare = path.getPath(station1, station3, 0, 50).getFare();
 
         // then
@@ -180,7 +179,7 @@ class PathTest {
         line2.addSection(section3To4);
 
         // when
-        ShortestPath path = new SubwayGraph(List.of(section1To2, section1To3, section2To4, section3To4));
+        PathFinder path = new SubwayGraph(List.of(section1To2, section1To3, section2To4, section3To4));
         List<Station> stations = path.getPath(station1, station4, 0, 50).getStations();
 
         // then
