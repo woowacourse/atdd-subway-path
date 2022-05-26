@@ -24,8 +24,8 @@ public enum Distance {
 
     public static List<Distance> findByDistance(int distance) {
         return Arrays.stream(Distance.values())
-                .sorted(Comparator.comparingInt(it -> -it.distanceUnit))
                 .filter(it -> it.distanceUnit < distance)
+                .sorted(Comparator.comparingInt(Distance::getDistanceUnit).reversed())
                 .collect(Collectors.toUnmodifiableList());
     }
 
