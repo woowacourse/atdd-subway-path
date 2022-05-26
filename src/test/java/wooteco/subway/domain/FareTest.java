@@ -195,4 +195,46 @@ public class FareTest {
         // then
         assertThat(actual.getValue()).isEqualTo(expected);
     }
+
+    @ParameterizedTest
+    @DisplayName("요금을 더한다.")
+    @CsvSource(value = {"100:10:110", "5800:300:6100"}, delimiter = ':')
+    void Add(final int originFareValue, final int addFareValue, final int expectedFareValue) {
+        // given
+        final Fare originFare = new Fare(originFareValue);
+
+        // when
+        Fare actual = originFare.add(addFareValue);
+
+        // then
+        assertThat(actual.getValue()).isEqualTo(expectedFareValue);
+    }
+
+    @ParameterizedTest
+    @DisplayName("요금을 뺀다.")
+    @CsvSource(value = {"100:10:90", "5800:300:5500"}, delimiter = ':')
+    void Minus(final int originFareValue, final int minusFareValue, final int expectedFareValue) {
+        // given
+        final Fare originFare = new Fare(originFareValue);
+
+        // when
+        Fare actual = originFare.minus(minusFareValue);
+
+        // then
+        assertThat(actual.getValue()).isEqualTo(expectedFareValue);
+    }
+
+    @ParameterizedTest
+    @DisplayName("요금을 할인한다.")
+    @CsvSource(value = {"1000:20:800", "6000:30:4200"}, delimiter = ':')
+    void Discount(final int originFareValue, final int discountPercent, final int expectedFareValue) {
+        // given
+        final Fare originFare = new Fare(originFareValue);
+
+        // when
+        Fare actual = originFare.discount(discountPercent);
+
+        // then
+        assertThat(actual.getValue()).isEqualTo(expectedFareValue);
+    }
 }
