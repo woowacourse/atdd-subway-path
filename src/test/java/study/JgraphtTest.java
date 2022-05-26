@@ -78,6 +78,7 @@ public class JgraphtTest {
     }
 
     @Test
+    @DisplayName("커스텀한 객체를 전달받아 최단 경로를 구하고 총 거리를 구할 수 있다.")
     void test() {
         Station 강남역 = new Station(1L, "강남역");
         Station 선릉역 = new Station(2L, "선릉역");
