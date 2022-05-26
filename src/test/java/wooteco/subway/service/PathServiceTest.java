@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.section.Line;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Station;
 import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.respones.PathResponse;
 import wooteco.subway.reopository.LineRepository;
@@ -45,7 +45,7 @@ class PathServiceTest {
         Station 미르역 = new Station("미르역");
         Station 호호역 = new Station("호호역");
         Station 수달역 = new Station("수달역");
-        Line 우테코노선 = new Line("우테코노선", "노랑");
+        Line 우테코노선 = new Line("우테코노선", "노랑", 0);
         Long 미르역_id = stationRepository.save(미르역);
         Long 호호역_id = stationRepository.save(호호역);
         Long 수달역_id = stationRepository.save(수달역);
@@ -53,12 +53,12 @@ class PathServiceTest {
         미르역 = new Station(미르역_id, "미르역");
         호호역 = new Station(호호역_id, "호호역");
         수달역 = new Station(수달역_id, "수달역");
-        우테코노선 = new Line(노선_id, "우테코노선", "노랑");
+        우테코노선 = new Line(노선_id, "우테코노선", "노랑", 0);
 
         sectionRepository.save(new Section(우테코노선, 미르역, 호호역, 10));
         sectionRepository.save(new Section(우테코노선, 호호역, 수달역, 10));
 
-        PathResponse shortestPath = pathService.createShortestPath(new PathRequest(미르역_id, 수달역_id, 10L));
+        PathResponse shortestPath = pathService.createShortestPath(new PathRequest(미르역_id, 수달역_id, 20));
 
         assertThat(shortestPath.getStations()).hasSize(3);
     }
@@ -69,7 +69,7 @@ class PathServiceTest {
         Station 미르역 = new Station("미르역");
         Station 호호역 = new Station("호호역");
         Station 수달역 = new Station("수달역");
-        Line 우테코노선 = new Line("우테코노선", "노랑");
+        Line 우테코노선 = new Line("우테코노선", "노랑", 0);
 
         Long 미르역_id = stationRepository.save(미르역);
         Long 호호역_id = stationRepository.save(호호역);
@@ -78,12 +78,12 @@ class PathServiceTest {
         미르역 = new Station(미르역_id, "미르역");
         호호역 = new Station(호호역_id, "호호역");
         수달역 = new Station(수달역_id, "수달역");
-        우테코노선 = new Line(노선_id, "우테코노선", "노랑");
+        우테코노선 = new Line(노선_id, "우테코노선", "노랑", 0);
 
         sectionRepository.save(new Section(우테코노선, 미르역, 호호역, 10));
 
         assertThatThrownBy(() ->
-                pathService.createShortestPath(new PathRequest(미르역_id, 수달역_id, 10L)))
+                pathService.createShortestPath(new PathRequest(미르역_id, 수달역_id, 20)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("최단 경로를 요청하신 역이 구간에 존재하지 않습니다.");
     }
@@ -94,7 +94,7 @@ class PathServiceTest {
         Station 미르역 = new Station("미르역");
         Station 호호역 = new Station("호호역");
         Station 수달역 = new Station("수달역");
-        Line 우테코노선 = new Line("우테코노선", "노랑");
+        Line 우테코노선 = new Line("우테코노선", "노랑", 0);
 
         Long 미르역_id = stationRepository.save(미르역);
         Long 호호역_id = stationRepository.save(호호역);
@@ -102,12 +102,12 @@ class PathServiceTest {
         Long 노선_id = lineRepository.save(우테코노선);
         호호역 = new Station(호호역_id, "호호역");
         수달역 = new Station(수달역_id, "수달역");
-        우테코노선 = new Line(노선_id, "우테코노선", "노랑");
+        우테코노선 = new Line(노선_id, "우테코노선", "노랑", 0);
 
         sectionRepository.save(new Section(우테코노선, 수달역, 호호역, 10));
 
         assertThatThrownBy(() ->
-                pathService.createShortestPath(new PathRequest(수달역_id, 미르역_id, 10L)))
+                pathService.createShortestPath(new PathRequest(수달역_id, 미르역_id, 20)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("최단 경로를 요청하신 역이 구간에 존재하지 않습니다.");
     }

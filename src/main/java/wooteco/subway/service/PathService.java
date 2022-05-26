@@ -1,49 +1,70 @@
 package wooteco.subway.service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import org.jgrapht.GraphPath;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
-import wooteco.subway.domain.Fare;
-import wooteco.subway.domain.Path;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
-import wooteco.subway.domain.strategy.BasicFareStrategy;
+import wooteco.subway.domain.fare.Fare;
+import wooteco.subway.domain.fare.strategy.ExtraFareStrategyMapper;
+import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.path.ShortestPathEdge;
+import wooteco.subway.domain.path.strategy.DiscountStrategyMapper;
+import wooteco.subway.domain.section.Line;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Station;
 import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.respones.PathResponse;
+import wooteco.subway.exception.NotFoundException;
+import wooteco.subway.reopository.LineRepository;
 import wooteco.subway.reopository.SectionRepository;
 import wooteco.subway.reopository.StationRepository;
 
 @Service
 public class PathService {
 
-    private static final int BASIC_FARE = 1250;
-
     private final StationRepository stationRepository;
+    private final LineRepository lineRepository;
     private final SectionRepository sectionRepository;
 
-    public PathService(StationRepository stationRepository, SectionRepository sectionRepository) {
+    public PathService(StationRepository stationRepository, LineRepository lineRepository,
+                       SectionRepository sectionRepository) {
         this.stationRepository = stationRepository;
+        this.lineRepository = lineRepository;
         this.sectionRepository = sectionRepository;
     }
 
     public PathResponse createShortestPath(PathRequest pathRequest) {
-        Long source = pathRequest.getSource();
-        Long target = pathRequest.getTarget();
+        Station source = findStation(pathRequest.getSource(), "최단 경로의 상행역을 찾을 수 없습니다.");
+        Station target = findStation(pathRequest.getTarget(), "최단 경로의 하행역을 찾을 수 없습니다.");
 
         List<Section> sections = sectionRepository.findAll();
 
-        Path path = new Path(sections);
-        List<Long> shortestPath = path.createShortestPath(source, target);
+        Path path = new Path(sections, new WeightedMultigraph<>(ShortestPathEdge.class));
+        GraphPath<Station, ShortestPathEdge> shortestPath = path.createShortestPath(source, target);
 
-        List<Station> stations = shortestPath.stream()
-                .map(station -> stationRepository.findById(station, "해당 역을 찾을 수 없음"))
-                .collect(Collectors.toList());
+        int distance = (int) shortestPath.getWeight();
+        Fare fare = new Fare(ExtraFareStrategyMapper.findExtraFareStrategy(distance),
+                DiscountStrategyMapper.findDiscountStrategy(pathRequest.getAge()));
 
-        int distance = path.calculateDistance(source, target);
-        Fare fare = new Fare(BASIC_FARE);
+        int lineExtraFare = fare.calculateMaxLineExtraFare(findLine(shortestPath.getEdgeList()));
+        return new PathResponse(shortestPath.getVertexList(), distance,
+                fare.calculateFare(distance, lineExtraFare));
+    }
 
-        return new PathResponse(stations, distance,
-                fare.calculateFare(distance, new BasicFareStrategy()));
+    private Station findStation(Long id, String message) {
+        return stationRepository
+                .findById(id)
+                .orElseThrow(() -> new NotFoundException(message));
+    }
+
+    private List<Line> findLine(List<ShortestPathEdge> edges) {
+        List<Line> lines = new ArrayList<>();
+        for (ShortestPathEdge edge : edges) {
+            lines.add(lineRepository.findById(edge.getLineId())
+                    .orElseThrow(() -> new NotFoundException("노선을 찾을 수 없습니다.")));
+        }
+        return lines;
     }
 }
 

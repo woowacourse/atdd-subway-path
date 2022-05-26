@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.section;
 
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -13,7 +13,7 @@ class SectionTest {
     @Test
     void create() {
         // given
-        Line line = new Line("우테코노선", "황금색");
+        Line line = new Line("우테코노선", "황금색", 0);
         Station 수달역 = new Station("수달역");
         Station 토미역 = new Station("토미역");
         int distance = 100;
@@ -26,7 +26,7 @@ class SectionTest {
     @Test
     void createFalseDistance() {
         // given
-        Line line = new Line("우테코노선", "황금색");
+        Line line = new Line("우테코노선", "황금색", 0);
         Station 수달역 = new Station("수달역");
         Station 토미역 = new Station("토미역");
         int distance = -1;
@@ -41,7 +41,7 @@ class SectionTest {
     @Test
     void splitFromUpStationFalse() {
         // given
-        Line line = new Line("우테코노선", "황금색");
+        Line line = new Line("우테코노선", "황금색", 0);
         Station 수달역 = new Station("수달역");
         Station 토미역 = new Station("토미역");
         Station 브리역 = new Station("브리역");
@@ -59,7 +59,7 @@ class SectionTest {
     @Test
     void splitFromDownStationFalse() {
         // given
-        Line line = new Line("우테코노선", "황금색");
+        Line line = new Line("우테코노선", "황금색", 0);
         Station 수달역 = new Station("수달역");
         Station 토미역 = new Station("토미역");
         Station 브리역 = new Station("브리역");
@@ -77,7 +77,7 @@ class SectionTest {
     @Test
     void isSameUpStation() {
         // given
-        Line line = new Line("우테코노선", "황금색");
+        Line line = new Line("우테코노선", "황금색", 0);
         Station 수달역 = new Station("수달역");
         Station 토미역 = new Station("토미역");
         Station 브리역 = new Station("브리역");
@@ -92,7 +92,7 @@ class SectionTest {
     @Test
     void isSameDownStation() {
         // given
-        Line line = new Line("우테코노선", "황금색");
+        Line line = new Line("우테코노선", "황금색", 0);
         Station 수달역 = new Station("수달역");
         Station 토미역 = new Station("토미역");
         Station 브리역 = new Station("브리역");

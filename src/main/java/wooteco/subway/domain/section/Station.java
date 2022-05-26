@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.section;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -52,11 +52,11 @@ public class Station {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Station)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
         Station station = (Station) o;
-        return Objects.equals(id, station.id) && Objects.equals(name, station.name);
+        return name.equals(station.name);
     }
 
     @Override

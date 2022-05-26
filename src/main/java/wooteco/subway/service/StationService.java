@@ -3,7 +3,7 @@ package wooteco.subway.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.section.Station;
 import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.respones.StationResponse;
 import wooteco.subway.exception.BadRequestException;

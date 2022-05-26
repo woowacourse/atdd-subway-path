@@ -3,9 +3,9 @@ package wooteco.subway.reopository;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Repository;
-import wooteco.subway.domain.Station;
-import wooteco.subway.exception.NotFoundException;
+import wooteco.subway.domain.section.Station;
 import wooteco.subway.reopository.dao.StationDao;
 import wooteco.subway.reopository.entity.StationEntity;
 
@@ -22,15 +22,16 @@ public class StationRepository {
         return stationDao.save(new StationEntity(station.getName()));
     }
 
-    public Station findById(Long id, String errorMessage) {
-        StationEntity stationEntity = stationDao.findById(id)
-                .orElseThrow(() -> new NotFoundException(errorMessage));
-        return new Station(stationEntity.getId(), stationEntity.getName());
+    public Optional<Station> findById(Long id) {
+        return stationDao.findById(id)
+                .map(entity -> new Station(entity.getId(), entity.getName()));
     }
 
     public List<Station> findAll() {
         List<StationEntity> list = stationDao.findAll();
-        return list.stream().map(entity -> new Station(entity.getId(), entity.getName())).collect(toList());
+        return list.stream()
+                .map(entity -> new Station(entity.getId(), entity.getName()))
+                .collect(toList());
     }
 
     public void deleteById(Long id) {

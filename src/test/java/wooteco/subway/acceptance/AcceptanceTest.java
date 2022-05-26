@@ -21,5 +21,7 @@ public class AcceptanceTest {
         RestAssured.port = port;
         jdbcTemplate.update("delete from line");
         jdbcTemplate.update("delete from station");
+        jdbcTemplate.update("delete from section");
     }
 }
+

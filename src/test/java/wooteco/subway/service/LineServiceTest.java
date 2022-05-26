@@ -10,12 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.section.Line;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Station;
 import wooteco.subway.dto.LineRequest;
-import wooteco.subway.dto.respones.LineResponse;
 import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.dto.respones.LineResponse;
+import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.reopository.LineRepository;
 import wooteco.subway.reopository.SectionRepository;
 import wooteco.subway.reopository.StationRepository;
@@ -47,7 +48,7 @@ class LineServiceTest {
         // given
         Long 미르역 = stationRepository.save(new Station("미르역"));
         Station 없는역 = new Station(100L, "없는역");
-        Long 우테코노선 = lineRepository.save(new Line("우테코노선", "노랑"));
+        Long 우테코노선 = lineRepository.save(new Line("우테코노선", "노랑", 0));
 
         // when, then
         Assertions.assertThatIllegalArgumentException()
@@ -62,10 +63,10 @@ class LineServiceTest {
         Long 미르역 = stationRepository.save(new Station("미르역"));
         Long 수달역 = stationRepository.save(new Station("수달역"));
         Long 호호역 = stationRepository.save(new Station("호호역"));
-        Line 우테코노선 = new Line("우테코노선", "노랑");
+        Line 우테코노선 = new Line("우테코노선", "노랑", 0);
 
         LineResponse lineResponse = lineService.create(
-                new LineRequest(우테코노선.getName(), 우테코노선.getColor(), 미르역, 수달역, 100));
+                new LineRequest(우테코노선.getName(), 미르역, 수달역, 100, 0, 우테코노선.getColor()));
         // when
         lineService.createSection(lineResponse.getId(),
                 new SectionRequest(호호역, 미르역, 100));
@@ -81,9 +82,9 @@ class LineServiceTest {
         Long 미르역 = stationRepository.save(new Station("미르역"));
         Long 수달역 = stationRepository.save(new Station("수달역"));
         Long 호호역 = stationRepository.save(new Station("호호역"));
-        Line 우테코노선 = new Line("우테코노선", "노랑");
+        Line 우테코노선 = new Line("우테코노선", "노랑", 0);
 
-        LineRequest request = new LineRequest(우테코노선.getName(), 우테코노선.getColor(), 미르역, 수달역, 100);
+        LineRequest request = new LineRequest(우테코노선.getName(), 미르역, 수달역, 100, 0, 우테코노선.getColor());
 
         LineResponse lineResponse = lineService.create(request);
         // when
@@ -100,9 +101,9 @@ class LineServiceTest {
         Long 미르역 = stationRepository.save(new Station("미르역"));
         Long 수달역 = stationRepository.save(new Station("수달역"));
         Long 호호역 = stationRepository.save(new Station("호호역"));
-        Line 우테코노선 = new Line("우테코노선", "노랑");
+        Line 우테코노선 = new Line("우테코노선", "노랑", 0);
 
-        LineRequest request = new LineRequest(우테코노선.getName(), 우테코노선.getColor(), 미르역, 수달역, 100);
+        LineRequest request = new LineRequest(우테코노선.getName(), 미르역, 수달역, 100, 0, 우테코노선.getColor());
         LineResponse lineResponse = lineService.create(request);
         // when
         lineService.createSection(lineResponse.getId(),
@@ -122,10 +123,12 @@ class LineServiceTest {
         Long 양재 = stationRepository.save(new Station("양재"));
         Long 광교 = stationRepository.save(new Station("광교"));
         Long 판교 = stationRepository.save(new Station("판교"));
-        Long 신분당선 = lineRepository.save(new Line("신분당선", "red"));
-        sectionRepository.save(
-                new Section(lineRepository.findById(신분당선, "노선 못찾음"), stationRepository.findById(강남, "역 못찾음"),
-                        stationRepository.findById(광교, "역 못찾음"), 10));
+        Long 신분당선 = lineRepository.save(new Line("신분당선", "red", 0));
+        Line 신분당선노선 = lineRepository.findById(신분당선).orElseThrow(() -> new NotFoundException("노선 못찾음"));
+        Station 강남역 = stationRepository.findById(강남).orElseThrow(() -> new NotFoundException("역 못찾음"));
+        Station 광교역 = stationRepository.findById(광교).orElseThrow(() -> new NotFoundException("역 못찾음"));
+
+        sectionRepository.save(new Section(신분당선노선, 강남역, 광교역, 10));
         SectionRequest sectionRequest1 = new SectionRequest(강남, 양재, 4);
         lineService.createSection(신분당선, sectionRequest1);
 
@@ -133,8 +136,11 @@ class LineServiceTest {
         lineService.createSection(신분당선, sectionRequest2);
 
         List<Section> sections = sectionRepository.findByLineId(신분당선);
-        Section 구간2 = findSectionEntity(stationRepository.findById(양재, "역 못찾음"), sections);
-        Section 구간3 = findSectionEntity(stationRepository.findById(판교, "역 못찾음"), sections);
+        Station 양재역 = stationRepository.findById(양재).orElseThrow(() -> new NotFoundException("역 못찾음"));
+        Station 판교역 = stationRepository.findById(판교).orElseThrow(() -> new NotFoundException("역 못찾음"));
+
+        Section 구간2 = findSectionEntity(양재역, sections);
+        Section 구간3 = findSectionEntity(판교역, sections);
         assertThat(구간2.getDownStation().getId()).isEqualTo(판교);
         assertThat(구간2.getDistance()).isEqualTo(4);
         assertThat(구간3.getDownStation().getId()).isEqualTo(광교);
@@ -154,7 +160,7 @@ class LineServiceTest {
         Long 미르역 = stationRepository.save(new Station("미르역"));
         Long 수달역 = stationRepository.save(new Station("수달역"));
         Long 호호역 = stationRepository.save(new Station("호호역"));
-        Line 우테코노선 = new Line("우테코노선", "노랑");
+        Line 우테코노선 = new Line("우테코노선", "노랑", 0);
         LineResponse lineResponse = createTwoSection(미르역, 수달역, 호호역, 우테코노선);
 
         // when
@@ -171,7 +177,7 @@ class LineServiceTest {
         Long 미르역 = stationRepository.save(new Station("미르역"));
         Long 수달역 = stationRepository.save(new Station("수달역"));
         Long 호호역 = stationRepository.save(new Station("호호역"));
-        Line 우테코노선 = new Line("우테코노선", "노랑");
+        Line 우테코노선 = new Line("우테코노선", "노랑", 0);
         LineResponse lineResponse = createTwoSection(미르역, 수달역, 호호역, 우테코노선);
 
         // when
@@ -190,7 +196,7 @@ class LineServiceTest {
         Long 미르역 = stationRepository.save(new Station("미르역"));
         Long 수달역 = stationRepository.save(new Station("수달역"));
         Long 호호역 = stationRepository.save(new Station("호호역"));
-        Line 우테코노선 = new Line("우테코노선", "노랑");
+        Line 우테코노선 = new Line("우테코노선", "노랑", 0);
         LineResponse lineResponse = createTwoSection(미르역, 수달역, 호호역, 우테코노선);
 
         // when
@@ -204,7 +210,7 @@ class LineServiceTest {
     }
 
     private LineResponse createTwoSection(Long 미르역, Long 수달역, Long 호호역, Line 우테코노선) {
-        LineRequest request = new LineRequest(우테코노선.getName(), 우테코노선.getColor(), 미르역, 수달역, 100);
+        LineRequest request = new LineRequest(우테코노선.getName(), 미르역, 수달역, 100, 0, 우테코노선.getColor());
         LineResponse lineResponse = lineService.create(request);
         lineService.createSection(lineResponse.getId(),
                 new SectionRequest(미르역, 호호역, 40));

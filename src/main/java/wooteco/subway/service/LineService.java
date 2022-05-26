@@ -3,15 +3,16 @@ package wooteco.subway.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.section.Line;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Sections;
+import wooteco.subway.domain.section.Station;
 import wooteco.subway.dto.LineRequest;
-import wooteco.subway.dto.respones.LineResponse;
 import wooteco.subway.dto.LineUpdateRequest;
 import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.dto.respones.LineResponse;
 import wooteco.subway.exception.BadRequestException;
+import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.reopository.LineRepository;
 import wooteco.subway.reopository.SectionRepository;
 import wooteco.subway.reopository.StationRepository;
@@ -40,12 +41,12 @@ public class LineService {
     }
 
     public LineResponse create(LineRequest lineRequest) {
-        Line line = new Line(lineRequest.getName(), lineRequest.getColor());
+        Line line = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         validateDuplicateNameAndColor(line.getName(), line.getColor());
 
         Station upStation = findStation(lineRequest.getUpStationId(), "조회하려는 상행역이 없습니다.");
         Station downStation = findStation(lineRequest.getDownStationId(), "조회하려는 하행역이 없습니다.");
-        line = new Line(lineRepository.save(line), line.getName(), line.getColor());
+        line = new Line(lineRepository.save(line), line.getName(), line.getColor(), line.getExtraFare());
         sectionRepository.save(new Section(line, upStation, downStation, lineRequest.getDistance()));
         return LineResponse.of(line, List.of(upStation, downStation));
     }
@@ -126,11 +127,13 @@ public class LineService {
     }
 
     private Line findLine(Long id) {
-        return lineRepository.findById(id, NOT_FOUNT_ID_ERROR_MESSAGE);
+        return lineRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUNT_ID_ERROR_MESSAGE));
     }
 
     private Station findStation(Long stationId, String errorMessage) {
-        return stationRepository.findById(stationId, errorMessage);
+        return stationRepository.findById(stationId)
+                .orElseThrow(() -> new NotFoundException(errorMessage));
     }
 
     private List<Station> getStations(Long lineId) {

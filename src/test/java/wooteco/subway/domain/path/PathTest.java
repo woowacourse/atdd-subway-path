@@ -1,11 +1,16 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import org.assertj.core.api.Assertions;
+import org.jgrapht.GraphPath;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.section.Line;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Station;
 
 class PathTest {
 
@@ -13,7 +18,7 @@ class PathTest {
     @Test
     void createShortestPath() {
         // given
-        Line 일호선 = new Line(1L, "1호선", "blue");
+        Line 일호선 = new Line(1L, "1호선", "blue", 0);
         Station 강남역 = new Station(1L, "강남역");
         Station 역삼역 = new Station(2L, "역삼역");
         Station 삼성역 = new Station(3L, "삼성역");
@@ -21,17 +26,17 @@ class PathTest {
         List<Section> list = List.of(new Section(1L, 일호선, 강남역, 역삼역, 10),
                 new Section(1L, 일호선, 역삼역, 삼성역, 10), new Section(1L, 일호선, 삼성역, 양재역, 10));
         // when
-        Path path = new Path(list);
+        Path path = new Path(list, new WeightedMultigraph<>(ShortestPathEdge.class));
         // then
-        List<Long> result = path.createShortestPath(강남역.getId(), 삼성역.getId());
-        assertThat(result).containsExactly(1L, 2L, 3L);
+        GraphPath<Station, ShortestPathEdge> shortestPath = path.createShortestPath(강남역, 삼성역);
+        assertThat(shortestPath.getVertexList()).containsExactly(강남역, 역삼역, 삼성역);
     }
 
     @DisplayName("구간이 없는 역에 대해 최단 경로를 조회시 에러가 발생한다.")
     @Test
     void createShortestPathFalse() {
         // given
-        Line 일호선 = new Line(1L, "1호선", "blue");
+        Line 일호선 = new Line(1L, "1호선", "blue", 0);
         Station 강남역 = new Station(1L, "강남역");
         Station 역삼역 = new Station(2L, "역삼역");
         Station 삼성역 = new Station(3L, "삼성역");
@@ -39,10 +44,10 @@ class PathTest {
         List<Section> list = List.of(new Section(1L, 일호선, 강남역, 역삼역, 10),
                 new Section(1L, 일호선, 역삼역, 삼성역, 10));
         // when
-        Path path = new Path(list);
+        Path path = new Path(list, new WeightedMultigraph<>(ShortestPathEdge.class));
         // then
         Assertions.assertThatIllegalArgumentException()
-                .isThrownBy(() -> path.createShortestPath(강남역.getId(), 양재역.getId()))
+                .isThrownBy(() -> path.createShortestPath(강남역, 양재역))
                 .withMessage("최단 경로를 요청하신 역이 구간에 존재하지 않습니다.");
     }
 
@@ -50,7 +55,7 @@ class PathTest {
     @Test
     void calculateDistance() {
         // given
-        Line 일호선 = new Line(1L, "1호선", "blue");
+        Line 일호선 = new Line(1L, "1호선", "blue", 0);
         Station 강남역 = new Station(1L, "강남역");
         Station 역삼역 = new Station(2L, "역삼역");
         Station 삼성역 = new Station(3L, "삼성역");
@@ -58,10 +63,10 @@ class PathTest {
         List<Section> list = List.of(new Section(1L, 일호선, 강남역, 역삼역, 10),
                 new Section(1L, 일호선, 역삼역, 삼성역, 10), new Section(1L, 일호선, 삼성역, 양재역, 10));
         // when
-        Path path = new Path(list);
+        Path path = new Path(list, new WeightedMultigraph<>(ShortestPathEdge.class));
         // then
-        int result = path.calculateDistance(강남역.getId(), 삼성역.getId());
-        assertThat(result).isEqualTo(20);
+        GraphPath<Station, ShortestPathEdge> shortestPath = path.createShortestPath(강남역, 삼성역);
+        assertThat(shortestPath.getWeight()).isEqualTo(20);
     }
 
 }

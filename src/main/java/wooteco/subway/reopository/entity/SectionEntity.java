@@ -1,6 +1,6 @@
 package wooteco.subway.reopository.entity;
 
-import wooteco.subway.domain.Section;
+import wooteco.subway.domain.section.Section;
 
 public class SectionEntity {
     private Long id;

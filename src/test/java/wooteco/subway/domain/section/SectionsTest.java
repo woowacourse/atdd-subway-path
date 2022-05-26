@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.section;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,7 +21,7 @@ class SectionsTest {
     }
 
     private List<Section> getSections() {
-        Line line = new Line("2호선", "green");
+        Line line = new Line("2호선", "green", 0);
         return List.of(
                 new Section(line, new Station(1L, "강남"), new Station(2L, "삼성"), 12),
                 new Section(line, new Station(2L, "삼성"), new Station(3L, "성수"), 12),

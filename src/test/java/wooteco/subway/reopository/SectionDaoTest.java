@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.section.Line;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Station;
 import wooteco.subway.reopository.dao.LineDao;
 import wooteco.subway.reopository.dao.SectionDao;
 import wooteco.subway.reopository.dao.StationDao;
@@ -33,7 +33,7 @@ public class SectionDaoTest {
     @Test
     void save() {
         // given
-        Line 일호선 = new Line(1L, "1호선", "green");
+        Line 일호선 = new Line(1L, "1호선", "green", 0);
         Station 그린론역 = new Station(1L, "그린론역");
         Station 토미역 = new Station(2L, "토미역");
         Section saveSection = new Section(일호선, 그린론역, 토미역, 10);
@@ -48,7 +48,7 @@ public class SectionDaoTest {
     @DisplayName("라인 Id로 구간들을 찾아온다.")
     @Test
     void findByLineId() {
-        Line 일호선 = new Line("1호선", "green");
+        Line 일호선 = new Line("1호선", "green", 0);
         Station 그린론역 = new Station(1L, "그린론역");
         Station 토미역 = new Station(2L, "토미역");
         Station 수달역 = new Station(3L, "수달역");
@@ -58,7 +58,7 @@ public class SectionDaoTest {
         Long 수달역_id = stationRepository.save(수달역);
         Long 일호선_id = lineRepository.save(일호선);
 
-        일호선 = new Line(일호선_id, "1호선", "green");
+        일호선 = new Line(일호선_id, "1호선", "green", 0);
         그린론역 = new Station(그린론_id, "그린론역");
         토미역 = new Station(토미_id, "토미역");
         수달역 = new Station(수달역_id, "수달역");
@@ -74,7 +74,7 @@ public class SectionDaoTest {
     @DisplayName("구간을 변경한다.")
     @Test
     void update() {
-        Line 일호선 = new Line("1호선", "green");
+        Line 일호선 = new Line("1호선", "green", 0);
         Station 그린론역 = new Station("그린론역");
         Station 토미역 = new Station("토미역");
         Station 수달역 = new Station("수달역");
@@ -84,7 +84,7 @@ public class SectionDaoTest {
         Long 수달역_id = stationRepository.save(수달역);
         Long 일호선_id = lineRepository.save(일호선);
 
-        일호선 = new Line(일호선_id, "1호선", "green");
+        일호선 = new Line(일호선_id, "1호선", "green", 0);
         그린론역 = new Station(그린론_id, "그린론역");
         토미역 = new Station(토미_id, "토미역");
         수달역 = new Station(수달역_id, "수달역");
@@ -101,7 +101,7 @@ public class SectionDaoTest {
     @DisplayName("구간을 삭제한다.")
     @Test
     void delete() {
-        Line 일호선 = new Line(1L, "1호선", "green");
+        Line 일호선 = new Line(1L, "1호선", "green", 0);
         Station 그린론역 = new Station(1L, "그린론역");
         Station 토미역 = new Station(2L, "토미역");
         Station 수달역 = new Station(3L, "수달역");
