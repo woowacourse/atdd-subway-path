@@ -3,6 +3,7 @@ package wooteco.subway.domain.path;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import wooteco.subway.domain.Age;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Id;
 import wooteco.subway.domain.line.Line;
@@ -26,10 +27,10 @@ public class Path {
         this(path, passedLines, new Distance(distance));
     }
 
-    public Fare calculateFare() {
-        long fare = DistanceFarePolicy.calculateByPolicy(distance.getDistance());
-        fare += calculateMaximumExtraFare();
-        return new Fare(fare);
+    public Fare calculateFare(Age age) {
+        long fare = DistanceFarePolicy.calculateByPolicy(distance.getDistance()) + calculateMaximumExtraFare();
+        long discountedFare = AgeDiscountPolicy.calculateByPolicy(fare, age);
+        return new Fare(discountedFare);
     }
 
     private long calculateMaximumExtraFare() {

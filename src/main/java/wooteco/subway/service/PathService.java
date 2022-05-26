@@ -5,6 +5,7 @@ import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import wooteco.subway.domain.Age;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.graph.SubwayGraph;
@@ -32,12 +33,11 @@ public class PathService {
 
     public PathResponse findPath(PathRequest pathRequest) {
         validateStationsExist(pathRequest);
-
         Path shortestPath = subwayGraph.calculateShortestPath(
                 responseAssembler.lines(lineService.findAll()),
                 pathRequest.getSourceStationId(), pathRequest.getTargetStationId());
 
-        Fare fare = shortestPath.calculateFare();
+        Fare fare = shortestPath.calculateFare(new Age(pathRequest.getAge()));
         return responseAssembler.pathResponse(shortestPath, fare);
     }
 

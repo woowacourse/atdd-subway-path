@@ -9,10 +9,13 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import wooteco.subway.domain.Age;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.line.Line;
 
 class PathTest {
+
+    private static final long ADULT_AGE = 60;
 
     @DisplayName("거쳐온 노선 중 가장 높은 금액의 추가 요금을 구한다.")
     @Test
@@ -22,7 +25,7 @@ class PathTest {
                 new Line(List.of(강남_역삼), "2호선", "green", 100)
         ), 10);
 
-        Fare actual = path.calculateFare();
+        Fare actual = path.calculateFare(new Age(ADULT_AGE));
         assertThat(actual.getFare()).isEqualTo(10000 + 1250);
     }
 }

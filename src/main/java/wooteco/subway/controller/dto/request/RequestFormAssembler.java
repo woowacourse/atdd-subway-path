@@ -39,6 +39,6 @@ public class RequestFormAssembler {
     }
 
     public PathRequest pathRequest(PathRequestForm pathRequestForm) {
-        return new PathRequest(pathRequestForm.getSource(), pathRequestForm.getTarget());
+        return new PathRequest(pathRequestForm.getSource(), pathRequestForm.getTarget(), pathRequestForm.getAge());
     }
 }

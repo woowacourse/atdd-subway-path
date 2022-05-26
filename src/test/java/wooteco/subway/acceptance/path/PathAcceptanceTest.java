@@ -47,11 +47,9 @@ class PathAcceptanceTest extends AcceptanceTest {
         lineRequestHandler.createLine(createParamsOfLine("3호선", "blue", middleStationId, downStationId, 10));
 
         // when
-        ExtractableResponse<Response> response = pathRequestHandler.findPath(upStationId, downStationId);
+        ExtractableResponse<Response> response = pathRequestHandler.findPath(upStationId, downStationId, 15);
 
         // then
-        assertAll(() -> {
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        });
+        assertAll(() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()));
     }
 }

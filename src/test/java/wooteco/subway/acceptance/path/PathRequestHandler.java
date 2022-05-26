@@ -8,7 +8,7 @@ public class PathRequestHandler {
 
     private final RequestHandler requestHandler = new RequestHandler();
 
-    public ExtractableResponse<Response> findPath(long source, long target) {
-        return requestHandler.getRequest(String.format("/paths?source=%d&target=%d", source, target));
+    public ExtractableResponse<Response> findPath(long source, long target, long age) {
+        return requestHandler.getRequest(String.format("/paths?source=%d&target=%d&age=%d", source, target, age));
     }
 }
