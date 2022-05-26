@@ -34,3 +34,10 @@
 - [x] 경로 조회 프로세스 책임 분리
 - [x] 접근 제한자 확인 및 final 선언
 - [x] Fake 객체를 이용 -> test DB로 이전
+- [ ] fare + test 가독성 높이는 방향으로 수정
+- [ ] exception -> state code 별로 구분
+- [ ] LineService Test 상수 전체 적용 및 검증부 수정
+- [ ] FareBy test 예외 케이스 추가
+- [ ] Path 에서 fare 분리
+- [ ] PathFinder -> source == target 일 때, 예외 처리
+- [ ] PathFinder test 검증부 station 모두 검증하도록 수정
