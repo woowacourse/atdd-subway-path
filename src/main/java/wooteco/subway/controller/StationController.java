@@ -2,9 +2,9 @@ package wooteco.subway.controller;
 
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.springframework.http.MediaType;
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,9 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.controller.dto.StationRequest;
-import wooteco.subway.controller.dto.StationResponse;
-import wooteco.subway.domain.Station;
 import wooteco.subway.service.StationService;
+import wooteco.subway.service.dto.StationResponse;
 
 @RestController
 @RequestMapping("/stations")
@@ -30,18 +29,15 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
-        Station station = stationService.create(stationRequest.getName());
-        return ResponseEntity.created(URI.create("/stations/" + station.getId()))
-            .body(StationResponse.from(station));
+    public ResponseEntity<StationResponse> createStation(@RequestBody @Valid StationRequest stationRequest) {
+        StationResponse stationResponse = stationService.create(stationRequest.getName());
+        return ResponseEntity.created(URI.create("/stations/" + stationResponse.getId()))
+            .body(stationResponse);
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public ResponseEntity<List<StationResponse>> showStations() {
-        List<StationResponse> stationResponses = stationService.findAllStations().stream()
-            .map(StationResponse::from)
-            .collect(Collectors.toList());
-        return ResponseEntity.ok().body(stationResponses);
+        return ResponseEntity.ok().body(stationService.findAllStations());
     }
 
     @DeleteMapping("/{stationId}")

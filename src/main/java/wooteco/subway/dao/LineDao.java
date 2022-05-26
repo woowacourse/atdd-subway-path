@@ -42,10 +42,10 @@ public class LineDao {
 
     private RowMapper<LineTable> getLineMapper() {
         return ((rs, rowNum) -> new LineTable(
-            rs.getLong(1),
-            rs.getString(2),
-            rs.getString(3)
-        ));
+            rs.getLong("id"),
+            rs.getString("name"),
+            rs.getString("color"),
+            rs.getInt("extraFare")));
     }
 
     public LineTable findById(Long id) {
@@ -60,7 +60,8 @@ public class LineDao {
     public void update(LineTable line) {
         String sql = "update line set "
             + "name = :name, "
-            + "color = :color "
+            + "color = :color, "
+            + "extraFare = :extraFare "
             + "where id = :id";
         if (jdbcTemplate.update(sql, new BeanPropertySqlParameterSource(line)) == 0) {
             throw new NoSuchElementException(NO_SUCH_ID_ERROR);

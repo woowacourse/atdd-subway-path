@@ -1,15 +1,21 @@
 package wooteco.subway.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import wooteco.subway.controller.dto.LineRequest;
+import wooteco.subway.controller.dto.SectionRequest;
 import wooteco.subway.dao.repository.LineRepository;
 import wooteco.subway.dao.repository.SectionRepository;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.SectionsDirtyChecker;
+import wooteco.subway.domain.Station;
+import wooteco.subway.service.dto.LineDto;
+import wooteco.subway.service.dto.StationResponse;
 
 @Service
 @Transactional(readOnly = true)
@@ -17,17 +23,33 @@ public class LineService {
 
     private final LineRepository lineRepository;
     private final SectionRepository sectionRepository;
+    private final StationService stationService;
 
-    public LineService(LineRepository lineRepository, SectionRepository sectionRepository) {
+    public LineService(LineRepository lineRepository, SectionRepository sectionRepository,
+        StationService stationService) {
         this.lineRepository = lineRepository;
         this.sectionRepository = sectionRepository;
+        this.stationService = stationService;
     }
 
     @Transactional
-    public Line create(String name, String color, Section section) {
-        validateNameNotDuplicated(name);
-        Long lineId = lineRepository.save(new Line(name, color, List.of(section)));
-        return lineRepository.findById(lineId);
+    public LineDto create(LineRequest lineRequest) {
+        validateNameNotDuplicated(lineRequest.getName());
+        Line newLine = new Line(lineRequest.getName(), lineRequest.getColor(),
+            lineRequest.getExtraFare(), List.of(getSection(lineRequest.toSectionRequest())));
+        Long lineId = lineRepository.save(newLine);
+        return LineDto.from(lineRepository.findById(lineId));
+    }
+
+    private Section getSection(SectionRequest sectionRequest) {
+        Station upStation = getStation(sectionRequest.getUpStationId());
+        Station downStation = getStation(sectionRequest.getDownStationId());
+        return new Section(upStation, downStation, sectionRequest.getDistance());
+    }
+
+    private Station getStation(Long stationId) {
+        StationResponse stationResponse = stationService.findOne(stationId);
+        return new Station(stationResponse.getId(), stationResponse.getName());
     }
 
     private void validateNameNotDuplicated(String name) {
@@ -36,16 +58,18 @@ public class LineService {
         }
     }
 
-    public List<Line> listLines() {
-        return lineRepository.findAll();
+    public List<LineDto> listLines() {
+        return lineRepository.findAll().stream()
+            .map(LineDto::from)
+            .collect(Collectors.toList());
     }
 
-    public Line findOne(Long id) {
-        return lineRepository.findById(id);
+    public LineDto findOne(Long id) {
+        return LineDto.from(lineRepository.findById(id));
     }
 
     @Transactional
-    public Line update(Line line) {
+    public LineDto update(Line line) {
         lineRepository.update(line);
         return findOne(line.getId());
     }
@@ -56,11 +80,11 @@ public class LineService {
     }
 
     @Transactional
-    public void addSection(Long id, Section section) {
+    public void addSection(Long id, SectionRequest sectionRequest) {
         Line line = lineRepository.findById(id);
         SectionsDirtyChecker checker = SectionsDirtyChecker.from(line.getSections());
 
-        line.addSection(section);
+        line.addSection(getSection(sectionRequest));
 
         executeDirtyChecking(id, line, checker);
     }

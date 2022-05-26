@@ -48,7 +48,7 @@ class SectionRepositoryTest {
         upStation = new Station(upStationId, "강남역");
         downStation = new Station(downStationId, "역삼역");
         section = new Section(upStation, downStation, 10);
-        lineId = lineRepository.save(new Line(0L, "2호선", "red"));
+        lineId = lineRepository.save(new Line(0L, "2호선", "red", 200));
     }
 
     @DisplayName("지하철 구간을 저장한다.")
@@ -115,7 +115,7 @@ class SectionRepositoryTest {
     @Test
     void removeFailBySection() {
         Section section = new Section(upStation, downStation, 10);
-        lineRepository.save(new Line("신분당선", "red", List.of(section)));
+        lineRepository.save(new Line("신분당선", "red", 1000, List.of(section)));
         assertAll(
             () -> assertThat(
                 sectionRepository.existByStation(upStation.getId())).isTrue(),

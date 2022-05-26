@@ -1,10 +1,8 @@
-package wooteco.subway.controller.dto;
+package wooteco.subway.exception;
 
 public class ExceptionResponse {
-    private String message;
 
-    public ExceptionResponse() {
-    }
+    private final String message;
 
     public ExceptionResponse(String message) {
         this.message = message;

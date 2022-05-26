@@ -1,6 +1,7 @@
 package wooteco.subway.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.dao.repository.SectionRepository;
 import wooteco.subway.domain.Station;
+import wooteco.subway.service.dto.StationResponse;
 
 @Service
 @Transactional(readOnly = true)
@@ -22,10 +24,10 @@ public class StationService {
     }
 
     @Transactional
-    public Station create(String name) {
+    public StationResponse create(String name) {
         validateNameNotDuplicated(name);
         Long stationId = stationDao.save(new Station(name));
-        return stationDao.findById(stationId);
+        return StationResponse.from(stationDao.findById(stationId));
     }
 
     private void validateNameNotDuplicated(String name) {
@@ -34,8 +36,10 @@ public class StationService {
         }
     }
 
-    public List<Station> findAllStations() {
-        return stationDao.findAll();
+    public List<StationResponse> findAllStations() {
+        return stationDao.findAll().stream()
+            .map(StationResponse::from)
+            .collect(Collectors.toList());
     }
 
     @Transactional
@@ -46,7 +50,7 @@ public class StationService {
         stationDao.remove(id);
     }
 
-    public Station findOne(Long id) {
-        return stationDao.findById(id);
+    public StationResponse findOne(Long id) {
+        return StationResponse.from(stationDao.findById(id));
     }
 }

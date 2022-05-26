@@ -2,6 +2,7 @@ package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static wooteco.subway.acceptance.RestUtil.*;
 
 import java.util.List;
 import java.util.Map;
@@ -12,46 +13,39 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import com.ori.acceptancetest.SpringBootAcceptanceTest;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import wooteco.subway.controller.dto.LineRequest;
 import wooteco.subway.controller.dto.LineResponse;
 import wooteco.subway.controller.dto.StationRequest;
-import wooteco.subway.controller.dto.StationResponse;
+import wooteco.subway.service.dto.StationResponse;
 
 @DisplayName("지하철 노선 관련 인수 테스트")
 @SpringBootAcceptanceTest
-public class LineAcceptanceTest {
+class LineAcceptanceTest {
 
+    private final String DefaultLineUrl = "/lines";
     private LineRequest lineRequest;
 
     @BeforeEach
     void setStation() {
-        ExtractableResponse<Response> stationResponse1 = RestUtil.post(new StationRequest("강남역"));
-        ExtractableResponse<Response> stationResponse2 = RestUtil.post(new StationRequest("역삼역"));
+        ExtractableResponse<Response> stationResponse1 = post(new StationRequest("강남역"));
+        ExtractableResponse<Response> stationResponse2 = post(new StationRequest("역삼역"));
         lineRequest = new LineRequest(
             "신분당선", "bg-red-600",
             RestUtil.getIdFromStation(stationResponse1),
             RestUtil.getIdFromStation(stationResponse2),
-            10);
+            10, 1000);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
     @Test
     void createLine() {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(lineRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines")
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = post(DefaultLineUrl, lineRequest);
 
         // then
         LineResponse lineResponse = RestUtil.toResponseDto(response, LineResponse.class);
@@ -67,13 +61,7 @@ public class LineAcceptanceTest {
     @Test
     void createLineAndStations() {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(lineRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines")
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = post(DefaultLineUrl, lineRequest);
 
         // then
         LineResponse lineResponse = RestUtil.toResponseDto(response, LineResponse.class);
@@ -88,13 +76,8 @@ public class LineAcceptanceTest {
     @Test
     void createLineNoFoundStation() {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(new LineRequest("2호선", "red", 100L, 101L, 10))
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines")
-            .then().log().all()
-            .extract();
+        LineRequest lineRequest = new LineRequest("2호선", "red", 100L, 101L, 10, 200);
+        ExtractableResponse<Response> response = post(DefaultLineUrl, lineRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
@@ -104,16 +87,10 @@ public class LineAcceptanceTest {
     @Test
     void createLineWithDuplicateName() {
         // given
-        RestUtil.post(lineRequest);
+        post(DefaultLineUrl, lineRequest);
 
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(lineRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .post("/lines")
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = post(DefaultLineUrl, lineRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -123,25 +100,21 @@ public class LineAcceptanceTest {
     @Test
     void findAllLines() {
         // given
-        ExtractableResponse<Response> createResponse1 = RestUtil.post(lineRequest);
-        ExtractableResponse<Response> createResponse2 = RestUtil.post(
+        ExtractableResponse<Response> createResponse1 = post(lineRequest);
+        ExtractableResponse<Response> createResponse2 = post(
             new LineRequest("분당선", "bg-red-600",
-                RestUtil.getIdFromStation(RestUtil.post(new StationRequest("잠실역"))),
-                RestUtil.getIdFromStation(RestUtil.post(new StationRequest("선릉역"))),
-                10)
+                RestUtil.getIdFromStation(post(new StationRequest("잠실역"))),
+                RestUtil.getIdFromStation(post(new StationRequest("선릉역"))),
+                10, 1000)
         );
 
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .when()
-            .get("/lines")
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = get(DefaultLineUrl);
 
         // then
         List<Long> expectedLIneIds = Stream.of(
-                RestUtil.getIdFromLine(createResponse1),
-                RestUtil.getIdFromLine(createResponse2))
+                getIdFromLine(createResponse1),
+                getIdFromLine(createResponse2))
             .collect(Collectors.toList());
         List<Long> resultLineIds = RestUtil.getIdsFromLine(response);
 
@@ -155,16 +128,11 @@ public class LineAcceptanceTest {
     @Test
     void findOneLine() {
         // given
-        ExtractableResponse<Response> createResponse = RestUtil.post(lineRequest);
+        ExtractableResponse<Response> createResponse = post(lineRequest);
 
         // when
-        Long createdId = RestUtil.getIdFromLine(createResponse);
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .get("/lines/" + createdId)
-            .then().log().all()
-            .extract();
+        Long createdId = getIdFromLine(createResponse);
+        ExtractableResponse<Response> response = get(DefaultLineUrl + "/" + createdId);
 
         // then
         LineResponse lineResponse = RestUtil.toResponseDto(response, LineResponse.class);
@@ -181,12 +149,7 @@ public class LineAcceptanceTest {
     @Test
     void findOneLineNotFound() {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .get("/lines/" + 1)
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = get(DefaultLineUrl + "/" + 1);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
@@ -196,17 +159,11 @@ public class LineAcceptanceTest {
     @Test
     void updateLine() {
         // given
-        ExtractableResponse<Response> createResponse = RestUtil.post(lineRequest);
+        ExtractableResponse<Response> createResponse = post(lineRequest);
 
         // when
-        Map<String, String> params2 = Map.of("name", "다른분당선", "color", "bg-red-600");
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .body(params2)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .put("/lines/" + RestUtil.getIdFromLine(createResponse))
-            .then().log().all()
-            .extract();
+        Map<String, String> params2 = Map.of("name", "다른분당선", "color", "bg-red-600", "extraFare", "1000");
+        ExtractableResponse<Response> response = put(DefaultLineUrl + "/" + getIdFromLine(createResponse), params2);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -216,15 +173,10 @@ public class LineAcceptanceTest {
     @Test
     void removeLine() {
         // given
-        ExtractableResponse<Response> createResponse = RestUtil.post(lineRequest);
+        ExtractableResponse<Response> createResponse = post(lineRequest);
 
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .delete("/lines/" + RestUtil.getIdFromLine(createResponse))
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = delete(DefaultLineUrl + "/" + getIdFromLine(createResponse));
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -234,12 +186,7 @@ public class LineAcceptanceTest {
     @Test
     void removeLineNotFound() {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .delete("/lines/" + 1)
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> response = delete(DefaultLineUrl + "/" + 1);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());

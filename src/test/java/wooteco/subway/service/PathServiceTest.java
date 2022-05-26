@@ -15,22 +15,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Path;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
+import wooteco.subway.controller.dto.LineRequest;
+import wooteco.subway.controller.dto.PathRequest;
+import wooteco.subway.controller.dto.SectionRequest;
+import wooteco.subway.service.dto.LineDto;
+import wooteco.subway.service.dto.PathResponse;
+import wooteco.subway.service.dto.StationResponse;
 
 @SpringBootTest
 @Transactional
 class PathServiceTest {
 
+    private final Map<String, StationResponse> stations = new HashMap<>();
     @Autowired
     private StationService stationService;
     @Autowired
     private LineService lineService;
     @Autowired
     private PathService pathService;
-    private final Map<String, Station> stations = new HashMap<>();
 
     //            신사 (3호선)
     //            |10|
@@ -43,8 +45,8 @@ class PathServiceTest {
     void init() {
         stations.putAll(saveStations("내방역", "고속터미널역", "반포역", "논현역"));
 
-        Line line7 = lineService.create("7호선", "red",
-            new Section(stations.get("내방역"), stations.get("고속터미널역"), 10));
+        LineDto line7 = lineService.create(
+            new LineRequest("7호선", "red", stations.get("내방역").getId(), stations.get("고속터미널역").getId(), 10, 700));
         lineService.addSection(line7.getId(),
             makeSection(stations.get("고속터미널역"), stations.get("반포역"), 10));
         lineService.addSection(line7.getId(),
@@ -52,44 +54,44 @@ class PathServiceTest {
 
         stations.putAll(saveStations("신사역", "잠원역", "서초역"));
 
-        Line line3 = lineService.create("3호선", "red",
-            new Section(stations.get("신사역"), stations.get("잠원역"), 10));
+        LineDto line3 = lineService.create(new LineRequest("3호선", "red",
+            stations.get("신사역").getId(), stations.get("잠원역").getId(), 10, 300));
         lineService.addSection(line3.getId(),
             makeSection(stations.get("잠원역"), stations.get("고속터미널역"), 10));
         lineService.addSection(line3.getId(),
             makeSection(stations.get("고속터미널역"), stations.get("서초역"), 10));
 
-        Station sapyung = stationService.create("사평역");
+        StationResponse sapyung = stationService.create("사평역");
         stations.put("사평역", sapyung);
-        lineService.create("9호선", "red", makeSection(
-            stations.get("고속터미널역"), sapyung, 14));
+        lineService.create(new LineRequest("9호선", "red",
+            stations.get("고속터미널역").getId(), sapyung.getId(), 14, 900));
 
-        lineService.create("새호선", "red",
-            makeSection(stations.get("서초역"), sapyung, 3));
+        lineService.create(new LineRequest("새호선", "red",
+            stations.get("서초역").getId(), sapyung.getId(), 3, 1000));
     }
 
-    private Map<String, Station> saveStations(String... names) {
+    private Map<String, StationResponse> saveStations(String... names) {
         return Arrays.stream(names)
             .collect(toMap(name -> name, name -> stationService.create(name)));
     }
 
-    private Section makeSection(Station source, Station target, int distance) {
-        return new Section(source, target, distance);
+    private SectionRequest makeSection(StationResponse source, StationResponse target, int distance) {
+        return new SectionRequest(source.getId(), target.getId(), distance);
     }
 
     @DisplayName("한 라인에서 조회한다.")
     @Test
     void findPath() {
         // given
-        Station source = stations.get("내방역");
-        Station target = stations.get("논현역");
+        Long sourceStationId = stations.get("내방역").getId();
+        Long targetStationId = stations.get("논현역").getId();
 
         // when
-        Path path = pathService.findPath(source, target);
+        PathResponse path = pathService.findPath(new PathRequest(sourceStationId, targetStationId, 0));
 
         // then
         assertThat(path.getStations())
-            .map(Station::getName)
+            .map(StationResponse::getName)
             .containsExactly("내방역", "고속터미널역", "반포역", "논현역");
     }
 
@@ -97,16 +99,16 @@ class PathServiceTest {
     @Test
     void findPathReverse() {
         // given
-        Station source = stations.get("논현역");
-        Station target = stations.get("내방역");
+        Long sourceStationId = stations.get("논현역").getId();
+        Long targetStationId = stations.get("내방역").getId();
 
         // when
-        List<Station> stations = pathService.findPath(source, target)
+        List<StationResponse> stations = pathService.findPath(new PathRequest(sourceStationId, targetStationId, 0))
             .getStations();
 
         // then
         assertThat(stations)
-            .map(Station::getName)
+            .map(StationResponse::getName)
             .containsExactly("논현역", "반포역", "고속터미널역", "내방역");
     }
 
@@ -114,16 +116,16 @@ class PathServiceTest {
     @Test
     void doubleLine() {
         // given
-        Station source = stations.get("신사역");
-        Station target = stations.get("논현역");
+        Long sourceStationId = stations.get("신사역").getId();
+        Long targetStationId = stations.get("논현역").getId();
 
         // when
-        List<Station> stations = pathService.findPath(source, target)
+        List<StationResponse> stations = pathService.findPath(new PathRequest(sourceStationId, targetStationId, 0))
             .getStations();
 
         // then
         assertThat(stations)
-            .map(Station::getName)
+            .map(StationResponse::getName)
             .containsExactly("신사역", "잠원역", "고속터미널역", "반포역", "논현역");
     }
 
@@ -131,16 +133,16 @@ class PathServiceTest {
     @Test
     void shortestPath() {
         // given
-        Station source = stations.get("내방역");
-        Station target = stations.get("사평역");
+        Long sourceStationId = stations.get("내방역").getId();
+        Long targetStationId = stations.get("사평역").getId();
 
         // when
-        List<Station> stations = pathService.findPath(source, target)
+        List<StationResponse> stations = pathService.findPath(new PathRequest(sourceStationId, targetStationId, 0))
             .getStations();
 
         // then
         assertThat(stations)
-            .map(Station::getName)
+            .map(StationResponse::getName)
             .containsExactly("내방역", "고속터미널역", "서초역", "사평역");
     }
 
@@ -148,27 +150,27 @@ class PathServiceTest {
     @Test
     void pathDistance() {
         // given
-        Station source = stations.get("내방역");
-        Station target = stations.get("논현역");
+        Long sourceStationId = stations.get("내방역").getId();
+        Long targetStationId = stations.get("논현역").getId();
 
         // when
-        Path path = pathService.findPath(source, target);
+        PathResponse path = pathService.findPath(new PathRequest(sourceStationId, targetStationId, 0));
 
         // then
         assertThat(path.getDistance()).isEqualTo(30);
     }
 
-    @DisplayName("최단 경로의 요금을 계산한다.")
+    @DisplayName("최단 경로의 요금을 계산한다(3호선 -> 7호선, 추가 요금 700).")
     @Test
     void fare() {
         // given
-        Station source = stations.get("신사역");
-        Station target = stations.get("논현역");
+        Long sourceStationId = stations.get("신사역").getId();
+        Long targetStationId = stations.get("논현역").getId();
 
         // when
-        Path path = pathService.findPath(source, target);
+        PathResponse path = pathService.findPath(new PathRequest(sourceStationId, targetStationId, 19));
 
         // then
-        assertThat(path.calculateFare()).isEqualTo(1950);
+        assertThat(path.getFare()).isEqualTo(2550);
     }
 }

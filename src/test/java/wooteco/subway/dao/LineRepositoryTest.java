@@ -41,7 +41,7 @@ class LineRepositoryTest {
     @DisplayName("지하철 노선을 저장한다.")
     @Test
     void save() {
-        Long lineId = lineRepository.save(new Line(0L, "신분당선", "bg-red-600"));
+        Long lineId = lineRepository.save(new Line(0L, "신분당선", "bg-red-600", 1000));
         assertThat(lineId).isGreaterThan(0);
     }
 
@@ -49,9 +49,9 @@ class LineRepositoryTest {
     @Test
     void findAll() {
         List<Line> lines = List.of(
-            new Line(0L, "신분당선", "bg-red-600"),
-            new Line(0L, "1호선", "bg-red-600"),
-            new Line(0L, "2호선", "bg-red-600")
+            new Line(0L, "신분당선", "bg-red-600", 1000),
+            new Line(0L, "1호선", "bg-red-600", 100),
+            new Line(0L, "2호선", "bg-red-600", 200)
         );
         lines.forEach(lineRepository::save);
         List<Line> foundLines = lineRepository.findAll();
@@ -61,7 +61,7 @@ class LineRepositoryTest {
     @DisplayName("지하철 노선을 조회한다.")
     @Test
     void findById() {
-        Long lineId = lineRepository.save(new Line(0L, "신분당선", "bg-red-600"));
+        Long lineId = lineRepository.save(new Line(0L, "신분당선", "bg-red-600", 1000));
         Line foundLine = lineRepository.findById(lineId);
         assertThat(foundLine.getId()).isEqualTo(lineId);
     }
@@ -74,7 +74,7 @@ class LineRepositoryTest {
         Section section = new Section(
             new Station(upStationId, "강남역"), new Station(downStationId, "역삼역"),
             10);
-        Long lineId = lineRepository.save(new Line("신분당선", "bg-red-600", List.of(section)));
+        Long lineId = lineRepository.save(new Line("신분당선", "bg-red-600", 1000, List.of(section)));
 
         Line foundLine = lineRepository.findById(lineId);
         assertThat(foundLine.getSections())
@@ -95,19 +95,22 @@ class LineRepositoryTest {
     @DisplayName("지하철 노선 정보를 수정한다.")
     @Test
     void update() {
-        Long lineId = lineRepository.save(new Line(0L, "신분당선", "bg-red-600"));
-        lineRepository.update(new Line(lineId, "분당선", "bg-blue-600"));
+        Long lineId = lineRepository.save(new Line(0L, "신분당선", "bg-red-600", 1000));
+        System.out.println("저장된");
+        System.out.println(lineRepository.findById(lineId).getExtraFare());
+        lineRepository.update(new Line(lineId, "분당선", "bg-blue-600", 500));
         Line updatedLine = lineRepository.findById(lineId);
 
         assertThat(updatedLine.getId()).isEqualTo(lineId);
         assertThat(updatedLine.getName()).isEqualTo("분당선");
         assertThat(updatedLine.getColor()).isEqualTo("bg-blue-600");
+        assertThat(updatedLine.getExtraFare()).isEqualTo(500);
     }
 
     @DisplayName("없는 지하철 노선을 수정하면 예외가 발생한다.")
     @Test
     void noSuchLineExceptionDuringUpdate() {
-        assertThatThrownBy(() -> lineRepository.update(new Line(1L, "분당선", "bg-blue-600")))
+        assertThatThrownBy(() -> lineRepository.update(new Line(1L, "분당선", "bg-blue-600", 1000)))
             .isInstanceOf(NoSuchElementException.class)
             .hasMessage("해당 id에 맞는 지하철 노선이 없습니다.");
     }
@@ -115,7 +118,7 @@ class LineRepositoryTest {
     @DisplayName("지하철 노선을 삭제한다.")
     @Test
     void remove() {
-        Long lineId = lineRepository.save(new Line(0L, "신분당선", "bg-red-600"));
+        Long lineId = lineRepository.save(new Line(0L, "신분당선", "bg-red-600", 1000));
         lineRepository.remove(lineId);
 
         assertThat(lineRepository.findAll()).isEmpty();
@@ -132,7 +135,7 @@ class LineRepositoryTest {
     @DisplayName("해당 이름의 노선이 존재하면 true를 반환한다.")
     @Test
     void existsByNameTrue() {
-        lineRepository.save(new Line(0L, "신분당선", "bg-red-600"));
+        lineRepository.save(new Line(0L, "신분당선", "bg-red-600", 1000));
         assertThat(lineRepository.existsByName("신분당선")).isTrue();
     }
 

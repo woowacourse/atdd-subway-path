@@ -1,11 +1,11 @@
-package wooteco.subway.controller.dto;
+package wooteco.subway.service.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import wooteco.subway.service.dto.LineDto;
-import wooteco.subway.service.dto.StationResponse;
+import wooteco.subway.domain.Line;
 
-public class LineResponse {
+public class LineDto {
 
     private final Long id;
     private final String name;
@@ -13,7 +13,7 @@ public class LineResponse {
     private final int extraFare;
     private final List<StationResponse> stations;
 
-    public LineResponse(Long id, String name, String color, int extraFare, List<StationResponse> stations) {
+    private LineDto(Long id, String name, String color, int extraFare, List<StationResponse> stations) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -21,9 +21,15 @@ public class LineResponse {
         this.stations = stations;
     }
 
-    public static LineResponse from(LineDto lineDto) {
-        return new LineResponse(lineDto.getId(), lineDto.getName(), lineDto.getColor(), lineDto.getExtraFare(),
-            List.copyOf(lineDto.getStations()));
+    public static LineDto from(Line line) {
+        return new LineDto(line.getId(), line.getName(), line.getColor(), line.getExtraFare(),
+            toResponses(line));
+    }
+
+    private static List<StationResponse> toResponses(Line line) {
+        return line.findOrderedStations()
+            .stream().map(StationResponse::from)
+            .collect(Collectors.toList());
     }
 
     public Long getId() {
@@ -43,6 +49,6 @@ public class LineResponse {
     }
 
     public List<StationResponse> getStations() {
-        return stations;
+        return List.copyOf(stations);
     }
 }

@@ -13,16 +13,24 @@ import wooteco.subway.controller.dto.LineRequest;
 import wooteco.subway.controller.dto.LineResponse;
 import wooteco.subway.controller.dto.SectionRequest;
 import wooteco.subway.controller.dto.StationRequest;
-import wooteco.subway.controller.dto.StationResponse;
+import wooteco.subway.service.dto.StationResponse;
 
 public class RestUtil {
 
-    public static List<Long> postStations(String... names) {
+    static List<Long> postStations(String... names) {
         List<Long> ids = new ArrayList<>();
         for (String name : names) {
             ids.add(getIdFromStation(post(new StationRequest(name))));
         }
         return ids;
+    }
+
+    public static ExtractableResponse<Response> get(String url) {
+        return RestAssured.given()
+            .when()
+            .get(url)
+            .then()
+            .extract();
     }
 
     public static ExtractableResponse<Response> post(StationRequest stationRequest) {
@@ -35,7 +43,17 @@ public class RestUtil {
             .extract();
     }
 
-    public static ExtractableResponse<Response> post(LineRequest lineRequest) {
+    public static ExtractableResponse<Response> post(String url, Object request) {
+        return RestAssured.given()
+            .body(request)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .post(url)
+            .then()
+            .extract();
+    }
+
+    static ExtractableResponse<Response> post(LineRequest lineRequest) {
         return RestAssured.given()
             .body(lineRequest)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -45,7 +63,7 @@ public class RestUtil {
             .extract();
     }
 
-    public static ExtractableResponse<Response> post(Long lineId, SectionRequest sectionRequest) {
+    static ExtractableResponse<Response> post(Long lineId, SectionRequest sectionRequest) {
         return RestAssured.given()
             .body(sectionRequest)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -55,10 +73,20 @@ public class RestUtil {
             .extract();
     }
 
-    public static ExtractableResponse<Response> get(String url) {
+    public static ExtractableResponse<Response> put(String url, Object request) {
+        return RestAssured.given()
+            .body(request)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .put(url)
+            .then()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> delete(String url) {
         return RestAssured.given()
             .when()
-            .get(url)
+            .delete(url)
             .then()
             .extract();
     }
@@ -69,25 +97,25 @@ public class RestUtil {
             .getId();
     }
 
-    public static Long getIdFromLine(ExtractableResponse<Response> response) {
+    static Long getIdFromLine(ExtractableResponse<Response> response) {
         return response.jsonPath()
             .getObject(".", LineResponse.class)
             .getId();
     }
 
-    public static List<Long> getIdsFromStation(ExtractableResponse<Response> response) {
+    static List<Long> getIdsFromStation(ExtractableResponse<Response> response) {
         return response.jsonPath().getList(".", StationResponse.class).stream()
             .map(StationResponse::getId)
             .collect(Collectors.toList());
     }
 
-    public static List<Long> getIdsFromLine(ExtractableResponse<Response> response) {
+    static List<Long> getIdsFromLine(ExtractableResponse<Response> response) {
         return response.jsonPath().getList(".", LineResponse.class).stream()
             .map(LineResponse::getId)
             .collect(Collectors.toList());
     }
 
-    public static <T> T toResponseDto(ExtractableResponse<Response> response, Class<T> responseClass) {
+    static <T> T toResponseDto(ExtractableResponse<Response> response, Class<T> responseClass) {
         return response.body()
             .jsonPath()
             .getObject(".", responseClass);
