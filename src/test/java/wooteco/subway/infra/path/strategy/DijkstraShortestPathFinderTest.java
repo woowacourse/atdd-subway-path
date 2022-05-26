@@ -4,10 +4,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Path;
-import wooteco.subway.infra.path.PathFinder;
+import wooteco.subway.domain.Section;
 import wooteco.subway.exception.EmptyResultException;
+import wooteco.subway.infra.path.PathFinder;
 
 import java.util.ArrayList;
 import java.util.List;

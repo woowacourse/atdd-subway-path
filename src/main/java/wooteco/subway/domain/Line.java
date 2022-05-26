@@ -3,9 +3,9 @@ package wooteco.subway.domain;
 import java.util.List;
 
 public class Line {
+    private final int extraFare;
     private Long id;
     private Sections sections;
-    private final int extraFare;
     private String name;
     private String color;
 
