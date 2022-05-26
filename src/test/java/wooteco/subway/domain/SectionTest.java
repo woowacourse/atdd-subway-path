@@ -1,13 +1,15 @@
 package wooteco.subway.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import wooteco.subway.exception.SubwayException;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SectionTest {
 
@@ -18,18 +20,18 @@ class SectionTest {
         Station down = new Station("선릉역");
 
         assertThatThrownBy(() -> new Section(up, down, 1))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(SubwayException.class);
     }
 
     @DisplayName("유효하지 않은 길이로 구간 생성 시 예외 발생")
     @ParameterizedTest
-    @ValueSource(strings = {"0", "-1", "0.8"})
+    @ValueSource(strings = {"0", "-1"})
     void 자연수가_아닌_길이로_구간_생성_예외발생(String distance) {
         Station up = new Station("선릉역");
         Station down = new Station("잠실역");
 
         assertThatThrownBy(() -> new Section(up, down, Integer.parseInt(distance)))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(SubwayException.class);
     }
 
     @DisplayName("상행이 겹치는 경우 겹치는 구간을 제외한 나머지 구간 반환")
@@ -63,7 +65,7 @@ class SectionTest {
         Section other = new Section(new Station("사당역"), new Station("강남역"), 3);
 
         assertThatThrownBy(() -> origin.divideBy(other))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(SubwayException.class)
                 .hasMessageContaining("겹치는 역");
     }
 
@@ -74,7 +76,7 @@ class SectionTest {
         Section other = new Section(new Station("당산역"), new Station("홍대입구역"), 4);
 
         assertThatThrownBy(() -> origin.divideBy(other))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(SubwayException.class)
                 .hasMessageContaining("거리");
     }
 
@@ -186,7 +188,7 @@ class SectionTest {
         Section section2 = new Section(new Station("강남역"), new Station("선릉역"), 2);
 
         assertThatThrownBy(() -> section1.combine(section2))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(SubwayException.class)
                 .hasMessageContaining("합칠 수 없는 구간");
     }
 }

@@ -1,18 +1,15 @@
 package wooteco.subway.domain;
 
-import java.util.ArrayList;
+import org.jgrapht.GraphPath;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.exception.SubwayException;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
-import org.jgrapht.graph.WeightedPseudograph;
 
 public class Sections {
 
@@ -67,7 +64,7 @@ public class Sections {
 
     public void add(Section section) {
         if (section.isAlreadyIn(getStations())) {
-            throw new IllegalArgumentException("이미 포함 된 구간입니다.");
+            throw new SubwayException("이미 포함 된 구간입니다.");
         }
         if (canExtendBy(section)) {
             extendSections(section);
@@ -77,7 +74,7 @@ public class Sections {
             addSectionInside(section);
             return;
         }
-        throw new IllegalArgumentException("겹치는 역이 없이 추가할 수 없습니다.");
+        throw new SubwayException("겹치는 역이 없이 추가할 수 없습니다.");
     }
 
     private void addSectionInside(Section section) {
@@ -113,10 +110,11 @@ public class Sections {
     }
 
     public List<Station> getStations() {
-        Set<Station> stations = sections.stream()
+        List<Station> stations = sections.stream()
                 .flatMap(section -> Stream.of(section.getUp(), section.getDown()))
-                .collect(Collectors.toSet());
-        return new ArrayList<>(stations);
+                .distinct()
+                .collect(Collectors.toList());
+        return stations;
     }
 
     private boolean canExtendBy(Section target) {
@@ -158,22 +156,23 @@ public class Sections {
         }
     }
 
-    public GraphPath<Station, DefaultWeightedEdge> findShortestPath(Station source, Station target) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph
-                = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    public GraphPath<Station, SectionEdge> findShortestPath(Station source, Station target, List<Line> lines) {
+        WeightedMultigraph<Station, SectionEdge> graph
+                = new WeightedMultigraph<>(SectionEdge.class);
         addAllStationsAsVertex(graph);
-        addAllSectionsAsEdge(graph);
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        addAllSectionsAsEdge(graph, lines);
+        DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         return dijkstraShortestPath.getPath(source, target);
     }
 
-    private void addAllSectionsAsEdge(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private void addAllSectionsAsEdge(WeightedMultigraph<Station, SectionEdge> graph, List<Line> lines) {
         for (Section section : sections) {
-            graph.setEdgeWeight(graph.addEdge(section.getUp(), section.getDown()), section.getDistance());
+            graph.addEdge(section.getUp(), section.getDown(),
+                    new SectionEdge(section.getDistance(), section.findLine(lines)));
         }
     }
 
-    private void addAllStationsAsVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private void addAllStationsAsVertex(WeightedMultigraph<Station, SectionEdge> graph) {
         List<Station> stations = getStations();
         for (Station station : stations) {
             graph.addVertex(station);
@@ -182,7 +181,7 @@ public class Sections {
 
     private void validateDeletable() {
         if (sections.size() < 2) {
-            throw new IllegalArgumentException("구간이 한 개 일 때는 역을 삭제할 수 없습니다.");
+            throw new SubwayException("구간이 한 개 일 때는 역을 삭제할 수 없습니다.");
         }
     }
 

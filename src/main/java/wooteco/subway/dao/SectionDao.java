@@ -1,21 +1,24 @@
 package wooteco.subway.dao;
 
+import wooteco.subway.dao.entity.SectionEntity;
+
 import java.util.List;
-import wooteco.subway.dto.SectionDto;
 
 public interface SectionDao {
 
-    SectionDto save(SectionDto sectionDto);
+    SectionEntity save(SectionEntity sectionEntity);
 
-    int saveAll(List<SectionDto> sectionDtos);
+    int saveAll(List<SectionEntity> sectionEntities);
 
-    List<SectionDto> findAll();
+    List<SectionEntity> findAll();
 
-    SectionDto findById(Long id);
+    SectionEntity findById(Long id);
 
-    List<SectionDto> findByLineId(Long id);
+    List<SectionEntity> findByLineId(Long id);
 
-    void update(SectionDto sectionDto);
+    void update(SectionEntity sectionEntity);
 
     void delete(Long id);
+
+    void deleteByIdIn(List<Long> ids);
 }

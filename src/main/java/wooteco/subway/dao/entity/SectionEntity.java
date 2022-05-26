@@ -1,8 +1,8 @@
-package wooteco.subway.dto;
+package wooteco.subway.dao.entity;
 
 import wooteco.subway.domain.Section;
 
-public class SectionDto {
+public class SectionEntity {
 
     private Long id;
     private Long lineId;
@@ -10,17 +10,17 @@ public class SectionDto {
     private Long downStationId;
     private int distance;
 
-    private SectionDto() {
+    private SectionEntity() {
     }
 
-    public SectionDto(Long lineId, Long upStationId, Long downStationId, int distance) {
+    public SectionEntity(Long lineId, Long upStationId, Long downStationId, int distance) {
         this.lineId = lineId;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
     }
 
-    public SectionDto(Long id, Long lineId, Long upStationId, Long downStationId, int distance) {
+    public SectionEntity(Long id, Long lineId, Long upStationId, Long downStationId, int distance) {
         this.id = id;
         this.lineId = lineId;
         this.upStationId = upStationId;
@@ -28,8 +28,8 @@ public class SectionDto {
         this.distance = distance;
     }
 
-    public static SectionDto of(Section section, Long lineId) {
-        return new SectionDto(lineId, section.getUp().getId(), section.getDown().getId(), section.getDistance());
+    public static SectionEntity of(Section section, Long lineId) {
+        return new SectionEntity(lineId, section.getUp().getId(), section.getDown().getId(), section.getDistance());
     }
 
     public Long getId() {

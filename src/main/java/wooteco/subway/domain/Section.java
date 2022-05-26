@@ -1,14 +1,18 @@
 package wooteco.subway.domain;
 
+import wooteco.subway.exception.SubwayException;
+import wooteco.subway.exception.line.NoSuchLineException;
+import wooteco.subway.exception.section.IllegalMergeSectionException;
+
 import java.util.List;
 import java.util.Objects;
 
 public class Section {
 
-    private Long id;
     private final Station up;
     private final Station down;
     private final int distance;
+    private Long id;
 
     public Section(Station up, Station down, int distance) {
         validateStationsNotEqual(up, down);
@@ -50,26 +54,33 @@ public class Section {
         if (this.down.equals(section.down)) {
             return List.of(new Section(this.up, section.up, this.distance - section.distance), section);
         }
-        throw new IllegalArgumentException("겹치는 역이 없어 나눌 수 없습니다");
+        throw new SubwayException("겹치는 역이 없어 나눌 수 없습니다");
     }
 
     public Section combine(Section section) {
         if (!this.down.equals(section.up)) {
-            throw new IllegalArgumentException("합칠 수 없는 구간입니다.");
+            throw new IllegalMergeSectionException();
         }
         return new Section(this.up, section.down, this.distance + section.distance);
     }
 
     private void validateStationsNotEqual(Station up, Station down) {
         if (up.equals(down)) {
-            throw new IllegalArgumentException("구간은 서로 다른 두 역으로 만들어야 합니다.");
+            throw new SubwayException("구간은 서로 다른 두 역으로 만들어야 합니다.");
         }
     }
 
     private void validateDistanceIsNatural(int distance) {
         if (distance < 1) {
-            throw new IllegalArgumentException("거리는 1 이하가 될 수 없습니다.");
+            throw new SubwayException("거리는 1 이하가 될 수 없습니다.");
         }
+    }
+
+    public Line findLine(List<Line> lines) {
+        return lines.stream()
+                .filter(line -> line.isSectionExisted(this))
+                .findFirst()
+                .orElseThrow(NoSuchLineException::new);
     }
 
     public Long getId() {

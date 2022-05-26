@@ -1,6 +1,5 @@
 package wooteco.subway.service;
 
-import java.util.List;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -11,10 +10,16 @@ import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineEditRequest;
 import wooteco.subway.dto.LineRequest;
+import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.SectionRequest;
+import wooteco.subway.exception.line.DuplicateLineNameException;
+import wooteco.subway.exception.line.NoSuchLineException;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -24,52 +29,58 @@ public class LineService {
     private final StationRepository stationRepository;
     private final SectionRepository sectionRepository;
 
-    public LineService(LineRepository lineRepository, StationRepository stationRepository,
-                       SectionRepository sectionRepository) {
+    public LineService(LineRepository lineRepository,
+                       StationRepository stationRepository,
+                       SectionRepository sectionRepository
+    ) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
         this.sectionRepository = sectionRepository;
     }
 
     @Transactional
-    public Line save(LineRequest lineRequest) {
+    public LineResponse save(LineRequest lineRequest) {
         Section section = new Section(stationRepository.findById(lineRequest.getUpStationId()),
                 stationRepository.findById(lineRequest.getDownStationId()), lineRequest.getDistance());
-        Line line = new Line(lineRequest.getName(), lineRequest.getColor(), new Sections(section));
+        Line line = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare(), new Sections(section));
         try {
-            Long lindId = lineRepository.save(line);
-            return lineRepository.findById(lindId);
+            Line savedLine = lineRepository.save(line);
+            return LineResponse.from(savedLine);
         } catch (DuplicateKeyException e) {
-            throw new DuplicateKeyException("이미 존재하는 노선 이름입니다.");
+            throw new DuplicateLineNameException();
         }
     }
 
-    public List<Line> findAll() {
-        return lineRepository.findAll();
+    public List<LineResponse> findAll() {
+        List<Line> lines = lineRepository.findAll();
+
+        return lines.stream()
+                .map(LineResponse::from)
+                .collect(Collectors.toList());
     }
 
-    public Line findById(Long id) {
+    public LineResponse findById(Long lineId) {
         try {
-            return lineRepository.findById(id);
+            return LineResponse.from(lineRepository.findById(lineId));
         } catch (EmptyResultDataAccessException e) {
-            throw new EmptyResultDataAccessException("존재하지 않는 노선입니다", 1);
+            throw new NoSuchLineException();
         }
     }
 
     @Transactional
-    public void update(Long id, LineEditRequest lineEditRequest) {
-        Line line = lineRepository.findById(id);
+    public void update(Long lineId, LineEditRequest lineEditRequest) {
+        Line line = lineRepository.findById(lineId);
         line.updateNameAndColor(lineEditRequest.getName(), lineEditRequest.getColor());
         try {
             lineRepository.update(line);
         } catch (DuplicateKeyException e) {
-            throw new DuplicateKeyException("이미 존재하는 노선 이름입니다.");
+            throw new DuplicateLineNameException();
         }
     }
 
     @Transactional
-    public void addSection(Long id, SectionRequest request) {
-        Line line = lineRepository.findById(id);
+    public void addSection(Long lineId, SectionRequest request) {
+        Line line = lineRepository.findById(lineId);
         Station up = stationRepository.findById(request.getUpStationId());
         Station down = stationRepository.findById(request.getDownStationId());
         Section section = new Section(up, down, request.getDistance());
@@ -84,9 +95,11 @@ public class LineService {
         List<Section> deleteTargets = before.findDifferentSections(after);
         List<Section> insertTargets = after.findDifferentSections(before);
 
-        for (Section deleteTarget : deleteTargets) {
-            sectionRepository.delete(deleteTarget.getId());
-        }
+        List<Long> deleteSectionIds = deleteTargets.stream()
+                .map(Section::getId)
+                .collect(Collectors.toList());
+
+        sectionRepository.deleteByIdIn(deleteSectionIds);
 
         for (Section updateTarget : insertTargets) {
             sectionRepository.save(line.getId(),
@@ -96,13 +109,13 @@ public class LineService {
     }
 
     @Transactional
-    public void deleteById(Long id) {
-        lineRepository.delete(id);
+    public void deleteById(Long lineId) {
+        lineRepository.delete(lineId);
     }
 
     @Transactional
-    public void deleteSection(Long id, Long stationId) {
-        Line line = lineRepository.findById(id);
+    public void deleteSection(Long lineId, Long stationId) {
+        Line line = lineRepository.findById(lineId);
         Station station = stationRepository.findById(stationId);
 
         Sections before = new Sections(line.getSections());

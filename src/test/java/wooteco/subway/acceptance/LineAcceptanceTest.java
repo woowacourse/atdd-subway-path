@@ -1,22 +1,19 @@
 package wooteco.subway.acceptance;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import wooteco.subway.dto.LineEditRequest;
-import wooteco.subway.dto.LineRequest;
-import wooteco.subway.dto.LineResponse;
-import wooteco.subway.dto.SectionRequest;
-import wooteco.subway.dto.StationRequest;
+import wooteco.subway.dto.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
@@ -28,7 +25,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Long upStationId = postStationThenReturnId("강남역");
         Long downStationId = postStationThenReturnId("선릉역");
         LineRequest lineRequest = new LineRequest(
-                "2호선", "bg-green-600", upStationId, downStationId, 10);
+                "2호선", "bg-green-600", upStationId, downStationId, 10, 0);
 
         // when
         ExtractableResponse<Response> response = postToLines(lineRequest);
@@ -48,13 +45,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Long upStationId = postStationThenReturnId("강남역");
         Long downStationId = postStationThenReturnId("선릉역");
         LineRequest lineRequest = new LineRequest(
-                "2호선", "bg-green-600", upStationId, downStationId, 10);
+                "2호선", "bg-green-600", upStationId, downStationId, 10, 0);
         postToLines(lineRequest);
 
         // when
         Long otherStationId = postStationThenReturnId("잠실역");
         LineRequest duplicatedLineNameRequest = new LineRequest(
-                "2호선", "bg-red-600", downStationId, otherStationId, 10);
+                "2호선", "bg-red-600", downStationId, otherStationId, 10, 0);
 
         ExtractableResponse<Response> response = postToLines(duplicatedLineNameRequest);
 
@@ -69,12 +66,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Long 강남역Id = postStationThenReturnId("강남역");
         Long 선릉역Id = postStationThenReturnId("선릉역");
         LineRequest lineRequest1 = new LineRequest(
-                "2호선", "bg-green-600", 강남역Id, 선릉역Id, 3);
+                "2호선", "bg-green-600", 강남역Id, 선릉역Id, 3, 0);
         Long lineId1 = postToLines(lineRequest1).jsonPath().getLong("id");
 
         Long 양재역Id = postStationThenReturnId("양재역");
         LineRequest lineRequest2 = new LineRequest(
-                "신분당선", "bg-green-600", 강남역Id, 양재역Id, 3);
+                "신분당선", "bg-green-600", 강남역Id, 양재역Id, 3, 0);
         Long lineId2 = postToLines(lineRequest2).jsonPath().getLong("id");
 
         // when
@@ -100,7 +97,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Long 강남역Id = postStationThenReturnId("강남역");
         Long 선릉역Id = postStationThenReturnId("선릉역");
         LineRequest request = new LineRequest(
-                "2호선", "bg-green-600", 강남역Id, 선릉역Id, 3);
+                "2호선", "bg-green-600", 강남역Id, 선릉역Id, 3, 0);
         Long lineId = postToLines(request).jsonPath().getLong("id");
 
         ExtractableResponse<Response> response = getLine(lineId);
@@ -120,7 +117,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Long 강남역Id = postStationThenReturnId("강남역");
         Long 선릉역Id = postStationThenReturnId("선릉역");
         LineRequest lineRequest1 = new LineRequest(
-                "2호선", "bg-green-600", 강남역Id, 선릉역Id, 3);
+                "2호선", "bg-green-600", 강남역Id, 선릉역Id, 3, 0);
         Long lineId = postToLines(lineRequest1).jsonPath().getLong("id");
 
         // when
@@ -145,7 +142,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Long 강남역Id = postStationThenReturnId("강남역");
         Long 선릉역Id = postStationThenReturnId("선릉역");
         LineRequest lineRequest = new LineRequest(
-                "2호선", "bg-green-600", 강남역Id, 선릉역Id, 3);
+                "2호선", "bg-green-600", 강남역Id, 선릉역Id, 3, 0);
         Long lineId = postToLines(lineRequest).jsonPath().getLong("id");
 
         // when
@@ -167,7 +164,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Long 선릉역Id = postStationThenReturnId("선릉역");
         Long 역삼역Id = postStationThenReturnId("역삼역");
         LineRequest lineRequest = new LineRequest(
-                "2호선", "bg-green-600", 강남역Id, 선릉역Id, 3);
+                "2호선", "bg-green-600", 강남역Id, 선릉역Id, 3, 0);
         Long lineId = postToLines(lineRequest).jsonPath().getLong("id");
 
         // when
@@ -192,7 +189,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Long 선릉역Id = postStationThenReturnId("선릉역");
         Long 역삼역Id = postStationThenReturnId("역삼역");
         LineRequest lineRequest = new LineRequest(
-                "2호선", "bg-green-600", 강남역Id, 선릉역Id, 3);
+                "2호선", "bg-green-600", 강남역Id, 선릉역Id, 3, 0);
         Long lineId = postToLines(lineRequest).jsonPath().getLong("id");
 
         // when
@@ -217,7 +214,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Long 선릉역Id = postStationThenReturnId("선릉역");
         Long 역삼역Id = postStationThenReturnId("역삼역");
         LineRequest lineRequest = new LineRequest(
-                "2호선", "bg-green-600", 강남역Id, 선릉역Id, 3);
+                "2호선", "bg-green-600", 강남역Id, 선릉역Id, 3, 0);
         Long lineId = postToLines(lineRequest).jsonPath().getLong("id");
 
         // when
@@ -247,7 +244,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Long 강남역Id = postStationThenReturnId("강남역");
         Long 선릉역Id = postStationThenReturnId("선릉역");
         LineRequest lineRequest = new LineRequest(
-                "2호선", "bg-green-600", 강남역Id, 선릉역Id, 3);
+                "2호선", "bg-green-600", 강남역Id, 선릉역Id, 3, 0);
         Long lineId = postToLines(lineRequest).jsonPath().getLong("id");
 
         // when

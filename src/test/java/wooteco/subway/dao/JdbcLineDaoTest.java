@@ -1,9 +1,5 @@
 package wooteco.subway.dao;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +7,12 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import wooteco.subway.dao.entity.LineEntity;
 import wooteco.subway.domain.Line;
-import wooteco.subway.dto.LineDto;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @JdbcTest
 public class JdbcLineDaoTest {
@@ -27,9 +27,9 @@ public class JdbcLineDaoTest {
     @DisplayName("노선을 저장한다")
     @Test
     void 노선_저장() {
-        Line line = new Line("2호선", "bg-green-600");
+        Line line = new Line("2호선", "bg-green-600", 0);
 
-        LineDto result = lineDao.save(LineDto.from(line));
+        LineEntity result = lineDao.save(LineEntity.from(line));
 
         assertAll(
                 () -> assertThat(result.getName()).isEqualTo(line.getName()),
@@ -40,11 +40,11 @@ public class JdbcLineDaoTest {
     @DisplayName("중복된 노선을 저장할 경우 예외가 발생한다.")
     @Test
     void 중복된_노선_예외발생() {
-        Line line = new Line("2호선", "bg-green-600");
+        Line line = new Line("2호선", "bg-green-600", 0);
 
-        lineDao.save(LineDto.from(line));
+        lineDao.save(LineEntity.from(line));
 
-        assertThatThrownBy(() -> lineDao.save(LineDto.from(line)))
+        assertThatThrownBy(() -> lineDao.save(LineEntity.from(line)))
                 .isInstanceOf(DuplicateKeyException.class);
     }
 
@@ -58,10 +58,10 @@ public class JdbcLineDaoTest {
     @DisplayName("노선을 수정한다.")
     @Test
     void 노선_수정() {
-        Line line = new Line("2호선", "bg-green-600");
-        LineDto saved = lineDao.save(LineDto.from(line));
+        Line line = new Line("2호선", "bg-green-600", 0);
+        LineEntity saved = lineDao.save(LineEntity.from(line));
 
-        LineDto updated = lineDao.update(new LineDto(saved.getId(), "2호선", "bg-yellow-600"));
+        LineEntity updated = lineDao.update(new LineEntity(saved.getId(), "2호선", "bg-yellow-600", 0));
 
         assertAll(
                 () -> assertThat(updated.getName()).isEqualTo("2호선"),
@@ -72,9 +72,9 @@ public class JdbcLineDaoTest {
     @DisplayName("모든 노선을 조회한다.")
     @Test
     void 모든_노선_조회() {
-        lineDao.save(new LineDto("2호선", "bg-green-600"));
-        lineDao.save(new LineDto("1호선", "bg-darkblue-600"));
-        lineDao.save(new LineDto("3호선", "bg-orange-600"));
+        lineDao.save(new LineEntity("2호선", "bg-green-600"));
+        lineDao.save(new LineEntity("1호선", "bg-darkblue-600"));
+        lineDao.save(new LineEntity("3호선", "bg-orange-600"));
 
         assertThat(lineDao.findAll().size()).isEqualTo(3);
     }
@@ -82,7 +82,7 @@ public class JdbcLineDaoTest {
     @DisplayName("노선을 삭제한다.")
     @Test
     void 노선_삭제() {
-        LineDto saved = lineDao.save(new LineDto("4호선", "bg-skyblue-600"));
+        LineEntity saved = lineDao.save(new LineEntity("4호선", "bg-skyblue-600"));
 
         lineDao.deleteById(saved.getId());
 

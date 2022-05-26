@@ -1,5 +1,7 @@
 package wooteco.subway.dto;
 
+import wooteco.subway.domain.Station;
+
 import javax.validation.constraints.NotBlank;
 
 public class StationRequest {
@@ -12,6 +14,10 @@ public class StationRequest {
 
     public StationRequest(String name) {
         this.name = name;
+    }
+
+    public Station toStation() {
+        return new Station(this.name);
     }
 
     public String getName() {
