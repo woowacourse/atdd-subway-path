@@ -19,14 +19,10 @@ public class FareCalculator {
     }
 
     private int calculateByDistance() {
-        int distanceForPay = this.distance;
-        List<Distance> distances = Distance.findByDistance(distanceForPay);
-        int sum = 0;
+        List<Distance> distances = Distance.findAvailableDistances(distance);
 
-        for (Distance distance : distances) {
-            sum += distance.calculateAdditionalFare(distanceForPay);
-            distanceForPay = distance.getDistanceUnit();
-        }
-        return sum;
+        return distances.stream()
+                .mapToInt(it -> it.calculateAdditionalFare(distance))
+                .sum();
     }
 }

@@ -7,36 +7,45 @@ import java.util.stream.Collectors;
 
 public enum Distance {
 
-    BASIC(0, 0),
-    MIDDLE(5, 10),
-    FAR(8, 50);
+    BASIC(0, 0, 9),
+    MIDDLE(5, 10, 49),
+    FAR(8, 50, Integer.MAX_VALUE);
 
     private static final int BASIC_FARE = 1250;
     private static final int EXTRA_FARE = 100;
 
-    private final int fareUnit;
-    private final int distanceUnit;
+    private final int unit;
+    private final int startPoint;
+    private final int endPoint;
 
-    Distance(int fareUnit, int distanceUnit) {
-        this.fareUnit = fareUnit;
-        this.distanceUnit = distanceUnit;
+    Distance(int unit, int startPoint, int endPoint) {
+        this.unit = unit;
+        this.startPoint = startPoint;
+        this.endPoint = endPoint;
     }
 
-    public static List<Distance> findByDistance(int distance) {
+    public static List<Distance> findAvailableDistances(int distance) {
         return Arrays.stream(Distance.values())
-                .filter(it -> it.distanceUnit < distance)
-                .sorted(Comparator.comparingInt(Distance::getDistanceUnit).reversed())
+                .filter(it -> it.startPoint < distance)
+                .sorted(Comparator.comparingInt(Distance::getStartPoint).reversed())
                 .collect(Collectors.toUnmodifiableList());
+    }
+
+    private int getStartPoint() {
+        return startPoint;
     }
 
     public int calculateAdditionalFare(int distance) {
         if (BASIC == this) {
             return BASIC_FARE;
         }
-        return ((distance - distanceUnit - 1) / fareUnit + 1) * EXTRA_FARE;
+        if (distance > endPoint) {
+            return calculate(endPoint);
+        }
+        return calculate(distance);
     }
 
-    public int getDistanceUnit() {
-        return distanceUnit;
+    private int calculate(int distance) {
+        return ((distance - startPoint - 1) / unit + 1) * EXTRA_FARE;
     }
 }
