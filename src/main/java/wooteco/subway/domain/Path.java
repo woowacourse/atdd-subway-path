@@ -1,7 +1,6 @@
-package wooteco.subway.domain.path;
+package wooteco.subway.domain;
 
-import wooteco.subway.domain.CustomEdge;
-import wooteco.subway.domain.Station;
+import wooteco.subway.infra.path.CustomEdge;
 
 import java.util.List;
 import java.util.Objects;

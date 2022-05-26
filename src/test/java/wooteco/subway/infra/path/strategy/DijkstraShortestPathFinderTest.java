@@ -1,12 +1,12 @@
-package wooteco.subway.domain.path.strategy;
+package wooteco.subway.infra.path.strategy;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
-import wooteco.subway.domain.path.Path;
-import wooteco.subway.domain.path.PathFinder;
+import wooteco.subway.domain.Path;
+import wooteco.subway.infra.path.PathFinder;
 import wooteco.subway.exception.EmptyResultException;
 
 import java.util.ArrayList;

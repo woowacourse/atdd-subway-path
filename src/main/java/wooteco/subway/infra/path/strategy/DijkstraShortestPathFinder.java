@@ -1,15 +1,15 @@
-package wooteco.subway.domain.path.strategy;
+package wooteco.subway.infra.path.strategy;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
-import wooteco.subway.domain.CustomEdge;
+import wooteco.subway.infra.path.CustomEdge;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.path.Path;
-import wooteco.subway.domain.path.PathFinder;
+import wooteco.subway.domain.Path;
+import wooteco.subway.infra.path.PathFinder;
 import wooteco.subway.exception.EmptyResultException;
 
 import java.util.List;

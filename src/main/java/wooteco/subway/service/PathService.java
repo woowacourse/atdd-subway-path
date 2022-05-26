@@ -6,8 +6,8 @@ import wooteco.subway.dao.LineDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.fare.Fare;
-import wooteco.subway.domain.path.Path;
-import wooteco.subway.domain.path.PathFinder;
+import wooteco.subway.domain.Path;
+import wooteco.subway.infra.path.PathFinder;
 import wooteco.subway.dto.path.PathRequest;
 import wooteco.subway.dto.path.PathResponse;
 
