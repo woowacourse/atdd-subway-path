@@ -2,8 +2,8 @@ package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static wooteco.subway.TestFixtures.LINE_COLOR;
 import static wooteco.subway.TestFixtures.LINE_SIX;
+import static wooteco.subway.TestFixtures.LINE_SIX_COLOR;
 import static wooteco.subway.TestFixtures.STANDARD_DISTANCE;
 import static wooteco.subway.TestFixtures.동묘앞역;
 import static wooteco.subway.TestFixtures.보문역;
@@ -42,13 +42,13 @@ class PathAcceptanceTest extends AcceptanceTest {
         Station saved_동묘앞역 = stationRepository.save(동묘앞역);
         Station saved_창신역 = stationRepository.save(창신역);
 
-        Long lineId = lineRepository.save(new Line(LINE_SIX, LINE_COLOR));
+        Long lineId = lineRepository.save(new Line(LINE_SIX, LINE_SIX_COLOR));
 
         sectionRepository.save(new Section(lineId, saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
         sectionRepository.save(new Section(lineId, saved_동묘앞역, saved_창신역, STANDARD_DISTANCE));
 
         ExtractableResponse<Response> response = get(
-                "/paths?source=" + saved_신당역.getId() + "&target=" + saved_창신역.getId() + "&age=15");
+                "/paths?source=" + saved_신당역.getId() + "&target=" + saved_창신역.getId() + "&age=25");
 
         PathResponse pathResponse = response.jsonPath()
                 .getObject(".", PathResponse.class);
@@ -73,7 +73,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         Station saved_창신역 = stationRepository.save(창신역);
         Station saved_보문역 = stationRepository.save(보문역);
 
-        Long lineId = lineRepository.save(new Line(LINE_SIX, LINE_COLOR));
+        Long lineId = lineRepository.save(new Line(LINE_SIX, LINE_SIX_COLOR));
 
         sectionRepository.save(new Section(lineId, saved_신당역, saved_동묘앞역, STANDARD_DISTANCE));
         sectionRepository.save(new Section(lineId, saved_보문역, saved_창신역, STANDARD_DISTANCE));

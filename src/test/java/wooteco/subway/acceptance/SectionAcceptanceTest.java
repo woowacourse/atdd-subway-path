@@ -1,6 +1,8 @@
 package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.TestFixtures.STANDARD_DISTANCE;
+import static wooteco.subway.TestFixtures.STANDARD_EXTRA_FARE;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -32,7 +34,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         Station 선릉역 = stationRepository.save(new Station("선릉역"));
 
         LineResponse lineResponse = lineService.create(
-                new LineRequest("2호선", "bg-green-200", 강남역.getId(), 역삼역.getId(), 5));
+                new LineRequest("2호선", "bg-green-200", 강남역.getId(), 역삼역.getId(), STANDARD_DISTANCE, STANDARD_EXTRA_FARE));
         SectionRequest sectionRequest = new SectionRequest(역삼역.getId(), 선릉역.getId(), 4);
         ExtractableResponse<Response> response = post(sectionRequest,
                 "/lines/" + lineResponse.getId() + " /sections");
@@ -48,8 +50,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         Station 선릉역 = stationRepository.save(new Station("선릉역"));
 
         LineResponse lineResponse = lineService.create(
-                new LineRequest("2호선", "bg-green-200", 강남역.getId(), 역삼역.getId(), 5));
-        SectionRequest sectionRequest = new SectionRequest(강남역.getId(), 선릉역.getId(), 6);
+                new LineRequest("2호선", "bg-green-200", 강남역.getId(), 역삼역.getId(), STANDARD_DISTANCE, STANDARD_EXTRA_FARE));
+        SectionRequest sectionRequest = new SectionRequest(강남역.getId(), 선릉역.getId(), STANDARD_DISTANCE + 1);
         ExtractableResponse<Response> response = post(sectionRequest,
                 "/lines/" + lineResponse.getId() + " /sections");
 
@@ -64,7 +66,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         Station 선릉역 = stationRepository.save(new Station("선릉역"));
 
         LineResponse lineResponse = lineService.create(
-                new LineRequest("2호선", "bg-green-200", 강남역.getId(), 역삼역.getId(), 5));
+                new LineRequest("2호선", "bg-green-200", 강남역.getId(), 역삼역.getId(), STANDARD_DISTANCE, STANDARD_EXTRA_FARE));
         SectionRequest sectionRequest = new SectionRequest(강남역.getId(), 역삼역.getId(), 6);
         ExtractableResponse<Response> response = post(sectionRequest,
                 "/lines/" + lineResponse.getId() + " /sections");
@@ -80,7 +82,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         Station 선릉역 = stationRepository.save(new Station("선릉역"));
 
         LineResponse lineResponse = lineService.create(
-                new LineRequest("2호선", "bg-green-200", 강남역.getId(), 역삼역.getId(), 5));
+                new LineRequest("2호선", "bg-green-200", 강남역.getId(), 역삼역.getId(), STANDARD_DISTANCE, STANDARD_EXTRA_FARE));
         SectionRequest sectionRequest = new SectionRequest(역삼역.getId(), 선릉역.getId(), 4);
         post(sectionRequest, "/lines/" + lineResponse.getId() + " /sections");
 
@@ -97,7 +99,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         Station 역삼역 = stationRepository.save(new Station("역삼역"));
 
         LineResponse lineResponse = lineService.create(
-                new LineRequest("2호선", "bg-green-200", 강남역.getId(), 역삼역.getId(), 5));
+                new LineRequest("2호선", "bg-green-200", 강남역.getId(), 역삼역.getId(), STANDARD_DISTANCE, STANDARD_EXTRA_FARE));
 
         ExtractableResponse<Response> response = delete(
                 "/lines/" + lineResponse.getId() + "/sections?stationId=" + 역삼역.getId());
