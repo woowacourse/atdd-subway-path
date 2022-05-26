@@ -1,11 +1,27 @@
 package wooteco.subway.dto.request;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
+
 public class LineRequest {
+
+    @NotBlank
     private String name;
+
+    @NotBlank
     private String color;
+
+    @Min(0)
     private int extraFare;
+
+    @Positive
     private long upStationId;
+
+    @Positive
     private long downStationId;
+
+    @Positive
     private int distance;
 
     private LineRequest() {
@@ -19,6 +35,7 @@ public class LineRequest {
         this.downStationId = downStationId;
         this.distance = distance;
     }
+
 
     public String getName() {
         return name;

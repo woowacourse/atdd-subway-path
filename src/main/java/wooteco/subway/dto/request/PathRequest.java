@@ -1,8 +1,16 @@
 package wooteco.subway.dto.request;
 
+import javax.validation.constraints.Positive;
+
 public class PathRequest {
+
+    @Positive
     private final long source;
+
+    @Positive
     private final long target;
+
+    @Positive
     private final int age;
 
     public PathRequest(long source, long target, int age) {

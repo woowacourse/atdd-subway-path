@@ -243,7 +243,7 @@ class LineServiceTest {
         // then
         boolean isNotExistLine = lineService.getAllLines()
                 .stream()
-                .filter(lineResponse -> lineResponse.getId().equals(createdLine.getId()))
+                .filter(lineResponse -> lineResponse.getId() == createdLine.getId())
                 .findAny()
                 .isEmpty();
 

@@ -2,6 +2,7 @@ package wooteco.subway.ui;
 
 import java.net.URI;
 import java.util.List;
+import javax.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,7 +31,7 @@ public class LineController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
+    public ResponseEntity<LineResponse> createLine(@Valid @RequestBody LineRequest lineRequest) {
         LineResponse newLine = lineService.createLine(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + newLine.getId())).body(newLine);
     }
@@ -48,7 +49,8 @@ public class LineController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineUpdateRequest lineUpdateRequest) {
+    public ResponseEntity<Void> updateLine(@PathVariable Long id,
+                                           @Valid @RequestBody LineUpdateRequest lineUpdateRequest) {
         lineService.update(id, lineUpdateRequest);
         return ResponseEntity.ok().build();
     }
