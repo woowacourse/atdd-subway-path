@@ -7,7 +7,7 @@ public enum Age {
 
     CHILD(age -> age < 13, 50),
     YOUTH(age -> age >= 13 && age < 19, 20),
-    ADULT(age -> age > 19, 0);
+    ADULT(age -> age >= 19, 0);
 
     private static final int EXCLUDED_FARE = 350;
     private static final String NONE_AGE_ERROR = "0세 이하의 나이는 불가능합니다.";
