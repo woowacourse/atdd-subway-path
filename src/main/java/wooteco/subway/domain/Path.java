@@ -29,7 +29,8 @@ public class Path {
     private int findExtraFare(List<Line> lines, Long id) {
         return lines.stream()
                 .filter(line -> line.getId() == id)
-                .findAny().orElseThrow(() -> new ClientException("존재하지 않은 line id입니다."))
+                .findAny()
+                .orElseThrow(() -> new ClientException("존재하지 않은 line id입니다."))
                 .getExtraFare();
     }
 
