@@ -4,27 +4,27 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 public enum AgeFarePolicy {
-    LESS_THAN_6(age -> age.lessThan(6)) {
+    INFANT(age -> age.lessThan(6)) {
         @Override
         public Fare apply(Fare fare, Age age) {
             return FREE;
         }
     },
-    FROM_6_TO_13(age -> age.moreThan(6) && age.lessThan(13)) {
+    CHILDREN(age -> age.moreThan(6) && age.lessThan(13)) {
         @Override
         public Fare apply(Fare fare, Age age) {
             return fare.minus(350)
                     .discountPercent(50);
         }
     },
-    FROM_13_TO_19(age -> age.moreThan(13) && age.lessThan(19)) {
+    TEENAGER(age -> age.moreThan(13) && age.lessThan(19)) {
         @Override
         public Fare apply(Fare fare, Age age) {
             return fare.minus(350)
                     .discountPercent(20);
         }
     },
-    MORE_THAN_20(age -> age.moreThan(19)) {
+    ADULT(age -> age.moreThan(19)) {
         @Override
         public Fare apply(Fare fare, Age age) {
             return fare;
