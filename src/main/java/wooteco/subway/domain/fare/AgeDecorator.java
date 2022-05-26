@@ -12,6 +12,6 @@ public class AgeDecorator extends Decorator {
     @Override
     public double calculateExtraFare() {
         double price = super.calculateExtraFare();
-        return AgeFare.valueOf(age, price);
+        return AgeDiscountPolicy.valueOf(age, price);
     }
 }

@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public enum DistanceExtraFare {
+public enum DistanceFarePolicy {
     BASIC_DISTANCE(distance -> 0 < distance && distance <= 10, (distance) -> 0),
     ADDITIONAL_DISTANCE(distance -> distance < 50,
             distance -> (int) ((Math.ceil(((distance - 10) - 1) / 5) + 1) * 100)),
@@ -15,7 +15,7 @@ public enum DistanceExtraFare {
     private final Predicate<Integer> predicate;
     private final Function<Integer, Integer> function;
 
-    DistanceExtraFare(final Predicate<Integer> predicate, final Function<Integer, Integer> function) {
+    DistanceFarePolicy(final Predicate<Integer> predicate, final Function<Integer, Integer> function) {
         this.predicate = predicate;
         this.function = function;
     }

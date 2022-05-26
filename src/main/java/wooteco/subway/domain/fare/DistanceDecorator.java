@@ -10,6 +10,6 @@ public class DistanceDecorator extends Decorator {
 
     @Override
     public double calculateExtraFare() {
-        return super.calculateExtraFare() + DistanceExtraFare.valueOf(distance);
+        return super.calculateExtraFare() + DistanceFarePolicy.valueOf(distance);
     }
 }

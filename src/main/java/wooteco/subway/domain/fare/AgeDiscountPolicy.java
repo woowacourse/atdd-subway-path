@@ -5,10 +5,11 @@ import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public enum AgeFare {
-    CHILDREN((price) -> deduct(price) * 0.5, (age) -> age >= 6 && age < 13),
-    TEENAGER((price) -> deduct(price) * 0.8, (age) -> age >= 13 && age < 19),
-    NORMAL(Double::valueOf, ignore -> true),
+public enum AgeDiscountPolicy {
+    BABY(price -> 0D, age -> 0 < age && age < 6),
+    CHILDREN(price -> deduct(price) * 0.5, age -> 6 <= age && age < 13),
+    TEENAGER(price -> deduct(price) * 0.8, age -> 13 <= age && age < 19),
+    NORMAL(price -> price, ignore -> true),
     ;
 
     private final Function<Double, Double> function;
@@ -18,7 +19,7 @@ public enum AgeFare {
         return price - 350;
     }
 
-    AgeFare(final Function<Double, Double> function, final Predicate<Integer> predicate) {
+    AgeDiscountPolicy(final Function<Double, Double> function, final Predicate<Integer> predicate) {
         this.function = function;
         this.predicate = predicate;
     }
