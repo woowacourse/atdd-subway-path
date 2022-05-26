@@ -12,4 +12,9 @@ public class SpecialExtraFareStrategy implements ExtraFareStrategy {
         return ((int) (Math.ceil((target) / SECOND_ROLE_EXTRA_FARE_STANDARD))
                 * FARE_UNIT) + MAX_BASIC_EXTRA_FARE;
     }
+
+    @Override
+    public boolean isMatch(int distance) {
+        return START_SPECIAL_EXTRA_FARE_DISTANCE < distance;
+    }
 }

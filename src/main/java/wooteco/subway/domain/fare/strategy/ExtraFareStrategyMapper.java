@@ -1,31 +1,22 @@
 package wooteco.subway.domain.fare.strategy;
 
 import java.util.Arrays;
-import java.util.function.Predicate;
 
 public enum ExtraFareStrategyMapper {
 
-    NON(distance -> Constants.NO_EXTRA_STANDARD_DISTANCE >= distance, new NonExtraFareStrategy()),
-    BASIC(distance -> Constants.NO_EXTRA_STANDARD_DISTANCE < distance
-            && Constants.BASIC_EXTRA_FARE_MAX_DISTANCE >= distance, new BasicExtraFareStrategy()),
-    SPECIAL(distance -> Constants.BASIC_EXTRA_FARE_MAX_DISTANCE < distance, new SpecialExtraFareStrategy());
+    NON(new NonExtraFareStrategy()),
+    BASIC(new BasicExtraFareStrategy()),
+    SPECIAL(new SpecialExtraFareStrategy());
 
-    static class Constants {
-        public static final int NO_EXTRA_STANDARD_DISTANCE = 10;
-        private static final int BASIC_EXTRA_FARE_MAX_DISTANCE = 50;
-    }
-
-    private Predicate<Integer> predicate;
     private ExtraFareStrategy strategy;
 
-    ExtraFareStrategyMapper(Predicate<Integer> predicate, ExtraFareStrategy strategy) {
-        this.predicate = predicate;
+    ExtraFareStrategyMapper(ExtraFareStrategy strategy) {
         this.strategy = strategy;
     }
 
     public static ExtraFareStrategy findExtraFareStrategy(int distance) {
         return Arrays.stream(values())
-                .filter(role -> role.predicate.test(distance))
+                .filter(strategy -> strategy.strategy.isMatch(distance))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("전략을 찾을 수 없습니다."))
                 .getStrategy();
