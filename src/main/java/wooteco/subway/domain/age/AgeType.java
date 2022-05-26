@@ -1,6 +1,7 @@
 package wooteco.subway.domain.age;
 
 import java.util.Arrays;
+import wooteco.subway.exception.IllegalInputException;
 
 public enum AgeType {
 
@@ -21,7 +22,7 @@ public enum AgeType {
         return Arrays.stream(values())
                 .filter(ageType -> ageType.isType(age))
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalInputException("해당하는 나이 유형을 찾을 수 없습니다."));
     }
 
     private boolean isType(final int age) {

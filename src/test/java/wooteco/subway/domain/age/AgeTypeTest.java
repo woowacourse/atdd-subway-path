@@ -1,6 +1,7 @@
 package wooteco.subway.domain.age;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static wooteco.subway.domain.age.AgeType.ADULT;
 import static wooteco.subway.domain.age.AgeType.BABY;
 import static wooteco.subway.domain.age.AgeType.KIDS;
@@ -9,6 +10,7 @@ import static wooteco.subway.domain.age.AgeType.TEENAGER;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import wooteco.subway.exception.IllegalInputException;
 
 public class AgeTypeTest {
 
@@ -56,4 +58,13 @@ public class AgeTypeTest {
         assertThat(actual).isEqualTo(ADULT);
     }
 
+    @ParameterizedTest
+    @DisplayName("해당하는 나이 유형이 없는 경우 예외를 던진다.")
+    @ValueSource(ints = {-70, -1})
+    void Find_InvalidAge_ExceptionThrown(int age) {
+        //when, then
+        assertThatThrownBy(() -> AgeType.from(age))
+                .isInstanceOf(IllegalInputException.class)
+                .hasMessage("해당하는 나이 유형을 찾을 수 없습니다.");
+    }
 }
