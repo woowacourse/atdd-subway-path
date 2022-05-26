@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -35,5 +36,18 @@ class FareCalculatorTest {
 
         // then
         assertThat(result).isEqualTo(expected);
+    }
+
+    @DisplayName("요금 계산기 생성 불가능")
+    @ParameterizedTest(name = "{0}km / {1}살")
+    @CsvSource(value = {"0,20", "-1,20", "10,0", "10,-1"})
+    void throw_exception_when_calculate(int distance, int age) {
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> new FareCalculator(distance, 0, age))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }

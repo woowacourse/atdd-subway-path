@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 
 public enum Age {
 
-    CHILD(age -> age < 13, 50),
+    CHILD(age -> age > 0 && age < 13, 50),
     YOUTH(age -> age >= 13 && age < 19, 20),
     ADULT(age -> age >= 19, 0);
 
