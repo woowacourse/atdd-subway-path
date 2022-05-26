@@ -9,6 +9,9 @@ public class Sections {
 
     private List<Section> sections;
 
+    public Sections(){
+    }
+
     private Sections(List<Section> sections) {
         this.sections = sections;
     }

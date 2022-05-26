@@ -1,6 +1,8 @@
 package wooteco.subway.domain;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Line {
     private final int extraFare;
@@ -21,6 +23,7 @@ public class Line {
         this.name = name;
         this.color = color;
         this.extraFare = extraFare;
+        this.sections = new Sections();
     }
 
     public Line(Long id, String name, String color, int extraFare) {
@@ -28,6 +31,7 @@ public class Line {
         this.name = name;
         this.color = color;
         this.extraFare = extraFare;
+        this.sections = new Sections();
     }
 
     public static Line from(Line line, List<Section> sections) {
