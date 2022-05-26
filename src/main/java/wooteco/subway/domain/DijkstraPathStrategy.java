@@ -1,8 +1,7 @@
 package wooteco.subway.domain;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -17,7 +16,13 @@ public class DijkstraPathStrategy implements PathStrategy {
     @Override
     public Path findPath(List<Section> sections, Long source, Long target) {
         GraphPath graph = initPathGraph(sections, gatherStationIds(sections), source, target);
-        return new Path(graph.getEdgeList(), (int)graph.getWeight());
+
+        List<SectionWeightEdge> edges = graph.getEdgeList();
+        List<Long> lineIds = edges.stream()
+                .map(SectionWeightEdge::getLineId)
+                .collect(Collectors.toList());
+
+        return new Path(graph.getVertexList(), lineIds, (int)graph.getWeight());
     }
 
     private static Set<Long> gatherStationIds(List<Section> sections) {
@@ -37,9 +42,8 @@ public class DijkstraPathStrategy implements PathStrategy {
 
         for (Section section : sections) {
             graph.addEdge(section.getUpStationId(), section.getDownStationId(),
-                    new SectionWeightEdge(section.getLineId(), section.getUpStationId(), section.getDownStationId(), section.getDistance()));
+                    new SectionWeightEdge(section.getLineId(), section.getDistance()));
         }
-
         return makePath(source, target, graph);
     }
 

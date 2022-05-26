@@ -33,7 +33,7 @@ public class PathService {
     @Transactional(readOnly = true)
     public PathResponse findShortestPath(PathRequest pathRequest) {
         Path path = pathStrategy.findPath(sectionDao.findAll(), pathRequest.getSource(), pathRequest.getTarget());
-        List<Station> stations = stationDao.findByIds(new ArrayList<>(path.getStationIds()));
+        List<Station> stations = stationDao.findByIds(path.getStationIds());
         return new PathResponse(stations, path.getDistance(), path.calculateFare(lineDao.findAll(), pathRequest.getAge()));
     }
 }

@@ -5,11 +5,13 @@ import java.util.*;
 
 public class Path {
 
-    private final List<SectionWeightEdge> edges;
+    private final List<Long> stationIds;
+    private final List<Long> lineIds;
     private final int distance;
 
-    public Path(List<SectionWeightEdge> edges, int distance) {
-        this.edges = edges;
+    public Path(List<Long> stationIds, List<Long> lineIds, int distance) {
+        this.stationIds = Collections.unmodifiableList(stationIds);
+        this.lineIds = lineIds;
         this.distance = distance;
     }
 
@@ -19,8 +21,9 @@ public class Path {
     }
 
     private int findMostExpensiveExtraFare(List<Line> lines) {
-        return edges.stream()
-                .mapToInt(edges -> findExtraFare(lines, edges.getLineId()))
+        return lineIds
+                .stream()
+                .mapToInt(id -> findExtraFare(lines, id))
                 .max()
                 .orElseThrow(NoSuchElementException::new);
     }
@@ -33,13 +36,8 @@ public class Path {
                 .getExtraFare();
     }
 
-    public Set<Long> getStationIds() {
-        Set<Long> stations = new LinkedHashSet<>();
-        for (SectionWeightEdge edge : edges) {
-            stations.add(edge.getUpStationId());
-            stations.add(edge.getDownStationId());
-        }
-        return Collections.unmodifiableSet(stations);
+    public List<Long> getStationIds() {
+        return stationIds;
     }
 
     public int getDistance() {
