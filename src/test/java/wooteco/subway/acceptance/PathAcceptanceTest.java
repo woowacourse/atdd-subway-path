@@ -272,7 +272,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {4, 5, 19, 20})
+    @ValueSource(ints = {21, 99, 19, 20})
     @DisplayName("할인 대상이 아닌 나이면 노선별 요금에 따라서만 가격이 적용되고 200-ok를 반환한다.")
     void getPathFareWithOther(int age) {
 

@@ -50,7 +50,7 @@ public class AgeDecorator extends Decorator {
         }
 
         private static boolean isNormal(final Integer age) {
-            return age > 19;
+            return age >= 19;
         }
 
         private static double deduct(final double price) {
