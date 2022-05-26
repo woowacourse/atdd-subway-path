@@ -31,7 +31,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         stationRequest2 = new StationRequest("군자역");
         upStationId = createStation(stationRequest1);
         downStationId = createStation(stationRequest2);
-        lineRequest = new LineRequest("5호선", "bg-purple-600", upStationId, downStationId, 10);
+        lineRequest = new LineRequest("5호선", "bg-purple-600", upStationId, downStationId, 10, 0);
         createResponse = post("/lines", lineRequest);
     }
 
@@ -54,7 +54,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("노션을 조회한다.")
     @Test
     void getLines() {
-        final LineRequest lineRequest2 = new LineRequest("분당선", "bg-green-600", upStationId, downStationId, 2);
+        final LineRequest lineRequest2 = new LineRequest("분당선", "bg-green-600", upStationId, downStationId, 2, 0);
         final ExtractableResponse<Response> createResponse2 = post("/lines", lineRequest2);
         final LineResponse lineResponse1 = createResponse.jsonPath().getObject(".", LineResponse.class);
         final LineResponse lineResponse2 = createResponse2.jsonPath().getObject(".", LineResponse.class);
@@ -84,7 +84,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         final String expectedName = "분당선";
         final String expectedColor = "bg-yellow-600";
         final String uri = createResponse.header("Location");
-        final LineRequest updateRequest = new LineRequest(expectedName, expectedColor, upStationId, downStationId, 5);
+        final LineRequest updateRequest = new LineRequest(expectedName, expectedColor, upStationId, downStationId, 5, 0);
 
         put(uri, updateRequest);
         final ExtractableResponse<Response> response = get(uri);
@@ -105,18 +105,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> response = delete(uri);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철역을 생성할 경우 예외를 발생한다.")
-    @Test
-    void createLineWithDuplicateName() {
-        final ExtractableResponse<Response> response = post("/lines", lineRequest);
-        final String errorMessage = response.body().htmlPath().getString(".");
-
-        assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(errorMessage).isEqualTo("이미 존재하는 노선입니다.")
-        );
     }
 
     private Long createStation(final StationRequest stationRequest) {

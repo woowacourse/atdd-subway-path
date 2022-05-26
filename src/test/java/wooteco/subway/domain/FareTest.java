@@ -13,8 +13,8 @@ class FareTest {
     @ParameterizedTest
     @ValueSource(ints = {1, 5, 6, 10})
     void getFare(final int distance) {
-        final Fare fare = Fare.from(distance);
-        assertThat(fare.getPrice()).isEqualTo(1250);
+        final Fare fare = Fare.of(distance, 0, AgeDiscountPolicy.ADULT);
+        assertThat(fare.getAmount()).isEqualTo(1250);
     }
 
     @DisplayName("이용 거리 10km 초과 50km 이하시 추가운임을 부과한다.")
@@ -28,8 +28,8 @@ class FareTest {
             "50, 2050"
     })
     void calculateOverFare_below50km(final int distance, final int price) {
-        final Fare fare = Fare.from(distance);
-        assertThat(fare.getPrice()).isEqualTo(price);
+        final Fare fare = Fare.of(distance, 0, AgeDiscountPolicy.ADULT);
+        assertThat(fare.getAmount()).isEqualTo(price);
     }
 
     @DisplayName("이용 거리 50km 초과시 추가운임을 부과한다.")
@@ -40,7 +40,15 @@ class FareTest {
             "100, 2750"
     })
     void calculateOverFare_over50km(final int distance, final int price) {
-        final Fare fare = Fare.from(distance);
-        assertThat(fare.getPrice()).isEqualTo(price);
+        final Fare fare = Fare.of(distance, 0, AgeDiscountPolicy.ADULT);
+        assertThat(fare.getAmount()).isEqualTo(price);
+    }
+
+    @DisplayName("노선의 추가 요금에 따라 추가운임을 부과한다")
+    @ParameterizedTest
+    @ValueSource(ints = {100, 200, 300, 400, 500, 1000})
+    void calculateOverFareByLine(final int overFareByLine) {
+        final Fare fare = Fare.of(1, overFareByLine, AgeDiscountPolicy.ADULT);
+        assertThat(fare.getAmount()).isEqualTo(1250 + overFareByLine);
     }
 }

@@ -9,19 +9,19 @@ public class Section {
     private final Station upStation;
     private final Station downStation;
     private final int distance;
-    private final Long lineId;
+    private final Line line;
 
-    public Section(final Long id, final Station upStation, final Station downStation, final int distance, final Long lineId) {
+    public Section(final Long id, final Station upStation, final Station downStation, final int distance, final Line line) {
         validateDuplicatedStations(upStation, downStation);
         this.id = id;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
-        this.lineId = lineId;
+        this.line = line;
     }
 
-    public Section(final Station upStation, final Station downStation, final int distance, final Long lineId) {
-        this(null, upStation, downStation, distance, lineId);
+    public Section(final Station upStation, final Station downStation, final int distance, final Line line) {
+        this(null, upStation, downStation, distance, line);
     }
 
     public Section(final Station upStation, final Station downStation, final int distance) {
@@ -33,11 +33,11 @@ public class Section {
     }
 
     public Section createSectionByUpStation(final Section section) {
-        return new Section(this.id, this.upStation, section.upStation, calculateDistance(section), this.lineId);
+        return new Section(this.id, this.upStation, section.upStation, calculateDistance(section), this.line);
     }
 
     public Section createSectionByDownStation(final Section section) {
-        return new Section(this.id, section.downStation, this.downStation, calculateDistance(section), this.lineId);
+        return new Section(this.id, section.downStation, this.downStation, calculateDistance(section), this.line);
     }
 
     public Section createSectionInBetween(Section section) {
@@ -48,7 +48,7 @@ public class Section {
     }
 
     public Section merge(final Section section) {
-        return new Section(this.upStation, section.downStation, mergeDistance(section), this.lineId);
+        return new Section(this.upStation, section.downStation, mergeDistance(section), this.line);
     }
 
     private void validateDuplicatedStations(final Station upStation, final Station downStation) {
@@ -77,8 +77,8 @@ public class Section {
         return downStation;
     }
 
-    public Long getLineId() {
-        return lineId;
+    public Line getLine() {
+        return line;
     }
 
     public int getDistance() {
@@ -90,16 +90,12 @@ public class Section {
         if (this == o) return true;
         if (!(o instanceof Section)) return false;
         final Section section = (Section) o;
-        return distance == section.distance &&
-                Objects.equals(id, section.id) &&
-                Objects.equals(upStation, section.upStation) &&
-                Objects.equals(downStation, section.downStation) &&
-                Objects.equals(lineId, section.lineId);
+        return distance == section.distance && Objects.equals(id, section.id) && Objects.equals(upStation, section.upStation) && Objects.equals(downStation, section.downStation) && Objects.equals(line, section.line);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, upStation, downStation, distance, lineId);
+        return Objects.hash(id, upStation, downStation, distance, line);
     }
 
     @Override
@@ -109,7 +105,7 @@ public class Section {
                 ", upStation=" + upStation +
                 ", downStation=" + downStation +
                 ", distance=" + distance +
-                ", lineId=" + lineId +
+                ", line=" + line +
                 '}';
     }
 }

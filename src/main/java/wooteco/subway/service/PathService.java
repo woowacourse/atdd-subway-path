@@ -1,21 +1,21 @@
 package wooteco.subway.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Path;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
-import wooteco.subway.domain.Station;
-import wooteco.subway.domain.strategy.DijkstraStrategy;
+import wooteco.subway.domain.*;
 import wooteco.subway.domain.strategy.ShortestPathStrategy;
+import wooteco.subway.dto.PathResponse;
 import wooteco.subway.exception.DataNotFoundException;
 import wooteco.subway.exception.DuplicatedSourceAndTargetException;
 import wooteco.subway.exception.PathNotExistsException;
 import wooteco.subway.exception.SectionNotExistException;
+import wooteco.subway.service.dto.PathServiceRequest;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class PathService {
 
     private final StationDao stationDao;
@@ -28,20 +28,23 @@ public class PathService {
         this.strategy = strategy;
     }
 
-    public Path createPath(final long sourceId, final long targetId, final int age) {
+    public PathResponse createPath(final PathServiceRequest request) {
+        final Long sourceId = request.getSource();
+        final Long targetId = request.getTarget();
+        final int age = request.getAge();
+
         validateDuplicatedSourceAndTarget(sourceId, targetId);
-        final Station source = stationDao.findById(sourceId)
-                .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철역 ID입니다."));
-        final Station target = stationDao.findById(targetId)
-                .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철역 ID입니다."));
+        final Station source = findStationById(sourceId);
+        final Station target = findStationById(targetId);
         final List<Section> rawSections = sectionDao.findAll();
         final Sections sections = new Sections(rawSections);
 
         validateSectionExistByStationId(sections, sourceId);
         validateSectionExistByStationId(sections, targetId);
-
-        return strategy.findPath(source, target, sections)
+        final Path path = strategy.findPath(source, target, sections)
                 .orElseThrow(PathNotExistsException::new);
+
+        return PathResponse.of(path, getFare(path, age));
     }
 
     private void validateSectionExistByStationId(final Sections sections, final long stationId) {
@@ -54,5 +57,18 @@ public class PathService {
         if (sourceId == targetId) {
             throw new DuplicatedSourceAndTargetException();
         }
+    }
+
+    private Station findStationById(final long stationId) {
+        return stationDao.findById(stationId)
+                .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철역 ID입니다."));
+    }
+
+    private Fare getFare(final Path path, final int age) {
+        final AgeDiscountPolicy ageDiscountPolicy = AgeDiscountPolicy.from(age);
+        final int distance = path.getDistance();
+        final int highestOverFareByLine = path.getLines().getHighestOverFare();
+
+        return Fare.of(distance, highestOverFareByLine, ageDiscountPolicy);
     }
 }

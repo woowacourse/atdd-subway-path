@@ -3,13 +3,11 @@ package wooteco.subway.acceptance;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationRequest;
@@ -40,7 +38,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         stationId2 = Long.parseLong(stationResponse2.header("Location").split("/")[2]);
         stationId3 = Long.parseLong(stationResponse3.header("Location").split("/")[2]);
 
-        lineId = createLine(new LineRequest("2호선", "bg-green-600", stationId1, stationId2, 10));
+        lineId = createLine(new LineRequest("2호선", "bg-green-600", stationId1, stationId2, 10, 0));
         createSection(new SectionRequest(stationId2, stationId3, 5));
     }
 
@@ -48,11 +46,8 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void createPath() {
         // when
-        final ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .when()
-                .get("/paths?source=" + stationId1 + "&target=" + stationId3 + "&age=15")
-                .then().log().all()
-                .extract();
+        final ExtractableResponse<Response> response =
+                get("/paths?source=" + stationId1 + "&target=" + stationId3 + "&age=20");
 
         // then
         final List<StationResponse> stations = response.jsonPath().getList("stations", StationResponse.class);
@@ -69,34 +64,17 @@ class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> createStation(final StationRequest stationRequest) {
-        return RestAssured.given().log().all()
-                .body(stationRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all()
-                .extract();
+        return post("/stations", stationRequest);
     }
 
     private Long createLine(final LineRequest lineRequest) {
-        final ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(lineRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines")
-                .then().log().all()
-                .extract();
+        final ExtractableResponse<Response> response = post("/lines", lineRequest);
+
         return response.jsonPath().getLong("id");
     }
 
     private void createSection(final SectionRequest sectionRequest) {
-        RestAssured.given().log().all()
-                .body(sectionRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/lines/" + lineId + "/sections")
-                .then().log().all()
-                .extract();
+        post("/lines/" + lineId + "/sections", sectionRequest);
     }
 }
 

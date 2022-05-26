@@ -15,8 +15,8 @@ class DijkstraStrategyTest {
     void findPath() {
         Station station1 = new Station(1L, "선릉역");
         Station station2 = new Station(2L, "역삼역");
-        Line line = new Line(1L, "2호선", "bg-green-600");
-        Section section1 = new Section(1L, station1, station2, 5, line.getId());
+        Line line = new Line(1L, "2호선", "bg-green-600", 0);
+        Section section1 = new Section(1L, station1, station2, 5, line);
         Sections sections = new Sections(List.of(section1));
         ShortestPathStrategy strategy = new DijkstraStrategy();
 

@@ -15,6 +15,7 @@ import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.dto.SectionRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,15 +48,19 @@ class SectionServiceTest {
         savedLine = lineDao.save(new Line("5호선", "bg-purple-600"));
         upStation = stationDao.save(new Station("아차산역"));
         downStation = stationDao.save(new Station("군자역"));
-        section = sectionDao.save(new Section(upStation, downStation, 10, savedLine.getId()));
+        section = sectionDao.save(new Section(upStation, downStation, 10, savedLine));
     }
 
     @DisplayName("(갈래길이 아닌 경우) 특정 노선에 구간을 추가한다.")
     @Test
     void addNotBranchedSection() {
         final Station newStation = stationDao.save(new Station("마장역"));
-        final Section section = new Section(downStation, newStation, 10, savedLine.getId());
-        final Section savedSection = sectionService.addSection(savedLine.getId(), section);
+        final Section section = new Section(downStation, newStation, 10, savedLine);
+        final SectionRequest sectionRequest = new SectionRequest(
+                section.getUpStation().getId(),
+                section.getDownStation().getId(),
+                10);
+        final Section savedSection = sectionService.addSection(savedLine.getId(), sectionRequest);
 
         assertThat(savedSection).usingRecursiveComparison()
                 .ignoringFields("id")
@@ -66,8 +71,13 @@ class SectionServiceTest {
     @Test
     void addBranchedSection() {
         final Station newStation = stationDao.save(new Station("마장역"));
-        final Section newSection = new Section(newStation, downStation, 9, savedLine.getId());
-        final Section savedSection = sectionService.addSection(savedLine.getId(), newSection);
+        final Section newSection = new Section(newStation, downStation, 9, savedLine);
+        final SectionRequest sectionRequest = new SectionRequest(
+                newSection.getUpStation().getId(),
+                newSection.getDownStation().getId(),
+                newSection.getDistance()
+        );
+        final Section savedSection = sectionService.addSection(savedLine.getId(), sectionRequest);
 
         final Optional<Section> foundSection = sectionDao.findAllByLineId(savedLine.getId())
                 .stream()
@@ -81,7 +91,7 @@ class SectionServiceTest {
                         .isEqualTo(newSection),
                 () -> assertThat(foundSection.get()).usingRecursiveComparison()
                         .ignoringFields("id")
-                        .isEqualTo(new Section(upStation, newStation, 1, savedLine.getId()))
+                        .isEqualTo(new Section(upStation, newStation, 1, savedLine))
         );
     }
 
@@ -89,12 +99,12 @@ class SectionServiceTest {
     @Test
     void delete() {
         final Station newStation = stationDao.save(new Station("마장역"));
-        sectionDao.save(new Section(downStation, newStation, 10, savedLine.getId()));
+        sectionDao.save(new Section(downStation, newStation, 10, savedLine));
 
         sectionService.delete(savedLine.getId(), downStation.getId());
 
         final List<Section> list = sectionDao.findAllByLineId(savedLine.getId());
-        // 아차산 - 마장
+
         Optional<Section> foundSection = list.stream()
                 .filter(section -> section.getDownStation().equals(newStation))
                 .findAny();
@@ -103,6 +113,6 @@ class SectionServiceTest {
 
         assertThat(foundSection.get()).usingRecursiveComparison()
                 .ignoringFields("id")
-                .isEqualTo(new Section(upStation, newStation, 20, savedLine.getId()));
+                .isEqualTo(new Section(upStation, newStation, 20, savedLine));
     }
 }

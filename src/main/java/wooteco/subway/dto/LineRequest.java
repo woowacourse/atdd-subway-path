@@ -3,6 +3,7 @@ package wooteco.subway.dto;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -25,6 +26,9 @@ public class LineRequest {
     @NotNull(message = "구간의 거리는 공백이거나 음수일 수 없습니다.")
     private int distance;
 
+    @Min(value = 0, message = "노선의 추가 요금은 음수일 수 없습니다.")
+    private int extraFare;
+
 
     private LineRequest() {
     }
@@ -33,16 +37,18 @@ public class LineRequest {
                        final String color,
                        final Long upStationId,
                        final Long downStationId,
-                       final int distance) {
+                       final int distance,
+                       final int extraFare) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+        this.extraFare = extraFare;
     }
 
     public Line toEntity() {
-        return new Line(name, color);
+        return new Line(name, color, extraFare);
     }
 
     public Section toSectionEntity() {
@@ -67,5 +73,9 @@ public class LineRequest {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 }

@@ -5,13 +5,16 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.exception.DataNotFoundException;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class SectionService {
 
     private final SectionDao sectionDao;
@@ -25,15 +28,14 @@ public class SectionService {
     }
 
     @Transactional
-    public Section addSection(final long lineId, final Section requestSection) {
-        final Station upStation = stationDao.findById(requestSection.getUpStation().getId())
-                .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철역 ID입니다."));
-        final Station downStation = stationDao.findById(requestSection.getDownStation().getId())
-                .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철역 ID입니다."));
-        lineDao.findById(lineId)
+    public Section addSection(final long lineId, final SectionRequest sectionRequest) {
+        final Section rawSection = SectionRequest.toEntity(sectionRequest);
+        final Station upStation = findStationById(rawSection.getUpStation());
+        final Station downStation = findStationById(rawSection.getDownStation());
+        final Line line = lineDao.findById(lineId)
                 .orElseThrow(() -> new DataNotFoundException("존재하지 않는 노선 ID입니다."));
 
-        Section section = new Section(upStation, downStation, requestSection.getDistance(), lineId);
+        Section section = new Section(upStation, downStation, rawSection.getDistance(), line);
         final Sections sections = new Sections(sectionDao.findAllByLineId(lineId));
         sections.add(section);
 
@@ -51,10 +53,8 @@ public class SectionService {
         sectionDao.saveAll(sections.getSections());
     }
 
-    @Transactional(readOnly = true)
-    public List<Station> getStationsByLine(final long lineId) {
-        final List<Section> lineSections = sectionDao.findAllByLineId(lineId);
-        final Sections sections = new Sections(lineSections);
-        return sections.extractStations();
+    private Station findStationById(final Station station) {
+        return stationDao.findById(station.getId())
+                .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철역 ID입니다."));
     }
 }
