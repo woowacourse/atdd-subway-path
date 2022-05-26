@@ -3,10 +3,10 @@ package wooteco.subway.dao;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -80,13 +80,9 @@ public class LineDao {
     }
 
     public List<Integer> findExtraFaresByIds(List<Long> ids) {
-        String sql = "select extra_fare from line where id in (" + stringify(ids) + ")";
-        return jdbcTemplate.query(sql, (resultSet, rowNum) -> resultSet.getInt("extra_fare"));
-    }
-
-    private String stringify(List<Long> ids) {
-        return ids.stream()
-                .map(String::valueOf)
-                .collect(Collectors.joining(", "));
+        String sql = "select extra_fare from line where id in (:ids)";
+        RowMapper<Integer> rowMapper = (resultSet, rowNum) -> resultSet.getInt("extra_fare");
+        SqlParameterSource parameters = new MapSqlParameterSource("ids", ids);
+        return jdbcTemplate.query(sql, parameters, rowMapper);
     }
 }
