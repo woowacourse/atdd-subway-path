@@ -1,6 +1,6 @@
 package wooteco.subway.domain.fare;
 
-import java.util.List;
+import java.util.Arrays;
 
 public class FareCalculator {
 
@@ -19,9 +19,7 @@ public class FareCalculator {
     }
 
     private int calculateByDistance() {
-        List<Distance> distances = Distance.findAvailableDistances(distance);
-
-        return distances.stream()
+        return Arrays.stream(Distance.values())
                 .mapToInt(it -> it.calculateAdditionalFare(distance))
                 .sum();
     }

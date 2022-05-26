@@ -1,10 +1,5 @@
 package wooteco.subway.domain.fare;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
 public enum Distance {
 
     BASIC(0, 0, 9),
@@ -24,18 +19,10 @@ public enum Distance {
         this.endPoint = endPoint;
     }
 
-    public static List<Distance> findAvailableDistances(int distance) {
-        return Arrays.stream(Distance.values())
-                .filter(it -> it.startPoint < distance)
-                .sorted(Comparator.comparingInt(Distance::getStartPoint).reversed())
-                .collect(Collectors.toUnmodifiableList());
-    }
-
-    private int getStartPoint() {
-        return startPoint;
-    }
-
     public int calculateAdditionalFare(int distance) {
+        if (distance <= startPoint) {
+            return 0;
+        }
         if (BASIC == this) {
             return BASIC_FARE;
         }
