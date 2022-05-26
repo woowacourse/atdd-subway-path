@@ -18,8 +18,6 @@ public class PathController {
 
     @GetMapping("/paths")
     public ResponseEntity<PathResponse> getPath(@ModelAttribute PathRequest pathRequest) {
-        // ModelAttribute는 직렬화할 때 리플렉션이 아닌 setter 사용
-        //
         PathResponse pathResponse = pathService.getPath(pathRequest);
         return ResponseEntity.ok().body(pathResponse);
     }

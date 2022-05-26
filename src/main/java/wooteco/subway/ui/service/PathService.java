@@ -1,9 +1,14 @@
 package wooteco.subway.ui.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.LineDao;
+import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.Section;
 import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.distance.Kilometer;
@@ -16,21 +21,27 @@ import wooteco.subway.dto.response.StationResponse;
 
 @Service
 public class PathService {
-    private final LineDao lineDao;
     private final StationDao stationDao;
+    private final SectionDao sectionDao;
 
-    public PathService(LineDao lineDao, StationDao stationDao) {
-        this.lineDao = lineDao;
+    public PathService(StationDao stationDao, SectionDao sectionDao) {
         this.stationDao = stationDao;
+        this.sectionDao = sectionDao;
     }
 
     public PathResponse getPath(PathRequest pathRequest) {
-        List<Line> lines = lineDao.findAll();
+        List<Section> sections = sectionDao.findAll();
+        Map<Section, Fare> sectionWithExtraFare = sections.stream()
+                .collect(Collectors.toMap(
+                        section -> section,
+                        section -> sectionDao.findExtraFareById(section.getId())
+                ));
+
         Station sourceStation = findStationById(pathRequest.getSource());
         Station targetStation = findStationById(pathRequest.getTarget());
         Age age = new Age(pathRequest.getAge());
 
-        Path shortestPath = Path.of(lines, sourceStation, targetStation);
+        Path shortestPath = Path.of(sectionWithExtraFare, sourceStation, targetStation);
         List<Station> stations = shortestPath.getStations();
         Kilometer distance = shortestPath.getDistance();
         Fare fare = shortestPath.getFare(age);

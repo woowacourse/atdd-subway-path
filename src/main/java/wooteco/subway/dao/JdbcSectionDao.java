@@ -10,6 +10,7 @@ import java.util.Objects;
 
 import javax.sql.DataSource;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.fare.Fare;
 
 @Repository
 public class JdbcSectionDao implements SectionDao {
@@ -79,6 +81,18 @@ public class JdbcSectionDao implements SectionDao {
         return delete(sql, lineId);
     }
 
+    private int delete(String sql, Long id) {
+        int deletedCount = jdbcTemplate.update(sql, id);
+        validateRemoved(deletedCount, id);
+        return deletedCount;
+    }
+
+    private void validateRemoved(int count, Long id) {
+        if (count == 0) {
+            throw new IllegalStateException(id + "로 조회되는 구간이 존재하지 않습니다.");
+        }
+    }
+
     @Override
     public List<Section> findAll() {
         String sql = "SELECT "
@@ -106,15 +120,18 @@ public class JdbcSectionDao implements SectionDao {
         );
     }
 
-    private int delete(String sql, Long id) {
-        int deletedCount = jdbcTemplate.update(sql, id);
-        validateRemoved(deletedCount, id);
-        return deletedCount;
-    }
-
-    private void validateRemoved(int count, Long id) {
-        if (count == 0) {
-            throw new IllegalStateException(id + "로 조회되는 구간이 존재하지 않습니다.");
+    @Override
+    public Fare findExtraFareById(Long id) {
+        String sql = "SELECT "
+                + "l.extra_fare "
+                + "FROM section AS sec "
+                + "JOIN line AS l ON sec.line_id = l.id "
+                + "WHERE sec.id = ?";
+        try {
+            Integer extraFare = jdbcTemplate.queryForObject(sql, Integer.class, id);
+            return new Fare(extraFare);
+        } catch (EmptyResultDataAccessException e) {
+            throw new IllegalStateException("조회하고자 하는 구간이 존재하지 않습니다.");
         }
     }
 }

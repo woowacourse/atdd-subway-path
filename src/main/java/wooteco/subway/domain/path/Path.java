@@ -2,20 +2,20 @@ package wooteco.subway.domain.path;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Station;
+import wooteco.subway.domain.distance.Kilometer;
 import wooteco.subway.domain.fare.Age;
 import wooteco.subway.domain.fare.AgeFarePolicy;
 import wooteco.subway.domain.fare.DistanceFarePolicy;
 import wooteco.subway.domain.fare.Fare;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
-import wooteco.subway.domain.Station;
-import wooteco.subway.domain.distance.Kilometer;
 
 public class Path {
 
@@ -29,14 +29,32 @@ public class Path {
         this.extraFare = extraFare;
     }
 
-    public static Path of(List<Line> lines, Station source, Station target) {
+    public static Path of(Map<Section, Fare> sectionWithExtraFare, Station source, Station target) {
         WeightedMultigraph<Station, JgraphtPath> graph = new WeightedMultigraph<>(JgraphtPath.class);
-        addVertex(graph, lines);
-        addEdge(graph, lines);
+        addVertex(sectionWithExtraFare, graph);
+        addEdge(sectionWithExtraFare, graph);
         DijkstraShortestPath<Station, JgraphtPath> algorithms = new DijkstraShortestPath<>(graph);
         GraphPath<Station, JgraphtPath> graphPath = algorithms.getPath(source, target);
         return new Path(graphPath.getVertexList(), Kilometer.from((int)graphPath.getWeight()),
                 new Fare(getExtraFare(graphPath)));
+    }
+
+    private static void addVertex(Map<Section, Fare> sectionWithExtraFare,
+                                  WeightedMultigraph<Station, JgraphtPath> graph) {
+        Set<Station> stations = sectionWithExtraFare.keySet()
+                .stream()
+                .flatMap(section -> Stream.of(section.getUpStation(), section.getDownStation()))
+                .collect(Collectors.toSet());
+        for(Station station : stations) {
+            graph.addVertex(station);
+        }
+    }
+
+    private static void addEdge(Map<Section, Fare> sectionWithExtraFare,
+                                  WeightedMultigraph<Station, JgraphtPath> graph) {
+        sectionWithExtraFare.forEach(((section, fare) ->
+                graph.addEdge(section.getUpStation(), section.getDownStation(),
+                        new JgraphtPath(section.getDistance(), fare.value()))));
     }
 
     private static int getExtraFare(GraphPath<Station, JgraphtPath> graphPath) {
@@ -44,31 +62,6 @@ public class Path {
                 .mapToInt(JgraphtPath::getExtraFare)
                 .max()
                 .orElse(0);
-    }
-
-    private static void addVertex(WeightedMultigraph<Station, JgraphtPath> graph, List<Line> lines) {
-        for (Station station : getStations(lines)) {
-            graph.addVertex(station);
-        }
-    }
-
-    private static Set<Station> getStations(List<Line> lines) {
-        return lines.stream()
-                .flatMap(line -> line.getStations().stream())
-                .collect(Collectors.toSet());
-    }
-
-    private static void addEdge(WeightedMultigraph<Station, JgraphtPath> graph, List<Line> lines) {
-        for (Line line : lines) {
-            addEdge(graph, line.getSections(), line.getExtraFare());
-        }
-    }
-
-    private static void addEdge(WeightedMultigraph<Station, JgraphtPath> graph, Sections sections, int extraFare) {
-        for (Section section : sections.getSections()) {
-            graph.addEdge(section.getUpStation(), section.getDownStation(),
-                    new JgraphtPath(section.getDistance(), extraFare));
-        }
     }
 
     public Kilometer getDistance() {

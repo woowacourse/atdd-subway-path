@@ -64,7 +64,7 @@ public class JdbcLineDao implements LineDao {
                 resultSet.getString("name"),
                 resultSet.getString("color"),
                 findSectionsById(resultSet.getLong("id")),
-                resultSet.getInt("extraFare")
+                resultSet.getInt("extra_fare")
         );
     }
 
@@ -97,7 +97,7 @@ public class JdbcLineDao implements LineDao {
 
     @Override
     public int update(Line line) {
-        final String sql = "UPDATE line SET name = ?, color = ?, extraFare = ? WHERE id = ?";
+        final String sql = "UPDATE line SET name = ?, color = ?, extra_fare = ? WHERE id = ?";
         final int updatedCount = jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getExtraFare(),
                 line.getId());
         validateUpdated(updatedCount, line);
