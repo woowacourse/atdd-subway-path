@@ -46,8 +46,9 @@ public class Section {
     }
 
     public void reduceDistance(Section other) {
-        validDistance(distance - other.distance);
-        this.distance -= other.distance;
+        int changedDistance = distance - other.distance;
+        validDistance(changedDistance);
+        this.distance = changedDistance;
     }
 
     public void addDistance(Section other) {
