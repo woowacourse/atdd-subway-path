@@ -30,7 +30,7 @@ public class Section {
 
     private void validSection(Station upStation, Station downStation, int distance) {
         validDistance(distance);
-        validStations(upStation.getId(), downStation.getId());
+        validStations(upStation, downStation);
     }
 
     private void validDistance(int distance) {
@@ -39,8 +39,8 @@ public class Section {
         }
     }
 
-    private void validStations(Long upStationId, Long downStationId) {
-        if (downStationId.equals(upStationId)) {
+    private void validStations(Station station, Station otherStation) {
+        if (station.isSameId(otherStation)) {
             throw new IllegalArgumentException(DUPLICATED_SECTIONS_ERROR_MESSAGE);
         }
     }
@@ -71,7 +71,7 @@ public class Section {
     }
 
     public void updateUpStationId(Station newStation) {
-        validStations(newStation.getId(), downStation.getId());
+        validStations(newStation, downStation);
         this.upStation = newStation;
     }
 
