@@ -50,7 +50,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // 경로 조회
         Map<String, Integer> params = Map.of("source", 1, "target", 3, "age", 15);
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .queryParams(params)
+                .params(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .get("/paths")

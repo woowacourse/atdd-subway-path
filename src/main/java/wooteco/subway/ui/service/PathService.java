@@ -10,6 +10,7 @@ import wooteco.subway.domain.distance.Kilometer;
 import wooteco.subway.domain.fare.Age;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.Station;
+import wooteco.subway.dto.request.PathRequest;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.dto.response.StationResponse;
 
@@ -23,11 +24,11 @@ public class PathService {
         this.stationDao = stationDao;
     }
 
-    public PathResponse getPath(int source, int target, int ageValue) {
+    public PathResponse getPath(PathRequest pathRequest) {
         List<Line> lines = lineDao.findAll();
-        Station sourceStation = findStationById((long) source);
-        Station targetStation = findStationById((long) target);
-        Age age = new Age(ageValue);
+        Station sourceStation = findStationById(pathRequest.getSource());
+        Station targetStation = findStationById(pathRequest.getTarget());
+        Age age = new Age(pathRequest.getAge());
 
         Path shortestPath = Path.of(lines, sourceStation, targetStation);
         List<Station> stations = shortestPath.getStations();
