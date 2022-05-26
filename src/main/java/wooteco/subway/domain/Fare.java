@@ -1,5 +1,7 @@
 package wooteco.subway.domain;
 
+import java.util.Objects;
+
 public class Fare {
 
     private static final int OVER_FARE_PRICE = 100;
@@ -10,11 +12,19 @@ public class Fare {
     private static final int ABOVE_FIFTY_KM_POLICY = 8;
     private static final int MAXIMUM_ADDITIONAL_FAIR_PRICE_BELOW_FIFTY_KM_POLICY = 800;
 
-    public static int calculate(final int distance,
-                                final int extraFareByLine,
-                                final AgeDiscountPolicy ageDiscountPolicy) {
+    private final int amount;
+
+    public Fare(final int amount) {
+        this.amount = amount;
+    }
+
+    public static Fare of(final int distance,
+                          final int extraFareByLine,
+                          final AgeDiscountPolicy ageDiscountPolicy) {
         final int fare = calculateFareByDistance(distance) + extraFareByLine;
-        return ageDiscountPolicy.getDiscountedFare(fare);
+        final int discountedFare = ageDiscountPolicy.getDiscountedFare(fare);
+
+        return new Fare(discountedFare);
     }
 
     private static int calculateFareByDistance(final double distance) {
@@ -36,5 +46,22 @@ public class Fare {
 
     private static int calculateByPolicy(final double overFaredDistance, final int policy) {
         return (int) ((Math.ceil((overFaredDistance) / policy)) * OVER_FARE_PRICE);
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Fare)) return false;
+        final Fare fare = (Fare) o;
+        return amount == fare.amount;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(amount);
     }
 }

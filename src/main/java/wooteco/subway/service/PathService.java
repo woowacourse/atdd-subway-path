@@ -64,10 +64,11 @@ public class PathService {
                 .orElseThrow(() -> new DataNotFoundException("존재하지 않는 지하철역 ID입니다."));
     }
 
-    private int getFare(final Path path, final int age) {
+    private Fare getFare(final Path path, final int age) {
         final AgeDiscountPolicy ageDiscountPolicy = AgeDiscountPolicy.from(age);
         final int distance = path.getDistance();
         final int highestOverFareByLine = path.getLines().getHighestOverFare();
-        return Fare.calculate(distance, highestOverFareByLine, ageDiscountPolicy);
+
+        return Fare.of(distance, highestOverFareByLine, ageDiscountPolicy);
     }
 }
