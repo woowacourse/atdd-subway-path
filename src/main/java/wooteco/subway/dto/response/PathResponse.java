@@ -3,9 +3,8 @@ package wooteco.subway.dto.response;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import wooteco.subway.domain.property.Distance;
-import wooteco.subway.domain.property.Fare;
-import wooteco.subway.domain.station.Station;
+import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.property.fare.Fare;
 
 public class PathResponse {
 
@@ -13,19 +12,25 @@ public class PathResponse {
     private final Integer distance;
     private final Integer fare;
 
+    private PathResponse() {
+        this(null, null, null);
+    }
+
     public PathResponse(List<StationResponse> stations, Integer distance, Integer fare) {
         this.stations = stations;
         this.distance = distance;
         this.fare = fare;
     }
 
-    public static PathResponse of(List<Station> paths, Distance distance, Fare calculatedFare) {
-        final List<StationResponse> stations = paths.stream()
-            .map(StationResponse::from)
-            .collect(Collectors.toList());
-        final int distanceValue = distance.getValue();
-        final int fareAmount = calculatedFare.getAmount();
-        return new PathResponse(stations, distanceValue, fareAmount);
+    public static PathResponse of(Path path, Fare fare) {
+        return new PathResponse(
+            path.getStations()
+                .stream()
+                .map(StationResponse::from)
+                .collect(Collectors.toList()),
+            path.getDistance().getValue(),
+            fare.getAmount()
+        );
     }
 
     public List<StationResponse> getStations() {

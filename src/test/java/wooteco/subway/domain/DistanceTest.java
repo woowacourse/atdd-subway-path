@@ -33,6 +33,18 @@ class DistanceTest {
     }
 
     @Test
+    @DisplayName("거리가 더 짧거나 같ㅇ느지 확인할 수 있다.")
+    public void isShorterOrEqualThan() {
+        // given
+        Distance distanceA = new Distance(10);
+        Distance distanceB = new Distance(11);
+        // when
+        final boolean isLonger = distanceB.isShorterOrEqualThan(distanceA);
+        // then
+        assertThat(isLonger).isFalse();
+    }
+
+    @Test
     @DisplayName("거리끼리 빼기 연산을 할 수 있다")
     public void subtract() {
         // given

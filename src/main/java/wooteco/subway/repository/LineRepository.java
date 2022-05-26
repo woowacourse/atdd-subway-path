@@ -52,6 +52,7 @@ public class LineRepository {
             .map(entity -> new Line(entity.getId(),
                 entity.getName(),
                 entity.getColor(),
+                entity.getExtraFare(),
                 sectionRepository.findAllSections(entity.getId())))
             .collect(Collectors.toList());
     }
@@ -59,6 +60,10 @@ public class LineRepository {
     public Line findById(Long id) {
         final LineEntity entity = lineDao.findById(id)
             .orElseThrow(() -> new RowNotFoundException("조회하고자 하는 노선이 존재하지 않습니다."));
-        return new Line(entity.getId(), entity.getName(), entity.getColor(), sectionRepository.findAllSections(id));
+        return new Line(entity.getId(),
+            entity.getName(),
+            entity.getColor(),
+            entity.getExtraFare(),
+            sectionRepository.findAllSections(id));
     }
 }

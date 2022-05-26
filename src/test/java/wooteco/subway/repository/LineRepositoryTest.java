@@ -25,7 +25,7 @@ class LineRepositoryTest {
     public void saveByPersist() {
         // given
         LineSeries lineSeries = new LineSeries(new ArrayList<>());
-        lineSeries.add(new Line("myName", "myColor"));
+        lineSeries.add(new Line("myName", "myColor", 500));
         // when
         lineRepository.persist(lineSeries);
         // then
@@ -37,12 +37,12 @@ class LineRepositoryTest {
     public void updateByPersist() {
         // given
         LineSeries lineSeries = new LineSeries(new ArrayList<>());
-        final Line addLine = new Line("myName", "myColor");
+        final Line addLine = new Line("myName", "myColor", 500);
         lineSeries.add(addLine);
         lineRepository.persist(lineSeries);
 
         // when
-        lineSeries.update(new Line(addLine.getId(), "yourName", "yourColor"));
+        lineSeries.update(new Line(addLine.getId(), "yourName", "yourColor", 900));
         lineRepository.persist(lineSeries);
         // then
         assertThat(lineRepository.findAllLines()).hasSize(1);
@@ -53,7 +53,7 @@ class LineRepositoryTest {
     public void deleteByPersist() {
         // given
         LineSeries lineSeries = new LineSeries(new ArrayList<>());
-        final Line addLine = new Line("deleteLine", "deleteColor");
+        final Line addLine = new Line("deleteLine", "deleteColor", 500);
         lineSeries.add(addLine);
         lineRepository.persist(lineSeries);
 
