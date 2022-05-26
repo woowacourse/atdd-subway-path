@@ -13,7 +13,7 @@ public class AgeFarePolicyTest {
     @ParameterizedTest
     @MethodSource("provideFareAndAge")
     void apply(Fare fare, Age age, Fare expected) {
-        Assertions.assertThat(AgeFarePolicy.getFare(fare, age)).isEqualTo(expected);
+        Assertions.assertThat(AgeFarePolicy.apply(fare, age)).isEqualTo(expected);
     }
 
     private static Stream<Arguments> provideFareAndAge() {

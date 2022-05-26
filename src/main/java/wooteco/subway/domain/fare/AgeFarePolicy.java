@@ -46,7 +46,7 @@ public enum AgeFarePolicy {
 
     abstract public Fare apply(Fare fare);
 
-    public static Fare getFare(Fare fare, Age age) {
+    public static Fare apply(Fare fare, Age age) {
         AgeFarePolicy farePolicy = findFarePolicy(age);
         return farePolicy.apply(fare);
     }

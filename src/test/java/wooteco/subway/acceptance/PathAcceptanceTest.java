@@ -56,7 +56,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         JsonPath jsonPath = response.body().jsonPath();
         PathResponse pathResponse = jsonPath.getObject(".", PathResponse.class);
-
+//1250 + 900 + 200 = 2350 - 350
         assertAll(
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(17),
                 () -> assertThat(pathResponse.getStationResponses()).hasSize(3),

@@ -13,7 +13,7 @@ public class DistanceFarePolicyTest {
     @ParameterizedTest(name = "{0}일 때 요금은 {1}이다")
     @MethodSource("provideDistanceAndFare")
     void getFare(Kilometer distance, Fare expected) {
-        assertThat(DistanceFarePolicy.getFare(distance)).isEqualTo(expected);
+        assertThat(DistanceFarePolicy.apply(new Fare(1250), distance)).isEqualTo(expected);
     }
 
     private static Stream<Arguments> provideDistanceAndFare() {

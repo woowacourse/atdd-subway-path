@@ -12,9 +12,6 @@ import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.distance.Kilometer;
-import wooteco.subway.domain.fare.Age;
-import wooteco.subway.domain.fare.AgeFarePolicy;
-import wooteco.subway.domain.fare.DistanceFarePolicy;
 import wooteco.subway.domain.fare.Fare;
 
 public class Path {
@@ -35,7 +32,7 @@ public class Path {
         addEdge(sectionWithExtraFare, graph);
         DijkstraShortestPath<Station, JgraphtPath> algorithms = new DijkstraShortestPath<>(graph);
         GraphPath<Station, JgraphtPath> graphPath = algorithms.getPath(source, target);
-        return new Path(graphPath.getVertexList(), Kilometer.from((int)graphPath.getWeight()),
+        return new Path(graphPath.getVertexList(), Kilometer.from((int) graphPath.getWeight()),
                 new Fare(getExtraFare(graphPath)));
     }
 
@@ -45,13 +42,13 @@ public class Path {
                 .stream()
                 .flatMap(section -> Stream.of(section.getUpStation(), section.getDownStation()))
                 .collect(Collectors.toSet());
-        for(Station station : stations) {
+        for (Station station : stations) {
             graph.addVertex(station);
         }
     }
 
     private static void addEdge(Map<Section, Fare> sectionWithExtraFare,
-                                  WeightedMultigraph<Station, JgraphtPath> graph) {
+                                WeightedMultigraph<Station, JgraphtPath> graph) {
         sectionWithExtraFare.forEach(((section, fare) ->
                 graph.addEdge(section.getUpStation(), section.getDownStation(),
                         new JgraphtPath(section.getDistance(), fare.value()))));
@@ -68,13 +65,11 @@ public class Path {
         return distance;
     }
 
-    public Fare getFare(Age age) {
-        Fare fareOfPath = DistanceFarePolicy.getFare(distance)
-                .add(extraFare);
-        return AgeFarePolicy.getFare(fareOfPath, age);
-    }
-
     public List<Station> getStations() {
         return new ArrayList<>(stations);
+    }
+
+    public Fare getExtraFare() {
+        return extraFare;
     }
 }

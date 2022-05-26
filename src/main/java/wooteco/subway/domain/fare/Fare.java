@@ -1,16 +1,22 @@
 package wooteco.subway.domain.fare;
 
 import java.util.Objects;
+import wooteco.subway.domain.distance.Kilometer;
 
 public class Fare {
 
     private static final int MINIMUM_FARE = 0;
     private static final double PERCENT_MAX_VALUE = 100.0;
+    private static final int BASIC = 1250;
     private final int value;
 
     public Fare(int fare) {
         this.value = fare;
         validateValue();
+    }
+
+    public static Fare basic() {
+        return new Fare(BASIC);
     }
 
     private void validateValue() {
@@ -39,6 +45,14 @@ public class Fare {
             return new Fare(0);
         }
         return new Fare((int) (value - value * (percent / PERCENT_MAX_VALUE)));
+    }
+
+    public Fare apply(Kilometer distance) {
+        return DistanceFarePolicy.apply(this, distance);
+    }
+
+    public Fare apply(Age age) {
+        return AgeFarePolicy.apply(this, age);
     }
 
     public int value() {
