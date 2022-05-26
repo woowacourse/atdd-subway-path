@@ -1,21 +1,8 @@
 package wooteco.subway.controller;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,15 +14,23 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.dao.entity.LineEntity;
+import wooteco.subway.dao.entity.SectionEntity;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dao.entity.LineEntity;
 import wooteco.subway.dto.LineEditRequest;
 import wooteco.subway.dto.LineRequest;
-import wooteco.subway.dao.entity.SectionEntity;
 import wooteco.subway.dto.SectionRequest;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -70,8 +65,8 @@ public class LineControllerIntegrationTest {
                 A.getId(), B.getId(), AtoB.getDistance(), line.getExtraFare());
 
         mockMvc.perform(post("/lines")
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON))
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(header().exists("Location"))
                 .andExpect(jsonPath("name").value("A호선"))
@@ -95,8 +90,8 @@ public class LineControllerIntegrationTest {
                 A.getId(), B.getId(), AtoB.getDistance(), line.getExtraFare());
 
         mockMvc.perform(post("/lines")
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON))
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
@@ -116,7 +111,7 @@ public class LineControllerIntegrationTest {
                 .andExpect(jsonPath("stations[1].name").value("B역"))
                 .andDo(print());
     }
-    
+
     @DisplayName("존재하지 않는 노선을 조회할 시 404 예외 발생")
     @Test
     void 존재하지_않는_노선_조회_404예외() throws Exception {
@@ -124,7 +119,7 @@ public class LineControllerIntegrationTest {
                 .andExpect(status().isNotFound())
                 .andDo(print());
     }
-    
+
     @DisplayName("노선 정보 변경")
     @Test
     void 노선_수정() throws Exception {
@@ -136,8 +131,8 @@ public class LineControllerIntegrationTest {
         LineEditRequest request = new LineEditRequest("알파벳호선", "bg_blue_400");
 
         mockMvc.perform(put("/lines/" + line.getId())
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON))
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
@@ -157,7 +152,7 @@ public class LineControllerIntegrationTest {
         assertThatThrownBy(() -> lineDao.findById(line.getId()))
                 .isInstanceOf(EmptyResultDataAccessException.class);
     }
-    
+
     @DisplayName("구간 추가")
     @Test
     void 구간_추가() throws Exception {

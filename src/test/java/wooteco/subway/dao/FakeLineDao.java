@@ -1,12 +1,13 @@
 package wooteco.subway.dao;
 
+import org.springframework.util.ReflectionUtils;
+import wooteco.subway.dao.entity.LineEntity;
+import wooteco.subway.domain.Line;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import org.springframework.util.ReflectionUtils;
-import wooteco.subway.domain.Line;
-import wooteco.subway.dao.entity.LineEntity;
 
 public class FakeLineDao implements LineDao {
 
@@ -40,9 +41,9 @@ public class FakeLineDao implements LineDao {
     @Override
     public LineEntity findById(Long id) {
         return lines.stream()
-                    .filter(line -> line.getId().equals(id))
-                    .findFirst()
-                    .orElseThrow(() -> new NoSuchElementException("존재하지 않는 id입니다."));
+                .filter(line -> line.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 id입니다."));
     }
 
     @Override

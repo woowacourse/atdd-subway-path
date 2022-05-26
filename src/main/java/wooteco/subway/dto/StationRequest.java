@@ -12,12 +12,12 @@ public class StationRequest {
     public StationRequest() {
     }
 
-    public Station toStation() {
-        return new Station(this.name);
-    }
-
     public StationRequest(String name) {
         this.name = name;
+    }
+
+    public Station toStation() {
+        return new Station(this.name);
     }
 
     public String getName() {

@@ -1,19 +1,15 @@
 package wooteco.subway.domain;
 
-import java.util.ArrayList;
+import org.jgrapht.GraphPath;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.exception.SubwayException;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
-import org.jgrapht.graph.WeightedPseudograph;
-import wooteco.subway.exception.SubwayException;
 
 public class Sections {
 

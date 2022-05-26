@@ -9,10 +9,10 @@ import java.util.Objects;
 
 public class Section {
 
-    private Long id;
     private final Station up;
     private final Station down;
     private final int distance;
+    private Long id;
 
     public Section(Station up, Station down, int distance) {
         validateStationsNotEqual(up, down);

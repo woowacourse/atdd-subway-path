@@ -1,18 +1,19 @@
 package wooteco.subway.acceptance;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.PathResponse;
+
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class PathAcceptanceTest extends AcceptanceTest {
 
@@ -73,7 +74,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
             assertThat(pathResponse.getFare()).isEqualTo(1650);
         });
     }
-
 
 
     public ExtractableResponse<Response> createStation(String name) {

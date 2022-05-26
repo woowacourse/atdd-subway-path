@@ -13,6 +13,14 @@ public enum ExtraFarePolicy {
     private int perFare;
     private int basicFare;
 
+    ExtraFarePolicy(int lowerDistance, int upperDistance, int perKm, int perFare, int basicFare) {
+        this.lowerDistance = lowerDistance;
+        this.upperDistance = upperDistance;
+        this.perKm = perKm;
+        this.perFare = perFare;
+        this.basicFare = basicFare;
+    }
+
     public static int findFare(double distance) {
         return Arrays.stream(ExtraFarePolicy.values())
                 .mapToInt(extraFarePolicy -> extraFarePolicy.calculate(distance))
@@ -35,13 +43,5 @@ public enum ExtraFarePolicy {
 
     private boolean isNoMoreDistance(double distance) {
         return distance < lowerDistance;
-    }
-
-    ExtraFarePolicy(int lowerDistance, int upperDistance, int perKm, int perFare, int basicFare) {
-        this.lowerDistance = lowerDistance;
-        this.upperDistance = upperDistance;
-        this.perKm = perKm;
-        this.perFare = perFare;
-        this.basicFare = basicFare;
     }
 }

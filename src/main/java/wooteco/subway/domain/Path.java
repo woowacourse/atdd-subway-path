@@ -1,10 +1,9 @@
 package wooteco.subway.domain;
 
+import org.jgrapht.GraphPath;
+
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 
 public class Path {
 

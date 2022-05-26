@@ -3,7 +3,6 @@ package wooteco.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -11,12 +10,20 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.util.Map;
+
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/testSchema.sql")
 public class AcceptanceTest {
     @LocalServerPort
     int port;
+
+    static <T> T toResponseDto(ExtractableResponse<Response> response, Class<T> responseClass) {
+        return response.body()
+                .jsonPath()
+                .getObject(".", responseClass);
+    }
 
     @BeforeEach
     public void setUp() {
@@ -41,9 +48,5 @@ public class AcceptanceTest {
                 .extract();
     }
 
-    static <T> T toResponseDto(ExtractableResponse<Response> response, Class<T> responseClass) {
-        return response.body()
-                .jsonPath()
-                .getObject(".", responseClass);
-    };
+    ;
 }

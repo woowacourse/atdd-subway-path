@@ -1,8 +1,5 @@
 package wooteco.subway.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -20,6 +17,9 @@ import wooteco.subway.exception.line.NoSuchLineException;
 import wooteco.subway.repository.LineRepository;
 import wooteco.subway.repository.SectionRepository;
 import wooteco.subway.repository.StationRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)

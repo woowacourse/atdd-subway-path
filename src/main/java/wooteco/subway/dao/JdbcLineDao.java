@@ -15,10 +15,6 @@ public class JdbcLineDao implements LineDao {
 
     public static final String TABLE_NAME = "LINE";
     public static final String KEY_NAME = "id";
-
-    private final NamedParameterJdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insertActor;
-
     private final static RowMapper<LineEntity> generateMapper =
             (resultSet, rowNum) ->
                     new LineEntity(
@@ -27,6 +23,8 @@ public class JdbcLineDao implements LineDao {
                             resultSet.getString("color"),
                             resultSet.getInt("fare")
                     );
+    private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertActor;
 
     public JdbcLineDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);

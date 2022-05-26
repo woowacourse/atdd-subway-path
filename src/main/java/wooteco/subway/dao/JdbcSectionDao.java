@@ -1,7 +1,5 @@
 package wooteco.subway.dao;
 
-import java.util.List;
-import java.util.Map;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -12,15 +10,14 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.dao.entity.SectionEntity;
 
+import java.util.List;
+import java.util.Map;
+
 @Repository
 public class JdbcSectionDao implements SectionDao {
 
     private static final String TABLE_NAME = "SECTION";
     private static final String KEY_NAME = "id";
-
-    private final NamedParameterJdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insertActor;
-
     private final static RowMapper<SectionEntity> mapper =
             (resultSet, rowNum) ->
                     new SectionEntity(
@@ -30,6 +27,8 @@ public class JdbcSectionDao implements SectionDao {
                             resultSet.getLong("down_station_id"),
                             resultSet.getInt("distance")
                     );
+    private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertActor;
 
     public JdbcSectionDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
@@ -41,10 +40,10 @@ public class JdbcSectionDao implements SectionDao {
     @Override
     public SectionEntity save(SectionEntity sectionEntity) {
         Long id = insertActor.executeAndReturnKey(
-                        Map.of("line_id", sectionEntity.getLineId(),
-                                "up_station_id", sectionEntity.getUpStationId(),
-                                "down_station_id", sectionEntity.getDownStationId(),
-                                "distance", sectionEntity.getDistance()))
+                Map.of("line_id", sectionEntity.getLineId(),
+                        "up_station_id", sectionEntity.getUpStationId(),
+                        "down_station_id", sectionEntity.getDownStationId(),
+                        "distance", sectionEntity.getDistance()))
                 .longValue();
         return findById(id);
     }

@@ -1,13 +1,14 @@
 package wooteco.subway.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.LinkedList;
 import java.util.List;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class LineTest {
 
@@ -88,7 +89,7 @@ class LineTest {
                         .isInstanceOf(IndexOutOfBoundsException.class)
         );
     }
-    
+
     @DisplayName("중간역 삭제 후 변경된 구간 탐지")
     @Test
     void 두_라인_사이_다른_구간_반환() {
