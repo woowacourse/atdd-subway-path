@@ -37,7 +37,7 @@
 - [ ] fare + test 가독성 높이는 방향으로 수정
 - [ ] exception -> state code 별로 구분
 - [ ] LineService Test 상수 전체 적용 및 검증부 수정
-- [ ] FareBy test 예외 케이스 추가
+- [x] FareBy test 예외 케이스 추가
 - [ ] Path 에서 fare 분리
 - [ ] PathFinder -> source == target 일 때, 예외 처리
 - [ ] PathFinder test 검증부 station 모두 검증하도록 수정

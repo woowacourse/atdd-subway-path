@@ -80,4 +80,5 @@ public class PathFinder {
 
         return lines.findMaxExtraFare(lineIds);
     }
+
 }

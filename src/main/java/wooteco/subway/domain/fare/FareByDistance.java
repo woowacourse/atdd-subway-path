@@ -32,7 +32,7 @@ public enum FareByDistance {
         return Arrays.stream(values())
                 .filter(fareByDistance -> fareByDistance.predicate.test(distance))
                 .findFirst()
-                .orElseThrow(() -> new PositiveDigitException("경로의 거리가 0보다 작습니다."))
+                .orElseThrow(() -> new PositiveDigitException("구간의 길이는 양수여야 합니다."))
                 .function
                 .apply(distance);
     }

@@ -15,7 +15,7 @@ class SectionTest {
     void NotPositiveExtraFareException() {
         assertThatThrownBy(() -> new Section(1L, new Station("강남역"), new Station("서초역"), 0))
                 .isInstanceOf(PositiveDigitException.class)
-                .hasMessage("구간의 길이가 양수가 아닙니다.");
+                .hasMessage("구간의 길이는 양수여야 합니다.");
     }
 
 }

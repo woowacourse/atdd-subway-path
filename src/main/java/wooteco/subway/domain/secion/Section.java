@@ -28,7 +28,7 @@ public class Section {
 
     private void validatePositiveDistance(final int distance) {
         if (distance <= 0) {
-            throw new PositiveDigitException("구간의 길이가 양수가 아닙니다.");
+            throw new PositiveDigitException("구간의 길이는 양수여야 합니다.");
         }
     }
 
