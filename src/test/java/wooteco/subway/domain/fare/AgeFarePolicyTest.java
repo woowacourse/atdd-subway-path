@@ -9,12 +9,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 public class AgeFarePolicyTest {
 
-    /*
-    청소년(13세 이상~19세 미만): 운임에서 350원을 공제한 금액의 20%할인
-    어린이(6세 이상~13세 미만): 운임에서 350원을 공제한 금액의 50%할인
-    유아(6세 미만): 무료
-    노인(65 이상): 무료
-     */
     @DisplayName("연령 요금 정책에 맞게 요금을 환산해준다.")
     @ParameterizedTest
     @MethodSource("provideFareAndAge")

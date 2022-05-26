@@ -10,7 +10,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.distance.Kilometer;
 
-@DisplayName("경로")
 public class PathTest {
 
     @Test
