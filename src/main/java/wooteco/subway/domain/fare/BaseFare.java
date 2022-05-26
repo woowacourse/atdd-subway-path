@@ -2,6 +2,7 @@ package wooteco.subway.domain.fare;
 
 public class BaseFare implements Fare {
 
+    private static final int BASIC_FARE = 1250;
     private final int extraFare;
 
     public BaseFare(final int extraFare) {
@@ -10,6 +11,6 @@ public class BaseFare implements Fare {
 
     @Override
     public double calculateExtraFare() {
-        return extraFare + 1250;
+        return extraFare + BASIC_FARE;
     }
 }

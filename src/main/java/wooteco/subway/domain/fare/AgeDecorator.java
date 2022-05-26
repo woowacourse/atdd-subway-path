@@ -24,9 +24,12 @@ public class AgeDecorator extends Decorator {
         BABY(price -> 0D, AgeDiscountPolicy::isBaby),
         CHILDREN(price -> deduct(price) * 0.5, AgeDiscountPolicy::isChildren),
         TEENAGER(price -> deduct(price) * 0.8, AgeDiscountPolicy::isTeenager),
-        NORMAL(price -> price, ignore -> true),
+        NORMAL(price -> price, AgeDiscountPolicy::isNormal),
         ;
 
+
+
+        private static final int BASIC_DEDUCT_PRICE = 350;
         private static final int BABY_UPPER_BOUND = 6;
         private static final int BABY_LOWER_BOUND = 0;
         private static final int TEENAGER_UPPER_BOUND = 19;
@@ -46,13 +49,16 @@ public class AgeDecorator extends Decorator {
             return CHILDREN_LOWER_BOUND <= age && age < CHILDREN_UPPER_BOUND;
         }
 
-        private static final int BASIC_DEDUCT_PRICE = 350;
-        private final Function<Double, Double> function;
-        private final Predicate<Integer> predicate;
+        private static boolean isNormal(final Integer age) {
+            return age > 19;
+        }
 
         private static double deduct(final double price) {
             return price - BASIC_DEDUCT_PRICE;
         }
+
+        private final Function<Double, Double> function;
+        private final Predicate<Integer> predicate;
 
         AgeDiscountPolicy(final Function<Double, Double> function, final Predicate<Integer> predicate) {
             this.function = function;

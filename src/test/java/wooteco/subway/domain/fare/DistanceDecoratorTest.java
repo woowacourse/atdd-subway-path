@@ -6,7 +6,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.NoSuchElementException;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DistanceDecoratorTest {
@@ -38,5 +41,14 @@ class DistanceDecoratorTest {
         Decorator distanceDecorator = new DistanceDecorator(new BaseFare(0), distance);
         double fare = distanceDecorator.calculateExtraFare();
         assertThat(fare).isEqualTo(BASIC_FARE + 900);
+    }
+
+    @DisplayName("거리가 0km 이하이면 예외가 발생한다.")
+    @ParameterizedTest
+    @ValueSource(ints = {0, -1, -2})
+    void calculateExtraFareUnder0(int distance) {
+        Decorator distanceDecorator = new DistanceDecorator(new BaseFare(0), distance);
+        assertThatThrownBy(distanceDecorator::calculateExtraFare)
+                .isExactlyInstanceOf(NoSuchElementException.class);
     }
 }
