@@ -1,6 +1,9 @@
 package wooteco.subway.domain;
 
-public class Fare {
+import org.springframework.stereotype.Component;
+
+@Component
+public class SeoulMetroFarePolicy implements FarePolicy {
 
     private static final int BASIC_FARE = 1250;
     private static final double BASIC_THRESHOLD_DISTANCE = 10.0;
@@ -14,13 +17,7 @@ public class Fare {
     private static final double ADOLESCENT_DISCOUNT_RATE = 0.2;
     private static final double KID_DISCOUNT_RATE = 0.5;
 
-    private final int value;
-
-    public Fare(int distance, int highestExtraFare, int age) {
-        value = calculate(distance, highestExtraFare, age);
-    }
-
-    private int calculate(int distance, int highestExtraFare, int age) {
+    public int calculate(int distance, int highestExtraFare, int age) {
         int adultFare = calculateAdultFare(distance, highestExtraFare);
         if (age < ADULT_AGE_LOWEST_THRESHOLD) {
             return calculateAgeDiscountFare(adultFare, age);
@@ -51,9 +48,5 @@ public class Fare {
             return (int) ((fare - DEFAULT_AGE_DISCOUNT_VALUE) * (1 - ADOLESCENT_DISCOUNT_RATE));
         }
         return (int) ((fare - DEFAULT_AGE_DISCOUNT_VALUE) * (1 - KID_DISCOUNT_RATE));
-    }
-
-    public int value() {
-        return value;
     }
 }

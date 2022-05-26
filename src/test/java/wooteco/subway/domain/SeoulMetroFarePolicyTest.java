@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-class FareTest {
+class SeoulMetroFarePolicyTest {
 
     @DisplayName("거리, 가장 비싼 추가 운임, 나이를 받아 운임을 계산한다.")
     @ParameterizedTest
@@ -15,9 +15,9 @@ class FareTest {
             "16, 300, 21, 1750", "16, 300, 13, 1120", "16, 300, 12, 700",
             "51, 300, 21, 2450", "51, 300, 13, 1680", "51, 300, 12, 1050"})
     void calculate(int distance, int highestExtraFare, int age, int expected) {
-        Fare fare = new Fare(distance, highestExtraFare, age);
+        FarePolicy farePolicy = new SeoulMetroFarePolicy();
 
-        int actual = fare.value();
+        int actual = farePolicy.calculate(distance, highestExtraFare, age);
 
         assertThat(actual).isEqualTo(expected);
     }

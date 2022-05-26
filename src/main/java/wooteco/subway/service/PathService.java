@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.Age;
-import wooteco.subway.domain.Fare;
+import wooteco.subway.domain.FarePolicy;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.PathFinder;
 import wooteco.subway.domain.Section;
@@ -19,13 +19,15 @@ public class PathService {
     private final SectionService sectionService;
     private final LineService lineService;
     private final PathFinder pathFinder;
+    private final FarePolicy farePolicy;
 
     public PathService(StationService stationService, SectionService sectionService,
-                       LineService lineService, PathFinder pathFinder) {
+                       LineService lineService, PathFinder pathFinder, FarePolicy farePolicy) {
         this.stationService = stationService;
         this.sectionService = sectionService;
         this.lineService = lineService;
         this.pathFinder = pathFinder;
+        this.farePolicy = farePolicy;
     }
 
     public PathServiceResponse findShortestPath(PathServiceRequest pathServiceRequest) {
@@ -48,7 +50,6 @@ public class PathService {
 
     private int calculateFare(Path path, int distance, int age) {
         int highestExtraFare = lineService.findHighestExtraFareByIds(path.getLineIds());
-        Fare fare = new Fare(distance, highestExtraFare, age);
-        return fare.value();
+        return farePolicy.calculate(distance, highestExtraFare, age);
     }
 }
