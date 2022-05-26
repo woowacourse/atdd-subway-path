@@ -22,25 +22,26 @@ public enum Fare {
         this.previousSectionFare = previousSectionFare;
     }
 
-    public static int calculateFare(int distance) {
+    public static int calculateFare(final int distance) {
         Fare fare = find(distance);
         return fare.calc(distance);
     }
-    private static Fare find(int distance) {
+    private static Fare find(final int distance) {
         return Arrays.stream(Fare.values())
                 .filter(fare -> distance - fare.section <= 0)
                 .findFirst()
                 .orElse(SECOND_SECTION);
     }
 
-    private int calc(int distance) {
+    private int calc(final int distance) {
+        int calcDistance = distance;
         if (this == BASIC) {
             return BASIC_FARE;
         }
-        distance -= previousSection;
+        calcDistance -= previousSection;
         int fare = 0;
-        fare += (distance / unit) * 100;
-        if (distance % unit > 0 || (distance / unit == 0)) {
+        fare += (calcDistance / unit) * 100;
+        if (calcDistance % unit > 0 || (calcDistance / unit == 0)) {
             fare += 100;
         }
         return previousSectionFare + fare;
