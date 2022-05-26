@@ -20,7 +20,7 @@ public enum Age {
         this.discountRate = discountRate;
     }
 
-    public static Age find(Long number) {
+    public static Age findByAge(Long number) {
         return Arrays.stream(Age.values())
                 .filter(age -> number <= age.boundary)
                 .findFirst()

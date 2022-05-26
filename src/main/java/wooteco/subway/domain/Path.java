@@ -16,7 +16,7 @@ public class Path {
     public double calculateFare(List<Line> lines, Long age) {
         int lineExtraFare = findMostExpensiveExtraFare(lines);
         Fare fare = Fare.find(distance);
-        return Age.find(age).calc(lineExtraFare + fare.calc(distance));
+        return Age.findByAge(age).calc(lineExtraFare + fare.calc(distance));
     }
 
     private int findMostExpensiveExtraFare(List<Line> lines) {
