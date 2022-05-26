@@ -26,7 +26,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.path.Path;
-import wooteco.subway.domain.path.SubwayGraph;
+import wooteco.subway.domain.path.graph.SubwayGraph;
 
 class SubwayJGraphTest {
 
