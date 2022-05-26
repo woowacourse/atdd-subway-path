@@ -16,8 +16,7 @@ class LinesTest {
         final Line lineExtraFare200 = new Line("2호선", "blue", 200);
         final Line lineExtraFare300 = new Line("3호선", "orange", 200);
         final Lines lines = new Lines(List.of(lineExtraFare100, lineExtraFare200, lineExtraFare300));
-        final Line line = lines.getMaxExtraFare();
 
-        assertThat(line.getExtraFare()).isEqualTo(200);
+        assertThat(lines.getMaxExtraFare()).isEqualTo(200);
     }
 }
