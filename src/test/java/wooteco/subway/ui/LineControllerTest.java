@@ -25,8 +25,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @WebMvcTest(controllers = {LineController.class})
 class LineControllerTest {
@@ -56,6 +56,10 @@ class LineControllerTest {
                         .content(content)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("id").value(1))
+                .andExpect(jsonPath("name").value("2호선"))
+                .andExpect(jsonPath("color").value("green"))
+                .andExpect(jsonPath("extraFare").value(10))
                 .andDo(print());
     }
 
@@ -69,6 +73,10 @@ class LineControllerTest {
         mockMvc.perform(get("/lines"))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("[0].id").value(1))
+                .andExpect(jsonPath("[0].name").value("2호선"))
+                .andExpect(jsonPath("[0].color").value("green"))
+                .andExpect(jsonPath("[0].extraFare").value(10))
                 .andDo(print());
     }
 
@@ -80,6 +88,10 @@ class LineControllerTest {
         mockMvc.perform(get("/lines/" + 1))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("id").value(1))
+                .andExpect(jsonPath("name").value("2호선"))
+                .andExpect(jsonPath("color").value("green"))
+                .andExpect(jsonPath("extraFare").value(10))
                 .andDo(print());
     }
 

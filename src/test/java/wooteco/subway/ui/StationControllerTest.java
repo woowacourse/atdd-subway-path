@@ -17,8 +17,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @WebMvcTest(controllers = {StationController.class})
 class StationControllerTest {
@@ -43,6 +43,8 @@ class StationControllerTest {
         mockMvc.perform(post("/stations")
                         .content(content)
                         .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("id").value(1))
+                .andExpect(jsonPath("name").value("강남역"))
                 .andExpect(status().isCreated())
                 .andDo(print());
     }
@@ -57,6 +59,10 @@ class StationControllerTest {
         mockMvc.perform(get("/stations"))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("[0].id").value(1))
+                .andExpect(jsonPath("[0].name").value("강남역"))
+                .andExpect(jsonPath("[1].id").value(2))
+                .andExpect(jsonPath("[1].name").value("역삼역"))
                 .andDo(print());
     }
 
