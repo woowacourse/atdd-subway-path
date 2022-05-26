@@ -54,15 +54,15 @@ public enum DistanceFarePolicy {
         return (int) (Math.ceil((distance - SECOND_ADDITIONAL_INTERVAL) / SECOND_INTERVAL_UNIT) * OVER_FARE);
     }
 
-    public static DistanceFarePolicy of(int distance) {
+    public static DistanceFarePolicy of(long distance) {
         return Arrays.stream(values())
-                .filter(it -> it.distanceCondition.test(distance))
+                .filter(it -> it.distanceCondition.test((int) distance))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("거리를 판단할 수 없습니다."));
     }
 
-    public int calculate(int distance) {
-        return this.distancePolicy.apply(distance);
+    public int calculate(long distance) {
+        return this.distancePolicy.apply((int) distance);
     }
 
     static class Constants {

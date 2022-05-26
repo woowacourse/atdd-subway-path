@@ -22,7 +22,8 @@ public class ShortestPathFinder implements PathFinder {
         GraphPath<Long, ShortestPathEdge> graphPath = Optional.ofNullable(shortestPath.getPath(source, target))
                 .orElseThrow(() -> new SubwayException("경로가 존재하지 않습니다."));
 
-        return new Path((int) graphPath.getWeight(), getLineIds(graphPath), getStations(graphPath));
+        long distance = Double.valueOf(graphPath.getWeight()).longValue();
+        return new Path(distance, getLineIds(graphPath), getStations(graphPath));
     }
 
     private DijkstraShortestPath<Long, ShortestPathEdge> initializePathGraph(List<Long> stationIds,

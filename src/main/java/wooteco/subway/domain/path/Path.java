@@ -4,11 +4,11 @@ import java.util.Collections;
 import java.util.Set;
 
 public class Path {
-    private final int distance;
+    private final long distance;
     private final Set<Long> lineIds;
     private final Set<Long> stationIds;
 
-    public Path(int distance, Set<Long> lineIds, Set<Long> stationIds) {
+    public Path(long distance, Set<Long> lineIds, Set<Long> stationIds) {
         this.distance = distance;
         this.lineIds = lineIds;
         this.stationIds = stationIds;
@@ -22,7 +22,7 @@ public class Path {
         return discount.apply(fare);
     }
 
-    public int getDistance() {
+    public long getDistance() {
         return distance;
     }
 
