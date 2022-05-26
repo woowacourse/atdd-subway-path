@@ -15,6 +15,7 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.request.LineCreateRequest;
 import wooteco.subway.dto.request.LineUpdateRequest;
@@ -233,9 +234,9 @@ class LineServiceTest {
         SectionRequest sectionRequest = new SectionRequest(gangnam.getId(), yeoksam.getId(), 1);
         lineService.saveSectionBySectionRequest(line.getId(), sectionRequest);
 
-        List<Section> sections = sectionDao.findAllByLine(line);
+        Sections sections = sectionDao.findAllByLine(line);
 
-        assertThat(sections).hasSize(2)
+        assertThat(sections.getValues()).hasSize(2)
                 .extracting(Section::getUpStation, Section::getDownStation, Section::getDistance)
                 .contains(
                         tuple(gangnam, yeoksam, 1),
@@ -269,9 +270,9 @@ class LineServiceTest {
 
         lineService.deleteSection(line.getId(), yeoksam.getId());
 
-        List<Section> sections = sectionDao.findAllByLine(line);
+        Sections sections = sectionDao.findAllByLine(line);
 
-        assertThat(sections).hasSize(1)
+        assertThat(sections.getValues()).hasSize(1)
                 .extracting(Section::getUpStation, Section::getDownStation, Section::getDistance)
                 .containsOnly(
                         tuple(gangnam, seolleung, 2)

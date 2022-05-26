@@ -59,7 +59,7 @@ class LineDaoTest {
         lineDao.save(lineTwo);
         lineDao.save(lineEight);
 
-        assertThat(lineDao.findAll()).hasSize(2);
+        assertThat(lineDao.findAll().getValues()).hasSize(2);
     }
 
     @DisplayName("특정 id를 가지는 노선을 조회한다.")
@@ -110,7 +110,7 @@ class LineDaoTest {
 
         lineDao.deleteById(id);
 
-        assertThat(lineDao.findAll()).isEmpty();
+        assertThat(lineDao.findAll().getValues()).isEmpty();
     }
 
     @DisplayName("id 값이 저장되어 있는지 확인한다.")

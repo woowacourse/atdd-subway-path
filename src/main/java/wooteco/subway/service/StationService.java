@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.Stations;
 import wooteco.subway.dto.request.StationRequest;
 import wooteco.subway.dto.response.StationResponse;
 import wooteco.subway.exception.duplicate.DuplicateStationException;
@@ -36,9 +37,10 @@ public class StationService {
     }
 
     public List<StationResponse> findAll() {
-        List<Station> stations = stationDao.findAll();
+        Stations stations = stationDao.findAll();
 
-        return stations.stream()
+        return stations.getValues()
+                .stream()
                 .map(StationResponse::new)
                 .collect(Collectors.toUnmodifiableList());
     }

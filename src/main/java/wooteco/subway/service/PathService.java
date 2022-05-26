@@ -30,7 +30,7 @@ public class PathService {
 
         Station source = stationService.findById(pathRequest.getSource());
         Station target = stationService.findById(pathRequest.getTarget());
-        Sections sections = new Sections(sectionDao.findAll());
+        Sections sections = sectionDao.findAll();
 
         Path path = pathStrategy.calculatePath(source, target, sections);
 
