@@ -13,13 +13,14 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class DijkstraPathStrategyTest {
 
     @Test
-    @DisplayName("Path 객체 반환 확인")
+    @DisplayName("Path 객체 distance 확인")
     void calcDistance() {
         Section section1 = new Section(1L, 1L, 1L, 2L, 10);
         Section section2 = new Section(2L, 1L, 2L, 3L, 20);
 
-        assertThat(new DijkstraPathStrategy().findPath(List.of(section1, section2), 1L, 3L))
-                .isInstanceOf(Path.class);
+        Path path = new DijkstraPathStrategy().findPath(List.of(section1, section2), 1L, 3L);
+
+        assertThat(path.getDistance()).isEqualTo(30);
     }
 
     @Test
