@@ -3,6 +3,7 @@ package wooteco.subway.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.exception.ClientException;
+import wooteco.subway.service.infra.DijkstraPathStrategy;
 
 import java.util.List;
 

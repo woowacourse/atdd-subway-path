@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.service.infra;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -8,6 +8,9 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import org.springframework.stereotype.Component;
+import wooteco.subway.domain.Path;
+import wooteco.subway.domain.PathStrategy;
+import wooteco.subway.domain.Section;
 import wooteco.subway.exception.ClientException;
 
 @Component
