@@ -1,11 +1,10 @@
 package wooteco.subway.domain.strategy;
 
-import java.util.List;
 import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
-import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Lines;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
@@ -29,7 +28,7 @@ public class DijkstraPathStrategy implements PathStrategy {
         try {
             GraphPath<Station, ShortestPathEdge> graphPath = shortestPath.getPath(source, target);
             Stations passedStations = new Stations(graphPath.getVertexList());
-            List<Line> passedLines = findPassedLines(graphPath);
+            Lines passedLines = findPassedLines(graphPath);
             int distance = (int) shortestPath.getPathWeight(source, target);
 
             return new Path(passedStations, passedLines, distance);
@@ -64,12 +63,14 @@ public class DijkstraPathStrategy implements PathStrategy {
         }
     }
 
-    private List<Line> findPassedLines(GraphPath<Station, ShortestPathEdge> graphPath) {
-        return graphPath.getEdgeList()
-                .stream()
-                .map(ShortestPathEdge::getLine)
-                .distinct()
-                .collect(Collectors.toList());
+    private Lines findPassedLines(GraphPath<Station, ShortestPathEdge> graphPath) {
+        return new Lines(
+                graphPath.getEdgeList()
+                        .stream()
+                        .map(ShortestPathEdge::getLine)
+                        .distinct()
+                        .collect(Collectors.toList())
+        );
     }
 
 }

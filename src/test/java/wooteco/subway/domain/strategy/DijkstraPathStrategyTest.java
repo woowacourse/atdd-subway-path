@@ -7,6 +7,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Lines;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
@@ -32,7 +33,7 @@ class DijkstraPathStrategyTest {
         Sections sections = new Sections(List.of(gangnam_yeoksam, yeoksam_seolleung));
 
         Path shortestPath = pathStrategy.calculatePath(gangnam, seolleung, sections);
-        Path expected = new Path(new Stations(List.of(gangnam, yeoksam, seolleung)), List.of(line), 2);
+        Path expected = new Path(new Stations(List.of(gangnam, yeoksam, seolleung)), new Lines(List.of(line)), 2);
 
         assertThat(shortestPath).isEqualTo(expected);
     }
