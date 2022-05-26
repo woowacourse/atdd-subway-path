@@ -12,7 +12,7 @@ public class Kilometer {
     }
 
     private void validateNegativeNumber() {
-        if (value < 0) {
+        if (value <= 0) {
             throw new IllegalArgumentException("거리는 양수여야 합니다.");
         }
     }
