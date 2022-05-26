@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.util.ReflectionUtils;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.domain.Line;
@@ -39,6 +40,14 @@ public class FakeLineDao implements LineDao {
     @Override
     public List<Line> findAll() {
         return lines;
+    }
+
+    @Override
+    public List<Integer> findExtraFareByIds(List<Long> ids) {
+        return lines.stream()
+                .filter(line -> ids.contains(line.getId()))
+                .map(Line::getExtraFare)
+                .collect(Collectors.toList());
     }
 
     @Override

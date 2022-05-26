@@ -9,7 +9,6 @@ import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Fare;
-import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.PathResponse;
@@ -33,9 +32,10 @@ public class PathService {
 
         final List<Station> stations = findStations(upStationId, downStationId, path);
         final int shortestDistance = path.findShortestDistance(upStationId, downStationId);
-        final List<Line> passedLines = findPassedLines(path, upStationId, downStationId);
 
-        final Fare fare = Fare.of(shortestDistance, passedLines, age);
+        List<Integer> extraFares = findExtraFares(upStationId, downStationId, path);
+
+        final Fare fare = Fare.of(shortestDistance, extraFares, age);
 
         return new PathResponse(stations, shortestDistance, fare.getValue());
     }
@@ -60,13 +60,8 @@ public class PathService {
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    private List<Line> findPassedLines(Path path, Long upStationId, Long downStationId) {
-        final List<Long> passedLineIds = path.findPassedLineIds(upStationId, downStationId);
-
-        return passedLineIds.stream()
-                .map(lineId -> lineDao.findById(lineId)
-                        .orElseThrow(() -> new IllegalArgumentException("해당 노선을 찾을 수 없습니다")))
-                .distinct()
-                .collect(Collectors.toUnmodifiableList());
+    private List<Integer> findExtraFares(Long upStationId, Long downStationId, Path path) {
+        List<Long> passedLineIds = path.findPassedLineIds(upStationId, downStationId);
+        return lineDao.findExtraFareByIds(passedLineIds);
     }
 }

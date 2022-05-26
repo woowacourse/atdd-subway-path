@@ -14,6 +14,8 @@ public interface LineDao {
 
     List<Line> findAll();
 
+    List<Integer> findExtraFareByIds(List<Long> ids);
+
     boolean hasLine(String name);
 
     void updateById(Long id, String name, String color, int extraFare);

@@ -12,11 +12,11 @@ public class Fare {
         this.value = value;
     }
 
-    public static Fare of(int distance, List<Line> passedLines, int age) {
+    public static Fare of(int distance, List<Integer> extraFares, int age) {
         int defaultFare = calculateDefaultFare(distance);
         double discountRate = calculateDiscountRate(age);
 
-        int extraFare = calculateExtraFare(passedLines);
+        int extraFare = calculateExtraFare(extraFares);
 
         int fare = defaultFare + extraFare;
         int discount = (int) ((fare - DISCOUNT_EXCEPT_MONEY_UNIT) * discountRate);
@@ -34,11 +34,11 @@ public class Fare {
         return discountRatesAge.getDiscountRate();
     }
 
-    private static int calculateExtraFare(List<Line> passedLines) {
-        return passedLines.stream()
-                .mapToInt(Line::getExtraFare)
+    private static int calculateExtraFare(List<Integer> extraFares) {
+        return extraFares.stream()
+                .mapToInt(fare -> fare)
                 .max()
-                .orElseThrow(() -> new IllegalArgumentException("추가 운임 계산 중 에러가 발생하였습니다."));
+                .orElse(0);
     }
 
     public int getValue() {

@@ -1,18 +1,17 @@
 package wooteco.subway.dao;
 
+import java.sql.PreparedStatement;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Line;
 import wooteco.subway.dto.LineRequest;
-
-import java.sql.PreparedStatement;
-import java.util.List;
-import java.util.Optional;
 
 @Component
 public class JdbcLineDao implements LineDao {
@@ -53,6 +52,14 @@ public class JdbcLineDao implements LineDao {
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
+    }
+
+    public List<Integer> findExtraFareByIds(List<Long> ids) {
+        String inSql = String.join(",", Collections.nCopies(ids.size(), "?"));
+        String sql = String.format("select extraFare from LINE where id in (%s)", inSql);
+
+        RowMapper<Integer> rowMapper = (rs, rowNum) -> rs.getInt("extraFare");
+        return jdbcTemplate.query(sql, rowMapper, ids.toArray());
     }
 
     @Override

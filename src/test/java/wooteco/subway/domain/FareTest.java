@@ -7,8 +7,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class FareTest {
-    private final List<Line> lines50ExtraFare = List.of(new Line(1L, "1호선", "red", 50));
-    private final List<Line> linesNoExtraFare = List.of(new Line(2L, "2호선", "red", 0));
+    private final List<Integer> lines50ExtraFare = List.of(50, 40);
+    private final List<Integer> linesNoExtraFare = List.of(0);
 
     @Test
     @DisplayName("10km 이하일 때는 기본운임을 반환한다.")
