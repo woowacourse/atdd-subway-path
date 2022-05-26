@@ -20,7 +20,7 @@ public enum DistanceFare {
         this.extraMoneyUnit = extraMoneyUnit;
     }
 
-    public static DistanceFare from(int distance){
+    public static DistanceFare valueOf(int distance){
         return Arrays.stream(values())
                 .filter(value -> value.leastDistance <= distance)
                 .findFirst()

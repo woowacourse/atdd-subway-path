@@ -25,12 +25,12 @@ public class Fare {
     }
 
     private static int calculateDefaultFare(int distance) {
-        DistanceFare distanceFare = DistanceFare.from(distance);
+        DistanceFare distanceFare = DistanceFare.valueOf(distance);
         return distanceFare.calculateFare(distance);
     }
 
     private static double calculateDiscountRate(int age) {
-        DiscountRatesAge discountRatesAge = DiscountRatesAge.from(age);
+        DiscountRatesAge discountRatesAge = DiscountRatesAge.valueOf(age);
         return discountRatesAge.getDiscountRate();
     }
 

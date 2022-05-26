@@ -12,7 +12,7 @@ class DiscountRatesAgeTest {
     @DisplayName("6세 이상, 13세 미만이면 어린이 요금제도를 생성한다")
     void DiscountRatesAgeChild(int age){
         //when
-        DiscountRatesAge discountRatesAge = DiscountRatesAge.from(age);
+        DiscountRatesAge discountRatesAge = DiscountRatesAge.valueOf(age);
         //then
         assertThat(discountRatesAge).isEqualTo(DiscountRatesAge.CHILD);
     }
@@ -22,7 +22,7 @@ class DiscountRatesAgeTest {
     @DisplayName("13세 이상, 19세 미만이면 청소년 요금제도를 생성한다")
     void DiscountRatesAgeTeenager(int age){
         //when
-        DiscountRatesAge discountRatesAge = DiscountRatesAge.from(age);
+        DiscountRatesAge discountRatesAge = DiscountRatesAge.valueOf(age);
         //then
         assertThat(discountRatesAge).isEqualTo(DiscountRatesAge.TEENAGER);
     }
@@ -32,7 +32,7 @@ class DiscountRatesAgeTest {
     @DisplayName("19세 이상이면 성인 요금제도를 생성한다")
     void DiscountRatesAgeAdult(int age){
         //when
-        DiscountRatesAge discountRatesAge = DiscountRatesAge.from(age);
+        DiscountRatesAge discountRatesAge = DiscountRatesAge.valueOf(age);
         //then
         assertThat(discountRatesAge).isEqualTo(DiscountRatesAge.ADULT);
     }

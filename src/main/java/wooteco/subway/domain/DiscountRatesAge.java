@@ -1,27 +1,27 @@
 package wooteco.subway.domain;
 
 import java.util.Arrays;
+import java.util.function.Predicate;
 
 public enum DiscountRatesAge {
-    ADULT(19, 0),
-    TEENAGER(13, 0.2),
-    CHILD(6, 0.5),
-    BABY(0, 0.5)
+    ADULT(age -> 19 <= age, 0),
+    TEENAGER(age -> 13 <= age, 0.2),
+    CHILD(age -> 0 < age && age < 13, 0.5),
     ;
 
-    private final int startAge;
+    private final Predicate<Integer> predicate;
     private final double discountRate;
 
-    DiscountRatesAge(int startAge, double discountRate) {
-        this.startAge = startAge;
+    DiscountRatesAge(Predicate<Integer> predicate, double discountRate) {
+        this.predicate = predicate;
         this.discountRate = discountRate;
     }
 
-    public static DiscountRatesAge from(int age) {
+    public static DiscountRatesAge valueOf(int age) {
         return Arrays.stream(values())
-                .filter(value -> value.startAge <= age)
+                .filter(value -> value.predicate.test(age))
                 .findFirst()
-                .orElseThrow(()-> new IllegalArgumentException("적절한 연령이 입력되지 않았습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("적절한 연령이 입력되지 않았습니다."));
     }
 
     public double getDiscountRate() {
