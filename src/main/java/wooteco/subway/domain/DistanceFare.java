@@ -22,7 +22,7 @@ public enum DistanceFare {
 
     public static DistanceFare from(int distance){
         return Arrays.stream(values())
-                .filter(value -> value.leastDistance < distance)
+                .filter(value -> value.leastDistance <= distance)
                 .findFirst()
                 .orElseThrow(()-> new IllegalArgumentException("입력받은 거리값에 따른 요금 정책을 찾을 수 없습니다."));
     }
