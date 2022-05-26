@@ -8,11 +8,14 @@ import wooteco.subway.domain.station.Station;
 
 public class LineResponse {
 
-    private final Long id;
-    private final String name;
-    private final String color;
-    private final int extraFare;
-    private final List<StationResponse> stations;
+    private Long id;
+    private String name;
+    private String color;
+    private int extraFare;
+    private List<StationResponse> stations;
+
+    public LineResponse() {
+    }
 
     public LineResponse(Long id,
                         String name,
@@ -59,6 +62,26 @@ public class LineResponse {
 
     public List<StationResponse> getStations() {
         return stations;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public void setExtraFare(int extraFare) {
+        this.extraFare = extraFare;
+    }
+
+    public void setStations(List<StationResponse> stations) {
+        this.stations = stations;
     }
 
     @Override
