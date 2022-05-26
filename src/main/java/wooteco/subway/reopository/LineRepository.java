@@ -5,7 +5,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
-import wooteco.subway.domain.Line;
+import wooteco.subway.domain.section.Line;
 import wooteco.subway.reopository.dao.LineDao;
 import wooteco.subway.reopository.entity.LineEntity;
 

@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.section.Station;
 import wooteco.subway.reopository.dao.StationDao;
 
 @JdbcTest

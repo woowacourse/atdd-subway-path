@@ -1,6 +1,6 @@
 package wooteco.subway.dto;
 
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.section.Station;
 
 public class StationRequest {
 

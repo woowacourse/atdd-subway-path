@@ -4,9 +4,9 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import org.springframework.stereotype.Repository;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.section.Line;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Station;
 import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.reopository.dao.LineDao;
 import wooteco.subway.reopository.dao.SectionDao;
