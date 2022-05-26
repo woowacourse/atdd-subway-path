@@ -11,7 +11,7 @@ public class FareCalculator {
     public FareCalculator(int distance, int extraFare, int age) {
         this.distance = distance;
         this.extraFare = extraFare;
-        this.age = Age.findByAge(age);
+        this.age = Age.valueOf(age);
     }
 
     public int calculate() {
