@@ -20,7 +20,8 @@ public class TestFixtures {
     public static final String LINE_분당 = "분당선";
     public static final String LINE_분당_COLOR = "bg-yellow-100";
 
-    public static final List<Line> 분당선_6호선_노선 = List.of(new Line(LINE_분당, LINE_분당_COLOR), new Line(LINE_SIX, LINE_SIX_COLOR));
+    public static final List<Line> 분당선_6호선_노선 = List.of(new Line(LINE_분당, LINE_분당_COLOR),
+            new Line(LINE_SIX, LINE_SIX_COLOR));
 
     public static final int STANDARD_DISTANCE = 10;
     public static final int STANDARD_FARE = 1250;

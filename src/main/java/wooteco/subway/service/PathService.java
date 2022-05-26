@@ -7,8 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.fare.Fare;
+import wooteco.subway.domain.path.DijkstraShortestGraphAlgorithm;
 import wooteco.subway.domain.path.Path;
-import wooteco.subway.domain.path.ShortestPathCalculator;
 import wooteco.subway.domain.path.ShortestPathEdge;
 import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
@@ -23,28 +24,30 @@ public class PathService {
     private final SectionRepository sectionRepository;
     private final StationRepository stationRepository;
     private final LineRepository lineRepository;
-    private final ShortestPathCalculator shortestPathCalculator;
 
-    public PathService(SectionRepository sectionRepository,
-            StationRepository stationRepository,
-            LineRepository lineRepository,
-            ShortestPathCalculator shortestPathCalculator) {
+    public PathService(SectionRepository sectionRepository, StationRepository stationRepository,
+            LineRepository lineRepository) {
         this.sectionRepository = sectionRepository;
         this.stationRepository = stationRepository;
         this.lineRepository = lineRepository;
-        this.shortestPathCalculator = shortestPathCalculator;
     }
 
     @Transactional
     public PathResponse calculateShortestPath(final PathRequest pathRequest) {
+        final Path path = createPath(pathRequest);
+        final List<Line> lines = toLines(path.findEdges());
+        final int distance = path.calculateMinDistance();
+        final int extraLineFare = path.findMaxExtraLineFare(lines);
+        final Fare fare = Fare.of(distance, extraLineFare, pathRequest.getAge());
+        final List<Station> shortestStations = path.findShortestStations();
+        return new PathResponse(toStationResponses(shortestStations), distance, fare.getFare());
+    }
+
+    private Path createPath(final PathRequest pathRequest) {
         final Station startStation = stationRepository.findById(pathRequest.getSource());
         final Station endStation = stationRepository.findById(pathRequest.getTarget());
         final Sections sections = new Sections(sectionRepository.findAll());
-
-        final List<Line> lines = toLines(shortestPathCalculator.findEdges(startStation, endStation, sections));
-        final Path path = shortestPathCalculator.findPath(startStation, endStation, sections, lines,
-                pathRequest.getAge());
-        return new PathResponse(toStationResponses(path.getStations()), path.getDistance(), path.getFare());
+        return new Path(startStation, endStation, DijkstraShortestGraphAlgorithm.generate(sections));
     }
 
     private List<Line> toLines(List<ShortestPathEdge> edges) {
