@@ -16,7 +16,7 @@ public class Path {
 
     public int calculateFare(int age, int extraCharge) {
         DistanceFarePolicy distanceFarePolicy = DistanceFarePolicy.of(distance);
-        int fare = distanceFarePolicy.calculate(distance) + extraCharge;
+        int fare = (int) distanceFarePolicy.calculate(distance) + extraCharge;
 
         AgeDiscountPolicy discount = AgeDiscountPolicy.of(age);
         return discount.apply(fare);
