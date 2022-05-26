@@ -1,7 +1,5 @@
 package wooteco.subway.domain;
 
-import wooteco.subway.domain.Station;
-
 import java.util.LinkedList;
 import java.util.List;
 

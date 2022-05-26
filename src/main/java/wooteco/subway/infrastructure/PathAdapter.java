@@ -1,8 +1,8 @@
 package wooteco.subway.infrastructure;
 
-import wooteco.subway.domain.Station;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.PathFinder;
+import wooteco.subway.domain.Station;
 
 public class PathAdapter {
     private final PathFinder pathFinder;

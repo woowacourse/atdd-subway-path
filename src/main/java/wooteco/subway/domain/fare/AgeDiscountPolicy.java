@@ -6,17 +6,37 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public enum AgeDiscountPolicy {
-    BABY(price -> 0D, age -> 0 < age && age < 6),
-    CHILDREN(price -> deduct(price) * 0.5, age -> 6 <= age && age < 13),
-    TEENAGER(price -> deduct(price) * 0.8, age -> 13 <= age && age < 19),
+    BABY(price -> 0D, AgeDiscountPolicy::isBaby),
+    CHILDREN(price -> deduct(price) * 0.5, AgeDiscountPolicy::isChildren),
+    TEENAGER(price -> deduct(price) * 0.8, AgeDiscountPolicy::isTeenager),
     NORMAL(price -> price, ignore -> true),
     ;
 
+    private static final int BABY_UPPER_BOUND = 6;
+    private static final int BABY_LOWER_BOUND = 0;
+    private static final int TEENAGER_UPPER_BOUND = 19;
+    private static final int TEENAGER_LOWER_BOUND = 13;
+    private static final int CHILDREN_UPPER_BOUND = 13;
+    private static final int CHILDREN_LOWER_BOUND = 6;
+
+    private static boolean isBaby(final Integer age) {
+        return BABY_LOWER_BOUND < age && age < BABY_UPPER_BOUND;
+    }
+
+    private static boolean isTeenager(final Integer age) {
+        return TEENAGER_LOWER_BOUND <= age && age < TEENAGER_UPPER_BOUND;
+    }
+
+    private static boolean isChildren(final Integer age) {
+        return CHILDREN_LOWER_BOUND <= age && age < CHILDREN_UPPER_BOUND;
+    }
+
+    private static final int BASIC_DEDUCT_PRICE = 350;
     private final Function<Double, Double> function;
     private final Predicate<Integer> predicate;
 
     private static double deduct(final double price) {
-        return price - 350;
+        return price - BASIC_DEDUCT_PRICE;
     }
 
     AgeDiscountPolicy(final Function<Double, Double> function, final Predicate<Integer> predicate) {
