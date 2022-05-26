@@ -25,7 +25,6 @@ public class Fare {
     private Fare applyAgePolicy(final int age) {
         return FareByAgePolicy.from(AgeType.from(age))
                 .applyDiscount(this);
-
     }
 
     private void validateFareValue(final int value) {
@@ -43,7 +42,7 @@ public class Fare {
     }
 
     public Fare discount(final double percent) {
-        return new Fare((int) Math.ceil((value) * percent));
+        return new Fare((int) Math.ceil((value) * (100 - percent) / 100));
     }
 
     public int getValue() {

@@ -4,8 +4,11 @@ import wooteco.subway.domain.Fare;
 
 public class TeenagerDiscountPolicy implements DiscountByAgePolicy {
 
+    private static final int EXCLUDED_AMOUNT = 350;
+    private static final double DISCOUNT_PERCENT = 20;
+
     @Override
     public Fare apply(final Fare fare) {
-        return fare.minus(350).discount(0.8);
+        return fare.minus(EXCLUDED_AMOUNT).discount(DISCOUNT_PERCENT);
     }
 }
