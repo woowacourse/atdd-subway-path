@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -28,6 +29,15 @@ class PathTest {
         int fare = path.calculateFare(20, 500);
 
         assertThat(fare).isEqualTo(expected);
+    }
+
+    @DisplayName("6세 미만의 경우는 무료이다.")
+    @Test
+    void calculateInfantCharge() {
+        Path path = new Path(9, Set.of(1L, 2L), List.of(1L, 2L, 3L));
+        int fare = path.calculateFare(5, 500);
+
+        assertThat(fare).isZero();
     }
 
     @DisplayName("6세 이상, 13세 미만의 어린이는 운임에서 350원을 공제한 금액의 50%가 할인된다.")

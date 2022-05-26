@@ -2,7 +2,6 @@ package wooteco.subway.domain.path;
 
 import java.util.List;
 import java.util.Set;
-import wooteco.subway.domain.fare.AgeDiscountPolicy;
 
 public class Path {
     private static final int OVER_FARE = 100;
