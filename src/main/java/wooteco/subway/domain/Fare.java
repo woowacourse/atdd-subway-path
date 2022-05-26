@@ -1,5 +1,6 @@
 package wooteco.subway.domain;
 
+import java.util.List;
 import java.util.Objects;
 
 public class Fare {
@@ -11,17 +12,33 @@ public class Fare {
         this.value = value;
     }
 
-    public static Fare of(int distance, int extraFare, int age) {
-        DistanceFare distanceFare = DistanceFare.from(distance);
-        int defaultFare = distanceFare.calculateFare(distance);
+    public static Fare of(int distance, List<Line> passedLines, int age) {
+        int defaultFare = calculateDefaultFare(distance);
+        double discountRate = calculateDiscountRate(age);
 
-        DiscountRatesAge discountRatesAge = DiscountRatesAge.from(age);
-        double discountRate = discountRatesAge.getDiscountRate();
+        int extraFare = calculateExtraFare(passedLines);
 
         int fare = defaultFare + extraFare;
         int discount = (int) ((fare - DISCOUNT_EXCEPT_MONEY_UNIT) * discountRate);
 
         return new Fare(fare - discount);
+    }
+
+    private static int calculateDefaultFare(int distance) {
+        DistanceFare distanceFare = DistanceFare.from(distance);
+        return distanceFare.calculateFare(distance);
+    }
+
+    private static double calculateDiscountRate(int age) {
+        DiscountRatesAge discountRatesAge = DiscountRatesAge.from(age);
+        return discountRatesAge.getDiscountRate();
+    }
+
+    private static int calculateExtraFare(List<Line> passedLines) {
+        return passedLines.stream()
+                .mapToInt(Line::getExtraFare)
+                .max()
+                .orElseThrow(() -> new IllegalArgumentException("추가 운임 계산 중 에러가 발생하였습니다."));
     }
 
     public int getValue() {
