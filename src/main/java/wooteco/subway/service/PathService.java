@@ -38,7 +38,7 @@ public class PathService {
         final int shortestDistance = path.getShortestDistance(upStation, downStation);
 
         final int extraFare = getExtraFare(path, upStation, downStation);
-        final Fare fare = Fare.from(shortestDistance, extraFare, age);
+        final Fare fare = Fare.of(shortestDistance, extraFare, age);
 
         return new PathResponse(stations, shortestDistance, fare.getValue());
     }

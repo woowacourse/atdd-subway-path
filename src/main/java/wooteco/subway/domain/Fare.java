@@ -3,13 +3,7 @@ package wooteco.subway.domain;
 import java.util.Objects;
 
 public class Fare {
-    private static final int DEFAULT_FARE = 1250;
-    private static final int DEFAULT_FARE_SECOND = 2050;
-    private static final int FARE_DISTANCE_LIMIT_FIRST = 10;
-    private static final int FARE_DISTANCE_LIMIT_SECOND = 50;
-    private static final int FARE_DISTANCE_UNIT_FIRST = 5;
-    private static final int FARE_DISTANCE_UNIT_SECOND = 8;
-    private static final int EXTRA_FARE = 100;
+    private static final int DISCOUNT_EXCEPT_MONEY_UNIT = 350;
 
     private final int value;
 
@@ -17,32 +11,17 @@ public class Fare {
         this.value = value;
     }
 
-    public static Fare from(int distance, int extraFare, int age) {
-        int fare = calculateFare(distance) + extraFare;
-        return getFare(age, fare);
-    }
+    public static Fare of(int distance, int extraFare, int age) {
+        DistanceFare distanceFare = DistanceFare.from(distance);
+        int defaultFare = distanceFare.calculateFare(distance);
 
-    private static Fare getFare(int age, int fare) {
-        if (6 <= age && age < 13) {
-            int discountFare = (int) ((fare - 350) * 0.5);
-            return new Fare(fare - discountFare);
-        }
-        if (age < 19) {
-            int discountFare = (int) ((fare - 350) * 0.2);
-            return new Fare(fare - discountFare);
-        }
+        DiscountRatesAge discountRatesAge = DiscountRatesAge.from(age);
+        double discountRate = discountRatesAge.getDiscountRate();
 
-        return new Fare(fare);
-    }
+        int fare = defaultFare + extraFare;
+        int discount = (int) ((fare - DISCOUNT_EXCEPT_MONEY_UNIT) * discountRate);
 
-    private static int calculateFare(int distance) {
-        if (distance <= FARE_DISTANCE_LIMIT_FIRST) {
-            return DEFAULT_FARE;
-        }
-        if (distance <= FARE_DISTANCE_LIMIT_SECOND) {
-            return DEFAULT_FARE + (int) ((Math.ceil((distance - 11) / FARE_DISTANCE_UNIT_FIRST) + 1) * EXTRA_FARE);
-        }
-        return DEFAULT_FARE_SECOND + (int) ((Math.ceil((distance - 51) / FARE_DISTANCE_UNIT_SECOND) + 1) * EXTRA_FARE);
+        return new Fare(fare - discount);
     }
 
     public int getValue() {
