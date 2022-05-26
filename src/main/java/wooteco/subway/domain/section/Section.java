@@ -9,10 +9,10 @@ public class Section {
     private static final String INVALID_DISTANCE_ERROR_MESSAGE = String.format("거리는 %d 이상이어야 합니다.", MIN_DISTANCE);
     private static final String DUPLICATED_SECTIONS_ERROR_MESSAGE = "상행과 하행은 같은 역으로 등록할 수 없습니다.";
 
-    private Long id;
-    private Long lineId;
+    private final Long id;
+    private final Long lineId;
     private Station upStation;
-    private Station downStation;
+    private final Station downStation;
     private int distance;
 
     public Section(Long id, Long lineId, Station upStation, Station downStation, int distance) {
