@@ -1,5 +1,8 @@
 package wooteco.subway.domain.fare;
 
+import wooteco.subway.domain.fare.discountpolicy.DiscountCalculator;
+import wooteco.subway.domain.fare.farepolicy.FareCalculator;
+
 public class Fare {
 
     private static final String DISTANCE_NEGATIVE_ERROR = "거리는 음수가 될 수 없습니다.";
@@ -18,7 +21,7 @@ public class Fare {
     }
 
     public int calculate(int age, int extraFare) {
-        int fare = FarePolicy.calculate(distance) + extraFare;
-        return DiscountPolicy.calculate(age, fare);
+        int fare = FareCalculator.calculateFare(distance) + extraFare;
+        return DiscountCalculator.calculateDiscountedFare(age, fare);
     }
 }
