@@ -10,6 +10,7 @@ public class Line {
     private final int extraFare;
 
     public Line(Long id, String name, String color, int extraFare) {
+        validateFare(extraFare);
         this.id = id;
         this.name = name;
         this.color = color;
@@ -22,6 +23,12 @@ public class Line {
 
     public Line(String name, String color, int extraFare) {
         this(null, name, color, extraFare);
+    }
+
+    private static void validateFare(int extraFare) {
+        if (extraFare < 0) {
+            throw new IllegalArgumentException("추가요금은 음수일 수 없습니다.");
+        }
     }
 
     public Line comparesMoreExpensiveExtraFare(Line line) {

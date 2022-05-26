@@ -18,6 +18,8 @@ import wooteco.subway.service.dto.LineServiceRequest;
 import wooteco.subway.service.dto.LineServiceResponse;
 import wooteco.subway.service.dto.StationServiceResponse;
 
+import javax.validation.Valid;
+
 @Service
 @Transactional(readOnly = true)
 public class LineService {
@@ -33,7 +35,7 @@ public class LineService {
     }
 
     @Transactional
-    public LineServiceResponse save(LineServiceRequest lineServiceRequest) {
+    public LineServiceResponse save(@Valid LineServiceRequest lineServiceRequest) {
         validateDuplicationName(lineServiceRequest.getName());
         Line line = new Line(lineServiceRequest.getName(), lineServiceRequest.getColor(), lineServiceRequest.getExtraFare());
         Long savedId = lineDao.save(line);
