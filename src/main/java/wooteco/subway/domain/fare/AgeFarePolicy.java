@@ -13,14 +13,14 @@ public enum AgeFarePolicy {
     CHILDREN(age -> age.moreThan(6) && age.lessThan(13)) {
         @Override
         public Fare apply(Fare fare) {
-            return fare.minus(350)
+            return fare.discount(350)
                     .discountPercent(50);
         }
     },
     TEENAGER(age -> age.moreThan(13) && age.lessThan(19)) {
         @Override
         public Fare apply(Fare fare) {
-            return fare.minus(350)
+            return fare.discount(350)
                     .discountPercent(20);
         }
     },

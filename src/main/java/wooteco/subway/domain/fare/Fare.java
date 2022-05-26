@@ -4,10 +4,19 @@ import java.util.Objects;
 
 public class Fare {
 
+    private static final int MINIMUM_FARE = 0;
+    private static final double PERCENT_MAX_VALUE = 100.0;
     private final int value;
 
     public Fare(int fare) {
         this.value = fare;
+        validateValue();
+    }
+
+    private void validateValue() {
+        if (value < MINIMUM_FARE) {
+            throw new IllegalArgumentException("0 미만의 값으로 요금이 될 수 없습니다.");
+        }
     }
 
     public Fare add(int fareValue) {
@@ -18,8 +27,22 @@ public class Fare {
         return new Fare(value + extraFare.value);
     }
 
-    public Fare minus(int value) {
+    public Fare discount(int value) {
+        if (this.value - value < MINIMUM_FARE) {
+            throw new IllegalArgumentException("현재 요금보다 비싼 가격을 할인할 수 없습니다.");
+        }
         return new Fare(this.value - value);
+    }
+
+    public Fare discountPercent(int percent) {
+        if (percent > PERCENT_MAX_VALUE) {
+            return new Fare(0);
+        }
+        return new Fare((int) (value - value * (percent / PERCENT_MAX_VALUE)));
+    }
+
+    public int value() {
+        return value;
     }
 
     @Override
@@ -42,13 +65,5 @@ public class Fare {
     @Override
     public String toString() {
         return value + "원";
-    }
-
-    public int value() {
-        return value;
-    }
-
-    public Fare discountPercent(int percent) {
-        return new Fare((int) (value / 100.0) * (100 - percent));
     }
 }
