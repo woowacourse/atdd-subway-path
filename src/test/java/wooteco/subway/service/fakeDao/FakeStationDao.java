@@ -10,12 +10,12 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-public class StationDaoImpl implements StationDao {
-    private static final StationDaoImpl stationDao = new StationDaoImpl();
+public class FakeStationDao implements StationDao {
+    private static final FakeStationDao stationDao = new FakeStationDao();
     private static final List<Station> stations = new ArrayList<>();
     private static Long seq = 0L;
 
-    public static StationDaoImpl getInstance() {
+    public static FakeStationDao getInstance() {
         return stationDao;
     }
 

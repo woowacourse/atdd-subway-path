@@ -11,12 +11,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class SectionDaoImpl implements SectionDao {
-    private static final SectionDaoImpl sectionDao = new SectionDaoImpl();
+public class FakeSectionDao implements SectionDao {
+    private static final FakeSectionDao sectionDao = new FakeSectionDao();
     private static final List<Section> sections = new ArrayList<>();
     private static Long seq = 0L;
 
-    public static SectionDaoImpl getInstance() {
+    public static FakeSectionDao getInstance() {
         return sectionDao;
     }
 

@@ -7,19 +7,19 @@ import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.StationResponse;
-import wooteco.subway.service.fakeDao.SectionDaoImpl;
-import wooteco.subway.service.fakeDao.StationDaoImpl;
+import wooteco.subway.service.fakeDao.FakeSectionDao;
+import wooteco.subway.service.fakeDao.FakeStationDao;
 
 import java.util.List;
 
 public class StationServiceTest {
 
     private final StationService stationService =
-            new StationService(StationDaoImpl.getInstance(), SectionDaoImpl.getInstance());
+            new StationService(FakeStationDao.getInstance(), FakeSectionDao.getInstance());
 
     @BeforeEach
     void setUp() {
-        final StationDaoImpl stationDao = StationDaoImpl.getInstance();
+        final FakeStationDao stationDao = FakeStationDao.getInstance();
         final List<Station> stations = stationDao.findAll();
         stations.clear();
     }

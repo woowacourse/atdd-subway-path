@@ -12,13 +12,13 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.PathResponse;
-import wooteco.subway.service.fakeDao.LineDaoImpl;
-import wooteco.subway.service.fakeDao.SectionDaoImpl;
-import wooteco.subway.service.fakeDao.StationDaoImpl;
+import wooteco.subway.service.fakeDao.FakeLineDao;
+import wooteco.subway.service.fakeDao.FakeSectionDao;
+import wooteco.subway.service.fakeDao.FakeStationDao;
 
 public class PathServiceTest {
     private final PathService pathService
-            = new PathService(StationDaoImpl.getInstance(), SectionDaoImpl.getInstance(), LineDaoImpl.getInstance());
+            = new PathService(FakeStationDao.getInstance(), FakeSectionDao.getInstance(), FakeLineDao.getInstance());
 
     private final Station station1 = new Station("애플역");
     private final Station station2 = new Station("갤럭시역");
@@ -38,24 +38,24 @@ public class PathServiceTest {
 
     @BeforeEach
     void setUp() {
-        final List<Station> stations = StationDaoImpl.getInstance().findAll();
+        final List<Station> stations = FakeStationDao.getInstance().findAll();
         stations.clear();
-        final List<Section> sections = SectionDaoImpl.getInstance().findAll();
+        final List<Section> sections = FakeSectionDao.getInstance().findAll();
         sections.clear();
-        final List<Line> lines = LineDaoImpl.getInstance().findAll();
+        final List<Line> lines = FakeLineDao.getInstance().findAll();
         lines.clear();
 
-        station1_id = StationDaoImpl.getInstance().save(station1);
-        station2_id = StationDaoImpl.getInstance().save(station2);
-        station3_id = StationDaoImpl.getInstance().save(station3);
-        station4_id = StationDaoImpl.getInstance().save(station4);
+        station1_id = FakeStationDao.getInstance().save(station1);
+        station2_id = FakeStationDao.getInstance().save(station2);
+        station3_id = FakeStationDao.getInstance().save(station3);
+        station4_id = FakeStationDao.getInstance().save(station4);
 
-        Long lineId = LineDaoImpl.getInstance().save(new LineRequest("1호선", "red", 1L, 2L, 0, 0));
+        Long lineId = FakeLineDao.getInstance().save(new LineRequest("1호선", "red", 1L, 2L, 0, 0));
 
         애플_갤럭시 = new Section(lineId, station1_id, station2_id, 10);
         갤럭시_옵티머스 = new Section(lineId, station2_id, station3_id, 20);
-        SectionDaoImpl.getInstance().save(애플_갤럭시);
-        SectionDaoImpl.getInstance().save(갤럭시_옵티머스);
+        FakeSectionDao.getInstance().save(애플_갤럭시);
+        FakeSectionDao.getInstance().save(갤럭시_옵티머스);
     }
 
     @Test
@@ -79,10 +79,10 @@ public class PathServiceTest {
         // given
         final PathResponse expected =
                 new PathResponse(List.of(station3, station4), 20, 2350);
-        Long lineId2 = LineDaoImpl.getInstance().save(new LineRequest("2호선", "red", 1L, 2L, 0, 900));
+        Long lineId2 = FakeLineDao.getInstance().save(new LineRequest("2호선", "red", 1L, 2L, 0, 900));
 
         옵티머스_샤오미 = new Section(lineId2, station3_id, station4_id, 20);
-        SectionDaoImpl.getInstance().save(옵티머스_샤오미);
+        FakeSectionDao.getInstance().save(옵티머스_샤오미);
         // when
         PathResponse actual = pathService.findShortestPath(station3_id, station4_id, adultAge);
 
@@ -128,7 +128,7 @@ public class PathServiceTest {
     void calculatePathNotExist() {
         // given
         애플_갤럭시 = new Section(station1_id, station2_id, 100);
-        SectionDaoImpl.getInstance().save(애플_갤럭시);
+        FakeSectionDao.getInstance().save(애플_갤럭시);
 
         //when then
         assertThatThrownBy(() -> pathService.findShortestPath(station1_id, station4_id, adultAge))

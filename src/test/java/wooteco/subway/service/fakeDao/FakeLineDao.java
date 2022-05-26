@@ -9,12 +9,12 @@ import wooteco.subway.dao.LineDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.dto.LineRequest;
 
-public class LineDaoImpl implements LineDao {
-    private static final LineDaoImpl lineDao = new LineDaoImpl();
+public class FakeLineDao implements LineDao {
+    private static final FakeLineDao lineDao = new FakeLineDao();
     private static final List<Line> lines = new ArrayList<>();
     private static Long seq = 0L;
 
-    public static LineDaoImpl getInstance() {
+    public static FakeLineDao getInstance() {
         return lineDao;
     }
 
