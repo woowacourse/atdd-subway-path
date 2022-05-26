@@ -237,4 +237,17 @@ public class FareTest {
         // then
         assertThat(actual.getValue()).isEqualTo(expectedFareValue);
     }
+
+    @ParameterizedTest
+    @DisplayName("할인 퍼센트가 0 미만 100 초과이면 예외를 던진다.")
+    @ValueSource(ints = {-10, -1, 101, 150})
+    void Discount_InvalidPercent_ExceptionThrown(final int discountPercent) {
+        // given
+        final Fare originFare = new Fare(1000);
+
+        // when, then
+        assertThatThrownBy(() -> originFare.discount(discountPercent))
+                .isInstanceOf(IllegalInputException.class)
+                .hasMessage("할인 퍼센트는 0 이상 100 이하여야 합니다.");
+    }
 }

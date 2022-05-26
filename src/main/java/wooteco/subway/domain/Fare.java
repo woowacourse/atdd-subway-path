@@ -42,7 +42,14 @@ public class Fare {
     }
 
     public Fare discount(final double percent) {
+        validateDiscountPercent(percent);
         return new Fare((int) Math.ceil((value) * (100 - percent) / 100));
+    }
+
+    private void validateDiscountPercent(final double percent) {
+        if (percent < 0 || percent > 100) {
+            throw new IllegalInputException("할인 퍼센트는 0 이상 100 이하여야 합니다.");
+        }
     }
 
     public int getValue() {
