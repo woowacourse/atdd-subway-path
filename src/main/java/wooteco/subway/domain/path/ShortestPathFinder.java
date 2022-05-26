@@ -28,7 +28,7 @@ public class ShortestPathFinder implements PathFinder {
         return graphPath.getEdgeList()
                 .stream()
                 .map(ShortestPathEdge::getLineId)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     private DijkstraShortestPath<Long, ShortestPathEdge> initializePathGraph(List<Long> stationIds,
