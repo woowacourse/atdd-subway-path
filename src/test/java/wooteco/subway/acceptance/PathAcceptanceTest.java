@@ -51,11 +51,15 @@ class PathAcceptanceTest extends AcceptanceTest {
         LineRequest 무료노선 = new LineRequest("무료노선", "bg-white-600", stationId3, stationId4, 50, 0);
         postLineId(무료노선);
 
+        System.out.println("/paths?source=" + stationId3 + "&target=" + stationId4 + "&age=" + 20);
         // when
         ValidatableResponse validatableResponse = RestAssured.given()
                 .log().all()
+                .param("source", stationId3)
+                .param("target", stationId4)
+                .param("age", 20)
                 .when()
-                .get("/paths?source=" + stationId3 + "&target=" + stationId4 + "&age=" + 20)
+                .get("/paths")
                 .then().log().all();
 
         // then
@@ -81,8 +85,11 @@ class PathAcceptanceTest extends AcceptanceTest {
         // when
         ValidatableResponse validatableResponse = RestAssured.given()
                 .log().all()
+                .param("source", stationId1)
+                .param("target", stationId4)
+                .param("age", 20)
                 .when()
-                .get("/paths?source=" + stationId1 + "&target=" + stationId4 + "&age=" + 20)
+                .get("/paths")
                 .then().log().all();
 
         // then
@@ -109,8 +116,11 @@ class PathAcceptanceTest extends AcceptanceTest {
         // when
         ValidatableResponse validatableResponse = RestAssured.given()
                 .log().all()
+                .param("source", stationId1)
+                .param("target", stationId4)
+                .param("age", 20)
                 .when()
-                .get("/paths?source=" + stationId1 + "&target=" + stationId4 + "&age=" + 20)
+                .get("/paths")
                 .then().log().all();
 
         // then
