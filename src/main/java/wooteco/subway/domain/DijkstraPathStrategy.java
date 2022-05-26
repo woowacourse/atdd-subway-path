@@ -21,12 +21,12 @@ public class DijkstraPathStrategy implements PathStrategy {
     }
 
     private static Set<Long> gatherStationIds(List<Section> sections) {
-        Set<Long> ids = new HashSet<>();
+        Set<Long> stationIds = new HashSet<>();
         for (Section section : sections) {
-            ids.add(section.getUpStationId());
-            ids.add(section.getDownStationId());
+            stationIds.add(section.getUpStationId());
+            stationIds.add(section.getDownStationId());
         }
-        return ids;
+        return stationIds;
     }
 
     private static GraphPath initPathGraph(List<Section> sections, Set<Long> ids, Long source, Long target) {
