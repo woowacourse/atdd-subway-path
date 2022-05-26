@@ -17,15 +17,15 @@ import wooteco.subway.dto.StationResponse;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
-    private final StationRequest stationRequest1 = new StationRequest("강남역");
-    private final StationRequest stationRequest2 = new StationRequest("역삼역");
+    private final StationRequest 강남역 = new StationRequest("강남역");
+    private final StationRequest 역삼역 = new StationRequest("역삼역");
 
     @DisplayName("지하철역을 생성한다.")
     @Test
     void createStation() {
         // given
         // when
-        ExtractableResponse<Response> response = createStationResponse(stationRequest1);
+        ExtractableResponse<Response> response = createStationResponse(강남역);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -36,10 +36,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStationWithDuplicateName() {
         // given
-        createStationResponse(stationRequest1);
+        createStationResponse(강남역);
 
         // when
-        ExtractableResponse<Response> response = createStationResponse(stationRequest1);
+        ExtractableResponse<Response> response = createStationResponse(강남역);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -49,8 +49,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void getStations() {
         /// given
-        ExtractableResponse<Response> createResponse1 = createStationResponse(stationRequest1);
-        ExtractableResponse<Response> createResponse2 = createStationResponse(stationRequest2);
+        ExtractableResponse<Response> createResponse1 = createStationResponse(강남역);
+        ExtractableResponse<Response> createResponse2 = createStationResponse(역삼역);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -74,7 +74,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteStation() {
         // given
-        ExtractableResponse<Response> createResponse = createStationResponse(stationRequest1);
+        ExtractableResponse<Response> createResponse = createStationResponse(강남역);
 
         // when
         String uri = createResponse.header("Location");
@@ -92,7 +92,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteInvalidStation() {
         // given
-        ExtractableResponse<Response> createResponse = createStationResponse(stationRequest1);
+        ExtractableResponse<Response> createResponse = createStationResponse(강남역);
 
         // when
         String uri = createResponse.header("Location");

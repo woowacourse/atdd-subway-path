@@ -22,10 +22,10 @@ public class LineServiceTest {
     private final LineService lineService =
             new LineService(FakeLineDao.getInstance(), FakeStationDao.getInstance(), FakeSectionDao.getInstance());
 
-    private Station station1;
-    private Station station2;
-    private Station station3;
-    private Station station4;
+    private Station 애플역;
+    private Station 갤럭시역;
+    private Station 옵티머스역;
+    private Station 롤리팝역;
 
     @BeforeEach
     void setUp() {
@@ -36,10 +36,10 @@ public class LineServiceTest {
         final List<Section> sections = FakeSectionDao.getInstance().findAll();
         sections.clear();
 
-        station1 = new Station("애플역");
-        station2 = new Station("갤럭시역");
-        station3 = new Station("옵티머스역");
-        station4 = new Station("롤리팝역");
+        애플역 = new Station("애플역");
+        갤럭시역 = new Station("갤럭시역");
+        옵티머스역 = new Station("옵티머스역");
+        롤리팝역 = new Station("롤리팝역");
     }
 
     @Test
@@ -57,8 +57,8 @@ public class LineServiceTest {
     @Test
     @DisplayName("노선을 저장할 때 구간도 같이 등록된다.")
     void saveLineWithSection() {
-        final Long id1 = FakeStationDao.getInstance().save(station1);
-        final Long id2 = FakeStationDao.getInstance().save(station2);
+        final Long id1 = FakeStationDao.getInstance().save(애플역);
+        final Long id2 = FakeStationDao.getInstance().save(갤럭시역);
         final LineRequest lineRequest =
                 new LineRequest("신분당선", "bg-red-600", id1, id2, 20);
 
@@ -71,9 +71,9 @@ public class LineServiceTest {
     @Test
     @DisplayName("이미 존재하는 노선을 생성하려고 하면 에러를 발생한다.")
     void save_duplicate_station() {
-        final Long id1 = FakeStationDao.getInstance().save(station1);
-        final Long id2 = FakeStationDao.getInstance().save(station2);
-        final Long id3 = FakeStationDao.getInstance().save(station3);
+        final Long id1 = FakeStationDao.getInstance().save(애플역);
+        final Long id2 = FakeStationDao.getInstance().save(갤럭시역);
+        final Long id3 = FakeStationDao.getInstance().save(옵티머스역);
 
         final LineRequest lineRequest1 =
                 new LineRequest("신분당선", "bg-green-600", id1, id2, 15);
@@ -101,17 +101,17 @@ public class LineServiceTest {
     }
 
     private LineRequest createLineRequest() {
-        final Long id1 = FakeStationDao.getInstance().save(station1);
-        final Long id2 = FakeStationDao.getInstance().save(station2);
+        final Long id1 = FakeStationDao.getInstance().save(애플역);
+        final Long id2 = FakeStationDao.getInstance().save(갤럭시역);
         return new LineRequest("신분당선", "bg-red-600", id1, id2, 20);
     }
 
     @Test
     @DisplayName("상행 종점 구간을 추가한다.")
     void saveFinalUpSection() {
-        final Long id1 = FakeStationDao.getInstance().save(station1);
-        final Long id2 = FakeStationDao.getInstance().save(station2);
-        final Long id3 = FakeStationDao.getInstance().save(station3);
+        final Long id1 = FakeStationDao.getInstance().save(애플역);
+        final Long id2 = FakeStationDao.getInstance().save(갤럭시역);
+        final Long id3 = FakeStationDao.getInstance().save(옵티머스역);
         final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", id1, id2, 20);
         final LineResponse lineResponse = lineService.saveLine(lineRequest);
         final SectionRequest sectionRequest = new SectionRequest(id3, id1, 10);
@@ -126,9 +126,9 @@ public class LineServiceTest {
     @Test
     @DisplayName("하행 종점 구간을 추가한다.")
     void saveFinalDownSection() {
-        final Long id1 = FakeStationDao.getInstance().save(station1);
-        final Long id2 = FakeStationDao.getInstance().save(station2);
-        final Long id3 = FakeStationDao.getInstance().save(station3);
+        final Long id1 = FakeStationDao.getInstance().save(애플역);
+        final Long id2 = FakeStationDao.getInstance().save(갤럭시역);
+        final Long id3 = FakeStationDao.getInstance().save(옵티머스역);
         final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", id1, id2, 20);
         final LineResponse lineResponse = lineService.saveLine(lineRequest);
         final SectionRequest sectionRequest = new SectionRequest(id2, id3, 10);
@@ -142,9 +142,9 @@ public class LineServiceTest {
     @Test
     @DisplayName("상행역이 동일한 구간을 추가한다.")
     void saveSameUpStationSection() {
-        final Long id1 = FakeStationDao.getInstance().save(station1);
-        final Long id2 = FakeStationDao.getInstance().save(station2);
-        final Long id3 = FakeStationDao.getInstance().save(station3);
+        final Long id1 = FakeStationDao.getInstance().save(애플역);
+        final Long id2 = FakeStationDao.getInstance().save(갤럭시역);
+        final Long id3 = FakeStationDao.getInstance().save(옵티머스역);
         final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", id1, id2, 20);
         final LineResponse lineResponse = lineService.saveLine(lineRequest);
         final SectionRequest sectionRequest = new SectionRequest(id1, id3, 10);
@@ -158,9 +158,9 @@ public class LineServiceTest {
     @Test
     @DisplayName("하행역이 동일한 구간을 추가한다.")
     void saveSameDownStationSection() {
-        final Long id1 = FakeStationDao.getInstance().save(station1);
-        final Long id2 = FakeStationDao.getInstance().save(station2);
-        final Long id3 = FakeStationDao.getInstance().save(station3);
+        final Long id1 = FakeStationDao.getInstance().save(애플역);
+        final Long id2 = FakeStationDao.getInstance().save(갤럭시역);
+        final Long id3 = FakeStationDao.getInstance().save(옵티머스역);
         final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", id1, id2, 20);
         final LineResponse lineResponse = lineService.saveLine(lineRequest);
         final SectionRequest sectionRequest = new SectionRequest(id3, id2, 10);
@@ -174,10 +174,10 @@ public class LineServiceTest {
     @Test
     @DisplayName("올바르지 않은 구간을 추가할 때 예외를 발생시킨다.")
     void saveInvalidSection() {
-        final Long id1 = FakeStationDao.getInstance().save(station1);
-        final Long id2 = FakeStationDao.getInstance().save(station2);
-        final Long id3 = FakeStationDao.getInstance().save(station3);
-        final Long id4 = FakeStationDao.getInstance().save(station4);
+        final Long id1 = FakeStationDao.getInstance().save(애플역);
+        final Long id2 = FakeStationDao.getInstance().save(갤럭시역);
+        final Long id3 = FakeStationDao.getInstance().save(옵티머스역);
+        final Long id4 = FakeStationDao.getInstance().save(롤리팝역);
         final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", id1, id2, 20);
         final LineResponse lineResponse = lineService.saveLine(lineRequest);
         final SectionRequest sectionRequest = new SectionRequest(id4, id3, 50);
@@ -190,9 +190,9 @@ public class LineServiceTest {
     @Test
     @DisplayName("상행 종점 구간을 삭제한다.")
     void deleteFinalUpSection() {
-        final Long id1 = FakeStationDao.getInstance().save(station1);
-        final Long id2 = FakeStationDao.getInstance().save(station2);
-        final Long id3 = FakeStationDao.getInstance().save(station3);
+        final Long id1 = FakeStationDao.getInstance().save(애플역);
+        final Long id2 = FakeStationDao.getInstance().save(갤럭시역);
+        final Long id3 = FakeStationDao.getInstance().save(옵티머스역);
         final LineResponse lineResponse = addSection(id1, id2, id3);
 
         lineService.deleteSection(lineResponse.getId(), id1);
@@ -204,9 +204,9 @@ public class LineServiceTest {
     @Test
     @DisplayName("하행 종점 구간을 삭제한다.")
     void deleteFinalDownSection() {
-        final Long id1 = FakeStationDao.getInstance().save(station1);
-        final Long id2 = FakeStationDao.getInstance().save(station2);
-        final Long id3 = FakeStationDao.getInstance().save(station3);
+        final Long id1 = FakeStationDao.getInstance().save(애플역);
+        final Long id2 = FakeStationDao.getInstance().save(갤럭시역);
+        final Long id3 = FakeStationDao.getInstance().save(옵티머스역);
         final LineResponse lineResponse = addSection(id1, id2, id3);
 
         lineService.deleteSection(lineResponse.getId(), id2);
@@ -218,9 +218,9 @@ public class LineServiceTest {
     @Test
     @DisplayName("중간 구간을 삭제한다.")
     void deleteMiddleSection() {
-        final Long id1 = FakeStationDao.getInstance().save(station1);
-        final Long id2 = FakeStationDao.getInstance().save(station2);
-        final Long id3 = FakeStationDao.getInstance().save(station3);
+        final Long id1 = FakeStationDao.getInstance().save(애플역);
+        final Long id2 = FakeStationDao.getInstance().save(갤럭시역);
+        final Long id3 = FakeStationDao.getInstance().save(옵티머스역);
         final LineResponse lineResponse = addSection(id1, id2, id3);
 
         lineService.deleteSection(lineResponse.getId(), id3);
@@ -232,10 +232,10 @@ public class LineServiceTest {
     @Test
     @DisplayName("올바르지 않은 구간을 삭제할 때 예외를 발생시킨다..")
     void deleteInvalidSection() {
-        final Long id1 = FakeStationDao.getInstance().save(station1);
-        final Long id2 = FakeStationDao.getInstance().save(station2);
-        final Long id3 = FakeStationDao.getInstance().save(station3);
-        final Long id4 = FakeStationDao.getInstance().save(station4);
+        final Long id1 = FakeStationDao.getInstance().save(애플역);
+        final Long id2 = FakeStationDao.getInstance().save(갤럭시역);
+        final Long id3 = FakeStationDao.getInstance().save(옵티머스역);
+        final Long id4 = FakeStationDao.getInstance().save(롤리팝역);
         final LineResponse lineResponse = addSection(id1, id2, id3);
 
         assertThatThrownBy(() -> lineService.deleteSection(lineResponse.getId(), id4))

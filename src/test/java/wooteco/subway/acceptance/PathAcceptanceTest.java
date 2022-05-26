@@ -43,8 +43,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private final LineRequest 수인분당선 =
             new LineRequest("수인분당선", "bg-yellow-600",
                     7L, 8L, 7, 500);
-    private final LineRequest 수인분당선2 =
-            new LineRequest("수인분당선2", "bg-yellow-600",
+    private final LineRequest 경의중앙선 =
+            new LineRequest("경의중앙선", "bg-purple-600",
                     8L, 9L, 7, 700);
 
     private final SectionRequest 잠실_잠실새내 = new SectionRequest(1L, 2L, 50);
@@ -67,7 +67,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         createLineResponse(팔호선);
         createLineResponse(구호선);
         createLineResponse(수인분당선);
-        createLineResponse(수인분당선2);
+        createLineResponse(경의중앙선);
 
         createSectionResponse(1L, 잠실_잠실새내);
         createSectionResponse(3L, 석촌_석촌고분);

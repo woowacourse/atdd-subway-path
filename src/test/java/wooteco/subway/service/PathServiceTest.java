@@ -20,19 +20,19 @@ public class PathServiceTest {
     private final PathService pathService
             = new PathService(FakeStationDao.getInstance(), FakeSectionDao.getInstance(), FakeLineDao.getInstance());
 
-    private final Station station1 = new Station("애플역");
-    private final Station station2 = new Station("갤럭시역");
-    private final Station station3 = new Station("옵티머스역");
-    private final Station station4 = new Station("샤오미역");
+    private final Station 애플역 = new Station("애플역");
+    private final Station 갤럭시역 = new Station("갤럭시역");
+    private final Station 옵티머스역 = new Station("옵티머스역");
+    private final Station 샤오미역 = new Station("샤오미역");
 
     private Section 애플_갤럭시;
     private Section 갤럭시_옵티머스;
     private Section 옵티머스_샤오미;
 
-    private Long station1_id;
-    private Long station2_id;
-    private Long station3_id;
-    private Long station4_id;
+    private Long 애플역_id;
+    private Long 갤럭시역_id;
+    private Long 옵티머스역_id;
+    private Long 샤오미역_id;
 
     private int adultAge = 20;
 
@@ -45,15 +45,15 @@ public class PathServiceTest {
         final List<Line> lines = FakeLineDao.getInstance().findAll();
         lines.clear();
 
-        station1_id = FakeStationDao.getInstance().save(station1);
-        station2_id = FakeStationDao.getInstance().save(station2);
-        station3_id = FakeStationDao.getInstance().save(station3);
-        station4_id = FakeStationDao.getInstance().save(station4);
+        애플역_id = FakeStationDao.getInstance().save(애플역);
+        갤럭시역_id = FakeStationDao.getInstance().save(갤럭시역);
+        옵티머스역_id = FakeStationDao.getInstance().save(옵티머스역);
+        샤오미역_id = FakeStationDao.getInstance().save(샤오미역);
 
         Long lineId = FakeLineDao.getInstance().save(new LineRequest("1호선", "red", 1L, 2L, 0, 0));
 
-        애플_갤럭시 = new Section(lineId, station1_id, station2_id, 10);
-        갤럭시_옵티머스 = new Section(lineId, station2_id, station3_id, 20);
+        애플_갤럭시 = new Section(lineId, 애플역_id, 갤럭시역_id, 10);
+        갤럭시_옵티머스 = new Section(lineId, 갤럭시역_id, 옵티머스역_id, 20);
         FakeSectionDao.getInstance().save(애플_갤럭시);
         FakeSectionDao.getInstance().save(갤럭시_옵티머스);
     }
@@ -63,9 +63,9 @@ public class PathServiceTest {
     void calculateDistance() {
         // given
         final PathResponse expected =
-                new PathResponse(List.of(station1, station2, station3), 30, 1650);
+                new PathResponse(List.of(애플역, 갤럭시역, 옵티머스역), 30, 1650);
         // when
-        PathResponse actual = pathService.findShortestPath(station1_id, station3_id, adultAge);
+        PathResponse actual = pathService.findShortestPath(애플역_id, 옵티머스역_id, adultAge);
 
         //then
         assertThat(actual)
@@ -78,13 +78,13 @@ public class PathServiceTest {
     void calculateDistanceWithExtraFare() {
         // given
         final PathResponse expected =
-                new PathResponse(List.of(station3, station4), 20, 2350);
+                new PathResponse(List.of(옵티머스역, 샤오미역), 20, 2350);
         Long lineId2 = FakeLineDao.getInstance().save(new LineRequest("2호선", "red", 1L, 2L, 0, 900));
 
-        옵티머스_샤오미 = new Section(lineId2, station3_id, station4_id, 20);
+        옵티머스_샤오미 = new Section(lineId2, 옵티머스역_id, 샤오미역_id, 20);
         FakeSectionDao.getInstance().save(옵티머스_샤오미);
         // when
-        PathResponse actual = pathService.findShortestPath(station3_id, station4_id, adultAge);
+        PathResponse actual = pathService.findShortestPath(옵티머스역_id, 샤오미역_id, adultAge);
 
         //then
         assertThat(actual)
@@ -97,9 +97,9 @@ public class PathServiceTest {
     void calculateDistanceTeenager() {
         // given
         final PathResponse expected =
-                new PathResponse(List.of(station1, station2, station3), 30, 1390);
+                new PathResponse(List.of(애플역, 갤럭시역, 옵티머스역), 30, 1390);
         // when
-        PathResponse actual = pathService.findShortestPath(station1_id, station3_id, 15);
+        PathResponse actual = pathService.findShortestPath(애플역_id, 옵티머스역_id, 15);
 
         //then
         assertThat(actual)
@@ -113,9 +113,9 @@ public class PathServiceTest {
     void calculateDistanceChild() {
         // given
         final PathResponse expected =
-                new PathResponse(List.of(station1, station2, station3), 30, 1000);
+                new PathResponse(List.of(애플역, 갤럭시역, 옵티머스역), 30, 1000);
         // when
-        PathResponse actual = pathService.findShortestPath(station1_id, station3_id, 8);
+        PathResponse actual = pathService.findShortestPath(애플역_id, 옵티머스역_id, 8);
 
         //then
         assertThat(actual)
@@ -127,11 +127,11 @@ public class PathServiceTest {
     @DisplayName("역 사이 경로가 존재하지 않을 때 예외를 발생시킨다.")
     void calculatePathNotExist() {
         // given
-        애플_갤럭시 = new Section(station1_id, station2_id, 100);
+        애플_갤럭시 = new Section(애플역_id, 갤럭시역_id, 100);
         FakeSectionDao.getInstance().save(애플_갤럭시);
 
         //when then
-        assertThatThrownBy(() -> pathService.findShortestPath(station1_id, station4_id, adultAge))
+        assertThatThrownBy(() -> pathService.findShortestPath(애플역_id, 샤오미역_id, adultAge))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("해당 역 사이 경로가 존재하지 않습니다.");
     }
@@ -139,7 +139,7 @@ public class PathServiceTest {
     @Test
     @DisplayName("요청에 해당 역이 존재하지 않을 때 예외를 발생시킨다.")
     void stationNotExistByRequest() {
-        assertThatThrownBy(() -> pathService.findShortestPath(station1_id, station4_id + 1L, adultAge))
+        assertThatThrownBy(() -> pathService.findShortestPath(애플역_id, 샤오미역_id + 1L, adultAge))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("해당 역이 존재하지 않습니다.");
     }
