@@ -39,14 +39,15 @@ public class PathService {
         Station target = lineService.findStationById(targetStationId);
 
         Path path = pathFinder.findShortestPath(source, target, lines);
-        Integer maxAdditionalLineFare = findLineFare(path);
+        int maxAdditionalLineFare = findLineFare(path);
 
         return PathResponse.of(path, new Fare(path.getDistance(), maxAdditionalLineFare, age));
     }
 
-    private Integer findLineFare(Path path) {
+    private int findLineFare(Path path) {
         List<Long> shortestPathLineIds = path.findShortestPathLines();
-        List<Integer> extraFares = lineDao.findExtraFareByIds(shortestPathLineIds);
+        List<Integer> extraFares = lineDao.findExtraFareByIds(shortestPathLineIds)
+                .orElseThrow(() -> new IllegalArgumentException("특정 라인의 extraFare가 비어있습니다."));
         return Collections.max(extraFares);
     }
 

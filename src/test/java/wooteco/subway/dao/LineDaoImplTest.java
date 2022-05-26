@@ -174,7 +174,7 @@ class LineDaoImplTest {
         sectionDao.save(new Section(station3, station4, 10), savedId2);
 
         //when
-        List<Integer> extraFareByIds = lineDao.findExtraFareByIds(List.of(savedId1, savedId2));
+        List<Integer> extraFareByIds = lineDao.findExtraFareByIds(List.of(savedId1, savedId2)).get();
 
         //then
         assertThat(extraFareByIds).containsExactly(500, 900);

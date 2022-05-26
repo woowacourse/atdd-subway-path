@@ -55,8 +55,8 @@ public class FakeLineDao implements LineDao {
     }
 
     @Override
-    public List<Integer> findExtraFareByIds(List<Long> id) {
-        return new ArrayList<>();
+    public Optional<List<Integer>> findExtraFareByIds(List<Long> id) {
+        return Optional.of(new ArrayList<>());
     }
 
 }

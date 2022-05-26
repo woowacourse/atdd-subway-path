@@ -135,11 +135,15 @@ public class LineDaoImpl implements LineDao {
         return updateSize != 0;
     }
 
-    public List<Integer> findExtraFareByIds(List<Long> shortestPathLineIds) {
+    public Optional<List<Integer>> findExtraFareByIds(List<Long> shortestPathLineIds) {
         final String inSql = String.join(",", Collections.nCopies(shortestPathLineIds.size(), "?"));
         final String sql = String.format("SELECT extraFare FROM LINE WHERE id in (%s)", inSql);
+        try{
+            return Optional.of(jdbcTemplate.query(sql, (resultSet, rowNum) -> resultSet.getInt("extraFare"), shortestPathLineIds.toArray()));
+        }catch (EmptyResultDataAccessException e){
+            return Optional.empty();
+        }
 
-        return jdbcTemplate.query(sql, (resultSet, rowNum) -> resultSet.getInt("extraFare"), shortestPathLineIds.toArray());
     }
 
     private static class LineSection {
