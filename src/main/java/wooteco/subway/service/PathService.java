@@ -7,6 +7,7 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.strategy.DijkstraPathStrategy;
 import wooteco.subway.domain.strategy.FareStrategy;
 import wooteco.subway.domain.strategy.PathStrategy;
 import wooteco.subway.dto.request.PathRequest;
@@ -18,18 +19,15 @@ public class PathService {
 
     private final StationService stationService;
     private final SectionDao sectionDao;
-    private final PathStrategy pathStrategy;
-    private final FareStrategy fareStrategy;
 
-    public PathService(StationService stationService, SectionDao sectionDao, PathStrategy pathStrategy,
-                       FareStrategy fareStrategy) {
+    public PathService(StationService stationService, SectionDao sectionDao) {
         this.stationService = stationService;
         this.sectionDao = sectionDao;
-        this.pathStrategy = pathStrategy;
-        this.fareStrategy = fareStrategy;
     }
 
     public PathResponse findShortestPath(PathRequest pathRequest) {
+        PathStrategy pathStrategy = new DijkstraPathStrategy();
+
         Station source = stationService.findById(pathRequest.getSource());
         Station target = stationService.findById(pathRequest.getTarget());
         Sections sections = new Sections(sectionDao.findAll());
@@ -40,6 +38,8 @@ public class PathService {
     }
 
     private PathResponse createResponse(PathRequest pathRequest, Path path) {
+        FareStrategy fareStrategy = new FareStrategy();
+
         int distance = path.getDistance();
         int extraFare = path.getMostExpensiveExtraFare();
         int age = pathRequest.getAge();

@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
-import org.springframework.stereotype.Component;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
@@ -15,7 +14,6 @@ import wooteco.subway.domain.path.ShortestPathEdge;
 import wooteco.subway.exception.duplicate.DuplicateStationException;
 import wooteco.subway.exception.invalidrequest.InvalidPathRequestException;
 
-@Component
 public class DijkstraPathStrategy implements PathStrategy {
 
     @Override
@@ -32,7 +30,7 @@ public class DijkstraPathStrategy implements PathStrategy {
             List<Station> passedStations = graphPath.getVertexList();
             List<Line> passedLines = findPassedLines(graphPath);
             int distance = (int) shortestPath.getPathWeight(source, target);
-            
+
             return new Path(passedStations, passedLines, distance);
         } catch (IllegalArgumentException e) {
             throw new InvalidPathRequestException("목적지까지 도달할 수 없습니다.");
