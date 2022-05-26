@@ -74,7 +74,7 @@ public class SubwayMap {
         return linesOfPath.stream()
                 .mapToInt(Line::getExtraFare)
                 .max()
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalInputException("해당하는 노선의 추가 요금을 찾을 수 없습니다."));
     }
 
     private Set<Line> searchLinesOfPath(final Station sourceStation, final Station targetStation) {
