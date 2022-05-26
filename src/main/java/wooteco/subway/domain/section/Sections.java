@@ -1,7 +1,8 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.section;
 
 import java.util.ArrayList;
 import java.util.List;
+import wooteco.subway.domain.Station;
 
 public class Sections {
 
@@ -150,6 +151,16 @@ public class Sections {
             return value;
         }
         return currentSections;
+    }
+
+    public boolean containStation(final Station station) {
+        return value.stream()
+                .anyMatch(section -> hasStation(section, station));
+    }
+
+    private boolean hasStation(final Section section, final Station station) {
+        return section.isSameWithUpStation(station)
+                || section.isSameWithDownStation(station);
     }
 
     public List<Section> getValue() {

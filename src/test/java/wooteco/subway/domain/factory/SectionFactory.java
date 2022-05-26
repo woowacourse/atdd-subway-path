@@ -7,7 +7,7 @@ import static wooteco.subway.domain.factory.StationFactory.D;
 
 import java.util.HashMap;
 import java.util.Map;
-import wooteco.subway.domain.Section;
+import wooteco.subway.domain.section.Section;
 
 public class SectionFactory {
 

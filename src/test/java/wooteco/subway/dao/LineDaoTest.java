@@ -16,7 +16,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.domain.Line;
+import wooteco.subway.domain.line.Line;
 import wooteco.subway.service.dto.LineDto;
 
 @DisplayName("Line Dao를 통해서")
@@ -24,9 +24,12 @@ import wooteco.subway.service.dto.LineDto;
 @Transactional
 class LineDaoTest {
 
-    private static final LineDto LINE_FIXTURE = new LineDto("a", "b", 1L, 2L, 3);
-    private static final LineDto LINE_FIXTURE2 = new LineDto("c", "d", 3L, 4L, 5);
-    private static final LineDto LINE_FIXTURE3 = new LineDto("e", "f", 6L, 7L, 8);
+    private static final LineDto LINE_FIXTURE =
+            new LineDto("a", "b", 1L, 2L, 3, 0);
+    private static final LineDto LINE_FIXTURE2 =
+            new LineDto("c", "d", 3L, 4L, 5, 0);
+    private static final LineDto LINE_FIXTURE3 =
+            new LineDto("e", "f", 6L, 7L, 8, 0);
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;

@@ -21,6 +21,8 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import wooteco.subway.domain.factory.SectionFactory;
 import wooteco.subway.domain.factory.StationFactory;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Sections;
 
 @DisplayName("Sections 는")
 class SectionsTest {

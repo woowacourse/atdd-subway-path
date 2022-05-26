@@ -5,8 +5,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.CommonSectionDao;
 import wooteco.subway.dao.CommonStationDao;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.service.dto.SectionDto;
 

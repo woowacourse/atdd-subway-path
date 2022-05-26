@@ -12,6 +12,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import wooteco.subway.domain.factory.SectionFactory;
 import wooteco.subway.domain.factory.StationFactory;
+import wooteco.subway.domain.section.Section;
 
 @DisplayName("Section 은")
 public class SectionTest {

@@ -3,7 +3,7 @@ package wooteco.subway.service;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.CommonLineDao;
-import wooteco.subway.domain.Line;
+import wooteco.subway.domain.line.Line;
 import wooteco.subway.dto.request.LineRequest;
 import wooteco.subway.dto.response.LineResponse;
 import wooteco.subway.repository.LineRepository;
@@ -24,8 +24,8 @@ public class LineService {
     }
 
     public LineResponse saveLine(final LineRequest lineRequest) {
-        final LineDto lineDto = new LineDto(lineRequest.getName(), lineRequest.getColor(),
-                lineRequest.getUpStationId(), lineRequest.getDownStationId(), lineRequest.getDistance());
+        final LineDto lineDto = new LineDto(lineRequest.getName(), lineRequest.getColor(), lineRequest.getUpStationId(),
+                lineRequest.getDownStationId(), lineRequest.getDistance(), lineRequest.getExtraFare());
         final Line line = lineRepository.save(lineDto);
         return LineResponse.from(line);
     }
