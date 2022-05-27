@@ -40,9 +40,9 @@ public class LineService {
 
     private Section getSection(LineCreateRequest lineCreateRequest) {
         Station upStation = stationDao.findById(lineCreateRequest.getUpStationId())
-                .orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 역이 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 상행역이 존재하지 않습니다."));
         Station downStation = stationDao.findById(lineCreateRequest.getDownStationId())
-                .orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 역이 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 하행역이 존재하지 않습니다."));
         return new Section(upStation, downStation, lineCreateRequest.getDistance());
     }
 

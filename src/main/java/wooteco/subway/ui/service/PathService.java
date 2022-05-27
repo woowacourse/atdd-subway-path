@@ -37,9 +37,9 @@ public class PathService {
         PathCalculator pathCalculator = PathCalculator.from(lines);
 
         Station sourceStation = stationDao.findById(source)
-                .orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 역이 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 상행역이 존재하지 않습니다."));
         Station targetStation = stationDao.findById(target)
-                .orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 역이 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 하행역이 존재하지 않습니다."));
 
         List<Station> path = pathCalculator.calculateShortestPath(sourceStation, targetStation);
         List<Long> lineIds = pathCalculator.calculateShortestPathLines(sourceStation, targetStation);
