@@ -50,7 +50,7 @@ public class PathManager {
                 updateNextShortestPath(nowStation, nowDistance, nowFare);
             }
         }
-        validatePathConnection(endStation, distanceResults);
+        validatePathConnection(endStation);
         return new Path(distanceResults.get(endStation), backTrackPath(startStation, endStation), fareResults.get(endStation));
     }
 
@@ -90,7 +90,7 @@ public class PathManager {
         fareResults.put(startStation, START_STATION_FARE);
     }
 
-    private void validatePathConnection(Station endStation, Map<Station, Integer> distanceResults) {
+    private void validatePathConnection(Station endStation) {
         if (distanceResults.get(endStation) == INFINITE_DISTANCE) {
             throw new IllegalArgumentException(PATH_NOT_CONNECTED_EXCEPTION);
         }

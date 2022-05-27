@@ -25,8 +25,6 @@ class PathManagerTest {
     @Nested
     class CalculateOptimalPathTest {
 
-        //Map<Long, Integer> lineExtraFares = Map.of(1L, 10, 2L, 15, 3L, 10, 4L, 70, 5L, 100, 6L, 30);
-
         @Test
         void 인접한_두_역_사이가_최단거리인_경우_해당_경로를_그대로_조회() {
             /*
