@@ -42,9 +42,9 @@ public class LineService {
 
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line line = lineRepository.save(new Line(request.getName(), request.getColor()));
+        Line line = lineRepository.save(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         SectionEdge edge = new SectionEdge(upStation.getId(), downStation.getId(),
-            request.getDistance());
+                request.getDistance());
         Section section = new Section(line.getId(), edge);
         sectionRepository.save(section);
         return line;
@@ -52,7 +52,7 @@ public class LineService {
 
     public Line findById(Long id) {
         return lineRepository.findById(id)
-            .orElseThrow(() -> new NotFoundLineException(id));
+                .orElseThrow(() -> new NotFoundLineException(id));
     }
 
     @Transactional
@@ -63,7 +63,7 @@ public class LineService {
             throw new DuplicateLineNameException(request.getName());
         }
 
-        return lineRepository.update(new Line(id, request.getName(), request.getColor()));
+        return lineRepository.update(new Line(id, request.getName(), request.getColor(), request.getExtraFare()));
     }
 
     private boolean isDuplicateName(Line line, String name) {
@@ -81,7 +81,7 @@ public class LineService {
 
     public LineResponse getById(Long id) {
         return lineDao.queryById(id, new UpwardSorter())
-            .orElseThrow(() -> new NotFoundLineException(id));
+                .orElseThrow(() -> new NotFoundLineException(id));
     }
 
     public List<LineResponse> getAll() {

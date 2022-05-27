@@ -21,24 +21,24 @@ public class JGraphtAdapterTest {
     @BeforeEach
     void setUp() {
         stations = List.of(
-            new Station(1L, "강남역"),
-            new Station(2L, "잠실역"),
-            new Station(3L, "선릉역"),
-            new Station(4L, "역삼역"),
-            new Station(5L, "뚝섬역"),
-            new Station(6L, "잠실새내역"),
-            new Station(7L, "아산역"),
-            new Station(8L, "부산역"),
-            new Station(9L, "서면역")
+                new Station(1L, "강남역"),
+                new Station(2L, "잠실역"),
+                new Station(3L, "선릉역"),
+                new Station(4L, "역삼역"),
+                new Station(5L, "뚝섬역"),
+                new Station(6L, "잠실새내역"),
+                new Station(7L, "아산역"),
+                new Station(8L, "부산역"),
+                new Station(9L, "서면역")
         );
         sections = List.of(
-            new Section(1L, 1L, new SectionEdge(1L, 2L, 5)),
-            new Section(2L, 1L, new SectionEdge(2L, 3L, 4)),
-            new Section(3L, 2L, new SectionEdge(2L, 4L, 3)),
-            new Section(4L, 1L, new SectionEdge(3L, 5L, 6)),
-            new Section(5L, 1L, new SectionEdge(5L, 6L, 6)),
-            new Section(6L, 1L, new SectionEdge(6L, 7L, 37)),
-            new Section(7L, 3L, new SectionEdge(8L, 9L, 4))
+                new Section(1L, 1L, new SectionEdge(1L, 2L, 5)),
+                new Section(2L, 1L, new SectionEdge(2L, 3L, 4)),
+                new Section(3L, 2L, new SectionEdge(2L, 4L, 3)),
+                new Section(4L, 1L, new SectionEdge(3L, 5L, 6)),
+                new Section(5L, 1L, new SectionEdge(5L, 6L, 6)),
+                new Section(6L, 1L, new SectionEdge(6L, 7L, 37)),
+                new Section(7L, 3L, new SectionEdge(8L, 9L, 4))
         );
 
         graph = new JGraphtAdapter(stations, sections);
@@ -51,7 +51,7 @@ public class JGraphtAdapterTest {
         int distance = graph.findDistance(1L, 4L);
 
         assertThat(path)
-            .containsExactly(stations.get(0), stations.get(1), stations.get(3));
+                .containsExactly(stations.get(0), stations.get(1), stations.get(3));
         assertThat(distance).isEqualTo(8);
     }
 
@@ -62,7 +62,7 @@ public class JGraphtAdapterTest {
         int distance = graph.findDistance(1L, 5L);
 
         assertThat(path)
-            .containsExactly(stations.get(0), stations.get(1), stations.get(2), stations.get(4));
+                .containsExactly(stations.get(0), stations.get(1), stations.get(2), stations.get(4));
         assertThat(distance).isEqualTo(15);
     }
 
@@ -73,8 +73,8 @@ public class JGraphtAdapterTest {
         int distance = graph.findDistance(1L, 6L);
 
         assertThat(path)
-            .containsExactly(stations.get(0), stations.get(1), stations.get(2), stations.get(4),
-                stations.get(5));
+                .containsExactly(stations.get(0), stations.get(1), stations.get(2), stations.get(4),
+                        stations.get(5));
         assertThat(distance).isEqualTo(21);
     }
 
@@ -85,8 +85,8 @@ public class JGraphtAdapterTest {
         int distance = graph.findDistance(1L, 7L);
 
         assertThat(path)
-            .containsExactly(stations.get(0), stations.get(1), stations.get(2), stations.get(4),
-                stations.get(5), stations.get(6));
+                .containsExactly(stations.get(0), stations.get(1), stations.get(2), stations.get(4),
+                        stations.get(5), stations.get(6));
         assertThat(distance).isEqualTo(58);
     }
 
@@ -96,4 +96,10 @@ public class JGraphtAdapterTest {
         assertThat(graph.findPath(1L, 8L)).isEmpty();
     }
 
+    @DisplayName("경로와 관련된 노선아이디 찾기")
+    @Test
+    void findLindIdsRelatedPath() {
+        List<Long> lineIds = graph.findLineIdsRelatedPath(1L, 4L);
+        assertThat(lineIds).containsExactly(1L, 2L);
+    }
 }

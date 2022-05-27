@@ -1,45 +1,60 @@
 package wooteco.subway.domain.path;
 
+import java.util.List;
+import wooteco.subway.domain.Line;
+
 public class FareCalculator {
 
-    public static final int BASE_FARE = 1250;
-    public static final int ADDITIONAL_FARE = 100;
+    private static final int BASE_FARE = 1250;
+    private static final int ADDITIONAL_FARE = 100;
+    private static final int MIDDLE_RANGE_BOUND = 10;
+    private static final int LONG_RANGE_BOUND = 50;
+    private static final int NOTHING = 0;
+    private static final int DISTANCE_PER_FARE_STEP_AT_MIDDLE_RANGE = 5;
+    private static final int DISTANCE_PER_FARE_STEP_AT_LONG_RANGE = 8;
 
-    public int findFare(int distance) {
-        return BASE_FARE + additionalFare(distance);
+    public int findFare(int distance, List<Line> lines, int age) {
+        int lineExtraFare = lines.stream()
+                .mapToInt(Line::getExtraFare)
+                .max()
+                .orElse(NOTHING);
+        int extraFare = distanceExtraFare(distance) + lineExtraFare;
+        return AgeGroup.discount(age, BASE_FARE + extraFare);
     }
 
-    private int additionalFare(int distance) {
-        return ADDITIONAL_FARE * additionalFareCount(distance);
+    private int distanceExtraFare(int distance) {
+        return ADDITIONAL_FARE * extraFareCount(distance);
     }
 
-    private int additionalFareCount(int distance) {
-        if (distance > 50) {
-            return additionalFareCountOver50km(distance);
+    private int extraFareCount(int distance) {
+        if (distance > LONG_RANGE_BOUND) {
+            return ExtraFareCountOverLongRange(distance);
         }
 
-        if (distance > 10) {
-            return additionalFareCountOver10km(distance);
+        if (distance > MIDDLE_RANGE_BOUND) {
+            return extraFareCountOverMiddleRange(distance);
         }
 
-        return 0;
+        return NOTHING;
     }
 
-    private int additionalFareCountOver50km(int distance) {
-        int remain = distance - 50;
-        int count = remain / 8;
-        if (remain % 8 != 0) {
+    private int ExtraFareCountOverLongRange(int distance) {
+        int remain = distance - LONG_RANGE_BOUND;
+        int count = remain / DISTANCE_PER_FARE_STEP_AT_LONG_RANGE;
+        if (remain % DISTANCE_PER_FARE_STEP_AT_LONG_RANGE != 0) {
             count++;
         }
-        return count + additionalFareCountOver10km(distance - remain);
+
+        return count + extraFareCountOverMiddleRange(distance - remain);
     }
 
-    private int additionalFareCountOver10km(int distance) {
-        int remain = distance - 10;
-        int count = remain / 5;
-        if (remain % 5 != 0) {
+    private int extraFareCountOverMiddleRange(int distance) {
+        int remain = distance - MIDDLE_RANGE_BOUND;
+        int count = remain / DISTANCE_PER_FARE_STEP_AT_MIDDLE_RANGE;
+        if (remain % DISTANCE_PER_FARE_STEP_AT_MIDDLE_RANGE != 0) {
             count++;
         }
+
         return count;
     }
 }

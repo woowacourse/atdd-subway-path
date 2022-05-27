@@ -8,18 +8,20 @@ public class Line {
     private final Long id;
     private final String name;
     private final String color;
+    private final Integer extraFare;
 
-    public Line(String name, String color) {
-        this(null, name, color);
+    public Line(String name, String color, Integer extraFare) {
+        this(null, name, color, extraFare);
     }
 
-    public Line(Long id, String name, String color) {
+    public Line(Long id, String name, String color, Integer extraFare) {
         if (name.isBlank() || color.isBlank()) {
             throw new BlankArgumentException("노선의 이름과 색깔은 빈 문자열일 수 없습니다.");
         }
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
     }
 
     public Long getId() {
@@ -32,6 +34,10 @@ public class Line {
 
     public String getColor() {
         return color;
+    }
+
+    public Integer getExtraFare() {
+        return extraFare;
     }
 
     public boolean isSameName(String name) {
@@ -59,9 +65,10 @@ public class Line {
     @Override
     public String toString() {
         return "Line{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", color='" + color + '\'' +
-            '}';
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                ", extraFare=" + extraFare +
+                '}';
     }
 }

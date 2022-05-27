@@ -57,9 +57,9 @@ public class LineDaoTest {
         station4 = stationService.save(new StationRequest("잠실역"));
 
         line1 = lineService.save(new LineRequest("신분당선", "bg-red-600",
-            station1.getId(), station2.getId(), 10));
+            station1.getId(), station2.getId(), 10, 900));
         line2 = lineService.save(new LineRequest("1호선", "bg-blue-600",
-            station1.getId(), station2.getId(), 10));
+            station1.getId(), station2.getId(), 10, 0));
 
         sectionService.addSection(line1.getId(),
             new AddSectionRequest(station2.getId(), station3.getId(), 5));
@@ -75,6 +75,7 @@ public class LineDaoTest {
         assertThat(lineResponse.getId()).isEqualTo(line1.getId());
         assertThat(lineResponse.getName()).isEqualTo(line1.getName());
         assertThat(lineResponse.getColor()).isEqualTo(line1.getColor());
+        assertThat(lineResponse.getExtraFare()).isEqualTo(line1.getExtraFare());
         assertThat(findStationIds(lineResponse))
             .containsExactly(station1.getId(), station2.getId(), station3.getId());
     }

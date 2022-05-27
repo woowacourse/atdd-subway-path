@@ -49,7 +49,7 @@ class AddSectionRequestValidatorTest {
 
     @BeforeEach
     void setUp() {
-        line = lineRepository.save(new Line("신분당선", "bg-red-600"));
+        line = lineRepository.save(new Line("신분당선", "bg-red-600",900));
         station1 = stationRepository.save(new Station("강남역"));
         station2 = stationRepository.save(new Station("역삼역"));
         station3 = stationRepository.save(new Station("잠실역"));
