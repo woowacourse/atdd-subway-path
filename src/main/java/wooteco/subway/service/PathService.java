@@ -35,14 +35,18 @@ public class PathService {
         Lines lines = new Lines(lineDao.findAll());
         PathFinder pathFinder = initPathFinder(source, target);
         Path path = pathFinder.getPath(lines, age);
-        FareCalculator fareCalculator = new FareCalculator(path.getLineIds());
-        int fare = fareCalculator.calculateFare(age, path.getDistance(), lines);
+        int fare = calculateFare(age, lines, path);
         return PathResponse.of(path, fare);
     }
 
     private PathFinder initPathFinder(final Station source, final Station target) {
         Sections sections = new Sections(sectionDao.findAll());
         return PathFinder.init(sections, source, target);
+    }
+
+    private int calculateFare(int age, Lines lines, Path path) {
+        FareCalculator fareCalculator = new FareCalculator(path.getLineIds());
+        return fareCalculator.calculateFare(age, path.getDistance(), lines);
     }
 
 }
