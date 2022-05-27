@@ -9,8 +9,6 @@ import wooteco.subway.domain.line.section.Distance;
 
 public class Path {
 
-    private static final long BASE_FARE = 1250;
-
     private final List<Id> path;
     private final List<Line> passedLines;
     private final Distance distance;
