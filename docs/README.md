@@ -161,7 +161,7 @@
 - [ ] Color 를 enum 으로 만들어보기
 - [X] DiscountFareCalculator enum 을 설명이 아닌 도메인에 가까운 이름으로 수정
 - [X] Fare 의 상수를 `50km, 10km` 가 아닌 `장거리, 단거리` 와 같은 이름으로 수정
-- [ ] Name 의 Pattern 은 비싼 자원이므로 재사용 하기
+- [X] Name 의 Pattern 은 비싼 자원이므로 재사용 하기
 - [ ] 알고리즘 or 라이브러리와 같이 변경이 될 수 있는 부분은 인터페이스를 사용
 - [ ] Lines 도메인 만들기
 - [ ] PathCalculator 자료형이 포함된 변수명 수정
