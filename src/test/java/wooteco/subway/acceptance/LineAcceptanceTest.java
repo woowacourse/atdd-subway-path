@@ -17,8 +17,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import wooteco.subway.domain.Station;
 import wooteco.subway.dto.line.LineResponse;
+import wooteco.subway.dto.station.StationResponse;
 
 public class LineAcceptanceTest extends AcceptanceTest {
 
@@ -62,8 +62,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         responseLine = createLine("테스트1호선", "테스트1색", List.of("테스트1역", "테스트2역"));
 
         //then
-        var names = responseLine.jsonPath().getList("stations", Station.class).stream()
-                .map(Station::getName)
+        var names = responseLine.jsonPath().getList("stations", StationResponse.class).stream()
+                .map(StationResponse::getName)
                 .collect(Collectors.toList());
 
         assertAll(
@@ -101,8 +101,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         var response = find("/lines/" + getId(responseCreateLine));
 
         //then
-        var names = response.body().jsonPath().getList("stations", Station.class).stream()
-                .map(Station::getName)
+        var names = response.body().jsonPath().getList("stations", StationResponse.class).stream()
+                .map(StationResponse::getName)
                 .collect(Collectors.toList());
 
         assertAll(
