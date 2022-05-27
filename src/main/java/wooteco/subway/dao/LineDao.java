@@ -70,7 +70,7 @@ public class LineDao {
     }
 
     public void update(Long id, Line updateLine) {
-        String sql = "update LINE set name = :name, color = :color where id = :id";
+        String sql = "update LINE set name = :name, color = :color, extra_fare = :extra_fare where id = :id";
 
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
                 .addValue("id", id)
