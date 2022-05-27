@@ -16,16 +16,11 @@ import wooteco.subway.domain.Station;
 @Component
 public class ShortestPathFindable implements PathFindable {
 
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
-
-    public ShortestPathFindable() {
-        this.graph = new WeightedMultigraph<>(SectionEdge.class);
-    }
-
     @Override
     public Path findPath(List<Section> sections, Station source, Station target) {
-        fillVertexes(sections);
-        fillEdge(sections);
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph =  new WeightedMultigraph<>(SectionEdge.class);
+        fillVertexes(graph, sections);
+        fillEdge(graph, sections);
 
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
@@ -36,14 +31,14 @@ public class ShortestPathFindable implements PathFindable {
         return new Path(stations, pathInSections, distance);
     }
 
-    private void fillVertexes(List<Section> sections) {
+    private void fillVertexes(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Section> sections) {
         for (Section section : sections) {
             graph.addVertex(section.getUpStation());
             graph.addVertex(section.getDownStation());
         }
     }
 
-    private void fillEdge(List<Section> sections) {
+    private void fillEdge(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Section> sections) {
         for (Section section : sections) {
             SectionEdge sectionEdge = new SectionEdge(section);
             graph.addEdge(section.getUpStation(), section.getDownStation(), sectionEdge);
