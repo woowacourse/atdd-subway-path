@@ -35,7 +35,7 @@ class PathFinderTest {
         Station target = new Station(4L, "건대역");
 
         PathFinder pathFinder = PathFinder.init(sections, source, target);
-        Path path = pathFinder.getPath(lines, 20);
+        Path path = pathFinder.getPath();
 
         assertAll(() -> assertThat(path.getDistance()).isEqualTo(10.0),
                 () -> assertThat(path.getLineIds()).containsAll(List.of(1L, 2L, 3L)),
@@ -64,7 +64,7 @@ class PathFinderTest {
         Station target = new Station(3L, "강남역");
 
         PathFinder pathFinder = PathFinder.init(sections, source, target);
-        Path path = pathFinder.getPath(lines, 20);
+        Path path = pathFinder.getPath();
 
         assertAll(() -> assertThat(path.getDistance()).isEqualTo(4.0),
                 () -> assertThat(path.getLineIds()).containsAll(List.of(3L)),

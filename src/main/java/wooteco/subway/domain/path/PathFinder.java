@@ -1,5 +1,7 @@
 package wooteco.subway.domain.path;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -60,6 +62,20 @@ public class PathFinder {
         if (path == null) {
             throw new FindPathException("출발역과 도착역이 연결되어 있지 않습니다.");
         }
+    }
+
+    public Path getPath() {
+        List<Station> stations = shortestGraph.getVertexList();
+        double distance = shortestGraph.getWeight();
+        List<Long> lineIds = getLineIds();
+        return new Path(stations, distance, lineIds);
+    }
+
+    private List<Long> getLineIds() {
+        List<ShortestPathEdge> edgeList = shortestGraph.getEdgeList();
+        return edgeList.stream()
+                .map(ShortestPathEdge::getLineId)
+                .collect(Collectors.toList());
     }
 
 }
