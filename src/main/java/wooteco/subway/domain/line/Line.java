@@ -45,8 +45,7 @@ public class Line {
             return false;
         }
         Line line = (Line) o;
-        return Objects.equals(lineInfo, line.lineInfo)
-                && Objects.equals(sections, line.sections);
+        return Objects.equals(lineInfo, line.lineInfo) && Objects.equals(sections, line.sections);
     }
 
     @Override

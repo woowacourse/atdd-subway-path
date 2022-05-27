@@ -26,9 +26,9 @@ class LineDaoTest extends DaoTest {
 
        List<LineEntity> actual = dao.findAll();
         List<LineEntity> expected = List.of(
-                new LineEntity(1L, "노선명1", "색깔1"),
-                new LineEntity(2L, "노선명2", "색깔2"),
-                new LineEntity(3L, "노선명3", "색깔3"));
+                new LineEntity(1L, "노선명1", "색깔1", 10),
+                new LineEntity(2L, "노선명2", "색깔2", 10),
+                new LineEntity(3L, "노선명3", "색깔3", 10));
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -42,7 +42,7 @@ class LineDaoTest extends DaoTest {
             testFixtureManager.saveLine("존재하는 노선명", "색깔");
 
             LineEntity actual = dao.findById(1L).get();
-            LineEntity expected = new LineEntity(1L, "존재하는 노선명", "색깔");
+            LineEntity expected = new LineEntity(1L, "존재하는 노선명", "색깔", 10);
 
             assertThat(actual).isEqualTo(expected);
         }
@@ -64,7 +64,7 @@ class LineDaoTest extends DaoTest {
             testFixtureManager.saveLine("존재하는 노선명", "색깔");
 
             LineEntity actual = dao.findByName("존재하는 노선명").get();
-            LineEntity expected = new LineEntity(1L, "존재하는 노선명", "색깔");
+            LineEntity expected = new LineEntity(1L, "존재하는 노선명", "색깔", 10);
 
             assertThat(actual).isEqualTo(expected);
         }
@@ -86,8 +86,8 @@ class LineDaoTest extends DaoTest {
             testFixtureManager.saveLine("존재하는 노선명1", "색깔");
             testFixtureManager.saveLine("존재하는 노선명2", "색깔");
 
-            LineEntity actual = dao.save(new LineEntity("새로운 노선명", "색깔"));
-            LineEntity expected = new LineEntity(3L, "새로운 노선명", "색깔");
+            LineEntity actual = dao.save(new LineEntity("새로운 노선명", "색깔", 10));
+            LineEntity expected = new LineEntity(3L, "새로운 노선명", "색깔", 10);
 
             assertThat(actual).isEqualTo(expected);
         }
@@ -96,7 +96,7 @@ class LineDaoTest extends DaoTest {
         void 중복되는_이름인_경우_예외발생() {
             testFixtureManager.saveLine("중복되는 노선명", "색깔");
 
-            assertThatThrownBy(() -> dao.save(new LineEntity("중복되는 노선명", "다른 색깔")))
+            assertThatThrownBy(() -> dao.save(new LineEntity("중복되는 노선명", "다른 색깔", 10)))
                     .isInstanceOf(DataAccessException.class);
         }
     }
@@ -109,7 +109,7 @@ class LineDaoTest extends DaoTest {
         void 중복되지_않는_이름으로_수정_가능() {
             testFixtureManager.saveLine("현재 노선명", "색깔은 그대로");
 
-            dao.update(new LineEntity(1L, "새로운 노선 이름", "색깔은 그대로"));
+            dao.update(new LineEntity(1L, "새로운 노선 이름", "색깔은 그대로", 10));
             String actual = jdbcTemplate.queryForObject("SELECT name FROM line WHERE id = 1", String.class);
             String expected = "새로운 노선 이름";
 
@@ -121,7 +121,7 @@ class LineDaoTest extends DaoTest {
             testFixtureManager.saveLine("노선명 그대로", "현재 색깔");
             testFixtureManager.saveLine("노선명2", "중복되는 색깔");
 
-            dao.update(new LineEntity(1L, "노선명 그대로", "중복되는 색깔"));
+            dao.update(new LineEntity(1L, "노선명 그대로", "중복되는 색깔", 10));
             String actual = jdbcTemplate.queryForObject("SELECT color FROM line WHERE id = 1", String.class);
             String expected = "중복되는 색깔";
 
@@ -133,14 +133,14 @@ class LineDaoTest extends DaoTest {
             testFixtureManager.saveLine("현재 노선명", "색깔은 그대로");
             testFixtureManager.saveLine("존재하는 노선명", "색깔");
 
-            assertThatThrownBy(() -> dao.update(new LineEntity(1L, "존재하는 노선명", "색깔은 그대로")))
+            assertThatThrownBy(() -> dao.update(new LineEntity(1L, "존재하는 노선명", "색깔은 그대로", 10)))
                     .isInstanceOf(DataAccessException.class);
         }
 
         @Test
         void 존재하지_않는_노선을_수정하려는_경우_예외_미발생() {
             assertThatNoException()
-                    .isThrownBy(() -> dao.update(new LineEntity(999999999L, "새로운 노선 이름", "노란색")));
+                    .isThrownBy(() -> dao.update(new LineEntity(999999999L, "새로운 노선 이름", "노란색", 10)));
         }
     }
 

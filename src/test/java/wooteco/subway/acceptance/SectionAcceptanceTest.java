@@ -14,10 +14,10 @@ import wooteco.subway.test_utils.HttpMethod;
 import wooteco.subway.test_utils.HttpUtils;
 
 @SuppressWarnings("NonAsciiCharacters")
-@DisplayName("인수테스트 - /lines/{lineId}/sections")
+@DisplayName("구간 인수테스트")
 public class SectionAcceptanceTest extends AcceptanceTest {
 
-    @DisplayName("POST /lines/:id/sections - 지하철 구간 등록 테스트")
+    @DisplayName("지하철 구간 등록 테스트")
     @Nested
     class CreateSectionTest {
 
@@ -115,7 +115,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         }
     }
 
-    @DisplayName("DELETE /lines/:id/sections?stationId={stationId} - 지하철 구간 제거 테스트")
+    @DisplayName("지하철 구간 제거 테스트")
     @Nested
     class DeleteSectionTest {
 

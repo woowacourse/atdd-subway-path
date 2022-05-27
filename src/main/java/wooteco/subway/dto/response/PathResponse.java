@@ -21,10 +21,9 @@ public class PathResponse {
         this.fare = fare;
     }
 
-    public static PathResponse of(Path path, CostManager costManager) {
+    public static PathResponse of(Path path, int fare) {
         List<StationResponse> stations = toStationResponse(path.getStations());
         int distance = path.getTotalDistance();
-        int fare = costManager.calculateFare(distance);
         return new PathResponse(stations, distance, fare);
     }
 
