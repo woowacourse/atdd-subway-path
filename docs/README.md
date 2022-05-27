@@ -174,8 +174,8 @@
     - [ ] id 를 직접 사용하지 않으며 테스트를 할 수 있도록 수정
     - [ ] 테스트에만 사용되는 deleteAll 메서드를 사용하지 않는 구조로 수정
 - JgraphtTest
-    - [ ] assertThat 이 반복되는 곳은 assertAll 사용하기
-    - [ ] test 명을 명시적으로 수정, DisplayName 사용
+    - [X] assertThat 이 반복되는 곳은 assertAll 사용하기
+    - [X] test 명을 명시적으로 수정, DisplayName 사용
     - [X] 변수명을 명시적으로 수정
 - AcceptanceTest
     - [ ] test fixture 만들기

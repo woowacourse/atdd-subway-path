@@ -8,11 +8,12 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import wooteco.subway.domain.path.ShortestPathEdge;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.path.ShortestPathEdge;
 
 public class JgraphtTest {
 
@@ -76,7 +77,8 @@ public class JgraphtTest {
     }
 
     @Test
-    void test() {
+    @DisplayName("커스텀한 PathEdge 를 사용해 가중치를 구할 수 있다.")
+    void CustomPathEdgeTest() {
         WeightedMultigraph<Station, ShortestPathEdge> graph = new WeightedMultigraph<>(ShortestPathEdge.class);
 
         Station 강남역 = new Station(1L, "강남역");
@@ -93,9 +95,11 @@ public class JgraphtTest {
         GraphPath<Station, ShortestPathEdge> path = dijkstraShortestPath.getPath(강남역, 선릉역);
         List<ShortestPathEdge> edgeList = path.getEdgeList();
 
-        assertThat(edgeList).hasSize(2);
-        assertThat(edgeList.get(0).getLineId()).isEqualTo(1L);
-        assertThat(edgeList.get(1).getLineId()).isEqualTo(2L);
-        assertThat(path.getWeight()).isEqualTo(30);
+        Assertions.assertAll(
+                () -> assertThat(edgeList).hasSize(2),
+                () -> assertThat(edgeList.get(0).getLineId()).isEqualTo(1L),
+                () -> assertThat(edgeList.get(1).getLineId()).isEqualTo(2L),
+                () -> assertThat(path.getWeight()).isEqualTo(30)
+        );
     }
 }
