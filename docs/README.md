@@ -139,7 +139,7 @@
     - extraFare 를 필드로 만들기
 - Fare
     - extraFare 가 있으면 추가해서 반환
-    - age를 인자로 같이 받기
+    - age 를 인자로 같이 받기
         - 청소년 / 어린이 / 유아 의 경우 할인 계산해서 반환
 - Name
     - 이름 원시값 포장
@@ -149,5 +149,35 @@
 - Color
     - 색상 원시값 포장
     - [X] 색상이 null 이거나 빈 값이면 예외 반환
+
+</details>
+
+<details>
+<summary>2단계 첫번째 리뷰</summary>
+
+### 네오의 2단계 첫번째 리뷰
+
+- [ ] Color 의 상수와 필드 사이 1줄 띄우기
+- [ ] Color 를 enum 으로 만들어보기
+- [ ] DiscountFareCalculator enum 을 설명이 아닌 도메인에 가까운 이름으로 수정
+- [ ] Fare 의 상수를 `50km, 10km` 가 아닌 `장거리, 단거리` 와 같은 이름으로 수정
+- [ ] Name 의 Pattern 은 비싼 자원이므로 재사용 하기
+- [ ] 알고리즘 or 라이브러리와 같이 변경이 될 수 있는 부분은 인터페이스를 사용
+- [ ] Lines 도메인 만들기
+- [ ] PathCalculator 자료형이 포함된 변수명 수정
+- [ ] 에러 메세지를 더 친절하게 작성 (LineService)
+- [ ] 900 으로 하드코딩 된 부분 수정
+- [ ] PathService 의 DB O(n)번 접근하는 비용 문제 해결
+- [ ] sql 파일 자동 정렬로 인한 가독성 문제 해결
+- test
+    - [ ] id 를 직접 사용하지 않으며 테스트를 할 수 있도록 수정
+    - [ ] 테스트에만 사용되는 deleteAll 메서드를 사용하지 않는 구조로 수정
+- JgraphtTest
+    - [ ] assertThat 이 반복되는 곳은 assertAll 사용하기
+    - [ ] test 명을 명시적으로 수정, DisplayName 사용
+    - [ ] 변수명을 명시적으로 수정
+- AcceptanceTest
+    - [ ] test fixture 만들기
+    - [ ] 1, 2와 같은 의미를 나타내지 못하는 변수명 구분 수정
 
 </details>
