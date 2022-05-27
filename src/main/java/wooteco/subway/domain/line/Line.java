@@ -2,7 +2,6 @@ package wooteco.subway.domain.line;
 
 import java.util.List;
 
-import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Id;
 import wooteco.subway.domain.line.section.OrderedSections;
 import wooteco.subway.domain.line.section.Section;
@@ -14,9 +13,9 @@ public class Line {
     private final OrderedSections sections;
     private LineName name;
     private LineColor color;
-    private Fare extraFare;
+    private ExtraFare extraFare;
 
-    public Line(Id id, List<Section> sections, LineName name, LineColor color, Fare extraFare) {
+    public Line(Id id, List<Section> sections, LineName name, LineColor color, ExtraFare extraFare) {
         this.id = id;
         this.sections = new OrderedSections(sections, new SectionSorter());
         this.name = name;
@@ -25,17 +24,17 @@ public class Line {
     }
 
     public Line(long id, List<Section> sections, String name, String color, long extraFare) {
-        this(new Id(id), sections, new LineName(name), new LineColor(color), new Fare(extraFare));
+        this(new Id(id), sections, new LineName(name), new LineColor(color), new ExtraFare(extraFare));
     }
 
     public Line(List<Section> sections, String name, String color, long extraFare) {
-        this(Id.temporary(), sections, new LineName(name), new LineColor(color), new Fare(extraFare));
+        this(Id.temporary(), sections, new LineName(name), new LineColor(color), new ExtraFare(extraFare));
     }
 
     public void update(String name, String color, long extraFare) {
         this.name = new LineName(name);
         this.color = new LineColor(color);
-        this.extraFare = new Fare(extraFare);
+        this.extraFare = new ExtraFare(extraFare);
     }
 
     public void appendSection(Section section) {
