@@ -1,6 +1,6 @@
 package wooteco.subway.dto.response;
 
-import wooteco.subway.domain.Line;
+import wooteco.subway.domain.line.Line;
 
 public class LineResponse {
     private final Long id;

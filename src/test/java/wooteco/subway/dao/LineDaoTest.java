@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 
 import org.springframework.context.annotation.Import;
-import wooteco.subway.domain.Line;
+import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 

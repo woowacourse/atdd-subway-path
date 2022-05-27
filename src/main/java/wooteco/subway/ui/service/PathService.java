@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Fare;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.PathCalculator;
+import wooteco.subway.domain.fare.Fare;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.path.PathCalculator;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.request.PathRequest;
 import wooteco.subway.dto.response.PathResponse;

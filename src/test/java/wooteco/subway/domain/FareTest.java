@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import wooteco.subway.domain.fare.Fare;
+
 public class FareTest {
 
     @ParameterizedTest(name = "{0}km일 때 요금은 {1}원이다")

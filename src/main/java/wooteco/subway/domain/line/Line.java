@@ -1,7 +1,12 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.line;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import wooteco.subway.domain.Name;
+import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.Station;
 
 public class Line {
 

@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.line;
 
 public class Color {
     private static final String ERROR_NULL_OR_EMPTY = "색상은 필수 입력값입니다.";

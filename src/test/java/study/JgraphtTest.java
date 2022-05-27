@@ -11,7 +11,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import wooteco.subway.domain.ShortestPathEdge;
+import wooteco.subway.domain.path.ShortestPathEdge;
 import wooteco.subway.domain.Station;
 
 public class JgraphtTest {

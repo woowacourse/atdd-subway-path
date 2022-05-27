@@ -1,12 +1,15 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.path;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+
+import wooteco.subway.domain.Station;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.line.Lines;
 
 public class PathCalculator {
     private final DijkstraShortestPath<Station, ShortestPathEdge> dijkstraShortestPath;
@@ -16,29 +19,17 @@ public class PathCalculator {
         this.dijkstraShortestPath = dijkstraShortestPath;
     }
 
-    public static PathCalculator from(List<Line> lines) {
-        Set<Station> stations = extractStations(lines);
+    public static PathCalculator from(List<Line> inputLines) {
+        Lines lines = new Lines(inputLines);
+        Set<Station> stations = lines.extractStations();
         WeightedMultigraph<Station, ShortestPathEdge> graph = getMultiGraph(stations, lines);
         return new PathCalculator(new DijkstraShortestPath<>(graph));
     }
 
-    private static Set<Station> extractStations(List<Line> lines) {
-        Set<Station> stations = new HashSet<>();
-        for (Line line : lines) {
-            Sections sections = line.getSections();
-            for (Section section : sections.getSections()) {
-                stations.add(section.getUpStation());
-                stations.add(section.getDownStation());
-            }
-        }
-        return stations;
-    }
-
-    private static WeightedMultigraph<Station, ShortestPathEdge> getMultiGraph(Set<Station> stations,
-            List<Line> lines) {
+    private static WeightedMultigraph<Station, ShortestPathEdge> getMultiGraph(Set<Station> stations, Lines lines) {
         WeightedMultigraph<Station, ShortestPathEdge> graph = new WeightedMultigraph<>(ShortestPathEdge.class);
         addVertex(stations, graph);
-        addEdge(lines, graph);
+        lines.addEdge(graph);
         return graph;
     }
 
@@ -48,23 +39,13 @@ public class PathCalculator {
         }
     }
 
-    private static void addEdge(List<Line> lines, WeightedMultigraph<Station, ShortestPathEdge> graph) {
-        for (Line line : lines) {
-            Sections sections = line.getSections();
-            for (Section section : sections.getSections()) {
-                graph.addEdge(section.getUpStation(), section.getDownStation(), new ShortestPathEdge(line.getId(),
-                        section.getDistance()));
-            }
-        }
-    }
-
     public List<Station> calculateShortestPath(Station source, Station target) {
         return dijkstraShortestPath.getPath(source, target).getVertexList();
     }
 
     public List<Long> calculateShortestPathLines(Station source, Station target) {
-        List<ShortestPathEdge> edgeList = dijkstraShortestPath.getPath(source, target).getEdgeList();
-        return edgeList.stream()
+        List<ShortestPathEdge> edges = dijkstraShortestPath.getPath(source, target).getEdgeList();
+        return edges.stream()
                 .map(ShortestPathEdge::getLineId)
                 .collect(Collectors.toList());
     }

@@ -2,7 +2,7 @@ package wooteco.subway.dto.response;
 
 import java.util.List;
 
-import wooteco.subway.domain.Line;
+import wooteco.subway.domain.line.Line;
 
 public class LineCreateResponse {
     private final Long id;

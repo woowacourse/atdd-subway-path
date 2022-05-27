@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.fare;
 
 public class Fare {
     private static final int MINIMUM_FARE = 1250;
