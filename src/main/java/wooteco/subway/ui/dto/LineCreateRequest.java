@@ -1,5 +1,7 @@
 package wooteco.subway.ui.dto;
 
+import wooteco.subway.domain.line.Line;
+
 public class LineCreateRequest {
 
     private String name;
@@ -20,6 +22,10 @@ public class LineCreateRequest {
         this.downStationId = downStationId;
         this.distance = distance;
         this.extraFare = extraFare;
+    }
+
+    public Line toEntity() {
+        return new Line(name, color, extraFare);
     }
 
     public String getName() {

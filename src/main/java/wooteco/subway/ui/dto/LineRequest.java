@@ -1,5 +1,7 @@
 package wooteco.subway.ui.dto;
 
+import wooteco.subway.domain.line.Line;
+
 public class LineRequest {
 
     private String name;
@@ -13,6 +15,10 @@ public class LineRequest {
         this.name = name;
         this.color = color;
         this.extraFare = extraFare;
+    }
+
+    public Line toEntity(Long id) {
+        return new Line(id, name, color, extraFare);
     }
 
     public String getName() {

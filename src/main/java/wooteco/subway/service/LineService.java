@@ -12,10 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Sections;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.service.dto.LineResponse;
 import wooteco.subway.service.dto.StationResponse;
 import wooteco.subway.ui.dto.LineCreateRequest;
@@ -28,7 +28,7 @@ public class LineService {
 
     private static final String DUPLICATED_NAME_ERROR_MESSAGE = "중복된 이름이 존재합니다.\n-> {name : %s}";
     private static final String NONE_LINE_ERROR_MESSAGE = "해당 ID의 노선은 존재하지 않습니다.\n-> {id : %d}";
-    private static final String NONE_SECTION_ERROR_MESSAGE = "존재하지 않는 역입니다.\n-> {id : %d}";
+    private static final String NONE_STATION_ERROR_MESSAGE = "존재하지 않는 역입니다.";
 
     private final LineDao lineDao;
     private final SectionDao sectionDao;
@@ -44,10 +44,9 @@ public class LineService {
         validDuplicatedName(line.getName());
         validStations(line.getDownStationId(), line.getUpStationId());
 
-        Long lineId = lineDao.save(line);
+        Long lineId = lineDao.save(line.toEntity());
 
-        SectionRequest sectionRequest = SectionRequest.from(line);
-        sectionDao.save(sectionRequest.toEntity(lineId));
+        sectionDao.save(toSectionEntity(line, lineId));
 
         List<StationResponse> stations = generateStationResponses(line.getDownStationId(), line.getUpStationId());
         return new LineResponse(lineId, line.getName(), line.getColor(), line.getExtraFare(), stations);
@@ -60,14 +59,9 @@ public class LineService {
     }
 
     private void validStations(Long... ids) {
-        for (Long id : ids) {
-            validStation(id);
-        }
-    }
-
-    private void validStation(Long id) {
-        if (!stationDao.existsById(id)) {
-            throw new IllegalArgumentException(String.format(NONE_SECTION_ERROR_MESSAGE, id));
+        List<Long> idList = Arrays.stream(ids).collect(Collectors.toList());
+        if (!stationDao.existsByIds(idList)) {
+            throw new IllegalArgumentException(NONE_STATION_ERROR_MESSAGE);
         }
     }
 
@@ -77,9 +71,16 @@ public class LineService {
                 .collect(Collectors.toUnmodifiableList());
     }
 
+    private Section toSectionEntity(LineCreateRequest line, Long lineId) {
+        SectionRequest sectionRequest = SectionRequest.from(line);
+        return sectionRequest.toEntity(lineId
+                , stationDao.findById(sectionRequest.getUpStationId())
+                , stationDao.findById(sectionRequest.getDownStationId()));
+    }
+
     public void update(Long id, LineRequest lineRequest) {
         validDuplicatedNameWithoutId(lineRequest.getName(), id);
-        lineDao.update(id, lineRequest);
+        lineDao.update(lineRequest.toEntity(id));
     }
 
     private void validDuplicatedNameWithoutId(String name, Long id) {
@@ -123,16 +124,16 @@ public class LineService {
         return map;
     }
 
-    private List<StationResponse> findStations(Sections sections, Long id) {
-        List<Long> ids = sections.getSortedStationIds();
-        Map<Long, String> nameInfo = initNameMap(id);
+    private List<StationResponse> findStations(Sections sections, Long lineId) {
+        List<Long> stationIds = sections.getSortedStationIds();
+        Map<Long, String> stationNames = initStationNameMap(lineId);
 
-        return ids.stream()
-                .map(it -> new StationResponse(it, nameInfo.get(it)))
+        return stationIds.stream()
+                .map(stationId -> new StationResponse(stationId, stationNames.get(stationId)))
                 .collect(Collectors.toList());
     }
 
-    private Map<Long, String> initNameMap(Long id) {
+    private Map<Long, String> initStationNameMap(Long id) {
         return stationDao.findByLineId(id)
                 .stream()
                 .distinct()

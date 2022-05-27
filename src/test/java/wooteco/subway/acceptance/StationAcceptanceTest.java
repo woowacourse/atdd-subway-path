@@ -6,46 +6,29 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import wooteco.subway.service.StationService;
 import wooteco.subway.service.dto.StationResponse;
 import wooteco.subway.ui.dto.StationRequest;
-import wooteco.subway.utils.RestAssuredUtil;
 
-@DisplayName("지하철역 관련 기능")
+@DisplayName("지하철역 관련 기능 - StationAcceptanceTest")
 public class StationAcceptanceTest extends AcceptanceTest {
 
-    private Long savedId1;
-    private Long savedId2;
+    private Long stationId1;
+    private Long stationId2;
 
     @Autowired
-    private NamedParameterJdbcTemplate jdbcTemplate;
+    private StationService stationService;
 
     @BeforeEach
     void init() {
-        jdbcTemplate.update("delete from STATION", new EmptySqlParameterSource());
-
-        savedId1 = insertData("강남역");
-        savedId2 = insertData("역삼역");
-    }
-
-    private Long insertData(String name) {
-        String insertSql = "insert into STATION (name) values (:name)";
-        SqlParameterSource source = new MapSqlParameterSource("name", name);
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(insertSql, source, keyHolder);
-        return Objects.requireNonNull(keyHolder.getKey()).longValue();
+        stationId1 = stationService.save(new StationRequest("강남역")).getId();
+        stationId2 = stationService.save(new StationRequest("역삼역")).getId();
     }
 
     @DisplayName("지하철역을 생성한다.")
@@ -55,7 +38,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         StationRequest stationRequest = new StationRequest("선릉역");
 
         // when
-        ExtractableResponse<Response> response = RestAssuredUtil.post("/stations", stationRequest);
+        ExtractableResponse<Response> response = post("/stations", stationRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -68,7 +51,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // given
         StationRequest stationRequest = new StationRequest("강남역");
 
-        ExtractableResponse<Response> response = RestAssuredUtil.post("/stations", stationRequest);
+        ExtractableResponse<Response> response = post("/stations", stationRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -80,13 +63,13 @@ public class StationAcceptanceTest extends AcceptanceTest {
         /// given
 
         // when
-        ExtractableResponse<Response> response = RestAssuredUtil.get("/stations");
+        ExtractableResponse<Response> response = get("/stations");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         List<Long> stationIds = generateStationIds(response);
 
-        assertThat(stationIds).containsAll(List.of(savedId1, savedId2));
+        assertThat(stationIds).containsAll(List.of(stationId1, stationId2));
     }
 
     private List<Long> generateStationIds(ExtractableResponse<Response> response) {
@@ -100,11 +83,11 @@ public class StationAcceptanceTest extends AcceptanceTest {
     void deleteStation() {
         // given
         StationRequest stationRequest = new StationRequest("잠실역");
-        ExtractableResponse<Response> createResponse = RestAssuredUtil.post("/stations", stationRequest);
+        ExtractableResponse<Response> createResponse = post("/stations", stationRequest);
 
         // when
         String uri = createResponse.header("Location");
-        ExtractableResponse<Response> response = RestAssuredUtil.delete(uri, new HashMap<>());
+        ExtractableResponse<Response> response = delete(uri, new HashMap<>());
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());

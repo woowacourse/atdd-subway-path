@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Sections;
 import wooteco.subway.service.dto.StationResponse;
 import wooteco.subway.ui.dto.StationRequest;
 
@@ -64,7 +64,7 @@ public class StationService {
 
         for (Entry<Long, List<Section>> sectionsInfo : sectionsMap.entrySet()) {
             Sections lineIdSections = new Sections(sectionsInfo.getValue());
-            sectionService.delete(lineIdSections, stationId);
+            sectionService.delete(sectionsInfo.getKey(), lineIdSections, stationId);
         }
     }
 

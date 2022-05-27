@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.station.Station;
 
 @Repository
 public class StationDao {
@@ -38,9 +38,9 @@ public class StationDao {
         return Objects.requireNonNull(jdbcTemplate.queryForObject(sql, source, Boolean.class));
     }
 
-    public boolean existsById(Long id) {
-        String sql = "select exists (select 1 from STATION where id = :id)";
-        SqlParameterSource source = new MapSqlParameterSource("id", id);
+    public boolean existsByIds(List<Long> ids) {
+        String sql = "select exists (select 1 from STATION where id in (:ids))";
+        SqlParameterSource source = new MapSqlParameterSource("ids", ids);
         return Objects.requireNonNull(jdbcTemplate.queryForObject(sql, source, Boolean.class));
     }
 

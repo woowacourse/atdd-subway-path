@@ -1,14 +1,12 @@
 package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,73 +17,57 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import wooteco.subway.service.LineService;
+import wooteco.subway.service.SectionService;
+import wooteco.subway.service.StationService;
 import wooteco.subway.service.dto.LineResponse;
 import wooteco.subway.service.dto.StationResponse;
 import wooteco.subway.ui.dto.LineCreateRequest;
 import wooteco.subway.ui.dto.LineRequest;
 import wooteco.subway.ui.dto.SectionRequest;
-import wooteco.subway.utils.RestAssuredUtil;
+import wooteco.subway.ui.dto.StationRequest;
 
-@DisplayName("지하철 노선 관련 기능")
+@DisplayName("지하철 노선 관련 기능 - LineAcceptanceTest")
 public class LineAcceptanceTest extends AcceptanceTest {
 
-    private Long savedId1;
-    private Long savedId2;
-    private Long savedInsertId;
+    private Long stationId1;
+    private Long stationId2;
+    private Long stationId3;
+    private Long lineId1;
+    private Long lineId2;
 
     @Autowired
-    private NamedParameterJdbcTemplate jdbcTemplate;
+    private StationService stationService;
+
+    @Autowired
+    private LineService lineService;
+
+    @Autowired
+    private SectionService sectionService;
 
     @BeforeEach
     void init() {
-        jdbcTemplate.update("delete from LINE", new EmptySqlParameterSource());
+        stationId1 = stationService.save(new StationRequest("강남역")).getId();
+        stationId2 = stationService.save(new StationRequest("왕십리역")).getId();
+        stationId3 = stationService.save(new StationRequest("정자역")).getId();
 
-        savedId1 = insertLine("신분당선", "bg-red-600");
-        savedId2 = insertLine("분당선", "bg-green-600");
+        LineResponse line1 = lineService.save(
+                new LineCreateRequest("신분당선", "bg-red-600", stationId1, stationId2, 10, 10));
+        lineId1 = line1.getId();
 
-        savedInsertId = insertSection(savedId1);
-    }
-
-    private Long insertLine(String name, String color) {
-        String insertSql = "insert into LINE (name, color) values (:name, :color)";
-
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        MapSqlParameterSource source = new MapSqlParameterSource();
-        source.addValue("name", name);
-        source.addValue("color", color);
-
-        jdbcTemplate.update(insertSql, source, keyHolder);
-        return Objects.requireNonNull(keyHolder.getKey()).longValue();
-    }
-
-    private Long insertSection(Long lineId) {
-        String insertSql = "insert into section (line_id, up_station_id, down_station_id, distance) "
-                + "values (:lineId, :upStationId, :downStationId, :distance)";
-
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        MapSqlParameterSource source = new MapSqlParameterSource();
-        source.addValue("lineId", lineId);
-        source.addValue("upStationId", 1L);
-        source.addValue("downStationId", 2L);
-        source.addValue("distance", 5);
-
-        jdbcTemplate.update(insertSql, source, keyHolder);
-        return Objects.requireNonNull(keyHolder.getKey()).longValue();
+        LineResponse line2 = lineService.save(
+                new LineCreateRequest("분당선", "bg-green-600", stationId1, stationId2, 10, 10));
+        lineId2 = line2.getId();
     }
 
     @DisplayName("지하철 노선 생성")
     @Test
     void createLine() {
         // given
-        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", "bg-green-500", 1L, 2L, 20, 0);
+        LineCreateRequest request = new LineCreateRequest("2호선", "bg-green-500", stationId1, stationId2, 20, 0);
 
         // when
-        ExtractableResponse<Response> response = RestAssuredUtil.post("/lines", lineCreateRequest);
+        ExtractableResponse<Response> response = post("/lines", request);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -99,7 +81,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
 
         // when
-        ExtractableResponse<Response> response = RestAssuredUtil.post("/lines", lineCreateRequest);
+        ExtractableResponse<Response> response = post("/lines", lineCreateRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -130,10 +112,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLines() {
         /// given
-        List<Long> expectedLineIds = List.of(savedId1, savedId2);
+        List<Long> expectedLineIds = List.of(lineId1, lineId2);
 
         // when
-        ExtractableResponse<Response> response = RestAssuredUtil.get("/lines");
+        ExtractableResponse<Response> response = get("/lines");
         List<Long> resultLineIds = findLineIds(response);
 
         // then
@@ -151,10 +133,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void findLine() {
         //given
-        String id = String.valueOf(savedId1);
+        String id = String.valueOf(lineId1);
 
         //when
-        ExtractableResponse<Response> response = RestAssuredUtil.get("/lines/" + id);
+        ExtractableResponse<Response> response = get("/lines/" + id);
 
         //then
         Integer findId = response.jsonPath().get("id");
@@ -168,7 +150,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         String id = "999999";
 
         //when
-        ExtractableResponse<Response> response = RestAssuredUtil.get("/lines/" + id);
+        ExtractableResponse<Response> response = get("/lines/" + id);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -178,13 +160,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLine() {
         //given
-        String id = String.valueOf(savedId1);
+        String id = String.valueOf(lineId1);
 
         //when
         String name = "다른분당선";
         LineRequest lineRequest = new LineRequest(name, "bg-red-600", 0);
 
-        ExtractableResponse<Response> response = RestAssuredUtil.put("/lines/" + id, lineRequest);
+        ExtractableResponse<Response> response = put("/lines/" + id, lineRequest);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -194,13 +176,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLineWithDuplicatedName() {
         //given
-        String id = String.valueOf(savedId1);
+        String id = String.valueOf(lineId1);
 
         //when
         String name = "분당선";
         LineRequest lineRequest = new LineRequest(name, "bg-red-600", 0);
 
-        ExtractableResponse<Response> response = RestAssuredUtil.put("/lines/" + id, lineRequest);
+        ExtractableResponse<Response> response = put("/lines/" + id, lineRequest);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -210,19 +192,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLineById() {
         //given
-        String id = String.valueOf(savedId1);
         List<Long> expectedIds = selectLines();
-        expectedIds.remove(Long.parseLong(id));
 
         //when
-        RestAssuredUtil.delete("/lines/" + id, new HashMap<>());
+        delete("/lines/" + lineId1, new HashMap<>());
 
         //then
-        assertThat(expectedIds).isEqualTo(selectLines());
+        assertThat(expectedIds.size() - 1).isEqualTo(selectLines().size());
     }
 
     private List<Long> selectLines() {
-        ExtractableResponse<Response> response = RestAssuredUtil.get("/lines");
+        ExtractableResponse<Response> response = get("/lines");
         return findLineIds(response);
     }
 
@@ -230,44 +210,45 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createSection() {
         // given
-        SectionRequest sectionRequest = new SectionRequest(1L, 2L, 5);
-        String url = "/lines/" + savedId2 + "/sections";
+        SectionRequest sectionRequest = new SectionRequest(stationId2, stationId3, 5);
+        String url = "/lines/" + lineId1 + "/sections";
+        int beforeCount = findStations(lineId1).size();
 
         // when
-        RestAssuredUtil.post(url, sectionRequest);
+        post(url, sectionRequest);
 
         // then
-        List<StationResponse> stations = findStations(savedId2);
-
-        assertThat(stations).extracting("id", "name")
-                .containsExactly(
-                        tuple(1L, "강남역"),
-                        tuple(2L, "왕십리역")
-                );
+        int afterCount = findStations(lineId1).size();
+        assertThat(afterCount).isEqualTo(beforeCount + 1);
     }
 
     @DisplayName("구간 삭제")
     @Test
     void deleteSection() {
         // given
+        sectionService.create(lineId1, new SectionRequest(stationId2, stationId3, 10));
+
         Map<String, String> source = new HashMap<>();
-        source.put("stationId", savedInsertId.toString());
-        String url = "/lines/" + savedId1 + "/sections";
+        source.put("stationId", stationId2.toString());
+        String url = "/lines/" + lineId1 + "/sections";
 
         // when
-        RestAssuredUtil.delete(url, source);
+        delete(url, source);
 
         // then
-        List<Long> stationIds = findStations(savedId1)
+        List<Long> stationIds = findStationIds(lineId1);
+        assertThat(stationIds).doesNotContain(stationId2);
+    }
+
+    private List<Long> findStationIds(Long lineId) {
+        return findStations(lineId)
                 .stream()
                 .map(StationResponse::getId)
                 .collect(Collectors.toList());
-
-        assertThat(stationIds).doesNotContain(savedInsertId);
     }
 
     private List<StationResponse> findStations(Long lineId) {
-        ExtractableResponse<Response> findLine = RestAssuredUtil.get("/lines/" + lineId);
+        ExtractableResponse<Response> findLine = get("/lines/" + lineId);
         return findLine.jsonPath().getList("stations", StationResponse.class);
     }
 }

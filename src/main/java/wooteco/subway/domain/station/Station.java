@@ -1,19 +1,23 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.station;
 
 import java.util.Objects;
 
 public class Station {
 
-    private Long id;
-    private String name;
-
-    public Station(String name) {
-        this.name = name;
-    }
+    private final Long id;
+    private final String name;
 
     public Station(Long id, String name) {
-        this(name);
+        this.name = name;
         this.id = id;
+    }
+
+    public Station(String name) {
+        this(null, name);
+    }
+
+    public boolean isSameId(Station other) {
+        return this.id.equals(other.id);
     }
 
     public Long getId() {

@@ -3,33 +3,58 @@ package wooteco.subway.dao;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Station;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.station.Station;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Transactional
+@JdbcTest
 class StationDaoTest {
 
     @Autowired
+    private NamedParameterJdbcTemplate jdbcTemplate;
+
+    private Station station1;
+    private Station station2;
+    private Long lineId;
     private StationDao stationDao;
+
+    @BeforeEach
+    void init() {
+        stationDao = new StationDao(jdbcTemplate);
+        LineDao lineDao = new LineDao(jdbcTemplate);
+        SectionDao sectionDao = new SectionDao(jdbcTemplate);
+
+        station1 = saveStation(stationDao, "강남역");
+        station2 = saveStation(stationDao, "왕십리역");
+
+        Line request = new Line("신분당선", "red", 500);
+        lineId = lineDao.save(request);
+
+        sectionDao.save(new Section(lineId, station1, station2, 10));
+    }
+
+    private Station saveStation(StationDao stationDao, String name) {
+        Long id = stationDao.save(new Station(name));
+        return new Station(id, name);
+    }
 
     @DisplayName("역 저장")
     @Test
     void save() {
         // given
         Station station = new Station("정자역");
-        Long expected = stationDao.findAll().size() + 1L;
 
         // when
         Long id = stationDao.save(station);
 
         // then
-        assertThat(id).isEqualTo(expected);
+        assertThat(id).isEqualTo(station2.getId() + 1);
     }
 
     @DisplayName("역 이름 존재하는지 확인")
@@ -50,7 +75,7 @@ class StationDaoTest {
         // given
 
         // when
-        boolean result = stationDao.existsById(1L);
+        boolean result = stationDao.existsByIds(List.of(station1.getId()));
 
         // then
         assertThat(result).isTrue();
@@ -60,13 +85,12 @@ class StationDaoTest {
     @Test
     void findById() {
         // given
-        Long id = 1L;
 
         // when
-        Station station = stationDao.findById(id);
+        Station station = stationDao.findById(station1.getId());
 
         // then
-        assertThat(station.getId()).isEqualTo(id);
+        assertThat(station).isEqualTo(station1);
     }
 
     @DisplayName("역 전체 조회")
@@ -85,11 +109,10 @@ class StationDaoTest {
     @Test
     void deleteById() {
         // given
-        Long id = 1L;
         List<Station> before = stationDao.findAll();
 
         // when
-        stationDao.deleteById(id);
+        stationDao.deleteById(station1.getId());
         List<Station> after = stationDao.findAll();
 
         // then
@@ -100,10 +123,9 @@ class StationDaoTest {
     @Test
     void findByLineId() {
         // given
-        Long id = 1L;
 
         // when
-        List<Station> stations = stationDao.findByLineId(id);
+        List<Station> stations = stationDao.findByLineId(lineId);
 
         // then
         assertThat(stations.size()).isEqualTo(2);
