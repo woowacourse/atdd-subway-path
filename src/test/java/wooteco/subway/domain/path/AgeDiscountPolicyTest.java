@@ -6,8 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import wooteco.subway.domain.Age;
-
 class AgeDiscountPolicyTest {
 
     @DisplayName("나이에 따라 요금을 할인한다.")

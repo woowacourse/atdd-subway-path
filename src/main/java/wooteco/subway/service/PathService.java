@@ -5,8 +5,8 @@ import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import wooteco.subway.domain.Age;
-import wooteco.subway.domain.Fare;
+import wooteco.subway.domain.path.Age;
+import wooteco.subway.domain.path.Fare;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.graph.SubwayGraph;
 import wooteco.subway.infrastructure.jgraph.SubwayJGraph;

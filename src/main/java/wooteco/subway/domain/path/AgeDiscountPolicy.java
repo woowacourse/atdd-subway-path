@@ -2,8 +2,6 @@ package wooteco.subway.domain.path;
 
 import java.util.Arrays;
 
-import wooteco.subway.domain.Age;
-
 public enum AgeDiscountPolicy {
 
     PRESCHOOLER(0, 6, 0, 100),

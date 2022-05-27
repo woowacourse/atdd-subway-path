@@ -9,8 +9,6 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import wooteco.subway.domain.Age;
-import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.line.Line;
 
 class PathTest {
