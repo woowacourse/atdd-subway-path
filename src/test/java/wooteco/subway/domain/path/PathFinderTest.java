@@ -38,8 +38,13 @@ class PathFinderTest {
         Path path = pathFinder.getPath(lines, 20);
 
         assertAll(() -> assertThat(path.getDistance()).isEqualTo(10.0),
-                () -> assertThat(path.getFare()).isEqualTo(1250),
-                () -> assertThat(path.getStations().size()).isEqualTo(4));
+                () -> assertThat(path.getLineIds()).containsAll(List.of(1L, 2L, 3L)),
+                () -> assertThat(path.getStations()).containsAll(List.of(
+                        new Station(1L, "잠실역"),
+                        new Station(2L, "선릉역"),
+                        new Station(3L, "강남역"),
+                        new Station(4L, "건대역")
+                )));
     }
 
     @DisplayName("최대 추가 요금이 0, age가 20이고, 구간이 순환할 때, 최단 경로를 찾는다.")
@@ -62,8 +67,11 @@ class PathFinderTest {
         Path path = pathFinder.getPath(lines, 20);
 
         assertAll(() -> assertThat(path.getDistance()).isEqualTo(4.0),
-                () -> assertThat(path.getFare()).isEqualTo(1250),
-                () -> assertThat(path.getStations().size()).isEqualTo(2));
+                () -> assertThat(path.getLineIds()).containsAll(List.of(3L)),
+                () -> assertThat(path.getStations()).containsAll(List.of(
+                        new Station(1L, "잠실역"),
+                        new Station(3L, "강남역")
+                )));
     }
 
     @DisplayName("source 에서 target 이 연결되지 않는다면, 예외를 발생시킨다.")
