@@ -1,7 +1,6 @@
 package wooteco.subway.dto.response;
 
 public class ExceptionResponse {
-
     private final String message;
 
     private ExceptionResponse() {

@@ -2,6 +2,7 @@ package wooteco.subway.domain;
 
 public class Color {
     private static final String ERROR_NULL_OR_EMPTY = "색상은 필수 입력값입니다.";
+
     private final String value;
 
     public Color(String value) {

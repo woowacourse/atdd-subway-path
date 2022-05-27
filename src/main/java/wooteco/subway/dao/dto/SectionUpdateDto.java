@@ -4,7 +4,6 @@ import wooteco.subway.domain.Section;
 
 public class SectionUpdateDto {
     private final long id;
-
     private final long lineId;
     private final long upStationId;
     private final long downStationId;
