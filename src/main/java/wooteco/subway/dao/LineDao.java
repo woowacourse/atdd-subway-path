@@ -2,6 +2,7 @@ package wooteco.subway.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,9 +16,9 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 
-import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.line.Line;
 
 @Component
 public class LineDao {
@@ -49,6 +50,14 @@ public class LineDao {
     public List<Line> findAll() {
         String sql = "SELECT * FROM line";
         return jdbcTemplate.query(sql, (resultSet, rowNum) -> mapToLine(resultSet));
+    }
+
+    public List<Line> findByIds(List<Long> ids) {
+        List<Line> lines = new ArrayList<>();
+        for (Long id : ids) {
+            findById(id).ifPresent(lines::add);
+        }
+        return lines;
     }
 
     public Optional<Line> findById(Long id) {

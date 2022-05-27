@@ -1,16 +1,15 @@
 package wooteco.subway.ui.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.Station;
 import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.path.DijkstraPathCalculator;
-import wooteco.subway.domain.Station;
 import wooteco.subway.dto.request.PathRequest;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.dto.response.StationResponse;
@@ -43,10 +42,7 @@ public class PathService {
 
         List<Station> path = dijkstraPathCalculator.calculateShortestPath(sourceStation, targetStation);
         List<Long> lineIds = dijkstraPathCalculator.calculateShortestPathLines(sourceStation, targetStation);
-        int maxExtraFare = lineIds.stream()
-                .map(lineDao::findById)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+        int maxExtraFare = lineDao.findByIds(lineIds).stream()
                 .mapToInt(Line::getExtraFare)
                 .max()
                 .orElse(0);

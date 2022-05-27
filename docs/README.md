@@ -159,7 +159,7 @@
 
 - [X] Color 의 상수와 필드 사이 1줄 띄우기
 - [ ] Color 를 enum 으로 만들어보기
-  - Color 가 너무 다양해서 실패.. ~~싫어요~~
+  - Color 가 너무 다양해서 실패.. ~~시러요~~
 - [X] DiscountFareCalculator enum 을 설명이 아닌 도메인에 가까운 이름으로 수정
 - [X] Fare 의 상수를 `50km, 10km` 가 아닌 `장거리, 단거리` 와 같은 이름으로 수정
 - [X] Name 의 Pattern 은 비싼 자원이므로 재사용 하기
@@ -168,7 +168,7 @@
 - [X] PathCalculator 자료형이 포함된 변수명 수정
 - [X] 에러 메세지를 더 친절하게 작성 (LineService)
 - [X] 900 으로 하드코딩 된 부분 수정
-- [ ] PathService 의 DB O(n)번 접근하는 비용 문제 해결
+- [X] PathService 의 DB O(n)번 접근하는 비용 문제 해결
 - [X] sql 파일 자동 정렬로 인한 가독성 문제 해결
 - test
     - [ ] id 를 직접 사용하지 않으며 테스트를 할 수 있도록 수정
