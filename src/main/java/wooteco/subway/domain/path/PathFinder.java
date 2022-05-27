@@ -8,7 +8,6 @@ import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.fare.FareByAge;
 import wooteco.subway.domain.fare.FareByDistance;
-import wooteco.subway.domain.graph.ShortestPathEdge;
 import wooteco.subway.domain.line.Lines;
 import wooteco.subway.domain.secion.Section;
 import wooteco.subway.domain.secion.Sections;
