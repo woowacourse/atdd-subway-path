@@ -7,12 +7,12 @@ public class Path {
 
     private final List<Station> stations;
     private final double distance;
-    private final int fare;
+    private final List<Long> lineIds;
 
-    public Path(final List<Station> stations, final double distance, final int fare) {
+    public Path(final List<Station> stations, final double distance, final List<Long> lineIds) {
         this.stations = stations;
         this.distance = distance;
-        this.fare = fare;
+        this.lineIds = lineIds;
     }
 
     public List<Station> getStations() {
@@ -23,7 +23,7 @@ public class Path {
         return distance;
     }
 
-    public int getFare() {
-        return fare;
+    public List<Long> getLineIds() {
+        return lineIds;
     }
 }

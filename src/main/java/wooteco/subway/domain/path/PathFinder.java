@@ -6,8 +6,6 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.fare.FareByAge;
-import wooteco.subway.domain.fare.FareByDistance;
 import wooteco.subway.domain.line.Lines;
 import wooteco.subway.domain.secion.Section;
 import wooteco.subway.domain.secion.Sections;
@@ -63,21 +61,15 @@ public class PathFinder {
     public Path getPath(final Lines lines, final int age) {
         List<Station> stations = shortestGraph.getVertexList();
         double distance = shortestGraph.getWeight();
-        int fare = calculateFare(age, distance, getMaxExtraFare(shortestGraph, lines));
-        return new Path(stations, distance, fare);
+        List<Long> lineIds = getLineIds();
+        return new Path(stations, distance, lineIds);
     }
 
-    private int calculateFare(final int age, final double distance, final int maxExtraFare) {
-        int distanceFare = FareByDistance.calculateFare(distance);
-        return FareByAge.calculateFare(age, distanceFare + maxExtraFare);
-    }
-
-    private int getMaxExtraFare(final GraphPath<Station, ShortestPathEdge> graph, final Lines lines) {
-        List<Long> lineIds = graph.getEdgeList().stream()
+    private List<Long> getLineIds() {
+        List<ShortestPathEdge> edgeList = shortestGraph.getEdgeList();
+        return edgeList.stream()
                 .map(ShortestPathEdge::getLineId)
                 .collect(Collectors.toList());
-
-        return lines.findMaxExtraFare(lineIds);
     }
 
 }

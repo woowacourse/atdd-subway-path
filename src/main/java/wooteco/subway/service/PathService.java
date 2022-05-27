@@ -5,6 +5,7 @@ import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.fare.FareCalculator;
 import wooteco.subway.domain.line.Lines;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.PathFinder;
@@ -34,7 +35,9 @@ public class PathService {
         Lines lines = new Lines(lineDao.findAll());
         PathFinder pathFinder = initPathFinder(source, target);
         Path path = pathFinder.getPath(lines, age);
-        return PathResponse.from(path);
+        FareCalculator fareCalculator = new FareCalculator(path.getLineIds());
+        int fare = fareCalculator.calculateFare(age, path.getDistance(), lines);
+        return PathResponse.of(path, fare);
     }
 
     private PathFinder initPathFinder(final Station source, final Station target) {
