@@ -13,11 +13,10 @@ import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import wooteco.subway.acceptance.fixture.SimpleRestAssured;
-import wooteco.subway.dto.request.LineCreateRequest;
-import wooteco.subway.dto.request.SectionRequest;
+import wooteco.subway.acceptance.fixture.SimpleCreate;
 import wooteco.subway.dto.request.StationRequest;
 import wooteco.subway.dto.response.PathResponse;
+import wooteco.subway.dto.response.StationResponse;
 
 public class PathAcceptanceTest extends AcceptanceTest {
 
@@ -25,25 +24,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("출발역과 도착역으로 최단 경로를 조회한다.")
     public void getPath() {
         // given
-        StationRequest 강남역 = new StationRequest("강남역");
-        StationRequest 역삼역 = new StationRequest("역삼역");
-        StationRequest 선릉역 = new StationRequest("선릉역");
-        SimpleRestAssured.post("/stations", 강남역);
-        SimpleRestAssured.post("/stations", 역삼역);
-        SimpleRestAssured.post("/stations", 선릉역);
+        StationResponse 강남역 = SimpleCreate.createStation(new StationRequest("강남역")).toObject(StationResponse.class);
+        StationResponse 역삼역 = SimpleCreate.createStation(new StationRequest("역삼역")).toObject(StationResponse.class);
+        StationResponse 선릉역 = SimpleCreate.createStation(new StationRequest("선릉역")).toObject(StationResponse.class);
 
-        LineCreateRequest lineCreateRequest =
-                new LineCreateRequest(
-                        "신분당선",
-                        "bg-red-600",
-                        1L,
-                        2L,
-                        10,
-                        900);
-        SimpleRestAssured.post("/lines", lineCreateRequest);
+        SimpleCreate.createLine(강남역, 역삼역);
 
-        SectionRequest sectionRequest = new SectionRequest(2L, 3L, 7);
-        SimpleRestAssured.post("/lines/1/sections", sectionRequest);
+        SimpleCreate.createSection(역삼역, 선릉역);
 
         Map<String, Integer> params = Map.of("source", 1, "target", 3, "age", 15);
 
@@ -63,5 +50,4 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(pathResponse.getFare()).isEqualTo(1950)
         );
     }
-
 }

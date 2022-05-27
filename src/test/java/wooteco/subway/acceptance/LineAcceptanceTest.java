@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import wooteco.subway.acceptance.fixture.SimpleCreate;
 import wooteco.subway.acceptance.fixture.SimpleResponse;
 import wooteco.subway.acceptance.fixture.SimpleRestAssured;
 import wooteco.subway.dto.request.LineCreateRequest;
@@ -22,10 +23,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void setUpStations() {
-        StationRequest 강남역 = new StationRequest("강남역");
-        StationRequest 역삼역 = new StationRequest("역삼역");
-        SimpleRestAssured.post("/stations", 강남역);
-        SimpleRestAssured.post("/stations", 역삼역);
+        SimpleCreate.createStation(new StationRequest("강남역"));
+        SimpleCreate.createStation(new StationRequest("역삼역"));
     }
 
     @Test
@@ -166,6 +165,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         LineCreateRequest lineCreateRequest = createRequest("신분당선", "bg-red-600");
         SimpleResponse createdResponse = SimpleRestAssured.post("/lines", lineCreateRequest);
+
         // when
         String uri = createdResponse.getHeader("Location");
         SimpleResponse deleteResponse = SimpleRestAssured.delete(uri);

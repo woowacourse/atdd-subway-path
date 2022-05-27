@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import wooteco.subway.acceptance.fixture.SimpleCreate;
 import wooteco.subway.acceptance.fixture.SimpleResponse;
 import wooteco.subway.acceptance.fixture.SimpleRestAssured;
 import wooteco.subway.dto.request.StationRequest;
@@ -23,9 +24,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStation() {
         // given
-        StationRequest stationRequest = new StationRequest("강남역");
-        // when
-        SimpleResponse response = SimpleRestAssured.post("/stations", stationRequest);
+        SimpleResponse response = SimpleCreate.createStation(new StationRequest("강남역"));
         // then
         Assertions.assertAll(
                 () -> response.assertStatus(HttpStatus.CREATED),
@@ -37,10 +36,9 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStationWithDuplicateName() {
         // given
-        StationRequest stationRequest = new StationRequest("강남역");
-        SimpleRestAssured.post("/stations", stationRequest);
+        SimpleCreate.createStation(new StationRequest("강남역"));
         // when
-        SimpleResponse response = SimpleRestAssured.post("/stations", stationRequest);
+        SimpleResponse response = SimpleCreate.createStation(new StationRequest("강남역"));
         // then
         response.assertStatus(HttpStatus.BAD_REQUEST);
     }
@@ -49,16 +47,14 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void getStations() {
         /// given
-        StationRequest 강남역 = new StationRequest("강남역");
-        StationRequest 역삼역 = new StationRequest("역삼역");
-        SimpleResponse 강남역_생성 = SimpleRestAssured.post("/stations", 강남역);
-        SimpleResponse 역삼역_생성 = SimpleRestAssured.post("/stations", 역삼역);
+        SimpleResponse 강남역 = SimpleCreate.createStation(new StationRequest("강남역"));
+        SimpleResponse 역삼역 = SimpleCreate.createStation(new StationRequest("역삼역"));
 
         // when
         SimpleResponse response = SimpleRestAssured.get("/stations");
 
         // then
-        List<Long> expectedLineIds = Stream.of(강남역_생성, 역삼역_생성)
+        List<Long> expectedLineIds = Stream.of(강남역, 역삼역)
                 .map(SimpleResponse::getIdFromLocation)
                 .collect(Collectors.toList());
         List<Long> resultLineIds = response.toList(StationResponse.class).stream()
@@ -74,10 +70,9 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteStation() {
         // given
-        StationRequest stationRequest = new StationRequest("강남역");
-        SimpleResponse createResponse = SimpleRestAssured.post("/stations", stationRequest);
+        SimpleResponse 강남역 = SimpleCreate.createStation(new StationRequest("강남역"));
         // when
-        String uri = createResponse.getHeader("Location");
+        String uri = 강남역.getHeader("Location");
         SimpleResponse response = SimpleRestAssured.delete(uri);
         // then
         response.assertStatus(HttpStatus.NO_CONTENT);
@@ -87,8 +82,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않는 지하철 역을 삭제하면 예외를 던진다.")
     void deleteStation_throwsExceptionWithInvalidStation() {
         // given
-        StationRequest stationRequest = new StationRequest("강남역");
-        SimpleRestAssured.post("/stations", stationRequest);
+        SimpleCreate.createStation(new StationRequest("강남역"));
         // when
         SimpleResponse deleteResponse = SimpleRestAssured.delete("/lines/100");
         // then
