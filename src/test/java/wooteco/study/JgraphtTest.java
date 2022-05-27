@@ -34,10 +34,10 @@ public class JgraphtTest {
     @Test
     void getDijkstraShortestPathWithStation() {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        Station 낙성대역 = new Station("낙성대역");
-        Station 신림역 = new Station("신림역");
-        Station 신대방역 = new Station("신대방역");
-        Station 신도림역 = new Station("신도림역");
+        Station 낙성대역 = new Station(1L, "낙성대역");
+        Station 신림역 = new Station(2L, "신림역");
+        Station 신대방역 = new Station(3L, "신대방역");
+        Station 신도림역 = new Station(4L, "신도림역");
         graph.addVertex(낙성대역);
         graph.addVertex(신림역);
         graph.addVertex(신대방역);

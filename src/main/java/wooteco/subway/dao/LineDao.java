@@ -6,16 +6,18 @@ import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import wooteco.subway.domain.Line;
+import wooteco.subway.domain.line.Line;
 
 @Repository
 public class LineDao {
 
-    public static final String TABLE_NAME = "LINE";
-    public static final String KEY_NAME = "id";
+    private static final String TABLE_NAME = "LINE";
+    private static final String KEY_NAME = "id";
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertActor;
@@ -28,9 +30,14 @@ public class LineDao {
     }
 
     public Line save(Line line) {
-        Long id = insertActor.executeAndReturnKey(
-                Map.of("name", line.getName(), "color", line.getColor())).longValue();
+        Long id = insertActor.executeAndReturnKey(generateParameter(line)).longValue();
         return findById(id).get();
+    }
+
+    private SqlParameterSource generateParameter(Line line) {
+        return new MapSqlParameterSource("name", line.getName())
+                .addValue("color", line.getColor())
+                .addValue("extra_fare", line.getExtraFare());
     }
 
     public boolean existsByName(String name) {
@@ -57,14 +64,21 @@ public class LineDao {
                 new Line(
                         resultSet.getLong("id"),
                         resultSet.getString("name"),
-                        resultSet.getString("color")
+                        resultSet.getString("color"),
+                        resultSet.getInt("extra_fare")
                 );
     }
 
     public void update(Long id, Line updateLine) {
-        String sql = "update LINE set name = :name, color = :color where id = :id";
-        jdbcTemplate.update(sql,
-                Map.of("id", id, "name", updateLine.getName(), "color", updateLine.getColor()));
+        String sql = "update LINE set name = :name, color = :color, extra_fare = :extra_fare where id = :id";
+
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
+                .addValue("id", id)
+                .addValue("name", updateLine.getName())
+                .addValue("color", updateLine.getColor())
+                .addValue("extra_fare", updateLine.getExtraFare());
+
+        jdbcTemplate.update(sql, sqlParameterSource);
     }
 
     public void deleteById(Long id) {

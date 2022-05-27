@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
-import wooteco.subway.domain.Line;
+import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
@@ -45,7 +45,7 @@ public class LineService {
             throw new IllegalArgumentException("상행과 하행은 같을 수 없습니다.");
         }
 
-        Line line = lineDao.save(new Line(lineRequest.getName(), lineRequest.getColor()));
+        Line line = lineDao.save(new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare()));
         sectionDao.save(new Section(line, upStation, downStation, lineRequest.getDistance()));
 
         return findById(line.getId());
@@ -113,7 +113,7 @@ public class LineService {
             throw new IllegalArgumentException(lineRequest.getName() + "은 이미 존재하는 노선 이름입니다.");
         }
 
-        lineDao.update(id, new Line(lineRequest.getName(), lineRequest.getColor()));
+        lineDao.update(id, new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare()));
     }
 
     @Transactional

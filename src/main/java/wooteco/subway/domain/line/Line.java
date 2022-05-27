@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.line;
 
 import java.util.Objects;
 
@@ -7,15 +7,17 @@ public class Line {
     private final Long id;
     private final String name;
     private final String color;
+    private final int extraFare;
 
-    public Line(Long id, String name, String color) {
+    public Line(Long id, String name, String color, int extraFare) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
     }
 
-    public Line(String name, String color) {
-        this(null, name, color);
+    public Line(String name, String color, int extraFare) {
+        this(null, name, color, extraFare);
     }
 
     public boolean isNotSameName(String name) {
@@ -34,6 +36,10 @@ public class Line {
         return color;
     }
 
+    public int getExtraFare() {
+        return extraFare;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -43,12 +49,11 @@ public class Line {
             return false;
         }
         Line line = (Line) o;
-        return Objects.equals(id, line.id) && Objects.equals(name, line.name)
-                && Objects.equals(color, line.color);
+        return Objects.equals(id, line.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, color);
+        return Objects.hash(id);
     }
 }
