@@ -39,5 +39,5 @@
 - [x] LineService Test 상수 전체 적용 및 불필요한 출력문 제거
 - [x] FareBy test 예외 케이스 추가
 - [x] Path 에서 fare 분리
-- [ ] PathFinder -> source == target 일 때, 예외 처리
+- [x] PathFinder -> source == target 일 때, 예외 처리
 - [x] PathFinder test 검증부 station 모두 검증하도록 수정

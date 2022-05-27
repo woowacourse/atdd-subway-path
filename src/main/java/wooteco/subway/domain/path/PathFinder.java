@@ -9,7 +9,7 @@ import wooteco.subway.domain.Station;
 import wooteco.subway.domain.line.Lines;
 import wooteco.subway.domain.secion.Section;
 import wooteco.subway.domain.secion.Sections;
-import wooteco.subway.exception.NotLinkPathException;
+import wooteco.subway.exception.FindPathException;
 
 public class PathFinder {
 
@@ -20,11 +20,18 @@ public class PathFinder {
     }
 
     public static PathFinder init(final Sections sections, Station source, Station target) {
+        validateSourceSameTarget(source, target);
         WeightedMultigraph<Station, ShortestPathEdge> subwayGraph = new WeightedMultigraph<>(
                 ShortestPathEdge.class);
         addStationsToVertex(sections, subwayGraph);
         addSectionsToEdge(sections, subwayGraph);
         return new PathFinder(graphResult(source, target, subwayGraph));
+    }
+
+    private static void validateSourceSameTarget(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new FindPathException("출발역과 도착역이 같습니다.");
+        }
     }
 
     private static void addStationsToVertex(final Sections sections,
@@ -54,7 +61,7 @@ public class PathFinder {
 
     private static void validateSourceToTargetLink(final GraphPath<Station, ShortestPathEdge> path) {
         if (path == null) {
-            throw new NotLinkPathException("출발역과 도착역이 연결되어 있지 않습니다.");
+            throw new FindPathException("출발역과 도착역이 연결되어 있지 않습니다.");
         }
     }
 

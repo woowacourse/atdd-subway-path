@@ -12,7 +12,7 @@ import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.Lines;
 import wooteco.subway.domain.secion.Section;
 import wooteco.subway.domain.secion.Sections;
-import wooteco.subway.exception.NotLinkPathException;
+import wooteco.subway.exception.FindPathException;
 
 class PathFinderTest {
 
@@ -87,8 +87,25 @@ class PathFinderTest {
         Station target = new Station(4L, "건대역");
 
         assertThatThrownBy(() -> PathFinder.init(sections, source, target))
-                .isInstanceOf(NotLinkPathException.class)
+                .isInstanceOf(FindPathException.class)
                 .hasMessage("출발역과 도착역이 연결되어 있지 않습니다.");
     }
 
+
+    @DisplayName("source 와 target 이 같다면, 예외를 발생시킨다.")
+    @Test
+    void sameSourceToTargetException() {
+        Section section1 = new Section(1L, 1L, new Station(1L, "잠실역"), new Station(2L, "선릉역"), 3);
+        Section section2 = new Section(2L, 2L, new Station(2L, "선릉역"), new Station(3L, "강남역"), 3);
+        Section section3 = new Section(3L, 3L, new Station(3L, "강남역"), new Station(1L, "건대역"), 4);
+        Section section4 = new Section(4L, 4L, new Station(4L, "건대역"), new Station(5L, "사가정역"), 5);
+        Sections sections = new Sections(List.of(section1, section2, section3, section4));
+
+        Station source = new Station(1L, "잠실역");
+        Station target = new Station(1L, "잠실역");
+
+        assertThatThrownBy(() -> PathFinder.init(sections, source, target))
+                .isInstanceOf(FindPathException.class)
+                .hasMessage("출발역과 도착역이 같습니다.");
+    }
 }
