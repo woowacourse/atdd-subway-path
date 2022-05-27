@@ -3,7 +3,6 @@ package wooteco.subway.acceptance;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -15,6 +14,7 @@ import org.springframework.http.HttpStatus;
 
 import wooteco.subway.acceptance.fixture.SimpleResponse;
 import wooteco.subway.acceptance.fixture.SimpleRestAssured;
+import wooteco.subway.dto.request.LineCreateRequest;
 import wooteco.subway.dto.request.StationRequest;
 import wooteco.subway.dto.response.LineCreateResponse;
 
@@ -32,9 +32,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("노선을 생성한다.")
     public void createLine() {
         // given
-        Map<String, String> params = mapParams("신분당선", "bg-red-600");
+        LineCreateRequest lineCreateRequest = createRequest("신분당선", "bg-red-600");
         // when
-        SimpleResponse response = SimpleRestAssured.post("/lines", params);
+        SimpleResponse response = SimpleRestAssured.post("/lines", lineCreateRequest);
         // then
         Assertions.assertAll(
                 () -> response.assertStatus(HttpStatus.CREATED),
@@ -46,9 +46,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("입력값이 비어있는 경우 노선을 생성할 수 없다.")
     public void createLine_throwsExceptionWithBlankInput() {
         // given
-        Map<String, String> params = mapParams("신분당선", "");
+        LineCreateRequest lineCreateRequest = createRequest("신분당선", "");
         // when
-        SimpleResponse response = SimpleRestAssured.post("/lines", params);
+        SimpleResponse response = SimpleRestAssured.post("/lines", lineCreateRequest);
         // then
         Assertions.assertAll(
                 () -> response.assertStatus(HttpStatus.BAD_REQUEST),
@@ -60,15 +60,15 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("기존에 존재하는 노선 이름으로 노선을 생성할 수 없다.")
     public void createLine_throwsExceptionWithDuplicatedName() {
         // given
-        Map<String, String> params1 = mapParams("신분당선", "bg-red-600");
-        SimpleRestAssured.post("/lines", params1);
+        LineCreateRequest lineCreateRequest = createRequest("신분당선", "bg-red-600");
+        SimpleRestAssured.post("/lines", lineCreateRequest);
         // when
-        Map<String, String> params2 = mapParams("신분당선", "bg-red-600");
-        SimpleResponse response = SimpleRestAssured.post("/lines", params2);
+        LineCreateRequest invalidLineCreateRequest = createRequest("신분당선", "bg-red-600");
+        SimpleResponse createdResponse = SimpleRestAssured.post("/lines", invalidLineCreateRequest);
         // then
         Assertions.assertAll(
-                () -> response.assertStatus(HttpStatus.BAD_REQUEST),
-                () -> assertThat(response.containsExceptionMessage("이미 존재")).isTrue()
+                () -> createdResponse.assertStatus(HttpStatus.BAD_REQUEST),
+                () -> assertThat(createdResponse.containsExceptionMessage("이미 존재")).isTrue()
         );
     }
 
@@ -76,11 +76,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("전체 노선 목록을 조회한다.")
     void getLines() {
         /// given
-        Map<String, String> params1 = mapParams("신분당선", "bg-red-600");
-        Map<String, String> params2 = mapParams("경의중앙선", "bg-red-800");
+        LineCreateRequest 신분당선 = createRequest("신분당선", "bg-red-600");
+        LineCreateRequest 경의중앙선 = createRequest("경의중앙선", "bg-red-800");
 
-        SimpleResponse createResponse1 = SimpleRestAssured.post("/lines", params1);
-        SimpleResponse createResponse2 = SimpleRestAssured.post("/lines", params2);
+        SimpleResponse createResponse1 = SimpleRestAssured.post("/lines", 신분당선);
+        SimpleResponse createResponse2 = SimpleRestAssured.post("/lines", 경의중앙선);
         // when
         SimpleResponse response = SimpleRestAssured.get("/lines");
         // then
@@ -101,8 +101,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("ID값으로 노선을 조회한다.")
     public void getLine() {
         // given
-        Map<String, String> params1 = mapParams("신분당선", "bg-red-600");
-        SimpleResponse createdResponse = SimpleRestAssured.post("/lines", params1);
+        LineCreateRequest lineCreateRequest = createRequest("신분당선", "bg-red-600");
+        SimpleResponse createdResponse = SimpleRestAssured.post("/lines", lineCreateRequest);
         // when
         String uri = createdResponse.getHeader("Location");
         SimpleResponse foundResponse = SimpleRestAssured.get(uri);
@@ -119,8 +119,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않는 ID값으로 노선을 조회할 수 없다.")
     public void getLine_throwExceptionWithInvalidId() {
         // given
-        Map<String, String> params = mapParams("신분당선", "bg-red-600");
-        SimpleRestAssured.post("/lines", params);
+        LineCreateRequest lineCreateRequest = createRequest("신분당선", "bg-red-600");
+        SimpleRestAssured.post("/lines", lineCreateRequest);
         // when
         SimpleResponse response = SimpleRestAssured.get("/lines/99");
         // then
@@ -134,10 +134,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("ID값으로 노선을 수정한다.")
     public void modifyLine() {
         // given
-        Map<String, String> params = mapParams("신분당선", "bg-red-600");
-        SimpleResponse createdResponse = SimpleRestAssured.post("/lines", params);
+        LineCreateRequest lineCreateRequest = createRequest("신분당선", "bg-red-600");
+        SimpleResponse createdResponse = SimpleRestAssured.post("/lines", lineCreateRequest);
         // when
-        Map<String, String> modificationParam = mapParams("구분당선", "bg-red-800");
+        LineCreateRequest modificationParam = createRequest("구분당선", "bg-red-600");
         String uri = createdResponse.getHeader("Location");
         SimpleResponse modifiedResponse = SimpleRestAssured.put(uri, modificationParam);
         // then
@@ -148,10 +148,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않는 ID값의 노선을 수정할 수 없다.")
     public void modifyLine_throwExceptionWithInvalidId() {
         // given
-        Map<String, String> params = mapParams("신분당선", "bg-red-600");
-        SimpleRestAssured.post("/lines", params);
+        LineCreateRequest lineCreateRequest = createRequest("신분당선", "bg-red-600");
+        SimpleRestAssured.post("/lines", lineCreateRequest);
         // when
-        Map<String, String> modificationParam = mapParams("구분당선", "bg-red-600");
+        LineCreateRequest modificationParam = createRequest("구분당선", "bg-red-600");
         SimpleResponse response = SimpleRestAssured.put("/lines/99", modificationParam);
         // then
         Assertions.assertAll(
@@ -164,8 +164,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("ID값으로 노선을 제거한다.")
     public void deleteLine() {
         // given
-        Map<String, String> params = mapParams("신분당선", "bg-red-600");
-        SimpleResponse createdResponse = SimpleRestAssured.post("/lines", params);
+        LineCreateRequest lineCreateRequest = createRequest("신분당선", "bg-red-600");
+        SimpleResponse createdResponse = SimpleRestAssured.post("/lines", lineCreateRequest);
         // when
         String uri = createdResponse.getHeader("Location");
         SimpleResponse deleteResponse = SimpleRestAssured.delete(uri);
@@ -177,8 +177,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않는 ID값의 노선을 제거할 수 없다.")
     public void deleteLine_throwExceptionWithInvalidId() {
         // given
-        Map<String, String> params = mapParams("신분당선", "bg-red-600");
-        SimpleRestAssured.post("/lines", params);
+        LineCreateRequest lineCreateRequest = createRequest("신분당선", "bg-red-600");
+        SimpleRestAssured.post("/lines", lineCreateRequest);
         // when
         SimpleResponse response = SimpleRestAssured.delete("/lines/99");
         // then
@@ -188,13 +188,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private Map<String, String> mapParams(String name, String color) {
-        return Map.of(
-                "name", name,
-                "color", color,
-                "upStationId", "1",
-                "downStationId", "2",
-                "distance", "10"
-        );
+    private LineCreateRequest createRequest(String name, String color) {
+        return new LineCreateRequest(name, color, 1L, 2L, 10, 0);
     }
 }
