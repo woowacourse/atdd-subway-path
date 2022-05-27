@@ -79,8 +79,10 @@ class LineServiceTest {
         LineRequest line = new LineRequest("4호선", "red", 1L, 2L, DISTANCE, EXTRA_FARE);
         LineResponse newLine = lineService.save(line);
 
-        assertThat(lineService.findLine(newLine.getId()).getName()).isEqualTo(line.getName());
-        assertThat(lineService.findLine(newLine.getId()).getColor()).isEqualTo(line.getColor());
+        LineResponse lineResponse = lineService.findLine(newLine.getId());
+
+        assertThat(lineResponse.getName()).isEqualTo(line.getName());
+        assertThat(lineResponse.getColor()).isEqualTo(line.getColor());
     }
 
     @Test
