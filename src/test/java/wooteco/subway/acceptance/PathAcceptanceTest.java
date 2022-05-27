@@ -25,12 +25,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("출발역과 도착역으로 최단 경로를 조회한다.")
     public void getPath() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-        StationRequest stationRequest3 = new StationRequest("선릉역");
-        SimpleRestAssured.post("/stations", stationRequest1);
-        SimpleRestAssured.post("/stations", stationRequest2);
-        SimpleRestAssured.post("/stations", stationRequest3);
+        StationRequest 강남역 = new StationRequest("강남역");
+        StationRequest 역삼역 = new StationRequest("역삼역");
+        StationRequest 선릉역 = new StationRequest("선릉역");
+        SimpleRestAssured.post("/stations", 강남역);
+        SimpleRestAssured.post("/stations", 역삼역);
+        SimpleRestAssured.post("/stations", 선릉역);
 
         LineCreateRequest lineCreateRequest =
                 new LineCreateRequest(

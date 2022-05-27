@@ -5,8 +5,8 @@ public class Fare {
     private static final int EXTRA_FARE = 100;
     private static final int EXTRA_DISTANCE_OVER_50KM = 8;
     private static final int EXTRA_DISTANCE_OVER_10KM = 5;
-    private static final int KILOMETER_50 = 50;
-    private static final int KILOMETER_10 = 10;
+    private static final int LONG_DISTANCE = 50;
+    private static final int SHORT_DISTANCE = 10;
 
     private final int value;
 
@@ -20,16 +20,16 @@ public class Fare {
     }
 
     private static int calculateOver50km(double distance) {
-        double extraDistance = distance - KILOMETER_50;
+        double extraDistance = distance - LONG_DISTANCE;
         if (extraDistance <= 0) {
             return 0;
         }
         return (int)((Math.ceil(extraDistance / EXTRA_DISTANCE_OVER_50KM)) * EXTRA_FARE) + calculateOver10kmUnder50km(
-                KILOMETER_50);
+                LONG_DISTANCE);
     }
 
     private static int calculateOver10kmUnder50km(double distance) {
-        double extraDistance = distance - KILOMETER_10;
+        double extraDistance = distance - SHORT_DISTANCE;
         if (extraDistance <= 0 || extraDistance > 40) {
             return 0;
         }

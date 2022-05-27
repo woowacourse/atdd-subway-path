@@ -5,9 +5,9 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public enum DiscountFareCalculator {
-    UNDER_SIX(age -> age < 6, fare -> 0),
-    UNDER_THIRTEEN(age -> age < 13, fare -> (int)(0.5 * fare + 175)),
-    UNDER_NINETEEN(age -> age < 19, fare -> (int)(0.8 * fare + 70));
+    INFANT(age -> age < 6, fare -> 0),
+    CHILDREN(age -> age < 13, fare -> (int)(0.5 * fare + 175)),
+    TEENAGER(age -> age < 19, fare -> (int)(0.8 * fare + 70));
 
     private final Predicate<Integer> condition;
     private final Function<Integer, Integer> fareOf;

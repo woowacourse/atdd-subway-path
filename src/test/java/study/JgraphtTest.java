@@ -89,8 +89,8 @@ public class JgraphtTest {
         graph.addEdge(강남역, 역삼역, new ShortestPathEdge(1L, 10));
         graph.addEdge(역삼역, 선릉역, new ShortestPathEdge(2L, 20));
 
-        DijkstraShortestPath<Station, ShortestPathEdge> algorithm = new DijkstraShortestPath<>(graph);
-        GraphPath<Station, ShortestPathEdge> path = algorithm.getPath(강남역, 선릉역);
+        DijkstraShortestPath<Station, ShortestPathEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        GraphPath<Station, ShortestPathEdge> path = dijkstraShortestPath.getPath(강남역, 선릉역);
         List<ShortestPathEdge> edgeList = path.getEdgeList();
 
         assertThat(edgeList).hasSize(2);

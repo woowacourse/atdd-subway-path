@@ -22,10 +22,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void setUpStations() {
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-        SimpleRestAssured.post("/stations", stationRequest1);
-        SimpleRestAssured.post("/stations", stationRequest2);
+        StationRequest 강남역 = new StationRequest("강남역");
+        StationRequest 역삼역 = new StationRequest("역삼역");
+        SimpleRestAssured.post("/stations", 강남역);
+        SimpleRestAssured.post("/stations", 역삼역);
     }
 
     @Test
@@ -34,7 +34,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         Map<String, String> params = mapParams("신분당선", "bg-red-600");
         // when
-        final SimpleResponse response = SimpleRestAssured.post("/lines", params);
+        SimpleResponse response = SimpleRestAssured.post("/lines", params);
         // then
         Assertions.assertAll(
                 () -> response.assertStatus(HttpStatus.CREATED),
@@ -48,7 +48,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         Map<String, String> params = mapParams("신분당선", "");
         // when
-        final SimpleResponse response = SimpleRestAssured.post("/lines", params);
+        SimpleResponse response = SimpleRestAssured.post("/lines", params);
         // then
         Assertions.assertAll(
                 () -> response.assertStatus(HttpStatus.BAD_REQUEST),
@@ -64,7 +64,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         SimpleRestAssured.post("/lines", params1);
         // when
         Map<String, String> params2 = mapParams("신분당선", "bg-red-600");
-        final SimpleResponse response = SimpleRestAssured.post("/lines", params2);
+        SimpleResponse response = SimpleRestAssured.post("/lines", params2);
         // then
         Assertions.assertAll(
                 () -> response.assertStatus(HttpStatus.BAD_REQUEST),
@@ -104,10 +104,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Map<String, String> params1 = mapParams("신분당선", "bg-red-600");
         SimpleResponse createdResponse = SimpleRestAssured.post("/lines", params1);
         // when
-        final String uri = createdResponse.getHeader("Location");
-        final SimpleResponse foundResponse = SimpleRestAssured.get(uri);
-        final LineCreateResponse createdLineCreateResponse = createdResponse.toObject(LineCreateResponse.class);
-        final LineCreateResponse foundLineCreateResponse = foundResponse.toObject(LineCreateResponse.class);
+        String uri = createdResponse.getHeader("Location");
+        SimpleResponse foundResponse = SimpleRestAssured.get(uri);
+        LineCreateResponse createdLineCreateResponse = createdResponse.toObject(LineCreateResponse.class);
+        LineCreateResponse foundLineCreateResponse = foundResponse.toObject(LineCreateResponse.class);
         // then
         Assertions.assertAll(
                 () -> foundResponse.assertStatus(HttpStatus.OK),
@@ -122,7 +122,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Map<String, String> params = mapParams("신분당선", "bg-red-600");
         SimpleRestAssured.post("/lines", params);
         // when
-        final SimpleResponse response = SimpleRestAssured.get("/lines/99");
+        SimpleResponse response = SimpleRestAssured.get("/lines/99");
         // then
         Assertions.assertAll(
                 () -> response.assertStatus(HttpStatus.BAD_REQUEST),
@@ -137,9 +137,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Map<String, String> params = mapParams("신분당선", "bg-red-600");
         SimpleResponse createdResponse = SimpleRestAssured.post("/lines", params);
         // when
-        final Map<String, String> modificationParam = mapParams("구분당선", "bg-red-800");
-        final String uri = createdResponse.getHeader("Location");
-        final SimpleResponse modifiedResponse = SimpleRestAssured.put(uri, modificationParam);
+        Map<String, String> modificationParam = mapParams("구분당선", "bg-red-800");
+        String uri = createdResponse.getHeader("Location");
+        SimpleResponse modifiedResponse = SimpleRestAssured.put(uri, modificationParam);
         // then
         modifiedResponse.assertStatus(HttpStatus.OK);
     }
@@ -151,8 +151,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Map<String, String> params = mapParams("신분당선", "bg-red-600");
         SimpleRestAssured.post("/lines", params);
         // when
-        final Map<String, String> modificationParam = mapParams("구분당선", "bg-red-600");
-        final SimpleResponse response = SimpleRestAssured.put("/lines/99", modificationParam);
+        Map<String, String> modificationParam = mapParams("구분당선", "bg-red-600");
+        SimpleResponse response = SimpleRestAssured.put("/lines/99", modificationParam);
         // then
         Assertions.assertAll(
                 () -> response.assertStatus(HttpStatus.BAD_REQUEST),
@@ -167,8 +167,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Map<String, String> params = mapParams("신분당선", "bg-red-600");
         SimpleResponse createdResponse = SimpleRestAssured.post("/lines", params);
         // when
-        final String uri = createdResponse.getHeader("Location");
-        final SimpleResponse deleteResponse = SimpleRestAssured.delete(uri);
+        String uri = createdResponse.getHeader("Location");
+        SimpleResponse deleteResponse = SimpleRestAssured.delete(uri);
         // then
         deleteResponse.assertStatus(HttpStatus.NO_CONTENT);
     }
@@ -180,7 +180,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Map<String, String> params = mapParams("신분당선", "bg-red-600");
         SimpleRestAssured.post("/lines", params);
         // when
-        final SimpleResponse response = SimpleRestAssured.delete("/lines/99");
+        SimpleResponse response = SimpleRestAssured.delete("/lines/99");
         // then
         Assertions.assertAll(
                 () -> response.assertStatus(HttpStatus.BAD_REQUEST),

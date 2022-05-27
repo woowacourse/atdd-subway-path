@@ -49,16 +49,16 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void getStations() {
         /// given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-        SimpleResponse createResponse1 = SimpleRestAssured.post("/stations", stationRequest1);
-        SimpleResponse createResponse2 = SimpleRestAssured.post("/stations", stationRequest2);
+        StationRequest 강남역 = new StationRequest("강남역");
+        StationRequest 역삼역 = new StationRequest("역삼역");
+        SimpleResponse 강남역_생성 = SimpleRestAssured.post("/stations", 강남역);
+        SimpleResponse 역삼역_생성 = SimpleRestAssured.post("/stations", 역삼역);
 
         // when
         SimpleResponse response = SimpleRestAssured.get("/stations");
 
         // then
-        List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
+        List<Long> expectedLineIds = Stream.of(강남역_생성, 역삼역_생성)
                 .map(SimpleResponse::getIdFromLocation)
                 .collect(Collectors.toList());
         List<Long> resultLineIds = response.toList(StationResponse.class).stream()
