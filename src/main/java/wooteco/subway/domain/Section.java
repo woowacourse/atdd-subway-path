@@ -1,5 +1,8 @@
 package wooteco.subway.domain;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class Section {
 
     private final Long id;
@@ -27,6 +30,12 @@ public class Section {
 
     public boolean isSameDownStation(Station downStation) {
         return this.downStation.equals(downStation);
+    }
+
+    private void checkPositiveDistance(int distance) {
+        if (distance <= 0) {
+            throw new IllegalArgumentException("구간거리는 음수일 수 없습니다.");
+        }
     }
 
     public Long getId() {
@@ -65,9 +74,7 @@ public class Section {
         this.distance = distance;
     }
 
-    private void checkPositiveDistance(int distance) {
-        if (distance <= 0) {
-            throw new IllegalArgumentException("구간거리는 음수일 수 없습니다.");
-        }
+    public List<Station> getStations() {
+        return Arrays.asList(upStation, downStation);
     }
 }

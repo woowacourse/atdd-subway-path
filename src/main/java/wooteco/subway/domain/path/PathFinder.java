@@ -1,8 +1,8 @@
 package wooteco.subway.domain.path;
 
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.Multigraph;
@@ -50,11 +50,8 @@ public class PathFinder {
     }
 
     private static Set<Station> getStations(List<Section> sections) {
-        Set<Station> stations = new LinkedHashSet<>();
-        for (Section section : sections) {
-            stations.add(section.getUpStation());
-            stations.add(section.getDownStation());
-        }
-        return stations;
+        return sections.stream()
+                .flatMap(section -> section.getStations().stream())
+                .collect(Collectors.toUnmodifiableSet());
     }
 }
