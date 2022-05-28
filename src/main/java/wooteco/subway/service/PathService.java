@@ -47,16 +47,16 @@ public class PathService {
     public PathResponse searchPaths(PathRequest pathRequest) {
         Path path = getPath(pathFindStrategy, pathRequest.getSource(), pathRequest.getTarget());
         Fare fare = getFare(path);
-        Fare discountFare = applyFare(discountStrategy, new Age(pathRequest.getAge()), fare);
+        Fare discountedFare = applyDiscount(discountStrategy, new Age(pathRequest.getAge()), fare);
 
         return new PathResponse(
                 path.getDistance(),
-                discountFare.getValue(),
+                discountedFare.getValue(),
                 generateStationResponses(path.getStationsInPath())
         );
     }
 
-    private Fare applyFare(DiscountStrategy discountStrategy, Age age, Fare fare) {
+    private Fare applyDiscount(DiscountStrategy discountStrategy, Age age, Fare fare) {
         DiscountSpecification specification = new DiscountSpecification(age, fare);
         return discountStrategy.discount(specification);
     }
