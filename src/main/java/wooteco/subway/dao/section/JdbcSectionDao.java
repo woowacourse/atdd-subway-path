@@ -2,6 +2,8 @@ package wooteco.subway.dao.section;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Optional;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -12,15 +14,13 @@ import wooteco.subway.domain.section.Section;
 @Repository
 public class JdbcSectionDao implements SectionDao {
 
-    private final RowMapper<Section> sectionRowMapper = (resultSet, rowNum) -> {
-        return new Section(
-                resultSet.getLong("id"),
-                resultSet.getLong("line_id"),
-                resultSet.getLong("up_station_id"),
-                resultSet.getLong("down_station_id"),
-                resultSet.getInt("distance")
-        );
-    };
+    private final RowMapper<Section> sectionRowMapper = (resultSet, rowNum) -> new Section(
+            resultSet.getLong("id"),
+            resultSet.getLong("line_id"),
+            resultSet.getLong("up_station_id"),
+            resultSet.getLong("down_station_id"),
+            resultSet.getInt("distance")
+    );
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -29,7 +29,7 @@ public class JdbcSectionDao implements SectionDao {
     }
 
     @Override
-    public long save(Section section) {
+    public Long save(Section section) {
         final String sql = "insert into SECTION (line_id, up_station_id, down_station_id, distance) values (?, ?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -42,7 +42,9 @@ public class JdbcSectionDao implements SectionDao {
             return preparedStatement;
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        return Optional.ofNullable(keyHolder.getKey())
+                .orElseThrow(() -> new DuplicateKeyException("데이터를 저장할 수 없습니다."))
+                .longValue();
     }
 
     @Override
@@ -74,6 +76,6 @@ public class JdbcSectionDao implements SectionDao {
     @Override
     public boolean existSectionById(Long id) {
         final String sql = "select exists (select * from SECTION where id = ?)";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, id);
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, id));
     }
 }

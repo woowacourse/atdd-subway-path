@@ -1,5 +1,9 @@
 package wooteco.subway.ui;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
 import java.sql.SQLException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
@@ -14,31 +18,31 @@ import wooteco.subway.exception.SubwayException;
 public class SubwayControllerAdvice {
 
     @ExceptionHandler(DataNotExistException.class)
-    public ResponseEntity<ErrorResponse> handleIDataNotExistException() {
-        ErrorResponse errorResponse = new ErrorResponse("질못된 요청입니다.");
-        return ResponseEntity.badRequest().body(errorResponse);
+    public ResponseEntity<ErrorResponse> handleDataNotExistException(Exception exception) {
+        ErrorResponse errorResponse = new ErrorResponse(exception.getMessage());
+        return ResponseEntity.status(NOT_FOUND).body(errorResponse);
     }
 
     @ExceptionHandler(SubwayException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(Exception exception) {
         ErrorResponse errorResponse = new ErrorResponse(exception.getMessage());
-        return ResponseEntity.badRequest().body(errorResponse);
+        return ResponseEntity.status(BAD_REQUEST).body(errorResponse);
     }
 
     @ExceptionHandler({SQLException.class, DataAccessException.class})
-    public ResponseEntity<ErrorResponse> handleSQLException(Exception exception) {
-        ErrorResponse errorResponse = new ErrorResponse(exception.getMessage());
-        return ResponseEntity.internalServerError().body(errorResponse);
+    public ResponseEntity<ErrorResponse> handleSQLException() {
+        ErrorResponse errorResponse = new ErrorResponse("서버 오류입니다.");
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<Void> handleNoHandlerFoundException() {
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.status(NOT_FOUND).build();
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException() {
         ErrorResponse errorResponse = new ErrorResponse("잘못된 접근입니다.");
-        return ResponseEntity.internalServerError().body(errorResponse);
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 }

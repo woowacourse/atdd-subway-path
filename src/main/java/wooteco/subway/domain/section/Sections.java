@@ -103,11 +103,11 @@ public class Sections {
         return !(isTopStation(newSection.getDownStationId()) || isBottomStation(newSection.getUpStationId()));
     }
 
-    private Boolean isTopStation(Long stationId) {
+    private boolean isTopStation(Long stationId) {
         return sections.get(0).equalsUpStationId(stationId);
     }
 
-    private Boolean isBottomStation(Long stationId) {
+    private boolean isBottomStation(Long stationId) {
         return sections.get(sections.size() - 1).equalsDownStationId(stationId);
     }
 

@@ -2,6 +2,8 @@ package wooteco.subway.dao.station;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Optional;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -12,12 +14,10 @@ import wooteco.subway.domain.station.Station;
 @Repository
 public class JdbcStationDao implements StationDao {
 
-    private final RowMapper<Station> stationRowMapper = (resultSet, rowNum) -> {
-        return new Station(
-                resultSet.getLong("id"),
-                resultSet.getString("name")
-        );
-    };
+    private final RowMapper<Station> stationRowMapper = (resultSet, rowNum) -> new Station(
+            resultSet.getLong("id"),
+            resultSet.getString("name")
+    );
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -26,7 +26,7 @@ public class JdbcStationDao implements StationDao {
     }
 
     @Override
-    public long save(Station station) {
+    public Long save(Station station) {
         final String sql = "insert into STATION (name) values (?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -36,19 +36,21 @@ public class JdbcStationDao implements StationDao {
             return preparedStatement;
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        return Optional.ofNullable(keyHolder.getKey())
+                .orElseThrow(() -> new DuplicateKeyException("데이터를 저장할 수 없습니다."))
+                .longValue();
     }
 
     @Override
     public boolean existStationById(Long id) {
         final String sql = "select exists (select * from STATION where id = ?)";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, id);
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, id));
     }
 
     @Override
     public boolean existStationByName(String name) {
         final String sql = "select exists (select * from STATION where name = ?)";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, name);
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, name));
     }
 
     @Override

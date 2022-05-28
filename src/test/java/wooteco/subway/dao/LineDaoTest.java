@@ -1,8 +1,12 @@
 package wooteco.subway.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +19,7 @@ import wooteco.subway.domain.line.Line;
 @JdbcTest
 class LineDaoTest {
 
-    private static final Line LINE = new Line("신분당선", "bg-red-600");
+    private static final Line LINE = new Line("신분당선", "bg-red-600", 900);
 
     private JdbcLineDao lineDao;
 
@@ -49,7 +53,7 @@ class LineDaoTest {
     @Test
     void findAll() {
         lineDao.save(LINE);
-        lineDao.save(new Line("다른분당선", "bg-green-600"));
+        lineDao.save(new Line("다른분당선", "bg-green-600", 600));
 
         List<Line> lines = lineDao.findAll();
 
@@ -66,11 +70,28 @@ class LineDaoTest {
         assertThat(line).isNotNull();
     }
 
+    @DisplayName("id 리스트로 지하철 노선 전체를 조회한다.")
+    @Test
+    void findByIds() {
+        Line line2 = new Line("다른분당선", "bg-red-700", 0);
+        Set<Long> ids = new HashSet<>();
+        ids.add(lineDao.save(LINE));
+        ids.add(lineDao.save(line2));
+
+        List<Line> lines = lineDao.findByIds(ids);
+
+        assertAll(
+                () -> assertThat(lines.stream().map(Line::getId).collect(Collectors.toList())).hasSameElementsAs(ids),
+                () -> assertThat(lines.stream().map(Line::getName).collect(Collectors.toList()))
+                        .contains("신분당선", "다른분당선")
+        );
+    }
+
     @DisplayName("지하철 노선을 수정한다.")
     @Test
     void update() {
         long lineId = lineDao.save(LINE);
-        Line updatedLine = new Line(lineId, "다른분당선", "bg-red-600");
+        Line updatedLine = new Line(lineId, "다른분당선", "bg-red-600", 900);
 
         lineDao.update(updatedLine);
 

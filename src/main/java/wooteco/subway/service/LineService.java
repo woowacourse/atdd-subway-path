@@ -1,5 +1,7 @@
 package wooteco.subway.service;
 
+import java.util.List;
+import java.util.Set;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.line.LineDao;
 import wooteco.subway.domain.line.Line;
@@ -21,7 +23,7 @@ public class LineService {
     }
 
     public long save(LineRequest lineRequest) {
-        Line line = new Line(lineRequest.getName(), lineRequest.getColor());
+        Line line = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         Lines lines = findAll();
         lines.validateDuplication(line);
         long lineId = lineDao.save(line);
@@ -43,6 +45,13 @@ public class LineService {
     public Line findById(Long id) {
         validateExistLine(id);
         return lineDao.findById(id);
+    }
+
+    public List<Line> findByIds(Set<Long> ids) {
+        for (Long id : ids) {
+            validateExistLine(id);
+        }
+        return lineDao.findByIds(ids);
     }
 
     public void update(Line line) {
