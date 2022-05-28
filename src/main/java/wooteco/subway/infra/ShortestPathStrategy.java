@@ -1,37 +1,29 @@
-package wooteco.subway.domain.path;
+package wooteco.subway.infra;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.graph.Multigraph;
+import org.jgrapht.graph.WeightedMultigraph;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 
-public class PathFinder {
+public abstract class ShortestPathStrategy {
 
     private final Multigraph<Station, ShortestPathEdge> graph;
 
-    public PathFinder(Multigraph<Station, ShortestPathEdge> graph, List<Section> sections) {
-        this.graph = graph;
+    public ShortestPathStrategy(List<Section> sections) {
+        this.graph = new WeightedMultigraph<>(ShortestPathEdge.class);
         addVertex(sections, graph);
         addEdge(sections, graph);
     }
 
-    public Path getPath(Station upStation, Station downStation) {
-        DijkstraShortestPath<Station, ShortestPathEdge> shortestPath = new DijkstraShortestPath<>(graph);
-        GraphPath<Station, ShortestPathEdge> path = shortestPath.getPath(upStation, downStation);
-        int extraFare = path.getEdgeList()
-                .stream()
-                .mapToInt(edge -> edge.getExtraFare())
-                .max()
-                .orElseGet(() -> 0);
+    public abstract ShortestPathAlgorithm createShortestPath();
 
-        return new Path(path.getVertexList(),
-                (int) path.getWeight(),
-                extraFare);
+    public Multigraph<Station, ShortestPathEdge> getGraph() {
+        return graph;
     }
 
     private void addVertex(List<Section> sections, Multigraph<Station, ShortestPathEdge> graph) {

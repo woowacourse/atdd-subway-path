@@ -1,4 +1,4 @@
-package wooteco.subway.domain.path;
+package wooteco.subway.infra;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 
@@ -39,7 +40,7 @@ class PathFinderTest {
         sections.add(new Section(line, 역삼역, 선릉역, 10));
         sections.add(new Section(line, 선릉역, 삼성역, 10));
 
-        PathFinder pathFinder = new PathFinder(graph, sections);
+        PathFinder pathFinder = new PathFinder(new DijkstraStrategy(sections));
         Path path = pathFinder.getPath(강남역, 선릉역);
 
         assertThat(path.getStations()).containsExactly(강남역, 역삼역, 선릉역);
@@ -56,7 +57,7 @@ class PathFinderTest {
         sections.add(new Section(이호선, 성수역, 건대입구, 10));
         sections.add(new Section(구호선, 건대입구, 강남구청, 10));
 
-        PathFinder pathFinder = new PathFinder(graph, sections);
+        PathFinder pathFinder = new PathFinder(new DijkstraStrategy(sections));
         Path path = pathFinder.getPath(성수역, 강남구청);
 
         assertThat(path.getDistance()).isEqualTo(20);
@@ -76,7 +77,7 @@ class PathFinderTest {
         sections.add(new Section(삼호선, 성수역, 홍대, 5));
         sections.add(new Section(삼호선, 홍대, 강남구청, 10));
 
-        PathFinder pathFinder = new PathFinder(graph, sections);
+        PathFinder pathFinder = new PathFinder(new DijkstraStrategy(sections));
         Path path = pathFinder.getPath(성수역, 강남구청);
 
         assertThat(path.getDistance()).isEqualTo(15);
@@ -95,7 +96,7 @@ class PathFinderTest {
         sections.add(new Section(구호선, 건대입구, 강남구청, 10));
         sections.add(new Section(삼호선, 강남구청, 홍대, 10));
 
-        PathFinder pathFinder = new PathFinder(graph, sections);
+        PathFinder pathFinder = new PathFinder(new DijkstraStrategy(sections));
         Path path = pathFinder.getPath(성수역, 홍대);
 
         assertThat(path.getDistance()).isEqualTo(30);
@@ -114,7 +115,7 @@ class PathFinderTest {
         sections.add(new Section(구호선, 건대입구, 강남구청, 10));
         sections.add(new Section(삼호선, 강남구청, 홍대, 10));
 
-        PathFinder pathFinder = new PathFinder(graph, sections);
+        PathFinder pathFinder = new PathFinder(new DijkstraStrategy(sections));
         Path path = pathFinder.getPath(성수역, 홍대);
 
         assertThat(path.getExtraFare()).isEqualTo(900);
@@ -132,7 +133,7 @@ class PathFinderTest {
         sections.add(new Section(구호선, 건대입구, 강남구청, 10));
         sections.add(new Section(삼호선, 강남구청, 홍대, 10));
 
-        PathFinder pathFinder = new PathFinder(graph, sections);
+        PathFinder pathFinder = new PathFinder(new DijkstraStrategy(sections));
         Path path = pathFinder.getPath(성수역, 홍대);
 
         assertThat(path.getExtraFare()).isEqualTo(900);

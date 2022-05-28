@@ -1,20 +1,18 @@
 package wooteco.subway.service;
 
 import java.util.List;
-import org.jgrapht.graph.Multigraph;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.fare.Fare;
-import wooteco.subway.domain.path.Path;
-import wooteco.subway.domain.path.PathFinder;
-import wooteco.subway.domain.path.ShortestPathEdge;
 import wooteco.subway.dto.request.PathRequest;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.exception.NotFoundException;
+import wooteco.subway.infra.DijkstraStrategy;
+import wooteco.subway.infra.PathFinder;
 
 @Service
 public class PathService {
@@ -37,9 +35,7 @@ public class PathService {
 
         List<Section> sections = sectionDao.findAll();
 
-        Multigraph<Station, ShortestPathEdge> graph = new WeightedMultigraph<>(ShortestPathEdge.class);
-
-        PathFinder pathFinder = new PathFinder(graph, sections);
+        PathFinder pathFinder = new PathFinder(new DijkstraStrategy(sections));
         Path path = pathFinder.getPath(source, target);
         Fare fare = new Fare();
 
