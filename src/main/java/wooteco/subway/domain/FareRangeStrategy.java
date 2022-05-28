@@ -5,8 +5,8 @@ import java.util.function.Function;
 
 public enum FareRangeStrategy {
 
-    BASIC(distance -> distance <= 10 && distance > 0, distance -> 1250),
-    SECOND(distance -> distance > 10 && distance <= 50, distance -> 1250 + calculateOverFare(distance - 10, 5)),
+    BASIC(distance -> 0 < distance && distance <= 10, distance -> 1250),
+    SECOND(distance -> 10 < distance && distance <= 50, distance -> 1250 + calculateOverFare(distance - 10, 5)),
     THIRD(distance -> distance > 50, distance -> 2050 + calculateOverFare(distance - 50, 8));
 
     private final Function<Integer, Boolean> chargeDistance;

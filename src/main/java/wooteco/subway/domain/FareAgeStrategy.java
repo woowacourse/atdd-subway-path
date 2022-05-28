@@ -5,9 +5,9 @@ import java.util.function.Function;
 
 public enum FareAgeStrategy {
 
-    PRESCHOOLER(age -> age < 6 && age >= 0, fare -> 0),
-    CHILDREN(age -> age >= 6 && age < 13, fare -> (fare - 350) * 50 / 100),
-    TEENAGER(age -> age >= 13 && age < 19, fare -> (fare - 350) * 80 / 100),
+    PRESCHOOLER(age -> 0 <= age && age < 6, fare -> 0),
+    CHILDREN(age -> 6 <= age && age < 13, fare -> (fare - 350) * 50 / 100),
+    TEENAGER(age -> 13 <= age && age < 19, fare -> (fare - 350) * 80 / 100),
     ADULT(age -> age >= 19, fare -> fare);
 
     private final Function<Integer, Boolean> range;
