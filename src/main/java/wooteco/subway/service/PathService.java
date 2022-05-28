@@ -2,6 +2,7 @@ package wooteco.subway.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Path;
@@ -14,6 +15,7 @@ import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.infra.DijkstraStrategy;
 import wooteco.subway.infra.ShortestPathFinder;
 
+@Transactional
 @Service
 public class PathService {
 
