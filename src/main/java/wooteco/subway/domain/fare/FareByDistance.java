@@ -6,8 +6,8 @@ import java.util.function.Predicate;
 
 public enum FareByDistance {
     BASIC(distance -> distance <= 10, distance -> 1250),
-    TENTOFIFTY(distance -> distance >= 11 && distance <= 50, distance -> 1250 + Math.max(calculateOverFromTenToFifty(distance - 10), 0)),
-    OVERFIFTY(distance -> distance >= 51, distance -> 2050 + calculateOverFifty(distance - 50));
+    TENTOFIFTY(distance -> distance >= 11 && distance <= 50, distance -> 1250 + calculateOverFromTenToFifty(distance)),
+    OVERFIFTY(distance -> distance >= 51, distance -> 2050 + calculateOverFifty(distance));
 
     private Predicate<Integer> predicate;
     private Function<Integer, Integer> function;
@@ -26,10 +26,12 @@ public enum FareByDistance {
     }
 
     private static int calculateOverFromTenToFifty(double distance) {
-        return (int) ((Math.ceil(distance / 5) * 100));
+        double overDistance = distance - 10;
+        return (int) ((Math.ceil(overDistance / 5) * 100));
     }
 
-    private static int calculateOverFifty(double overDistance) {
+    private static int calculateOverFifty(double distance) {
+        double overDistance = distance - 50;
         return (int) ((Math.ceil(overDistance / 8) * 100));
     }
 }
