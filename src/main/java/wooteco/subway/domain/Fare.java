@@ -5,7 +5,6 @@ public class Fare {
     private final Distance distance;
     private final int extraFare;
     private final int age;
-    private static final int MINIMUM_DISTANCE = 0;
     private static final int MINIMUM_EXTRA_FARE = 0;
     private static final int MINIMUM_AGE = 0;
 

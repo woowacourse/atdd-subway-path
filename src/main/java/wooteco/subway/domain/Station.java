@@ -8,8 +8,15 @@ public class Station {
     private final String name;
 
     public Station(Long id, String name) {
+        validate(name);
         this.id = id;
         this.name = name;
+    }
+
+    private void validate(String name) {
+        if (name == null ||name.isBlank()) {
+            throw new IllegalArgumentException("역 이름을 입력해주세요.");
+        }
     }
 
     public Station(String name) {
