@@ -37,9 +37,9 @@ public class PathService {
 
         ShortestPathFinder shortestPathFinder = new ShortestPathFinder(new DijkstraStrategy(sections));
         Path path = shortestPathFinder.createShortestPath(source, target);
-        Fare fare = new Fare();
+        Fare fare = Fare.calculate(path.getDistance(), path.getExtraFare(), pathRequest.getAge());
 
-        return new PathResponse(path, fare.calculateFare(path.getDistance(), path.getExtraFare(), pathRequest.getAge()));
+        return new PathResponse(path, fare.getAmount());
     }
 
 }

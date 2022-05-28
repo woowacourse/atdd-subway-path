@@ -14,8 +14,8 @@ class FareTest {
     @ParameterizedTest
     @MethodSource("provideParameters1")
     void calculateFarePerDistance(int distance, int extraFare, int age, int expected) {
-        Fare fare = new Fare();
-        int actual = fare.calculateFare(distance, extraFare, age);
+        Fare fare = Fare.calculate(distance, extraFare, age);
+        int actual = fare.getAmount();
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -39,8 +39,8 @@ class FareTest {
     @ParameterizedTest
     @MethodSource("provideParameters2")
     void calculateFarePerAge(int distance, int extraFare, int age, int expected) {
-        Fare fare = new Fare();
-        int actual = fare.calculateFare(distance, extraFare, age);
+        Fare fare = Fare.calculate(distance, extraFare, age);
+        int actual = fare.getAmount();
 
         assertThat(actual).isEqualTo(expected);
     }

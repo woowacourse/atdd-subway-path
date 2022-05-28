@@ -2,12 +2,19 @@ package wooteco.subway.domain.fare;
 
 public class Fare {
 
-    public Fare() {
+    private final int amount;
+
+    private Fare(int amount) {
+        this.amount = amount;
     }
 
-    public int calculateFare(int distance, int extraFare, int age) {
+    public static Fare calculate(int distance, int extraFare, int age) {
         Integer fareByDistance = FareByDistance.calculateFareByDistance(distance);
         int total = fareByDistance + extraFare;
-        return FareByAge.calculateFareByAge(age, total);
+        return new Fare(FareByAge.calculateFareByAge(age, total));
+    }
+
+    public int getAmount() {
+        return amount;
     }
 }
