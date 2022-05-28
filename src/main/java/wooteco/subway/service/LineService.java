@@ -2,101 +2,147 @@ package wooteco.subway.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.dao.LineDao;
-import wooteco.subway.dao.SectionDao;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
-import wooteco.subway.dto.LineResponse;
-import wooteco.subway.dto.StationResponse;
+import wooteco.subway.domain.fare.Fare;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.section.Distance;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.station.Station;
+import wooteco.subway.dto.request.LineRequest;
+import wooteco.subway.dto.request.LineUpdateRequest;
+import wooteco.subway.dto.request.SectionRequest;
+import wooteco.subway.dto.response.LineResponse;
+import wooteco.subway.dto.response.StationResponse;
+import wooteco.subway.exception.DuplicateNameException;
+import wooteco.subway.exception.NotFoundLineException;
+import wooteco.subway.exception.NotFoundStationException;
+import wooteco.subway.repository.LineRepository;
+import wooteco.subway.repository.SectionRepository;
+import wooteco.subway.repository.StationRepository;
 
 @Service
+@Transactional
 public class LineService {
 
-    private static final String DUPLICATE_LINE_NAME_EXCEPTION = "중복된 노선 이름입니다.";
+    private final LineRepository lineRepository;
+    private final StationRepository stationRepository;
+    private final SectionRepository sectionRepository;
 
-    private final LineDao lineDao;
-    private final SectionDao sectionDao;
-    private final StationService stationService;
-
-    public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService) {
-        this.lineDao = lineDao;
-        this.sectionDao = sectionDao;
-        this.stationService = stationService;
+    public LineService(LineRepository lineRepository, StationRepository stationRepository,
+                       SectionRepository sectionRepository) {
+        this.lineRepository = lineRepository;
+        this.stationRepository = stationRepository;
+        this.sectionRepository = sectionRepository;
     }
 
-    @Transactional
-    public LineResponse save(String name, String color, Long upStationId, Long downStationId, int distance) {
-        validateName(name);
+    public LineResponse createLine(LineRequest lineRequest) {
+        validateDuplicateName(lineRequest.getName());
 
-        final Station upStation = stationService.findStationById(upStationId);
-        final Station downStation = stationService.findStationById(downStationId);
+        Line newLine = generateLineFromLineRequest(lineRequest);
+        Long newLineId = lineRepository.save(newLine);
+        Section section = generateSectionFromLineRequest(lineRequest);
 
-        final Line line = Line.initialCreateWithoutId(name, color, upStation, downStation, distance);
-        final Line savedLine = lineDao.save(line);
-        sectionDao.save(line.getSections(), savedLine.getId());
-        return new LineResponse(savedLine, List.of(new StationResponse(upStation), new StationResponse(downStation)));
+        saveSections(List.of(section), newLineId);
+        return LineResponse.from(newLineId, newLine, generateStationResponsesByLineId(newLineId));
     }
 
-    private void validateName(String name) {
-        if (lineDao.existsByName(name)) {
-            throw new IllegalArgumentException(DUPLICATE_LINE_NAME_EXCEPTION);
+    private Line generateLineFromLineRequest(LineRequest lineRequest) {
+        return new Line(lineRequest.getName(), lineRequest.getColor(), new Fare(lineRequest.getExtraFare()));
+    }
+
+    private Section generateSectionFromLineRequest(LineRequest lineRequest) {
+        Station upStation = stationRepository.findById(lineRequest.getUpStationId())
+                .orElseThrow(NotFoundStationException::new);
+        Station downStation = stationRepository.findById(lineRequest.getDownStationId())
+                .orElseThrow(NotFoundStationException::new);
+        return new Section(upStation, downStation, new Distance(lineRequest.getDistance()));
+    }
+
+    private void saveSections(List<Section> sections, Long lineId) {
+        for (Section section : sections) {
+            sectionRepository.save(lineId, section);
         }
     }
 
+    private void validateDuplicateName(String name) {
+        boolean isExisting = lineRepository.findByName(name).isPresent();
 
-    @Transactional(readOnly = true)
-    public LineResponse showLine(Long id) {
-        final Line line = lineDao.findById(id);
-        return new LineResponse(line);
+        if (isExisting) {
+            throw new DuplicateNameException();
+        }
     }
 
-    @Transactional
-    public void updateLine(Long id, String name, String color) {
-        validateName(name);
-
-        lineDao.updateLineById(id, name, color);
-    }
-
-    @Transactional(readOnly = true)
-    public List<LineResponse> showLines() {
-        final List<Line> savedLines = lineDao.findAll();
-        return savedLines.stream()
-                .map(LineResponse::new)
+    public List<LineResponse> getAllLines() {
+        return lineRepository.findAll()
+                .stream()
+                .map(line -> LineResponse.from(line, generateStationResponsesByLineId(line.getId())))
                 .collect(Collectors.toList());
     }
 
-    @Transactional
-    public void deleteLine(Long id) {
-        lineDao.deleteById(id);
+    public LineResponse getLineById(Long id) {
+        return lineRepository.findById(id)
+                .map(line -> LineResponse.from(line, generateStationResponsesByLineId(id)))
+                .orElseThrow(NotFoundLineException::new);
     }
 
-    @Transactional
-    public void addSection(Long lineId, Long upStationId, Long downStationId, int distance) {
-        final Line savedLine = lineDao.findById(lineId);
-
-        final Station upStation = stationService.findStationById(upStationId);
-        final Station downStation = stationService.findStationById(downStationId);
-        savedLine.addSection(Section.createWithoutId(upStation, downStation, distance));
-
-        updateSection(lineId, savedLine);
+    public void update(Long id, LineUpdateRequest line) {
+        validateExistingId(id);
+        validateDuplicateName(line.getName());
+        lineRepository.update(id, line.getName(), line.getColor());
     }
 
-    @Transactional
-    public void deleteSection(Long lineId, Long stationId) {
-        final Line savedLine = lineDao.findById(lineId);
-
-        final Station station = stationService.findStationById(stationId);
-
-        savedLine.deleteSection(station);
-
-        updateSection(lineId, savedLine);
+    public void delete(Long id) {
+        validateExistingId(id);
+        lineRepository.deleteById(id);
+        sectionRepository.deleteAllSectionsByLineId(id);
     }
 
-    private void updateSection(Long lineId, Line line) {
-        sectionDao.deleteByLineId(lineId);
-        sectionDao.save(line.getSections(), lineId);
+    private void validateExistingId(Long id) {
+        boolean isExisting = lineRepository.findById(id).isPresent();
+
+        if (!isExisting) {
+            throw new NotFoundLineException();
+        }
+    }
+
+    private List<StationResponse> generateStationResponsesByLineId(Long lineId) {
+        Line foundLine = lineRepository.findById(lineId).orElseThrow(NotFoundLineException::new);
+        List<Section> sections = foundLine.getSections().getValue();
+
+        return Stream.concat(
+                sections.stream().map(Section::getDownStation),
+                sections.stream().map(Section::getUpStation)
+        ).distinct().map(StationResponse::from).collect(Collectors.toList());
+    }
+
+    public void createSection(Long lineId, SectionRequest sectionRequest) {
+        Line line = lineRepository.findById(lineId).orElseThrow(NotFoundLineException::new);
+
+        Station upStation = getStation(sectionRequest.getUpStationId());
+        Station downStation = getStation(sectionRequest.getDownStationId());
+        Distance distance = new Distance(sectionRequest.getDistance());
+
+        line.addSection(new Section(upStation, downStation, distance));
+        deleteAndCreateSections(lineId, line);
+    }
+
+    private Station getStation(Long stationId) {
+        return stationRepository.findById(stationId)
+                .orElseThrow(NotFoundStationException::new);
+    }
+
+    public void deleteStationById(Long lineId, Long stationId) {
+        Line line = lineRepository.findById(lineId).orElseThrow(NotFoundLineException::new);
+        Station station = stationRepository.findById(stationId).orElseThrow(NotFoundStationException::new);
+
+        line.deleteStation(station);
+        deleteAndCreateSections(lineId, line);
+    }
+
+    private void deleteAndCreateSections(Long lineId, Line line) {
+        sectionRepository.deleteAllSectionsByLineId(lineId);
+        saveSections(line.getSections().getValue(), lineId);
     }
 }

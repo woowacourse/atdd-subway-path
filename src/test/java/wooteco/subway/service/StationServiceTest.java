@@ -2,59 +2,101 @@ package wooteco.subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.BDDMockito.given;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Station;
+import wooteco.subway.dto.request.StationRequest;
+import wooteco.subway.dto.response.StationResponse;
+import wooteco.subway.exception.DuplicateNameException;
+import wooteco.subway.exception.NotFoundStationException;
+import wooteco.subway.repository.JdbcStationRepository;
+import wooteco.subway.repository.StationRepository;
 
-@ExtendWith(MockitoExtension.class)
+@JdbcTest
 class StationServiceTest {
 
-    @InjectMocks
-    private StationService stationService;
+    private final StationService stationService;
 
-    @Mock
-    private StationDao stationDao;
+    @Autowired
+    public StationServiceTest(JdbcTemplate jdbcTemplate) {
+        StationDao stationDao = new StationDao(jdbcTemplate);
+        StationRepository stationRepository = new JdbcStationRepository(stationDao);
+        stationService = new StationService(stationRepository);
+    }
 
+    @DisplayName("새로운 지하철역을 등록한다.")
     @Test
-    @DisplayName("중복되지 않은 역 이름을 기입하면 Station 객체 생성")
     void createStation() {
-        //given
-        final String name = "석촌고분역";
-        final Station station = new Station(1L, name);
-        given(stationDao.existsByName(name)).willReturn(false);
-        given(stationDao.save(new Station(name))).willReturn(station);
-        //when
-        final Station newStation = stationService.createStation(name);
-        //then
-        assertThat(newStation.getId()).isEqualTo(station.getId());
+        // given
+        String name = "선릉역";
+        StationRequest stationRequest = new StationRequest(name);
+
+        // when
+        StationResponse stationResponse = stationService.createStation(stationRequest);
+
+        // then
+        assertThat(stationResponse.getName()).isEqualTo(name);
     }
 
+    @DisplayName("중복된 이름의 지하철역을 등록할 경우 예외를 발생한다.")
     @Test
-    @DisplayName("중복된 역 이름으로 생성 요청하면 예외 발생")
-    void createExistsStationName() {
-        //given
-        given(stationDao.existsByName("석촌고분역")).willReturn(true);
-        //then
-        assertThatThrownBy(() -> stationService.createStation("석촌고분역"))
-                .isInstanceOf(IllegalArgumentException.class);
+    void createStation_throwsExceptionWithDuplicateName() {
+        // given
+        String name = "선릉역";
+        StationRequest stationRequest = new StationRequest(name);
+        stationService.createStation(stationRequest);
+
+        // when & then
+        assertThatThrownBy(() -> stationService.createStation(stationRequest))
+                .isInstanceOf(DuplicateNameException.class);
     }
 
+    @DisplayName("등록된 모든 지하철역을 반환한다.")
     @Test
-    void showStations() {
-        //given
-        List<Station> stations = List.of(new Station("석촌고분역"), new Station("삼전역"), new Station("석촌역"));
-        given(stationDao.findAll()).willReturn(stations);
-        //when
-        final List<Station> foundStations = stationService.showStations();
-        //then
-        assertThat(foundStations.size()).isEqualTo(3);
+    void getAllStations() {
+        // given
+        String name1 = "선릉역";
+        String name2 = "역삼역";
+        String name3 = "강남역";
+        StationRequest stationRequest1 = new StationRequest(name1);
+        StationRequest stationRequest2 = new StationRequest(name2);
+        StationRequest stationRequest3 = new StationRequest(name3);
+
+        stationService.createStation(stationRequest1);
+        stationService.createStation(stationRequest2);
+        stationService.createStation(stationRequest3);
+
+        // when
+        int actual = stationService.getAllStations().size();
+
+        // then
+        assertThat(actual).isEqualTo(3);
+    }
+
+    @DisplayName("등록된 지하철역을 삭제한다.")
+    @Test
+    void delete() {
+        // given
+        StationRequest stationRequest = new StationRequest("선릉역");
+        StationResponse stationResponse = stationService.createStation(stationRequest);
+
+        // when
+        stationService.delete(stationResponse.getId());
+        List<StationResponse> allStations = stationService.getAllStations();
+
+        // then
+        assertThat(allStations).hasSize(0);
+    }
+
+    @DisplayName("삭제하려는 지하철 역 ID가 존재하지 않을 경우 예외를 발생한다.")
+    @Test
+    void delete_throwsExceptionIfIdNotExist() {
+        assertThatThrownBy(() -> stationService.delete(100L))
+                .isInstanceOf(NotFoundStationException.class);
     }
 }
