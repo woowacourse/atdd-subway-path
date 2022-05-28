@@ -1,4 +1,4 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.section;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -8,8 +8,12 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.Station;
+import wooteco.subway.domain.secion.Section;
+import wooteco.subway.domain.secion.Sections;
 import wooteco.subway.exception.AddSectionException;
 import wooteco.subway.exception.DeleteSectionException;
+import wooteco.subway.exception.datanotfound.SectionNotFoundException;
 
 class SectionsTest {
 
@@ -96,7 +100,7 @@ class SectionsTest {
         final Section section = new Section(1L, firstStation, secondStation, 10);
 
         assertThatThrownBy(() -> sections.addSection(section))
-                .isInstanceOf(AddSectionException.class)
+                .isInstanceOf(SectionNotFoundException.class)
                 .hasMessage("연결 할 수 있는 상행역 또는 하행역이 없습니다.");
     }
 
@@ -133,6 +137,6 @@ class SectionsTest {
 
         assertThatThrownBy(() -> sections.deleteSection(firstStation))
                 .isInstanceOf(DeleteSectionException.class)
-                .hasMessage("현재 구간이 하나 있기때문에, 구간을 제거 할수 없습니다.");
+                .hasMessage("현재 구간이 하나 있기 때문에, 구간을 제거 할수 없습니다.");
     }
 }

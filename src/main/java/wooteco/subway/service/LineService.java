@@ -7,10 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.secion.Section;
+import wooteco.subway.domain.secion.Sections;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.StationResponse;
@@ -33,7 +33,7 @@ public class LineService {
     public LineResponse save(final LineRequest lineRequest) {
         validateDuplicate(lineRequest);
         final Line line = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
-        final Line newLine = save(line);
+        final Line newLine = lineDao.save(line);
         saveSection(newLine.getId(), lineRequest);
         return LineResponse.of(newLine, getStationsFromSection(newLine.getId()));
     }
@@ -46,11 +46,6 @@ public class LineService {
 
     private boolean hasDuplicateLine(final LineRequest lineRequest) {
         return lineDao.existByName(lineRequest.getName());
-    }
-
-    private Line save(final Line line) {
-        lineDao.deleteByExistName(line.getName());
-        return lineDao.save(line);
     }
 
     private void saveSection(final Long lineId, final LineRequest lineRequest) {
@@ -69,6 +64,7 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public int updateLine(final Long id, final LineRequest lineRequest) {
         validateDuplicate(lineRequest);
         Line line = lineDao.findById(id);
@@ -90,6 +86,7 @@ public class LineService {
         return LineResponse.of(line, getStationsFromSection(line.getId()));
     }
 
+    @Transactional
     public int deleteLine(final Long id) {
         Line line = lineDao.findById(id);
         return lineDao.delete(line.getId());

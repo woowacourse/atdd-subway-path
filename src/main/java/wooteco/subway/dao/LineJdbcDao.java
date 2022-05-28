@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import wooteco.subway.domain.Line;
+import wooteco.subway.domain.line.Line;
 import wooteco.subway.exception.datanotfound.LineNotFoundException;
 
 @Repository
@@ -77,9 +77,4 @@ public class LineJdbcDao implements LineDao {
         return jdbcTemplate.update(sql, true, id);
     }
 
-    @Override
-    public void deleteByExistName(final String name) {
-        final String sql = "DELETE FROM line WHERE  name = (?)";
-        jdbcTemplate.update(sql, name);
-    }
 }

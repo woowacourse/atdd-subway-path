@@ -15,5 +15,4 @@ public interface StationDao {
 
     int deleteById(Long id);
 
-    void deleteByExistName(String name);
 }

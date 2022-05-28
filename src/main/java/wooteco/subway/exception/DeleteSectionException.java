@@ -1,6 +1,8 @@
 package wooteco.subway.exception;
 
-public class DeleteSectionException extends ClientException {
+import wooteco.subway.exception.datanotfound.DataNotFoundException;
+
+public class DeleteSectionException extends DataNotFoundException {
 
     public DeleteSectionException(String message) {
         super(message);

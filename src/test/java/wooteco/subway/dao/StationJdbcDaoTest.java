@@ -59,14 +59,4 @@ class StationJdbcDaoTest extends DaoImplTest {
         assertThat(existByName).isTrue();
     }
 
-    @DisplayName("이름을 이용하여 삭제한 후, 다시 저장되는지 확인한다.")
-    @Test
-    void saveDeletedName() {
-        String name = "교대역";
-        stationJdbcDao.save(new Station(name));
-
-        stationJdbcDao.deleteByExistName(name);
-
-        assertThat(stationJdbcDao.save(new Station(name)).getName()).isEqualTo(name);
-    }
 }

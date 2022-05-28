@@ -1,55 +1,56 @@
 package wooteco.subway.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.FareCalculator;
-import wooteco.subway.domain.Path;
-import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.fare.FareCalculator;
+import wooteco.subway.domain.line.Lines;
+import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.path.PathFinder;
+import wooteco.subway.domain.secion.Sections;
 import wooteco.subway.dto.PathResponse;
-import wooteco.subway.dto.StationResponse;
 
 @Service
 public class PathService {
 
     private final SectionDao sectionDao;
     private final StationDao stationDao;
+    private final LineDao lineDao;
 
-    public PathService(final SectionDao sectionDao, final StationDao stationDao) {
+    public PathService(final SectionDao sectionDao, final StationDao stationDao, final LineDao lineDao) {
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
+        this.lineDao = lineDao;
     }
 
     public PathResponse createPath(final Long sourceStationId, final Long targetStationId, final int age) {
         Station source = stationDao.findById(sourceStationId);
         Station target = stationDao.findById(targetStationId);
-        return createPathResponse(source, target);
+        return createPathResponse(source, target, age);
     }
 
-    private PathResponse createPathResponse(final Station source, final Station target) {
-        Path path = initPath();
-        List<Station> stations = path.calculateShortestPath(source, target);
-        double distance = path.calculateShortestDistance(source, target);
-        int fare = createFare(distance);
-        return new PathResponse(convertToStationResponses(stations), distance, fare);
+    private PathResponse createPathResponse(final Station source, final Station target, final int age) {
+        Path path = findPath(source, target);
+        int fare = calculateFare(age, path);
+        return PathResponse.of(path, fare);
     }
 
-    private Path initPath() {
+    private Path findPath(Station source, Station target) {
+        PathFinder pathFinder = initPathFinder(source, target);
+        return pathFinder.getPath();
+    }
+
+    private PathFinder initPathFinder(final Station source, final Station target) {
         Sections sections = new Sections(sectionDao.findAll());
-        return new Path(sections);
+        return PathFinder.init(sections, source, target);
     }
 
-    private int createFare(final double distance) {
-        FareCalculator fareCalculator = new FareCalculator(distance);
-        return fareCalculator.calculateFare();
+    private int calculateFare(int age, Path path) {
+        Lines lines = new Lines(lineDao.findAll());
+        FareCalculator fareCalculator = new FareCalculator(path.getLineIds());
+        return fareCalculator.calculateFare(age, path.getDistance(), lines);
     }
 
-    private List<StationResponse> convertToStationResponses(final List<Station> stations) {
-        return stations.stream()
-                .map(StationResponse::from)
-                .collect(Collectors.toList());
-    }
 }
