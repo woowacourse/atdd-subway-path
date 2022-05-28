@@ -9,20 +9,17 @@ public class Station {
     private final Id id;
     private final StationName name;
 
-    public Station(Id id, String name) {
-        this.id = id;
+    public Station(long id, String name) {
+        this.id = new Id(id);
         this.name = new StationName(name);
     }
 
-    public Station(Long id, String name) {
-        this(new Id(id), name);
-    }
-
     public Station(String name) {
-        this(new Id(), name);
+        this.id = Id.temporary();
+        this.name = new StationName(name);
     }
 
-    public Long getId() {
+    public long getId() {
         return id.getId();
     }
 
@@ -45,12 +42,5 @@ public class Station {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "Station{" + id +
-                ", " + name +
-                '}';
     }
 }

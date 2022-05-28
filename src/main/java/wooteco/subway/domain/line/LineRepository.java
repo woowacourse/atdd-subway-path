@@ -2,21 +2,23 @@ package wooteco.subway.domain.line;
 
 import java.util.List;
 
-import wooteco.subway.domain.station.Station;
-
 public interface LineRepository {
 
-    Line saveLine(Line line);
+    Line save(Line line);
 
-    List<Line> findLines();
+    List<Line> getAll();
 
-    Line findLineById(Long lineId);
+    Line getById(long lineId);
 
-    Line updateLine(Line line);
+    Line update(Line line);
 
     void updateSections(Line line);
 
-    void removeLine(Long lineId);
+    void remove(long lineId);
 
-    Station findStationById(Long stationId);
+    boolean existsByName(String name);
+
+    boolean existsByColor(String color);
+
+    boolean existsSectionByStationId(long stationId);
 }

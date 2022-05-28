@@ -18,9 +18,4 @@ public class LineColor {
     public String getColor() {
         return color;
     }
-
-    @Override
-    public String toString() {
-        return "LineColor{'" + color + "'}";
-    }
 }

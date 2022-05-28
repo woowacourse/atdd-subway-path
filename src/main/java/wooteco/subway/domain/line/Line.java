@@ -3,55 +3,54 @@ package wooteco.subway.domain.line;
 import java.util.List;
 
 import wooteco.subway.domain.Id;
-import wooteco.subway.domain.section.Section;
-import wooteco.subway.domain.section.Sections;
-import wooteco.subway.domain.station.Station;
+import wooteco.subway.domain.line.section.OrderedSections;
+import wooteco.subway.domain.line.section.Section;
+import wooteco.subway.domain.line.section.SectionSorter;
 
 public class Line {
 
     private final Id id;
-    private final Sections sections;
+    private final OrderedSections sections;
     private LineName name;
     private LineColor color;
+    private ExtraFare extraFare;
 
-    public Line(Id id, Sections sections, String name, String color) {
+    public Line(Id id, List<Section> sections, LineName name, LineColor color, ExtraFare extraFare) {
         this.id = id;
-        this.sections = sections;
+        this.sections = new OrderedSections(sections, new SectionSorter());
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
+    }
+
+    public Line(long id, List<Section> sections, String name, String color, long extraFare) {
+        this(new Id(id), sections, new LineName(name), new LineColor(color), new ExtraFare(extraFare));
+    }
+
+    public Line(List<Section> sections, String name, String color, long extraFare) {
+        this(Id.temporary(), sections, new LineName(name), new LineColor(color), new ExtraFare(extraFare));
+    }
+
+    public void update(String name, String color, long extraFare) {
         this.name = new LineName(name);
         this.color = new LineColor(color);
-    }
-
-    public Line(Long id, List<Section> sections, String name, String color) {
-        this(new Id(id), Sections.sort(sections), name, color);
-    }
-
-    public Line(List<Section> sections, String name, String color) {
-        this(new Id(), Sections.sort(sections), name, color);
-    }
-
-    public void update(String name, String color) {
-        this.name = new LineName(name);
-        this.color = new LineColor(color);
+        this.extraFare = new ExtraFare(extraFare);
     }
 
     public void appendSection(Section section) {
         sections.append(section);
     }
 
-    public void removeStation(Station station) {
-        sections.remove(station);
+    public void removeStation(long stationId) {
+        sections.remove(stationId);
     }
 
-    public Long getId() {
+    public long getId() {
         return id.getId();
     }
 
     public List<Section> getSections() {
         return sections.getSections();
-    }
-
-    public List<Station> getStations() {
-        return sections.getStations();
     }
 
     public String getName() {
@@ -62,13 +61,7 @@ public class Line {
         return color.getColor();
     }
 
-    @Override
-    public String toString() {
-        return "Line{" +
-                "id=" + id +
-                ", sections=" + sections +
-                ", name=" + name +
-                ", color=" + color +
-                '}';
+    public long getExtraFare() {
+        return extraFare.getFare();
     }
 }

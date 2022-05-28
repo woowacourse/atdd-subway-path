@@ -4,26 +4,34 @@ import java.util.Objects;
 
 public class Id {
 
-    private static final Long TEMPORARY_ID = 0L;
+    private static final long TEMPORARY_ID = 0L;
 
-    private final Long id;
+    private final long id;
 
-    public Id(Long id) {
+    public Id(long id) {
         validateIdPositive(id);
         this.id = id;
     }
 
-    public Id() {
+    private Id() {
         this.id = TEMPORARY_ID;
     }
 
-    private void validateIdPositive(Long id) {
+    public static Id temporary() {
+        return new Id();
+    }
+
+    private void validateIdPositive(long id) {
         if (id <= 0) {
             throw new IllegalArgumentException("식별자는 양수여야 합니다.");
         }
     }
+    
+    public boolean isTemporary() {
+        return id == TEMPORARY_ID;
+    }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
@@ -36,16 +44,11 @@ public class Id {
             return false;
         }
         Id id1 = (Id) o;
-        return Objects.equals(id, id1.id);
+        return id == id1.id;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "Id{" + id + '}';
     }
 }
