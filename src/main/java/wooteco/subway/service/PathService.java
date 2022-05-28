@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.line.Lines;
+import wooteco.subway.domain.path.AgeDiscountStrategy;
+import wooteco.subway.domain.path.Fare;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.PathDijkstraAlgorithm;
 import wooteco.subway.domain.section.Section;
@@ -32,14 +34,8 @@ public class PathService {
         Path path = algorithm.findPath(pathRequest.getSource(), pathRequest.getTarget());
 
         List<StationResponse> stationsResponses = getStationsResponses(stations, path.getStationIds());
-        int fare = getFare(path, pathRequest.getAge());
-        return new PathResponse(stationsResponses, path.getDistance(), fare);
-    }
-
-    private int getFare(Path path, int age) {
-        Lines lines = lineService.findAll();
-        int maxExtraFare = lines.findMaxExtraFare(path.getUsedLineIds());
-        return path.calculateFare(age, maxExtraFare);
+        Fare fare = getFare(path, pathRequest.getAge());
+        return new PathResponse(stationsResponses, path.getDistance(), fare.getFare());
     }
 
     private List<StationResponse> getStationsResponses(Stations stations, List<Long> shortestPath) {
@@ -47,5 +43,12 @@ public class PathService {
                 .map(stations::findStationById)
                 .map(StationResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    private Fare getFare(Path path, int age) {
+        Lines lines = lineService.findAll();
+        Fare maxExtraFareByDistance = lines.findMaxExtraFareByDistance(path.getUsedLineIds());
+        return path.calculateFareByDistance(maxExtraFareByDistance)
+                .discountByAge(AgeDiscountStrategy.from(age));
     }
 }

@@ -2,6 +2,7 @@ package wooteco.subway.domain.line;
 
 import java.util.List;
 import java.util.Set;
+import wooteco.subway.domain.path.Fare;
 import wooteco.subway.exception.DataNotExistException;
 import wooteco.subway.exception.SubwayException;
 
@@ -42,12 +43,12 @@ public class Lines {
                 .anyMatch(it -> it.isSameColor(line));
     }
 
-    public int findMaxExtraFare(Set<Long> usedLineIds) {
-        return lines.stream()
+    public Fare findMaxExtraFareByDistance(Set<Long> usedLineIds) {
+        return new Fare(lines.stream()
                 .filter(line -> usedLineIds.contains(line.getId()))
                 .mapToInt(Line::getExtraFare)
                 .max()
-                .orElseThrow(() -> new DataNotExistException("최대 추가 요금을 계산할 수 없습니다."));
+                .orElseThrow(() -> new DataNotExistException("최대 추가 요금을 계산할 수 없습니다.")));
     }
 
     public List<Line> getLines() {

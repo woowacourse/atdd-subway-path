@@ -43,6 +43,6 @@ class LinesTest {
     void findMaxExtraFare() {
         Set<Long> lineIds = Set.of(1L, 2L, 4L);
 
-        assertThat(LINES.findMaxExtraFare(lineIds)).isEqualTo(400);
+        assertThat(LINES.findMaxExtraFareByDistance(lineIds).getFare()).isEqualTo(400);
     }
 }

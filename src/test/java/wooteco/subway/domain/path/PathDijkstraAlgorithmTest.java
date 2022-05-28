@@ -15,14 +15,14 @@ import wooteco.subway.exception.SubwayException;
 
 class PathDijkstraAlgorithmTest {
 
-    private final List<Section> sections = List.of(
+    private final List<Section> SECTIONS = List.of(
             new Section(1L, 1L, 1L, 2L, 2),
             new Section(2L, 1L, 2L, 3L, 2),
             new Section(3L, 1L, 3L, 4L, 7),
             new Section(4L, 2L, 2L, 5L, 3),
             new Section(5L, 2L, 5L, 4L, 4)
     );
-    private final Stations stations = new Stations(
+    private final Stations STATIONS = new Stations(
             List.of(
                     new Station(1L, "대흥역"),
                     new Station(2L, "공덕역"),
@@ -35,7 +35,7 @@ class PathDijkstraAlgorithmTest {
     @DisplayName("최단 거리 경로, 거리, 거쳐간 노선을 구한다.")
     @Test
     void findPath() {
-        PathDijkstraAlgorithm algorithm = PathDijkstraAlgorithm.of(sections, stations);
+        PathDijkstraAlgorithm algorithm = PathDijkstraAlgorithm.of(SECTIONS, STATIONS);
         Path path = algorithm.findPath(1L, 4L);
 
         assertAll(
@@ -48,7 +48,7 @@ class PathDijkstraAlgorithmTest {
     @DisplayName("존재하지 않는 역으로 경로를 찾는 경우 예외가 발생한다.")
     @Test
     void notExistStation() {
-        PathDijkstraAlgorithm algorithm = PathDijkstraAlgorithm.of(sections, stations);
+        PathDijkstraAlgorithm algorithm = PathDijkstraAlgorithm.of(SECTIONS, STATIONS);
 
         assertThatThrownBy(() -> algorithm.findPath(6L, 7L))
                 .isInstanceOf(DataNotExistException.class)
@@ -58,7 +58,7 @@ class PathDijkstraAlgorithmTest {
     @DisplayName("존재하지 않는 역으로 경로를 찾는 경우 예외가 발생한다.")
     @Test
     void sameSourceAndTarget() {
-        PathDijkstraAlgorithm algorithm = PathDijkstraAlgorithm.of(sections, stations);
+        PathDijkstraAlgorithm algorithm = PathDijkstraAlgorithm.of(SECTIONS, STATIONS);
 
         assertThatThrownBy(() -> algorithm.findPath(1L, 1L))
                 .isInstanceOf(SubwayException.class)
@@ -74,7 +74,7 @@ class PathDijkstraAlgorithmTest {
                 new Section(4L, 2L, 4L, 5L, 3)
         );
 
-        PathDijkstraAlgorithm algorithm = PathDijkstraAlgorithm.of(sections, stations);
+        PathDijkstraAlgorithm algorithm = PathDijkstraAlgorithm.of(sections, STATIONS);
 
         assertThatThrownBy(() -> algorithm.findPath(1L, 5L))
                 .isInstanceOf(SubwayException.class)

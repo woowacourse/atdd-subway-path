@@ -27,7 +27,7 @@ public enum AgeDiscountStrategy {
                 .orElseThrow(() -> new DataNotExistException("존재하지 않는 나이입니다."));
     }
 
-    public int discount(double fare) {
+    public int discount(int fare) {
         return (int) discountStrategy.applyAsDouble(fare);
     }
 }
