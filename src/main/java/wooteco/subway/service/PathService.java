@@ -12,7 +12,7 @@ import wooteco.subway.dto.request.PathRequest;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.infra.DijkstraStrategy;
-import wooteco.subway.infra.PathFinder;
+import wooteco.subway.infra.ShortestPathFinder;
 
 @Service
 public class PathService {
@@ -35,8 +35,8 @@ public class PathService {
 
         List<Section> sections = sectionDao.findAll();
 
-        PathFinder pathFinder = new PathFinder(new DijkstraStrategy(sections));
-        Path path = pathFinder.getPath(source, target);
+        ShortestPathFinder shortestPathFinder = new ShortestPathFinder(new DijkstraStrategy(sections));
+        Path path = shortestPathFinder.createShortestPath(source, target);
         Fare fare = new Fare();
 
         return new PathResponse(path, fare.calculateFare(path.getDistance(), path.getExtraFare(), pathRequest.getAge()));

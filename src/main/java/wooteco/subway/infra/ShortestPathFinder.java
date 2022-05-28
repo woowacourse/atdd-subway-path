@@ -6,15 +6,15 @@ import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Station;
 
-public class PathFinder {
+public class ShortestPathFinder {
 
     private final ShortestPathStrategy shortestPathStrategy;
 
-    public PathFinder(ShortestPathStrategy shortestPathStrategy) {
+    public ShortestPathFinder(ShortestPathStrategy shortestPathStrategy) {
         this.shortestPathStrategy = shortestPathStrategy;
     }
 
-    public Path getPath(Station upStation, Station downStation) {
+    public Path createShortestPath(Station upStation, Station downStation) {
         ShortestPathAlgorithm shortestPath = shortestPathStrategy.createShortestPath();
         GraphPath<Station, ShortestPathEdge> path = shortestPath.getPath(upStation, downStation);
 
