@@ -9,6 +9,7 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Age;
 import wooteco.subway.domain.DiscountSpecification;
+import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.FareCacluateSpecification;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.PathFindSpecification;
@@ -45,24 +46,24 @@ public class PathService {
 
     public PathResponse searchPaths(PathRequest pathRequest) {
         Path path = getPath(pathFindStrategy, pathRequest.getSource(), pathRequest.getTarget());
-        int fare = getFare(path);
-        int discountFare = applyFare(discountStrategy, new Age(pathRequest.getAge()), fare);
+        Fare fare = getFare(path);
+        Fare discountFare = applyFare(discountStrategy, new Age(pathRequest.getAge()), fare);
 
         return new PathResponse(
                 path.getDistance(),
-                discountFare,
+                discountFare.getValue(),
                 generateStationResponses(path.getStationsInPath())
         );
     }
 
-    private int applyFare(DiscountStrategy discountStrategy, Age age, int fare) {
+    private Fare applyFare(DiscountStrategy discountStrategy, Age age, Fare fare) {
         DiscountSpecification specification = new DiscountSpecification(age, fare);
         return discountStrategy.discount(specification);
     }
 
-    private int getFare(Path path) {
+    private Fare getFare(Path path) {
         FareCacluateSpecification fareCacluateSpecification = new FareCacluateSpecification(path.getSectionsInPath(), lineDao.findAll());
-        return pricingStrategy.calculateFee(fareCacluateSpecification);
+        return pricingStrategy.calculateFare(fareCacluateSpecification);
     }
 
     private Path getPath(PathFindStrategy pathFindStrategy, Long sourceId, Long targetId) {

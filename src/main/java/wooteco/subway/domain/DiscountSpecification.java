@@ -3,9 +3,9 @@ package wooteco.subway.domain;
 public class DiscountSpecification {
 
     private Age age;
-    private int fare;
+    private Fare fare;
 
-    public DiscountSpecification(Age age, int fare) {
+    public DiscountSpecification(Age age, Fare fare) {
         this.age = age;
         this.fare = fare;
     }
@@ -14,7 +14,7 @@ public class DiscountSpecification {
         return age;
     }
 
-    public int getFare() {
+    public Fare getFare() {
         return fare;
     }
 }

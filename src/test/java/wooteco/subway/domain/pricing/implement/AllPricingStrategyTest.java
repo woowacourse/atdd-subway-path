@@ -11,6 +11,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.FareCacluateSpecification;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
@@ -34,10 +35,10 @@ class AllPricingStrategyTest {
         if (strategy == null) {
             System.out.println("null@@@@@");
         }
-        int fee = strategy.calculateFee(specification);
+        Fare fee = strategy.calculateFare(specification);
 
         // then
-        assertThat(fee).isEqualTo(expectFee);
+        assertThat(fee.getValue()).isEqualTo(expectFee);
     }
 
     private static Stream<Arguments> providePathAndLines() {
@@ -46,25 +47,25 @@ class AllPricingStrategyTest {
                         List.of(new Section(1L, 1L, 2L, 10)
                                 , new Section(2L, 2L, 3L, 10)
                                 , new Section(3L, 3L, 4L, 10)),
-                        List.of(new Line(1L, "1호선", "파란색", 100)
-                                , new Line(2L, "2호선", "초록색", 200)
-                                , new Line(3L, "3호선", "빨강색", 300)),
+                        List.of(new Line(1L, "1호선", "파란색", new Fare(100))
+                                , new Line(2L, "2호선", "초록색", new Fare(200))
+                                , new Line(3L, "3호선", "빨강색", new Fare(300))),
                         1650 + 300
                 ),
                 Arguments.of(
                         List.of(new Section(1L, 1L, 2L, 1)
                                 , new Section(2L, 2L, 3L, 1)
                                 , new Section(1L, 3L, 4L, 1)),
-                        List.of(new Line(1L, "1호선", "파란색", 100)
-                                , new Line(2L, "2호선", "초록색", 200)),
+                        List.of(new Line(1L, "1호선", "파란색", new Fare(100))
+                                , new Line(2L, "2호선", "초록색", new Fare(200))),
                         1250 + 200
                 ),
                 Arguments.of(
                         List.of(new Section(1L, 1L, 2L, 25)
                                 , new Section(2L, 2L, 3L, 25)
                                 , new Section(1L, 3L, 4L, 24)),
-                        List.of(new Line(1L, "1호선", "파란색", 100)
-                                , new Line(2L, "2호선", "초록색", 200)),
+                        List.of(new Line(1L, "1호선", "파란색", new Fare(100))
+                                , new Line(2L, "2호선", "초록색", new Fare(200))),
                         2350 + 200
                 )
         );

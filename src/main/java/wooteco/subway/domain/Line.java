@@ -7,15 +7,15 @@ public class Line {
     private Long id;
     private String name;
     private String color;
-    private int extraFare;
+    private Fare extraFare;
 
-    public Line(String name, String color, int extraFare) {
+    public Line(String name, String color, Fare extraFare) {
         this.name = name;
         this.color = color;
         this.extraFare = extraFare;
     }
 
-    public Line(Long id, String name, String color, int extraFare) {
+    public Line(Long id, String name, String color, Fare extraFare) {
         this(name, color, extraFare);
         this.id = id;
     }
@@ -32,7 +32,7 @@ public class Line {
         return color;
     }
 
-    public int getExtraFare() {
+    public Fare getExtraFare() {
         return extraFare;
     }
 
@@ -45,8 +45,8 @@ public class Line {
             return false;
         }
         Line line = (Line) o;
-        return extraFare == line.extraFare && Objects.equals(id, line.id) && Objects.equals(name,
-                line.name) && Objects.equals(color, line.color);
+        return Objects.equals(id, line.id) && Objects.equals(name, line.name)
+                && Objects.equals(color, line.color) && Objects.equals(extraFare, line.extraFare);
     }
 
     @Override

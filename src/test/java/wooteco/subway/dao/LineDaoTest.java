@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Line;
 import wooteco.subway.ui.dto.LineCreateRequest;
 import wooteco.subway.ui.dto.LineRequest;
@@ -75,14 +76,14 @@ class LineDaoTest {
     @Test
     void findById() {
         // given
-        Line expected = new Line(1L, "1호선", "black", 200);
+        Line expected = new Line(1L, "1호선", "black", new Fare(200));
 
         // when
         Optional<Line> line = lineDao.findById(1L);
 
         // then
-        assertThat(line.isPresent()).isTrue();
-        assertThat(line.get()).isEqualTo(expected);
+        assertThat(line).isPresent();
+        assertThat(line).contains(expected);
     }
 
     @DisplayName("노선 전체 조회")
@@ -112,7 +113,7 @@ class LineDaoTest {
 
         assertThat(line.isPresent()).isTrue();
         assertThat(line.get()).extracting(Line::getName, Line::getColor, Line::getExtraFare)
-                .contains(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
+                .contains(lineRequest.getName(), lineRequest.getColor(), new Fare(lineRequest.getExtraFare()));
     }
 
     @DisplayName("노선 삭제")

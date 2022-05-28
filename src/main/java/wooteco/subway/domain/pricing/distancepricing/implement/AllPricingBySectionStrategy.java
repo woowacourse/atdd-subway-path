@@ -1,6 +1,7 @@
 package wooteco.subway.domain.pricing.distancepricing.implement;
 
 import java.util.List;
+import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.pricing.distancepricing.PricingBySection;
 
 public class AllPricingBySectionStrategy implements PricingBySection {
@@ -12,9 +13,9 @@ public class AllPricingBySectionStrategy implements PricingBySection {
     }
 
     @Override
-    public int calculateFee(int distance) {
+    public Fare calculateFare(int distance) {
         return pricingBySections.stream()
-                .mapToInt(it -> it.calculateFee(distance))
-                .sum();
+                .map(it -> it.calculateFare(distance))
+                .reduce(new Fare(0), Fare::sum);
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Line;
 import wooteco.subway.ui.dto.LineCreateRequest;
 import wooteco.subway.ui.dto.LineRequest;
@@ -25,8 +26,7 @@ public class LineDao {
             -> new Line(resultSet.getLong("id")
             , resultSet.getString("name")
             , resultSet.getString("color")
-            , resultSet.getInt("extraFare")
-    );
+            , new Fare(resultSet.getInt("extraFare")));
 
     public LineDao(NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;

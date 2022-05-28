@@ -7,6 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import wooteco.subway.domain.Age;
 import wooteco.subway.domain.DiscountSpecification;
+import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.discount.DiscountStrategy;
 
 class DiscountByAgeTest {
@@ -17,14 +18,14 @@ class DiscountByAgeTest {
     @CsvSource(value = {"5,3400", "6,1525", "12,1525", "13,2440", "18,2440", "19,3400"}, delimiter = ',')
     void discountFee_children(int age, int expectedDiscountFare) {
         // given
-        DiscountSpecification specification = new DiscountSpecification(new Age(age), 3400);
+        DiscountSpecification specification = new DiscountSpecification(new Age(age), new Fare(3400));
         DiscountStrategy strategy = new DiscountByAge();
 
         // when
-        int discountFare = strategy.discount(specification);
+        Fare discountFare = strategy.discount(specification);
 
         // then
-        assertThat(discountFare).isEqualTo(expectedDiscountFare);
+        assertThat(discountFare.getValue()).isEqualTo(expectedDiscountFare);
     }
 
 }

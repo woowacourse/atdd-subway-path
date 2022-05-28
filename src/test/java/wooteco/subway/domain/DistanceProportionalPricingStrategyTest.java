@@ -24,13 +24,13 @@ public class DistanceProportionalPricingStrategyTest {
             "50, 2050", "51, 2150", "58, 2150", "59, 2250"})
     void calculateScore2(int distance, int expected) {
         // given
-        Line line = new Line(1L, "2호선", "초록색", 0);
+        Line line = new Line(1L, "2호선", "초록색", new Fare(0));
         List<Section> sections = List.of(new Section(1L, 1L, 1L, 2L, distance));
 
         // when
-        int result = strategy.calculateFee(new FareCacluateSpecification(sections, List.of(line)));
+        Fare result = strategy.calculateFare(new FareCacluateSpecification(sections, List.of(line)));
 
         // then
-        assertThat(result).isEqualTo(expected);
+        assertThat(result.getValue()).isEqualTo(expected);
     }
 }
