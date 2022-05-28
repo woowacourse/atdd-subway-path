@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
 import java.util.List;
+import wooteco.subway.util.NullChecker;
 
 public class PathFindSpecification {
 
@@ -11,6 +12,7 @@ public class PathFindSpecification {
 
     public PathFindSpecification(Station from, Station to, List<Station> stations,
                                  List<Section> sections) {
+        NullChecker.validateNonNull(from, to, stations, sections);
         this.from = from;
         this.to = to;
         this.stations = stations;
