@@ -30,12 +30,12 @@ public class LineService {
     public LineResponse create(LineRequest lineRequest) {
         String name = lineRequest.getName();
         String color = lineRequest.getColor();
-
+        Integer extraFare = lineRequest.getExtraFare();
         Station upStation = findStationById(lineRequest.getUpStationId());
         Station downStation = findStationById(lineRequest.getDownStationId());
         Section section = new Section(upStation, downStation, lineRequest.getDistance());
 
-        Line line = new Line(name, color, section);
+        Line line = new Line(name, color, section, extraFare);
         Line createdLine = saveLine(line);
         sectionDao.save(section, createdLine.getId());
 
@@ -68,7 +68,7 @@ public class LineService {
     }
 
     public void modify(Long id, LineRequest lineRequest) {
-        final Line line = new Line(id, lineRequest.getName(), lineRequest.getColor());
+        final Line line = new Line(id, lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         lineDao.update(line);
     }
 

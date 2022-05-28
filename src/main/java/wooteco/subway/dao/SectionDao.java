@@ -4,6 +4,7 @@ import java.util.List;
 
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.fare.Fare;
 
 public interface SectionDao {
     void save(Section section, Long lineId);
@@ -15,4 +16,6 @@ public interface SectionDao {
     int deleteByLine(Long lineId);
 
     List<Section> findAll();
+
+    Fare findExtraFareById(Long id);
 }

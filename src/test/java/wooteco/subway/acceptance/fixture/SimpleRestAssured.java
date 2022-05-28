@@ -14,14 +14,14 @@ public class SimpleRestAssured {
                 .when().get(path));
     }
 
-    public static SimpleResponse post(String path, Map<String, String> params) {
+    public static SimpleResponse post(String path, Map<String, Object> params) {
         return new SimpleResponse(given()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post(path));
     }
 
-    public static SimpleResponse put(String path, Map<String, String> params) {
+    public static SimpleResponse put(String path, Map<String, Object> params) {
         return new SimpleResponse(given()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
