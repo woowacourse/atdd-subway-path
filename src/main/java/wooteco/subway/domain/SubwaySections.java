@@ -1,21 +1,29 @@
 package wooteco.subway.domain;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-public class SubwaySectionsGraph {
+public class SubwaySections {
 
     private static final String UNREGISTERED_SECTION_STATION = "노선에 등록되지 않은 지하철역입니다.";
     private static final String NOT_EXIST_PATH = "경로가 존재하지 않습니다.";
+    private static final String NOT_EXIST_MATCHED_SECTION = "일치하는 구간이 없습니다.";
 
+    private final List<Section> sections;
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
-    public SubwaySectionsGraph(List<Section> sections) {
-        graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    public SubwaySections(List<Section> sections) {
+        this.sections = new ArrayList<>(sections);
+        this.graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         fillVertex(sections);
         fillEdge(sections);
     }
@@ -37,7 +45,36 @@ public class SubwaySectionsGraph {
         GraphPath<Station, DefaultWeightedEdge> shortestPath = getDijkstraShortestPath(source, target);
         validateExistPath(shortestPath);
 
-        return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight());
+        return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight(),
+                getExtraFare(shortestPath.getVertexList()));
+    }
+
+    private int getExtraFare(List<Station> stations) {
+        if (stations.size() == 1) {
+            return 0;
+        }
+        return Collections.max(getPassingLines(stations)
+                .stream()
+                .map(Line::getExtraFare)
+                .collect(Collectors.toList()));
+    }
+
+    private Set<Line> getPassingLines(List<Station> stations) {
+        Set<Line> lines = new HashSet<>();
+        for (int i = 0; i < (stations.size() - 1); i++) {
+            Station upStation = stations.get(i);
+            Station downStation = stations.get(i + 1);
+            lines.add(searchSectionLine(upStation, downStation));
+        }
+        return lines;
+    }
+
+    private Line searchSectionLine(Station upStation, Station downStation) {
+        Section foundSection = sections.stream()
+                .filter(section -> section.existsStation(upStation) && section.existsStation(downStation))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_MATCHED_SECTION));
+        return foundSection.getLine();
     }
 
     private GraphPath<Station, DefaultWeightedEdge> getDijkstraShortestPath(Station source, Station target) {

@@ -9,7 +9,7 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.SubwaySectionsGraph;
+import wooteco.subway.domain.SubwaySections;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.error.exception.NotFoundException;
@@ -30,10 +30,11 @@ public class PathService {
         Station source = getStation(sourceId);
         Station target = getStation(targetId);
 
-        SubwaySectionsGraph subwaySectionsGraph = new SubwaySectionsGraph(sectionDao.findAll());
+        SubwaySections subwaySections = new SubwaySections(sectionDao.findAll());
 
-        Path path = subwaySectionsGraph.getShortestPath(source, target);
-        return new PathResponse(convertToStationResponse(path.getStations()), path.getDistance(), path.calculateFare());
+        Path path = subwaySections.getShortestPath(source, target);
+        return new PathResponse(
+                convertToStationResponse(path.getStations()), path.getDistance(), path.calculateFare(age));
     }
 
     private Station getStation(Long id) {

@@ -17,19 +17,20 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class SubwaySectionsGraphTest {
+class SubwaySectionsTest {
 
     @DisplayName("하나의 경로만 있는 경우 가장 짧은 경로를 구한다")
     @Test
     void getShortestPathWithOnePath() {
         List<Section> sections = List.of(역곡역_부천역_5, 부천역_중동역_5);
-        SubwaySectionsGraph subwaySectionsGraph = new SubwaySectionsGraph(sections);
+        SubwaySections subwaySections = new SubwaySections(sections);
 
-        Path path = subwaySectionsGraph.getShortestPath(중동역, 역곡역);
+        Path path = subwaySections.getShortestPath(중동역, 역곡역);
 
         assertAll(
                 () -> assertThat(path.getDistance()).isEqualTo(10),
-                () -> assertThat(path.getStations()).containsExactly(중동역, 부천역, 역곡역)
+                () -> assertThat(path.getStations()).containsExactly(중동역, 부천역, 역곡역),
+                () -> assertThat(path.calculateFare(20)).isEqualTo(1750)
         );
     }
 
@@ -37,13 +38,14 @@ class SubwaySectionsGraphTest {
     @Test
     void getShortestPathWithTwoPath() {
         List<Section> sections = List.of(역곡역_부천역_5, 부천역_중동역_5, 중동역_역곡역_5);
-        SubwaySectionsGraph subwaySectionsGraph = new SubwaySectionsGraph(sections);
+        SubwaySections subwaySections = new SubwaySections(sections);
 
-        Path path = subwaySectionsGraph.getShortestPath(중동역, 역곡역);
+        Path path = subwaySections.getShortestPath(중동역, 역곡역);
 
         assertAll(
                 () -> assertThat(path.getDistance()).isEqualTo(5),
-                () -> assertThat(path.getStations()).containsExactly(중동역, 역곡역)
+                () -> assertThat(path.getStations()).containsExactly(중동역, 역곡역),
+                () -> assertThat(path.calculateFare(20)).isEqualTo(1750)
         );
     }
 
@@ -51,9 +53,9 @@ class SubwaySectionsGraphTest {
     @Test
     void findPathCanNotGo() {
         List<Section> sections = List.of(신도림역_온수역_5, 부천역_역곡역_5);
-        SubwaySectionsGraph subwaySectionsGraph = new SubwaySectionsGraph(sections);
+        SubwaySections subwaySections = new SubwaySections(sections);
 
-        assertThatThrownBy(() -> subwaySectionsGraph.getShortestPath(온수역, 역곡역))
+        assertThatThrownBy(() -> subwaySections.getShortestPath(온수역, 역곡역))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("경로가 존재하지 않습니다.");
     }
@@ -62,9 +64,9 @@ class SubwaySectionsGraphTest {
     @Test
     void findPathNotExistsStation() {
         List<Section> sections = List.of(신도림역_온수역_5, 부천역_역곡역_5);
-        SubwaySectionsGraph subwaySectionsGraph = new SubwaySectionsGraph(sections);
+        SubwaySections subwaySections = new SubwaySections(sections);
 
-        assertThatThrownBy(() -> subwaySectionsGraph.getShortestPath(중동역, 역곡역))
+        assertThatThrownBy(() -> subwaySections.getShortestPath(중동역, 역곡역))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("노선에 등록되지 않은 지하철역입니다.");
     }
