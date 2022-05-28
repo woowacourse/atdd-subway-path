@@ -1,23 +1,25 @@
 package wooteco.subway.domain.line;
 
+import wooteco.subway.Validator.Validator;
+
 public class Line {
 
-    private Long id;
+    private final Long id;
     private final String name;
     private final String color;
-    private int extraFare;
+    private final int extraFare;
 
-    public Line(String name, String color, int extraFare) {
+    public Line(Long id, String name, String color, int extraFare) {
+        Validator.checkNull(name);
+        Validator.checkNull(color);
+        this.id = id;
         this.name = name;
         this.color = color;
         this.extraFare = extraFare;
     }
 
-    public Line(Long id, String name, String color, int extraFare) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
-        this.extraFare = extraFare;
+    public Line(String name, String color, int extraFare) {
+        this(null, name, color, extraFare);
     }
 
     public boolean isSameId(Line line) {
