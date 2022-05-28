@@ -1,8 +1,5 @@
-package wooteco.subway.dao.jdbc;
+package wooteco.subway.dao;
 
-import java.sql.PreparedStatement;
-import java.util.List;
-import java.util.Optional;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -11,10 +8,13 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ObjectUtils;
-import wooteco.subway.dao.LineDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.exception.DuplicateLineException;
 import wooteco.subway.exception.NoSuchLineException;
+
+import java.sql.PreparedStatement;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class LineJdbcDao implements LineDao {
@@ -22,7 +22,8 @@ public class LineJdbcDao implements LineDao {
     private static final RowMapper<Line> LINE_ROW_MAPPER = (resultSet, rowNum) -> new Line(
             resultSet.getLong("id"),
             resultSet.getString("name"),
-            resultSet.getString("color")
+            resultSet.getString("color"),
+            resultSet.getInt("extraFare")
     );
 
     private final JdbcTemplate jdbcTemplate;
@@ -40,28 +41,30 @@ public class LineJdbcDao implements LineDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement preparedStatement = connection.prepareStatement(
-                    "INSERT INTO LINE (name, color) VALUES (?, ?)", new String[]{"id"});
+                    "INSERT INTO LINE (name, color, extraFare) VALUES (?, ?, ?)", new String[]{"id"});
             preparedStatement.setString(1, line.getName());
             preparedStatement.setString(2, line.getColor());
+            preparedStatement.setInt(3, line.getExtraFare());
             return preparedStatement;
         }, keyHolder);
-        return new Line(keyHolder.getKey().longValue(), line.getName(), line.getColor());
+        return new Line(keyHolder.getKey().longValue(), line.getName(), line.getColor(), line.getExtraFare());
     }
 
     @Override
     public List<Line> findAll() {
-        final String sql = "SELECT id, name, color FROM LINE";
+        final String sql = "SELECT id, name, color, extraFare FROM LINE";
 
         return jdbcTemplate.query(sql, (resultSet, rowNum) -> new Line(
                 resultSet.getLong("id"),
                 resultSet.getString("name"),
-                resultSet.getString("color")
+                resultSet.getString("color"),
+                resultSet.getInt("extraFare")
         ));
     }
 
     @Override
     public Optional<Line> findById(final Long id) {
-        final String sql = "SELECT id, name, color FROM LINE WHERE id = (?)";
+        final String sql = "SELECT id, name, color, extraFare FROM LINE WHERE id = (?)";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, LINE_ROW_MAPPER, id));
         } catch (EmptyResultDataAccessException exception) {

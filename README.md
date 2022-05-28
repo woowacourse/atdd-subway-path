@@ -5,7 +5,7 @@
   <a href="https://techcourse.woowahan.com/c/Dr6fhku7" alt="woowacuorse subway">
     <img alt="Website" src="https://img.shields.io/website?url=https%3A%2F%2Fedu.nextstep.camp%2Fc%2FR89PYi5H">
   </a>
-  <img alt="GitHub" src="https://img.shields.io/github/license/woowacourse/atdd-subway-path">
+  <img alt="GitHub" src="https://img.shields.io/github/license/woowacourse/atdd-subway-subwayGraph">
 </p>
 
 <br>
@@ -20,7 +20,10 @@
 * 경로를 조회하는 API를 구현한다.
 * 경로와 함께 총 거리와 요금을 계산한다.
 * 환승 노선을 고려한다.
-
+  * 경로 중 추가요금이 있는 노선을 환승 하여 이용 할 경우 가장 높은 금액의 추가 요금만 적용
+* 연령별 요금 할인
+  * 청소년: 운임에서 350원을 공제한 금액의 20%할인
+  * 어린이: 운임에서 350원을 공제한 금액의 50%할인
 
 ## 도메인
 
@@ -44,10 +47,10 @@
 
 ## 🐞 Bug Report
 
-버그를 발견한다면, [Issues](https://github.com/woowacourse/atdd-subway-path/issues) 에 등록해주세요 :)
+버그를 발견한다면, [Issues](https://github.com/woowacourse/atdd-subway-subwayGraph/issues) 에 등록해주세요 :)
 
 <br>
 
 ## 📝 License
 
-This project is [MIT](https://github.com/woowacourse/atdd-subway-path/blob/master/LICENSE) licensed.
+This project is [MIT](https://github.com/woowacourse/atdd-subway-subwayGraph/blob/master/LICENSE) licensed.

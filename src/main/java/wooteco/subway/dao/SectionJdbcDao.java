@@ -1,8 +1,5 @@
-package wooteco.subway.dao.jdbc;
+package wooteco.subway.dao;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.List;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -10,9 +7,12 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ObjectUtils;
-import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.List;
 
 @Repository
 public class SectionJdbcDao implements SectionDao {

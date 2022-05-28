@@ -3,8 +3,8 @@ package wooteco.subway.domain;
 import java.util.Objects;
 
 public class Station {
-    private Long id;
-    private String name;
+    private final Long id;
+    private final String name;
 
     public Station(Long id, String name) {
         validateNullOrBlank(name);
@@ -22,10 +22,6 @@ public class Station {
 
     public String getName() {
         return name;
-    }
-
-    public boolean isSameName(Station station) {
-        return this.name.equals(station.name);
     }
 
     private void validateNullOrBlank(final String name) {

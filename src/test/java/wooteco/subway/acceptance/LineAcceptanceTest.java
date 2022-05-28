@@ -1,21 +1,18 @@
 package wooteco.subway.acceptance;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import wooteco.subway.dto.LineResponse;
-import wooteco.subway.dto.LineSaveRequest;
-import wooteco.subway.dto.LineUpdateRequest;
-import wooteco.subway.dto.SectionRequest;
-import wooteco.subway.dto.StationResponse;
+import wooteco.subway.dto.*;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class LineAcceptanceTest extends AcceptanceTest {
 
@@ -43,7 +40,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         String lineName = "line1";
         String lineColor = "color1";
         ExtractableResponse<Response> response = createLineAndReturnResponse(lineName, lineColor, station1.getId(),
-                station2.getId(), 10);
+                station2.getId(), 10, 0);
 
         // then
         List<StationResponse> stations = response.body().jsonPath().getList("stations", StationResponse.class);
@@ -79,7 +76,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = createLineAndReturnResponse("line1", "color1", idWillBeDeleted,
-                downStationId, 10);
+                downStationId, 10, 0);
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value()),
@@ -106,8 +103,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = createLineAndReturnResponse("line1", "color1", upStationId,
-                downStationId,
-                0);
+                downStationId, 0, 0);
 
         // then
         assertAll(
@@ -133,14 +129,14 @@ class LineAcceptanceTest extends AcceptanceTest {
         String lineName = "line1";
         long id1 = createStation("station1").getId();
         long id2 = createStation("station2").getId();
-        createLineAndReturnResponse(lineName, "color1", id1, id2, 10);
+        createLineAndReturnResponse(lineName, "color1", id1, id2, 10, 0);
 
         long upStationId = createStation("station3").getId();
         long downStationId = createStation("station4").getId();
 
         // when
         ExtractableResponse<Response> response = createLineAndReturnResponse(lineName, "color2", upStationId,
-                downStationId, 10);
+                downStationId, 10, 0);
 
         // then
         assertAll(
@@ -167,7 +163,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         long id1 = createStation("station1").getId();
         long id2 = createStation("station2").getId();
 
-        LineSaveRequest lineRequest1 = new LineSaveRequest("line1", lineColor, id1, id2, 10);
+        LineSaveRequest lineRequest1 = new LineSaveRequest("line1", lineColor, id1, id2, 10, 0);
         RestAssured.given()
                 .body(lineRequest1)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -177,7 +173,7 @@ class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
 
         // when
-        ExtractableResponse<Response> response = createLineAndReturnResponse("line2", lineColor, id1, id2, 10);
+        ExtractableResponse<Response> response = createLineAndReturnResponse("line2", lineColor, id1, id2, 10, 0);
 
         // then
         assertAll(
@@ -195,7 +191,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         String name = "";
 
         // when
-        ExtractableResponse<Response> response = createLineAndReturnResponse(name, "color1", id1, id2, 10);
+        ExtractableResponse<Response> response = createLineAndReturnResponse(name, "color1", id1, id2, 10, 0);
 
         // then
         assertAll(
@@ -213,7 +209,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         String name = null;
 
         // when
-        ExtractableResponse<Response> response = createLineAndReturnResponse(name, "color1", id1, id2, 10);
+        ExtractableResponse<Response> response = createLineAndReturnResponse(name, "color1", id1, id2, 10, 0);
 
         // then
         assertAll(
@@ -231,7 +227,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         String color = "";
 
         // when
-        ExtractableResponse<Response> response = createLineAndReturnResponse("line1", color, id1, id2, 10);
+        ExtractableResponse<Response> response = createLineAndReturnResponse("line1", color, id1, id2, 10, 0);
 
         // then
         assertAll(
@@ -249,7 +245,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         String color = null;
 
         // when
-        ExtractableResponse<Response> response = createLineAndReturnResponse("line1", color, id1, id2, 10);
+        ExtractableResponse<Response> response = createLineAndReturnResponse("line1", color, id1, id2, 10, 0);
 
         // then
         assertAll(
@@ -265,7 +261,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         long id1 = createStation("station1").getId();
 
         // when
-        ExtractableResponse<Response> response = createLineAndReturnResponse("line1", "color1", id1, id1, 10);
+        ExtractableResponse<Response> response = createLineAndReturnResponse("line1", "color1", id1, id1, 10, 0);
 
         // then
         assertAll(
@@ -294,9 +290,9 @@ class LineAcceptanceTest extends AcceptanceTest {
         StationResponse station4 = createStation("지하철역4");
 
         LineResponse line1 = createLine("노선1", "색깔1", station1.getId(),
-                station2.getId(), 10);
+                station2.getId(), 10, 0);
         LineResponse line2 = createLine("노선2", "색깔2", station3.getId(),
-                station4.getId(), 10);
+                station4.getId(), 10, 0);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -330,7 +326,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         /// given
         StationResponse upStation = createStation("서울역");
         StationResponse downStation = createStation("시청");
-        LineResponse line = createLine("1호선", "파란색", upStation.getId(), downStation.getId(), 10);
+        LineResponse line = createLine("1호선", "파란색", upStation.getId(), downStation.getId(), 10, 0);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -363,7 +359,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // given
         long id1 = createStation("지하철역1").getId();
         long id2 = createStation("지하철역2").getId();
-        String uri = createLineAndReturnResponse("노선", "색깔", id1, id2, 10)
+        String uri = createLineAndReturnResponse("노선", "색깔", id1, id2, 10, 0)
                 .header("Location");
 
         RestAssured.when().delete(uri);
@@ -397,10 +393,10 @@ class LineAcceptanceTest extends AcceptanceTest {
         // given
         long id1 = createStation("지하철역1").getId();
         long id2 = createStation("지하철역2").getId();
-        LineResponse originLine = createLine("노선", "색깔", id1, id2, 10);
+        LineResponse originLine = createLine("노선", "색깔", id1, id2, 10, 0);
 
         // when
-        LineUpdateRequest updateRequest = new LineUpdateRequest("changedName", "changedColor");
+        LineUpdateRequest updateRequest = new LineUpdateRequest("changedName", "changedColor", 0);
         ExtractableResponse<Response> updateResponse = RestAssured.given().log().all()
                 .body(updateRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -443,11 +439,11 @@ class LineAcceptanceTest extends AcceptanceTest {
         long id3 = createStation("지하철역3").getId();
         long id4 = createStation("지하철역4").getId();
 
-        createLineAndReturnResponse("노선1", "색깔1", id1, id2, 10);
-        String createdLinePath = createLineAndReturnResponse("노선2", "색깔2", id3, id4, 10).header("Location");
+        createLineAndReturnResponse("노선1", "색깔1", id1, id2, 10, 0);
+        String createdLinePath = createLineAndReturnResponse("노선2", "색깔2", id3, id4, 10, 0).header("Location");
 
         // when
-        LineUpdateRequest updateRequest = new LineUpdateRequest("노선1", "색깔1");
+        LineUpdateRequest updateRequest = new LineUpdateRequest("노선1", "색깔1", 0);
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .body(updateRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -479,11 +475,11 @@ class LineAcceptanceTest extends AcceptanceTest {
         long id2 = createStation("신설동").getId();
         long id3 = createStation("시청").getId();
 
-        createLineAndReturnResponse("1호선", "파란색", id1, id2, 10);
-        String createdLinePath = createLineAndReturnResponse("2호선", "초록색", id2, id3, 10).header("Location");
+        createLineAndReturnResponse("1호선", "파란색", id1, id2, 10, 0);
+        String createdLinePath = createLineAndReturnResponse("2호선", "초록색", id2, id3, 10, 0).header("Location");
 
         // when
-        LineUpdateRequest duplicateColorUpdate = new LineUpdateRequest("2호선", "파란색");
+        LineUpdateRequest duplicateColorUpdate = new LineUpdateRequest("2호선", "파란색", 0);
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .body(duplicateColorUpdate)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -503,11 +499,11 @@ class LineAcceptanceTest extends AcceptanceTest {
         // given
         long id1 = createStation("지하철역1").getId();
         long id2 = createStation("지하철역2").getId();
-        String uri = createLineAndReturnResponse("노선", "색깔", id1, id2, 10)
+        String uri = createLineAndReturnResponse("노선", "색깔", id1, id2, 10, 0)
                 .header("Location");
 
         RestAssured.when().delete(uri);
-        LineUpdateRequest updateRequest = new LineUpdateRequest("2호선", "파란색");
+        LineUpdateRequest updateRequest = new LineUpdateRequest("2호선", "파란색", 0);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -540,7 +536,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // given
         long id1 = createStation("서울역").getId();
         long id2 = createStation("신설동").getId();
-        String createdLinePath = createLineAndReturnResponse("1호선", "파란색", id1, id2, 10).header("Location");
+        String createdLinePath = createLineAndReturnResponse("1호선", "파란색", id1, id2, 10, 0).header("Location");
 
         // when
         ExtractableResponse<Response> deleteResponse = RestAssured.given().log().all()
@@ -582,7 +578,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // given
         StationResponse station1 = createStation("station1");
         StationResponse station3 = createStation("station3");
-        LineResponse createdLine = createLine("line", "color", station1.getId(), station3.getId(), 10);
+        LineResponse createdLine = createLine("line", "color", station1.getId(), station3.getId(), 10, 0);
 
         StationResponse station2 = createStation("station2");
         SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 7);
@@ -631,7 +627,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // given
         StationResponse station1 = createStation("station1");
         StationResponse station3 = createStation("station3");
-        LineResponse createdLine = createLine("line", "color", station1.getId(), station3.getId(), 10);
+        LineResponse createdLine = createLine("line", "color", station1.getId(), station3.getId(), 10, 0);
 
         StationResponse station2 = createStation("station2");
         SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 7);

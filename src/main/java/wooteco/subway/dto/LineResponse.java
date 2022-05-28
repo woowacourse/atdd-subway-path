@@ -1,8 +1,9 @@
 package wooteco.subway.dto;
 
+import wooteco.subway.domain.Line;
+
 import java.util.List;
 import java.util.stream.Collectors;
-import wooteco.subway.domain.Line;
 
 public class LineResponse {
     private Long id;
@@ -10,7 +11,8 @@ public class LineResponse {
     private String color;
     private List<StationResponse> stations;
 
-    private LineResponse(){}
+    private LineResponse() {
+    }
 
     public LineResponse(final Long id, final String name, final String color, final List<StationResponse> stations) {
         this.id = id;
