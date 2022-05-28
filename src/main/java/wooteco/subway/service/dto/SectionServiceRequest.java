@@ -2,28 +2,28 @@ package wooteco.subway.service.dto;
 
 public class SectionServiceRequest {
 
-    private final Long lindId;
-    private final Long upStationId;
-    private final Long downStationId;
+    private final long lindId;
+    private final long upStationId;
+    private final long downStationId;
     private final int distance;
 
 
-    public SectionServiceRequest(Long lineId, Long upStationId, Long downStationId, int distance) {
+    public SectionServiceRequest(long lineId, long upStationId, long downStationId, int distance) {
         this.lindId = lineId;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
     }
 
-    public Long getLindId() {
+    public long getLindId() {
         return lindId;
     }
 
-    public Long getUpStationId() {
+    public long getUpStationId() {
         return upStationId;
     }
 
-    public Long getDownStationId() {
+    public long getDownStationId() {
         return downStationId;
     }
 

@@ -3,22 +3,15 @@ package wooteco.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.AfterEach;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
-import wooteco.subway.ui.dto.LineRequest;
-import wooteco.subway.ui.dto.SectionRequest;
-import wooteco.subway.ui.dto.StationRequest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AcceptanceTest {
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+class AcceptanceTest extends DBTest {
 
     @LocalServerPort
     int port;
@@ -28,19 +21,11 @@ public class AcceptanceTest {
         RestAssured.port = port;
     }
 
-    @AfterEach
-    public void reset() {
-        jdbcTemplate.execute("DELETE FROM section");
-        jdbcTemplate.execute("DELETE FROM station");
-        jdbcTemplate.execute("DELETE FROM line");
-        jdbcTemplate.execute("ALTER TABLE station ALTER COLUMN id RESTART WITH 1");
-        jdbcTemplate.execute("ALTER TABLE line ALTER COLUMN id RESTART WITH 1");
-        jdbcTemplate.execute("ALTER TABLE section ALTER COLUMN id RESTART WITH 1");
-    }
-
-    ExtractableResponse<Response> createStation(StationRequest stationRequest) {
+    ExtractableResponse<Response> requestToCreateStation(String name) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", name);
         return RestAssured.given().log().all()
-                .body(stationRequest)
+                .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/stations")
@@ -48,9 +33,17 @@ public class AcceptanceTest {
                 .extract();
     }
 
-    ExtractableResponse<Response> createLine(LineRequest lineRequest) {
+    ExtractableResponse<Response> requestToCreateLine(String name, String color, Long upStationId,
+                                                      Long downStationId, Integer distance, Integer extraFare) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", name);
+        params.put("color", color);
+        params.put("upStationId", upStationId);
+        params.put("downStationId", downStationId);
+        params.put("distance", distance);
+        params.put("extraFare", extraFare);
         return RestAssured.given().log().all()
-                .body(lineRequest)
+                .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/lines")
@@ -58,9 +51,14 @@ public class AcceptanceTest {
                 .extract();
     }
 
-    ExtractableResponse<Response> createSection(long lineId, SectionRequest sectionRequest) {
+    ExtractableResponse<Response> requestToCreateSection(long lineId, Long upStationId, Long downStationId,
+                                                         Integer distance) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("upStationId", upStationId);
+        params.put("downStationId", downStationId);
+        params.put("distance", distance);
         return RestAssured.given().log().all()
-                .body(sectionRequest)
+                .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/lines/" + lineId + "/sections")
@@ -68,7 +66,7 @@ public class AcceptanceTest {
                 .extract();
     }
 
-    ExtractableResponse<Response> findLineById(Long lineId) {
+    ExtractableResponse<Response> requestToFindLineById(Long lineId) {
         return RestAssured.given().log().all()
                 .when()
                 .get("/lines/" + lineId)

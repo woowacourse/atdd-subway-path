@@ -3,6 +3,7 @@ package wooteco.subway.ui;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.ui.dto.ExceptionResponse;
@@ -25,8 +26,14 @@ public class ExceptionAdvisor {
         return ResponseEntity.notFound().build();
     }
 
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<ExceptionResponse> handleNotEnoughResourceException(BindException e) {
+        return ResponseEntity.badRequest().body(new ExceptionResponse("입력되지 않은 정보가 있습니다."));
+    }
+
     @ExceptionHandler({Exception.class, RuntimeException.class})
-    public ResponseEntity<ExceptionResponse> handleException() {
+    public ResponseEntity<ExceptionResponse> handleException(Exception e) {
+        e.printStackTrace();
         return ResponseEntity.internalServerError().body(new ExceptionResponse("예상치 못한 에러가 발생했습니다."));
     }
 }

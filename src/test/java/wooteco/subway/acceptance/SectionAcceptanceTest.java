@@ -7,37 +7,39 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpStatus;
-import wooteco.subway.domain.Station;
 import wooteco.subway.ui.dto.ExceptionResponse;
-import wooteco.subway.ui.dto.LineRequest;
 import wooteco.subway.ui.dto.LineResponse;
-import wooteco.subway.ui.dto.SectionRequest;
-import wooteco.subway.ui.dto.StationRequest;
 import wooteco.subway.ui.dto.StationResponse;
 
-public class SectionAcceptanceTest extends AcceptanceTest {
+class SectionAcceptanceTest extends AcceptanceTest {
+
+    private StationResponse station1;
+    private StationResponse station2;
+    private StationResponse station3;
+
+    @BeforeEach
+    void createStation() {
+        station1 = requestToCreateStation("강남역").as(StationResponse.class);
+        station2 = requestToCreateStation("역삼역").as(StationResponse.class);
+        station3 = requestToCreateStation("잠실역").as(StationResponse.class);
+    }
 
     @DisplayName("상행 종점이 같은 구간을 추가한다.")
     @Test
     void createUpperMiddleSection() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-        StationRequest stationRequest3 = new StationRequest("잠실역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-        Station station3 = createStation(stationRequest3).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station3.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
+        Long lineId = getCreatedLineId(station1.getId(), station3.getId());
 
         // when
-        SectionRequest sectionRequest = new SectionRequest(station1.getId(), station2.getId(), 5);
-        ExtractableResponse<Response> response = createSection(lineId, sectionRequest);
+        ExtractableResponse<Response> response = requestToCreateSection(lineId, station1.getId(), station2.getId(), 5);
 
         // then
         assertSectionConnection(station1, station2, station3, lineId, response);
@@ -47,20 +49,11 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void createLowerMiddleSection() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-        StationRequest stationRequest3 = new StationRequest("잠실역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-        Station station3 = createStation(stationRequest3).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station3.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
+        Long lineId = getCreatedLineId(station1.getId(), station3.getId());
 
         // when
-        SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 5);
-        ExtractableResponse<Response> response = createSection(lineId, sectionRequest);
+        ExtractableResponse<Response> response =
+                requestToCreateSection(lineId, station2.getId(), station3.getId(), 5);
 
         // then
         assertSectionConnection(station1, station2, station3, lineId, response);
@@ -70,20 +63,11 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void createUpperSection() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-        StationRequest stationRequest3 = new StationRequest("잠실역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-        Station station3 = createStation(stationRequest3).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station2.getId(), station3.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
+        Long lineId = getCreatedLineId(station2.getId(), station3.getId());
 
         // when
-        SectionRequest sectionRequest = new SectionRequest(station1.getId(), station2.getId(), 10);
-        ExtractableResponse<Response> response = createSection(lineId, sectionRequest);
+        ExtractableResponse<Response> response =
+                requestToCreateSection(lineId, station1.getId(), station2.getId(), 10);
 
         // then
         assertSectionConnection(station1, station2, station3, lineId, response);
@@ -93,20 +77,11 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void createLowerSection() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-        StationRequest stationRequest3 = new StationRequest("잠실역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-        Station station3 = createStation(stationRequest3).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
+        Long lineId = getCreatedLineId(station1.getId(), station2.getId());
 
         // when
-        SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
-        ExtractableResponse<Response> response = createSection(lineId, sectionRequest);
+        ExtractableResponse<Response> response =
+                requestToCreateSection(lineId, station2.getId(), station3.getId(), 10);
 
         // then
         assertSectionConnection(station1, station2, station3, lineId, response);
@@ -114,23 +89,13 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("길이가 기존 구간의 길이를 초과한 구간을 추가할 경우 BAD_REQUEST 를 반환한다.")
     @Test
-    void createLongerMiddleSection() {
+    void createSection_badRequest_longerDistance() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-        StationRequest stationRequest3 = new StationRequest("잠실역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-        Station station3 = createStation(stationRequest3).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station3.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
+        Long lineId = getCreatedLineId(station1.getId(), station3.getId());
 
         // when
-        SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
-        ExtractableResponse<Response> response = createSection(lineId, sectionRequest);
-
+        ExtractableResponse<Response> response =
+                requestToCreateSection(lineId, station2.getId(), station3.getId(), 10);
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         // then
@@ -140,27 +105,34 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    @DisplayName("상행과 하행 종점이 모두 포함되지 않는 구간을 추가할 경우 BAD_REQUEST 를 반환한다.")
+    @DisplayName("길이가 1보다 적은 구간을 추가할 경우 BAD_REQUEST 를 반환한다.")
     @Test
-    void createNotMatchingSection() {
+    void createSection_badRequest_distanceLowerThanOne() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-        StationRequest stationRequest3 = new StationRequest("잠실역");
-        StationRequest stationRequest4 = new StationRequest("성수역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-        Station station3 = createStation(stationRequest3).as(Station.class);
-        Station station4 = createStation(stationRequest4).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station3.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
+        Integer distance = 0;
+        Long lineId = getCreatedLineId(station1.getId(), station3.getId());
 
         // when
-        SectionRequest sectionRequest = new SectionRequest(station2.getId(), station4.getId(), 10);
-        ExtractableResponse<Response> response = createSection(lineId, sectionRequest);
+        ExtractableResponse<Response> response =
+                requestToCreateSection(lineId, station2.getId(), station3.getId(), distance);
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(exceptionResponse.getErrorMessage()).isEqualTo("역간의 거리는 1 이상이어야 합니다.")
+        );
+    }
+
+    @DisplayName("상행과 하행 종점이 모두 포함되지 않는 구간을 추가할 경우 BAD_REQUEST 를 반환한다.")
+    @Test
+    void createSection_badRequest_bothNonExistingStations() {
+        // given
+        StationResponse station4 = requestToCreateStation("성수역").as(StationResponse.class);
+        Long lineId = getCreatedLineId(station1.getId(), station3.getId());
+
+        // when
+        ExtractableResponse<Response> response = requestToCreateSection(lineId, station2.getId(), station4.getId(), 10);
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         // then
@@ -173,20 +145,12 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("추가할 상행과 하행 종점이 이미 구간에 존재할 경우 BAD_REQUEST 를 반환한다.")
     @Test
-    void createAllMatchingSection() {
+    void createSection_badRequest_bothExistingStations() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
+        Long lineId = getCreatedLineId(station1.getId(), station2.getId());
 
         // when
-        SectionRequest sectionRequest = new SectionRequest(station1.getId(), station2.getId(), 10);
-        ExtractableResponse<Response> response = createSection(lineId, sectionRequest);
+        ExtractableResponse<Response> response = requestToCreateSection(lineId, station1.getId(), station2.getId(), 10);
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         // then
@@ -199,20 +163,12 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("상행과 하행 종점이 동일한 구간을 추가할 경우 BAD_REQUEST 를 반환한다.")
     @Test
-    void createSectionWhereUpStationsIsSameAsDownStation() {
+    void createSection_badRequest_sameUpStationAndSameDownStation() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
+        Long lineId = getCreatedLineId(station1.getId(), station2.getId());
 
         // when
-        SectionRequest sectionRequest = new SectionRequest(station1.getId(), station1.getId(), 10);
-        ExtractableResponse<Response> response = createSection(lineId, sectionRequest);
+        ExtractableResponse<Response> response = requestToCreateSection(lineId, station1.getId(), station1.getId(), 10);
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         // then
@@ -223,55 +179,16 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    @DisplayName("추가하려는 구간의 길이가 1 미만일 경우 BAD_REQUEST 를 반환한다.")
+    @DisplayName("상행 종점에 해당하는 구간을 제거한다.")
     @Test
-    void createSectionWithInvalidDistance() {
+    void deleteSection_upStation() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-        StationRequest stationRequest3 = new StationRequest("교대역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-        Station station3 = createStation(stationRequest3).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
+        Long lineId = getCreatedLineId(station1.getId(), station2.getId());
+        requestToCreateSection(lineId, station2.getId(), station3.getId(), 10);
 
         // when
-        SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 0);
-        ExtractableResponse<Response> response = createSection(lineId, sectionRequest);
-        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
-
-        // then
-        assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(exceptionResponse.getErrorMessage())
-                        .isEqualTo("역간의 거리는 1 이상이어야 합니다.")
-        );
-    }
-
-    @DisplayName("상행 종점을 제거한다.")
-    @Test
-    void deleteUpperSection() {
-        // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-        StationRequest stationRequest3 = new StationRequest("잠실역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-        Station station3 = createStation(stationRequest3).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
-
-        SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
-        createSection(lineId, sectionRequest);
-
-        // when
-        ExtractableResponse<Response> response = deleteSection(station1, lineId);
-        LineResponse lineResponse = findLineById(lineId).as(LineResponse.class);
+        ExtractableResponse<Response> response = requestToDeleteSection(station1, lineId);
+        LineResponse lineResponse = requestToFindLineById(lineId).as(LineResponse.class);
         List<StationResponse> stationResponses = lineResponse.getStations();
 
         // then
@@ -285,28 +202,16 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    @DisplayName("중간역을 제거한다.")
+    @DisplayName("중간역에 해당하는 구간을 제거한다.")
     @Test
-    void deleteMiddleSection() {
+    void deleteSection_middleStation() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-        StationRequest stationRequest3 = new StationRequest("잠실역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-        Station station3 = createStation(stationRequest3).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
-
-        SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
-        createSection(lineId, sectionRequest);
+        Long lineId = getCreatedLineId(station1.getId(), station2.getId());
+        requestToCreateSection(lineId, station2.getId(), station3.getId(), 10);
 
         // when
-        ExtractableResponse<Response> response = deleteSection(station2, lineId);
-
-        LineResponse lineResponse = findLineById(lineId).as(LineResponse.class);
+        ExtractableResponse<Response> response = requestToDeleteSection(station2, lineId);
+        LineResponse lineResponse = requestToFindLineById(lineId).as(LineResponse.class);
         List<StationResponse> stationResponses = lineResponse.getStations();
 
         // then
@@ -320,27 +225,16 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    @DisplayName("하행 종점을 제거한다.")
+    @DisplayName("하행 종점에 해당하는 구간을 제거한다.")
     @Test
-    void deleteLowerSection() {
+    void deleteSection_downStation() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-        StationRequest stationRequest3 = new StationRequest("잠실역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-        Station station3 = createStation(stationRequest3).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
-
-        SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
-        createSection(lineId, sectionRequest);
+        Long lineId = getCreatedLineId(station1.getId(), station2.getId());
+        requestToCreateSection(lineId, station2.getId(), station3.getId(), 10);
 
         // when
-        ExtractableResponse<Response> response = deleteSection(station3, lineId);
-        LineResponse lineResponse = findLineById(lineId).as(LineResponse.class);
+        ExtractableResponse<Response> response = requestToDeleteSection(station3, lineId);
+        LineResponse lineResponse = requestToFindLineById(lineId).as(LineResponse.class);
         List<StationResponse> stationResponses = lineResponse.getStations();
 
         // then
@@ -356,20 +250,12 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("구간이 하나뿐인 노선의 구간을 삭제할 경우 BAD_REQUEST 를 반환한다.")
     @Test
-    void deleteMinimumSection() {
+    void delete_badRequest_onlySection() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
+        Long lineId = getCreatedLineId(station1.getId(), station2.getId());
 
         // when
-        ExtractableResponse<Response> response = deleteSection(station2, lineId);
-
+        ExtractableResponse<Response> response = requestToDeleteSection(station2, lineId);
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         // then
@@ -381,43 +267,46 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("노선에 포함되지 않는 구간을 삭제할 경우 NOT_FOUND 를 반환한다.")
     @Test
-    void deleteNotExistingSection() {
+    void deleteSection_NotFound_NotExisting() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-        StationRequest stationRequest3 = new StationRequest("잠실역");
-        StationRequest stationRequest4 = new StationRequest("성수역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-        Station station3 = createStation(stationRequest3).as(Station.class);
-        Station station4 = createStation(stationRequest4).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
-        long lineId = Long.parseLong(createLine(lineRequest).header("Location").split("/")[2]);
-
-        SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 10);
-        createSection(lineId, sectionRequest);
+        StationResponse station4 = requestToCreateStation("성수역").as(StationResponse.class);
+        Long lineId = getCreatedLineId(station1.getId(), station2.getId());
+        requestToCreateSection(lineId, station2.getId(), station3.getId(), 10);
 
         // when
-        ExtractableResponse<Response> response = deleteSection(station4, lineId);
+        ExtractableResponse<Response> response = requestToDeleteSection(station4, lineId);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
-    private ExtractableResponse<Response> deleteSection(Station station1, long lineId) {
+    @DisplayName("null이 하나라도 존재하는 값들로 구간을 생성하려고 하면 예외를 발생시킨다.")
+    @ParameterizedTest
+    @MethodSource("provideInvalidSectionCreationResource")
+    void createSection_badRequest_InvalidSectionCreationResource(Long upStationId,
+                                                                 Long downStationId,
+                                                                 Integer distance) {
+        ExtractableResponse<Response> response = requestToCreateSection(1L, upStationId, downStationId, distance);
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(exceptionResponse.getErrorMessage()).isEqualTo("입력되지 않은 정보가 있습니다.")
+        );
+    }
+
+    private ExtractableResponse<Response> requestToDeleteSection(StationResponse stationResponse, long lineId) {
         return RestAssured.given().log().all()
-                .queryParam("stationId", station1.getId())
+                .queryParam("stationId", stationResponse.getId())
                 .when()
                 .delete("/lines/" + lineId + "/sections")
                 .then().log().all()
                 .extract();
     }
 
-    private void assertSectionConnection(Station station1, Station station2, Station station3, long lineId,
-                                         ExtractableResponse<Response> response) {
-        LineResponse lineResponse = findLineById(lineId).as(LineResponse.class);
+    private void assertSectionConnection(StationResponse station1, StationResponse station2, StationResponse station3,
+                                         long lineId, ExtractableResponse<Response> response) {
+        LineResponse lineResponse = requestToFindLineById(lineId).as(LineResponse.class);
         List<StationResponse> stationResponses = lineResponse.getStations();
         StationResponse stationResponse1 = stationResponses.get(0);
         StationResponse stationResponse2 = stationResponses.get(1);
@@ -433,6 +322,20 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(stationResponse2.getName()).isEqualTo(station2.getName()),
                 () -> assertThat(stationResponse3.getId()).isEqualTo(station3.getId()),
                 () -> assertThat(stationResponse3.getName()).isEqualTo(station3.getName())
+        );
+    }
+
+    private Long getCreatedLineId(Long upStationId, Long downStationId) {
+        ExtractableResponse<Response> lineCreationResponse =
+                requestToCreateLine("2호선", "green", upStationId, downStationId, 10, 200);
+        return Long.parseLong(lineCreationResponse.header("Location").split("/")[2]);
+    }
+
+    private static Stream<Arguments> provideInvalidSectionCreationResource() {
+        return Stream.of(
+                Arguments.of(null, 2L, 3),
+                Arguments.of(1L, null, 3),
+                Arguments.of(1L, 2L, null)
         );
     }
 }

@@ -6,21 +6,24 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
 
 public class LineServiceResponse {
-    private final Long id;
+
+    private final long id;
     private final String name;
     private final String color;
+    private final int extraFare;
     private final List<StationServiceResponse> stations;
 
     public LineServiceResponse(Line line, List<Station> stations) {
         this.id = line.getId();
         this.name = line.getName();
         this.color = line.getColor();
+        this.extraFare = line.getExtraFare();
         this.stations = stations.stream()
                 .map(StationServiceResponse::new)
                 .collect(Collectors.toList());
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
@@ -34,5 +37,9 @@ public class LineServiceResponse {
 
     public List<StationServiceResponse> getStations() {
         return stations;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 }

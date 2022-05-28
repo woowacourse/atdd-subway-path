@@ -8,6 +8,7 @@ public class LineResponse {
     private Long id;
     private String name;
     private String color;
+    private Integer extraFare;
     private List<StationResponse> stations;
 
     public LineResponse() {
@@ -17,6 +18,7 @@ public class LineResponse {
         this.id = lineServiceResponse.getId();
         this.name = lineServiceResponse.getName();
         this.color = lineServiceResponse.getColor();
+        this.extraFare = lineServiceResponse.getExtraFare();
         this.stations = lineServiceResponse.getStations()
                 .stream()
                 .map(StationResponse::new)
@@ -37,5 +39,9 @@ public class LineResponse {
 
     public List<StationResponse> getStations() {
         return stations;
+    }
+
+    public Integer getExtraFare() {
+        return extraFare;
     }
 }

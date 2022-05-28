@@ -32,12 +32,12 @@ public class SectionService {
 
     public void connect(SectionServiceRequest sectionServiceRequest) {
         validate(sectionServiceRequest);
-        Long lineId = sectionServiceRequest.getLindId();
-        Long upStationId = sectionServiceRequest.getUpStationId();
-        Long downStationId = sectionServiceRequest.getDownStationId();
+        long lineId = sectionServiceRequest.getLindId();
+        long upStationId = sectionServiceRequest.getUpStationId();
+        long downStationId = sectionServiceRequest.getDownStationId();
         Section newSection = new Section(lineId, upStationId, downStationId, sectionServiceRequest.getDistance());
 
-        sectionDao.findBy(lineId, upStationId, downStationId)
+        sectionDao.findSameUpStationOrDownStation(lineId, upStationId, downStationId)
                 .ifPresentOrElse(
                         section -> insert(section, newSection),
                         () -> extend(newSection)
@@ -70,7 +70,7 @@ public class SectionService {
         sectionDao.save(newSection);
     }
 
-    public void delete(Long lineId, Long stationId) {
+    public void delete(long lineId, long stationId) {
         Sections sections = sectionDao.findAllByLineId(lineId);
         Sections sectionsToDelete = sections.getSectionsToDelete(stationId);
         List<Long> sectionIds = sectionsToDelete.getSectionIds();
@@ -79,7 +79,7 @@ public class SectionService {
     }
 
     private void deleteSections(List<Long> sectionIds) {
-        for (Long id : sectionIds) {
+        for (long id : sectionIds) {
             sectionDao.deleteById(id);
         }
     }
@@ -91,7 +91,7 @@ public class SectionService {
         }
     }
 
-    public Sections findAllByLineId(Long lineId) {
+    public Sections findAllByLineId(long lineId) {
         return sectionDao.findAllByLineId(lineId);
     }
 

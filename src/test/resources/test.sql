@@ -1,3 +1,7 @@
+drop table section if exists;
+drop table line if exists;
+drop table station if exists;
+
 create table if not exists station
 (
     id   bigint auto_increment not null,

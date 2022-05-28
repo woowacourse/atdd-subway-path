@@ -33,17 +33,17 @@ public class StationService {
     }
 
     @Transactional(readOnly = true)
-    public Station findById(Long lindId) {
+    public Station findById(long lindId) {
         return stationDao.findById(lindId);
     }
 
     @Transactional(readOnly = true)
-    public List<Station> findAllByLineId(Long lindId) {
+    public List<Station> findAllByLineId(long lindId) {
         return stationDao.findAllByLineId(lindId);
     }
 
     @Transactional
-    public void deleteById(Long id) {
+    public void deleteById(long id) {
         stationDao.deleteById(id);
     }
 }

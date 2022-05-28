@@ -6,35 +6,46 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import wooteco.subway.domain.Station;
 import wooteco.subway.ui.dto.ExceptionResponse;
-import wooteco.subway.ui.dto.LineRequest;
 import wooteco.subway.ui.dto.LineResponse;
-import wooteco.subway.ui.dto.StationRequest;
 import wooteco.subway.ui.dto.StationResponse;
 
 @DisplayName("지하철 노선 관련 기능")
-public class LineAcceptanceTest extends AcceptanceTest {
+class LineAcceptanceTest extends AcceptanceTest {
+
+    private static final String LINE_NAME = "2호선";
+    private static final String LINE_COLOR = "green";
+    private static final Integer LINE_DISTANCE = 10;
+    private static final Integer LINE_EXTRA_FARE = 200;
+
+    private StationResponse stationResponse1;
+    private StationResponse stationResponse2;
+
+    @BeforeEach
+    void setUpLineAcceptanceTest() {
+        stationResponse1 = requestToCreateStation("강남역").as(StationResponse.class);
+        stationResponse2 = requestToCreateStation("역삼역").as(StationResponse.class);
+    }
 
     @DisplayName("지하철 노선을 생성한다.")
     @Test
     void createLine() {
-        // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
-
         // when
-        ExtractableResponse<Response> response = createLine(lineRequest);
+        ExtractableResponse<Response> response = requestToCreateLine(
+                LINE_NAME, LINE_COLOR, stationResponse1.getId(),
+                stationResponse2.getId(), LINE_DISTANCE, LINE_EXTRA_FARE);
         LineResponse lineResponse = response.as(LineResponse.class);
         List<StationResponse> stationResponses = lineResponse.getStations();
 
@@ -44,29 +55,24 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.header("Location")).isNotBlank(),
                 () -> assertThat(lineResponse.getName()).isEqualTo("2호선"),
                 () -> assertThat(lineResponse.getColor()).isEqualTo("green"),
-                () -> assertThat(stationResponses.get(0).getId()).isEqualTo(station1.getId()),
-                () -> assertThat(stationResponses.get(0).getName()).isEqualTo(station1.getName()),
-                () -> assertThat(stationResponses.get(1).getId()).isEqualTo(station2.getId()),
-                () -> assertThat(stationResponses.get(1).getName()).isEqualTo(station2.getName())
+                () -> assertThat(lineResponse.getExtraFare()).isEqualTo(200),
+                () -> assertThat(stationResponses.get(0).getId()).isEqualTo(stationResponse1.getId()),
+                () -> assertThat(stationResponses.get(0).getName()).isEqualTo(stationResponse1.getName()),
+                () -> assertThat(stationResponses.get(1).getId()).isEqualTo(stationResponse2.getId()),
+                () -> assertThat(stationResponses.get(1).getName()).isEqualTo(stationResponse2.getName())
         );
     }
 
-    @DisplayName("기존에 존재하는 노선의 이름으로 노선을 생성한다.")
+    @DisplayName("기존에 존재하는 노선의 이름으로 노선을 생성하면 badRequest를 응답한다.")
     @Test
-    void createLineWithDuplicateName() {
+    void createLine_badRequest_DuplicateName() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
-
-        createLine(lineRequest);
+        requestToCreateLine(LINE_NAME, LINE_COLOR, stationResponse1.getId(), stationResponse2.getId(),
+                LINE_DISTANCE, LINE_EXTRA_FARE);
 
         // when
-        ExtractableResponse<Response> response = createLine(lineRequest);
+        ExtractableResponse<Response> response = requestToCreateLine(LINE_NAME, LINE_COLOR,
+                stationResponse1.getId(), stationResponse2.getId(), LINE_DISTANCE, LINE_EXTRA_FARE);
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         // then
@@ -76,28 +82,74 @@ public class LineAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    @DisplayName("지하철 노선 목록을 조회한다.")
+    @DisplayName("노선을 생성하는데 필요한 정보 중 null 혹은 빈 문자열이 하나라도 존재할 경우에 badRequest를 응답한다.")
+    @ParameterizedTest
+    @MethodSource("provideNotInvalidCreationSource")
+    void createLine_badRequest_InvalidResource(String name, String color, Long upStationId, Long downStationId,
+                                               Integer distance, Integer extraFare) {
+        ExtractableResponse<Response> response =
+                requestToCreateLine(name, color, upStationId, downStationId, distance, extraFare);
+        ExceptionResponse exceptionResponse = response.jsonPath()
+                .getObject(".", ExceptionResponse.class);
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(exceptionResponse.getErrorMessage()).isEqualTo("입력되지 않은 정보가 있습니다.")
+        );
+    }
+
+    @DisplayName("노선을 생성하는데 상행역과 하행역의 거리가 1 미만이라면 badRequest를 응답한다.")
     @Test
-    void getAllLines() {
-        /// given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-        StationRequest stationRequest3 = new StationRequest("교대역");
-        StationRequest stationRequest4 = new StationRequest("수서역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-        Station station3 = createStation(stationRequest3).as(Station.class);
-        Station station4 = createStation(stationRequest4).as(Station.class);
-
-        LineRequest lineRequest1 = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
-        LineRequest lineRequest2 = new LineRequest("3호선", "orange", station3.getId(), station4.getId(), 10);
-
-        createLine(lineRequest1);
-        createLine(lineRequest2);
+    void createLine_badRequest_lowerThanOneDistance() {
+        // given
+        Integer invalidDistance = 0;
 
         // when
-        ExtractableResponse<Response> response = findAllLines();
+        ExtractableResponse<Response> response =
+                requestToCreateLine(LINE_NAME, LINE_COLOR,
+                        stationResponse1.getId(), stationResponse2.getId(), invalidDistance, LINE_EXTRA_FARE);
+        ExceptionResponse exceptionResponse = response.jsonPath()
+                .getObject(".", ExceptionResponse.class);
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(exceptionResponse.getErrorMessage()).isEqualTo("역간의 거리는 1 이상이어야 합니다.")
+        );
+    }
+
+    @DisplayName("노선 추가 요금이 100원 미만이라면 badRequest를 응답한다.")
+    @Test
+    void create_badRequest_extraFareLowerThanMinValue() {
+        //given
+        Integer invalidExtraFare = 99;
+
+        //when
+        ExtractableResponse<Response> response = requestToCreateLine(LINE_NAME, LINE_COLOR,
+                stationResponse1.getId(), stationResponse2.getId(), LINE_DISTANCE, invalidExtraFare);
+        ExceptionResponse exceptionResponse = response.jsonPath()
+                .getObject(".", ExceptionResponse.class);
+
+        //then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(exceptionResponse.getErrorMessage()).isEqualTo("노선의 최소 추가 금액은 100원입니다.")
+        );
+    }
+
+    @DisplayName("지하철 노선 목록을 조회한다.")
+    @Test
+    void findAllLines() {
+        /// given
+        StationResponse station3 = requestToCreateStation("교대역").as(StationResponse.class);
+        StationResponse station4 = requestToCreateStation("수서역").as(StationResponse.class);
+
+        requestToCreateLine(LINE_NAME, LINE_COLOR, stationResponse1.getId(), stationResponse2.getId(), LINE_DISTANCE,
+                LINE_EXTRA_FARE);
+        requestToCreateLine("3호선", "orange", station3.getId(), station4.getId(), 10, 300);
+
+        // when
+        ExtractableResponse<Response> response = requestToFindAllLines();
         List<LineResponse> lineResponses = response.jsonPath().getList(".", LineResponse.class);
 
         LineResponse lineResponse1 = lineResponses.get(0);
@@ -111,14 +163,16 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(lineResponse1.getId()).isEqualTo(1L),
                 () -> assertThat(lineResponse1.getName()).isEqualTo("2호선"),
                 () -> assertThat(lineResponse1.getColor()).isEqualTo("green"),
-                () -> assertThat(stationResponses1.get(0).getId()).isEqualTo(station1.getId()),
-                () -> assertThat(stationResponses1.get(0).getName()).isEqualTo(station1.getName()),
-                () -> assertThat(stationResponses1.get(1).getId()).isEqualTo(station2.getId()),
-                () -> assertThat(stationResponses1.get(1).getName()).isEqualTo(station2.getName()),
+                () -> assertThat(lineResponse1.getExtraFare()).isEqualTo(200),
+                () -> assertThat(stationResponses1.get(0).getId()).isEqualTo(stationResponse1.getId()),
+                () -> assertThat(stationResponses1.get(0).getName()).isEqualTo(stationResponse1.getName()),
+                () -> assertThat(stationResponses1.get(1).getId()).isEqualTo(stationResponse2.getId()),
+                () -> assertThat(stationResponses1.get(1).getName()).isEqualTo(stationResponse2.getName()),
 
                 () -> assertThat(lineResponse2.getId()).isEqualTo(2L),
                 () -> assertThat(lineResponse2.getName()).isEqualTo("3호선"),
                 () -> assertThat(lineResponse2.getColor()).isEqualTo("orange"),
+                () -> assertThat(lineResponse2.getExtraFare()).isEqualTo(300),
                 () -> assertThat(stationResponses2.get(0).getId()).isEqualTo(station3.getId()),
                 () -> assertThat(stationResponses2.get(0).getName()).isEqualTo(station3.getName()),
                 () -> assertThat(stationResponses2.get(1).getId()).isEqualTo(station4.getId()),
@@ -128,39 +182,37 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("지하철 노선을 조회한다.")
     @Test
-    void getLine() {
+    void findLineById() {
         /// given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
-
-        ExtractableResponse<Response> createResponse = createLine(lineRequest);
+        ExtractableResponse<Response> createResponse = requestToCreateLine(
+                LINE_NAME, LINE_COLOR, stationResponse1.getId(), stationResponse2.getId(), LINE_DISTANCE,
+                LINE_EXTRA_FARE);
 
         // when
         long expectedLineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .when()
-                .get("/lines/" + expectedLineId)
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = requestToFindLineById(expectedLineId);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        Long resultLineId = response.jsonPath().getObject(".", LineResponse.class).getId();
-        assertThat(resultLineId).isEqualTo(expectedLineId);
+        LineResponse lineResponse = response.jsonPath().getObject(".", LineResponse.class);
+        List<StationResponse> stationResponses = lineResponse.getStations();
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(lineResponse.getName()).isEqualTo("2호선"),
+                () -> assertThat(lineResponse.getColor()).isEqualTo("green"),
+                () -> assertThat(lineResponse.getExtraFare()).isEqualTo(200),
+                () -> assertThat(stationResponses.get(0).getId()).isEqualTo(stationResponse1.getId()),
+                () -> assertThat(stationResponses.get(0).getName()).isEqualTo(stationResponse1.getName()),
+                () -> assertThat(stationResponses.get(1).getId()).isEqualTo(stationResponse2.getId()),
+                () -> assertThat(stationResponses.get(1).getName()).isEqualTo(stationResponse2.getName())
+        );
     }
 
-    @DisplayName("조회할 지하철 노선이 없는 경우 예외가 발생한다.")
+    @DisplayName("조회할 지하철 노선이 없는 경우 NOT FOUND를 응답한다.")
     @Test
-    void getNotExistLine() {
-        // given
-
+    void findLineById_NotFound() {
         // when
-        ExtractableResponse<Response> response = findLineById(1L);
+        ExtractableResponse<Response> response = requestToFindLineById(1L);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
@@ -170,59 +222,69 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLine() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
-
-        // when
-        ExtractableResponse<Response> response = createLine(lineRequest);
-
+        ExtractableResponse<Response> response = requestToCreateLine(
+                LINE_NAME, LINE_COLOR, stationResponse1.getId(), stationResponse2.getId(), LINE_DISTANCE,
+                LINE_EXTRA_FARE);
         long savedLineId = Long.parseLong(response.header("Location").split("/")[2]);
 
-        LineRequest updateRequest = new LineRequest("3호선", "orange", null, null, 0);
-
-        ExtractableResponse<Response> updateResponse = updateLine(savedLineId, updateRequest);
-
-        LineResponse lineResponse = findLineById(savedLineId).as(LineResponse.class);
+        // when
+        ExtractableResponse<Response> updateResponse =
+                requestToUpdateLine(savedLineId, "3호선", "orange", 500);
+        LineResponse lineResponse = requestToFindLineById(savedLineId).as(LineResponse.class);
 
         // then
         assertAll(
                 () -> assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(lineResponse.getName()).isEqualTo(updateRequest.getName()),
-                () -> assertThat(lineResponse.getColor()).isEqualTo(updateRequest.getColor())
+                () -> assertThat(lineResponse.getName()).isEqualTo("3호선"),
+                () -> assertThat(lineResponse.getColor()).isEqualTo("orange"),
+                () -> assertThat(lineResponse.getExtraFare()).isEqualTo(500)
+        );
+    }
+
+    @DisplayName("노선을 수정하는데 필요한 정보 중 하나라도 유효하지 않을 시에 badRequest를 응답한다")
+    @ParameterizedTest
+    @MethodSource("provideInvalidLineModificationResource")
+    void updateLine_badRequest_InvalidResource(String name, String color, Integer extraFare) {
+        // given
+        ExtractableResponse<Response> lineCreationResponse = requestToCreateLine(
+                LINE_NAME, LINE_COLOR, stationResponse1.getId(), stationResponse2.getId(), LINE_DISTANCE,
+                LINE_EXTRA_FARE);
+        long savedLineId = Long.parseLong(lineCreationResponse.header("Location").split("/")[2]);
+
+        //when
+        ExtractableResponse<Response> response =
+                requestToUpdateLine(savedLineId, name, color, extraFare);
+        ExceptionResponse exceptionResponse = response.jsonPath().getObject(".", ExceptionResponse.class);
+
+        //then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(exceptionResponse.getErrorMessage()).isEqualTo("입력되지 않은 정보가 있습니다.")
         );
     }
 
     @DisplayName("지하철 노선을 제거한다.")
     @Test
-    void deleteLine() {
+    void deleteLineById() {
         // given
-        StationRequest stationRequest1 = new StationRequest("강남역");
-        StationRequest stationRequest2 = new StationRequest("역삼역");
-
-        Station station1 = createStation(stationRequest1).as(Station.class);
-        Station station2 = createStation(stationRequest2).as(Station.class);
-
-        LineRequest lineRequest = new LineRequest("2호선", "green", station1.getId(), station2.getId(), 10);
-
-        LineResponse lineResponse = createLine(lineRequest).as(LineResponse.class);
+        LineResponse lineResponse = requestToCreateLine(
+                LINE_NAME, LINE_COLOR, stationResponse1.getId(), stationResponse2.getId(), LINE_DISTANCE,
+                LINE_EXTRA_FARE)
+                .as(LineResponse.class);
 
         // when
-        ExtractableResponse<Response> response = deleteById(lineResponse.getId());
-        List<LineResponse> lineResponses = findAllLines().jsonPath().getList(".", LineResponse.class);
+        ExtractableResponse<Response> response = requestToDeleteLineById(lineResponse.getId());
+        List<LineResponse> findingAllResponse = requestToFindAllLines().jsonPath()
+                .getList(".", LineResponse.class);
 
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
-                () -> assertThat(lineResponses).isEmpty()
+                () -> assertThat(findingAllResponse).isEmpty()
         );
     }
 
-    private ExtractableResponse<Response> findAllLines() {
+    private ExtractableResponse<Response> requestToFindAllLines() {
         return RestAssured.given().log().all()
                 .when()
                 .get("/lines")
@@ -230,9 +292,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> updateLine(long savedLineId, LineRequest updateRequest) {
+    private ExtractableResponse<Response> requestToUpdateLine(long savedLineId, String name, String color,
+                                                              Integer extraFare) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", name);
+        params.put("color", color);
+        params.put("extraFare", extraFare);
         return RestAssured.given().log().all()
-                .body(updateRequest)
+                .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .put("/lines/" + savedLineId)
@@ -240,11 +307,39 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> deleteById(Long lindId) {
+    private ExtractableResponse<Response> requestToDeleteLineById(Long lindId) {
         return RestAssured.given().log().all()
                 .when()
                 .delete("/lines/" + lindId)
                 .then().log().all()
                 .extract();
+    }
+
+
+    private static Stream<Arguments> provideNotInvalidCreationSource() {
+        return Stream.of(
+                Arguments.of(null, LINE_COLOR, 1L, 2L, LINE_DISTANCE, LINE_EXTRA_FARE),
+                Arguments.of("", LINE_COLOR, 1L, 2L, LINE_DISTANCE, LINE_EXTRA_FARE),
+                Arguments.of(" ", LINE_COLOR, 1L, 2L, LINE_DISTANCE, LINE_EXTRA_FARE),
+                Arguments.of(LINE_NAME, null, 1L, 2L, LINE_DISTANCE, LINE_EXTRA_FARE),
+                Arguments.of(LINE_NAME, "", 1L, 2L, LINE_DISTANCE, LINE_EXTRA_FARE),
+                Arguments.of(LINE_NAME, " ", 1L, 2L, LINE_DISTANCE, LINE_EXTRA_FARE),
+                Arguments.of(LINE_NAME, LINE_COLOR, null, 2L, LINE_DISTANCE, LINE_EXTRA_FARE),
+                Arguments.of(LINE_NAME, LINE_COLOR, 1L, null, LINE_DISTANCE, LINE_EXTRA_FARE),
+                Arguments.of(LINE_NAME, LINE_COLOR, 1L, 2L, null, LINE_EXTRA_FARE),
+                Arguments.of(LINE_NAME, LINE_COLOR, 1L, 2L, LINE_DISTANCE, null)
+        );
+    }
+
+    private static Stream<Arguments> provideInvalidLineModificationResource() {
+        return Stream.of(
+                Arguments.of(null, LINE_COLOR, LINE_EXTRA_FARE),
+                Arguments.of("", LINE_COLOR, LINE_EXTRA_FARE),
+                Arguments.of(" ", LINE_COLOR, LINE_EXTRA_FARE),
+                Arguments.of(LINE_NAME, null, LINE_EXTRA_FARE),
+                Arguments.of(LINE_NAME, "", LINE_EXTRA_FARE),
+                Arguments.of(LINE_NAME, " ", LINE_EXTRA_FARE),
+                Arguments.of(LINE_NAME, LINE_COLOR, null)
+        );
     }
 }

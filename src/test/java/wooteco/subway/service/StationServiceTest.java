@@ -10,12 +10,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.domain.Station;
+import wooteco.subway.acceptance.DBTest;
 import wooteco.subway.service.dto.StationServiceResponse;
 
 @SpringBootTest
-class StationServiceTest extends ServiceTest {
+class StationServiceTest extends DBTest {
 
     private static final String SEOLLEUNG = "선릉역";
 
@@ -37,7 +36,7 @@ class StationServiceTest extends ServiceTest {
 
     @DisplayName("같은 이름의 지하철 역을 저장하는 경우 예외가 발생한다.")
     @Test
-    void saveExistingName() {
+    void save_exception_duplicateName() {
         stationService.save(SEOLLEUNG);
 
         assertThatThrownBy(() -> stationService.save(SEOLLEUNG))
@@ -66,18 +65,7 @@ class StationServiceTest extends ServiceTest {
         );
     }
 
-    @DisplayName("노선에 해당하는 지하철역들을 반환한다.")
-    @Test
-    @Sql("classpath:lineStations.sql")
-    void findAllByLineId() {
-        List<Station> stationIds = stationService.findAllByLineId(1L);
-        assertThat(stationIds).containsExactly(
-                new Station(1L, "강남역"),
-                new Station(2L, "역삼역"),
-                new Station(3L, "교대역"));
-    }
-
-    @DisplayName("지하철 역을 삭제한다.")
+    @DisplayName("id에 해당하는 지하철 역을 삭제한다.")
     @Test
     void deleteById() {
         StationServiceResponse stationServiceResponse = stationService.save(SEOLLEUNG);

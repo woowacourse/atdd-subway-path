@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -21,11 +22,12 @@ public class LineDao {
     }
 
     public Line save(Line line) {
-        String sql = "INSERT INTO line (name, color) VALUES (:name, :color)";
+        String sql = "INSERT INTO line (name, color, extra_fare) VALUES (:name, :color, :extra_fare)";
 
         Map<String, Object> params = new HashMap<>();
         params.put("name", line.getName());
         params.put("color", line.getColor());
+        params.put("extra_fare", line.getExtraFare());
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -33,7 +35,7 @@ public class LineDao {
 
         long lineId = keyHolder.getKey().longValue();
 
-        return new Line(lineId, line.getName(), line.getColor());
+        return new Line(lineId, line.getName(), line.getColor(), line.getExtraFare());
     }
 
     public List<Line> findAll() {
@@ -42,36 +44,39 @@ public class LineDao {
         return jdbcTemplate.query(sql, getRowMapper());
     }
 
-    public Line findById(Long id) {
-        String sql = "SELECT id, name, color FROM line WHERE id=:id";
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("id", id);
-
+    public Line findById(long id) {
+        String sql = "SELECT id, name, color, extra_fare FROM line WHERE id=:id";
+        SqlParameterSource params = new MapSqlParameterSource("id", id);
         return jdbcTemplate.queryForObject(sql, params, getRowMapper());
     }
 
-    public void updateById(Long id, Line line) {
-        String sql = "UPDATE line SET name=:name, color=:color where id=:id";
+    public void update(long id, Line line) {
+        String sql = "UPDATE line SET name=:name, color=:color, extra_fare=:extra_fare where id=:id";
 
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
         params.put("name", line.getName());
         params.put("color", line.getColor());
+        params.put("extra_fare", line.getExtraFare());
 
         jdbcTemplate.update(sql, params);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(long id) {
         String sql = "DELETE FROM line WHERE id=:id";
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("id", id);
-
+        SqlParameterSource params = new MapSqlParameterSource("id", id);
         jdbcTemplate.update(sql, params);
     }
 
     private RowMapper<Line> getRowMapper() {
-        return (rs, rowNum) -> new Line(rs.getLong("id"), rs.getString("name"), rs.getString("color"));
+        return (rs, rowNum) -> new Line(rs.getLong("id"), rs.getString("name"),
+                rs.getString("color"), rs.getInt("extra_fare"));
+    }
+
+    public List<Integer> findExtraFaresByIds(List<Long> ids) {
+        String sql = "select extra_fare from line where id in (:ids)";
+        RowMapper<Integer> rowMapper = (resultSet, rowNum) -> resultSet.getInt("extra_fare");
+        SqlParameterSource params = new MapSqlParameterSource("ids", ids);
+        return jdbcTemplate.query(sql, params, rowMapper);
     }
 }

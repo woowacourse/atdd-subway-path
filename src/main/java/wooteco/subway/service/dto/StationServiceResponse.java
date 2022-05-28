@@ -4,7 +4,7 @@ import wooteco.subway.domain.Station;
 
 public class StationServiceResponse {
 
-    private final Long id;
+    private final long id;
     private final String name;
 
     public StationServiceResponse(Station station) {
@@ -12,7 +12,7 @@ public class StationServiceResponse {
         this.name = station.getName();
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 

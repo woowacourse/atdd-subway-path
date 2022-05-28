@@ -9,7 +9,8 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
-import wooteco.subway.service.dto.LineServiceRequest;
+import wooteco.subway.service.dto.LineCreationServiceRequest;
+import wooteco.subway.service.dto.LineModificationServiceRequest;
 import wooteco.subway.service.dto.LineServiceResponse;
 
 @Service
@@ -26,12 +27,14 @@ public class LineService {
     }
 
     @Transactional
-    public LineServiceResponse save(LineServiceRequest lineServiceRequest) {
-        Line savedLine = lineDao.save(new Line(lineServiceRequest.getName(), lineServiceRequest.getColor()));
-        Station upStation = stationService.findById(lineServiceRequest.getUpStationId());
-        Station downStation = stationService.findById(lineServiceRequest.getDownStationId());
-        Section section = new Section(savedLine.getId(), upStation.getId(), downStation.getId(),
-                lineServiceRequest.getDistance());
+    public LineServiceResponse save(LineCreationServiceRequest lineCreationServiceRequest) {
+        Line newLine = new Line(lineCreationServiceRequest.getName(),
+                lineCreationServiceRequest.getColor(), lineCreationServiceRequest.getExtraFare());
+        Line savedLine = lineDao.save(newLine);
+        Station upStation = stationService.findById(lineCreationServiceRequest.getUpStationId());
+        Station downStation = stationService.findById(lineCreationServiceRequest.getDownStationId());
+        Section section = new Section(
+                savedLine.getId(), upStation.getId(), downStation.getId(), lineCreationServiceRequest.getDistance());
         sectionService.save(section);
         return new LineServiceResponse(savedLine, List.of(upStation, downStation));
     }
@@ -45,7 +48,7 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public LineServiceResponse findById(Long id) {
+    public LineServiceResponse findById(long id) {
         Line line = lineDao.findById(id);
         Sections sections = sectionService.findAllByLineId(id);
         List<Station> stations = sections.getSortedStationIdsInSingleLine().stream()
@@ -56,12 +59,22 @@ public class LineService {
     }
 
     @Transactional
-    public void update(Long id, String name, String color) {
-        lineDao.updateById(id, new Line(name, color));
+    public void update(long id, LineModificationServiceRequest lineModificationServiceRequest) {
+        Line updatingLine = new Line(lineModificationServiceRequest.getName(),
+                lineModificationServiceRequest.getColor(), lineModificationServiceRequest.getExtraFare());
+        lineDao.update(id, updatingLine);
     }
 
     @Transactional
-    public void deleteById(Long id) {
+    public void deleteById(long id) {
         lineDao.deleteById(id);
+    }
+
+    public int findHighestExtraFareByIds(List<Long> ids) {
+        return lineDao.findExtraFaresByIds(ids)
+                .stream()
+                .mapToInt(Integer::valueOf)
+                .max()
+                .orElse(0);
     }
 }
