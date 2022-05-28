@@ -32,10 +32,10 @@ public class Dijkstra implements PathFactory {
     }
 
     @Override
-    public int findShortestDistance(Long source, Long target) {
+    public Distance findShortestDistance(Long source, Long target) {
         try {
             double weight = dijkstraShortestPath.getPath(source, target).getWeight();
-            return (int) weight;
+            return new Distance((int) weight);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("구간에 없는 역은 출발지 또는 목적지로 선택할 수 없습니다.");
         } catch (NullPointerException e) {

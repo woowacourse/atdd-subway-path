@@ -15,22 +15,22 @@ public class PathTest {
     @DisplayName("최단 거리를 정상적으로 찾는지 확인한다.")
     @Test
     void findShortestDistance() {
-        final Section oneToTwoInLine1 = new Section(1L, 1L, 2L, 1);
-        final Section twoToThreeInLine1 = new Section(1L, 2L, 3L, 2);
-        final Section threeToFourInLine1 = new Section(1L, 3L, 4L, 4);
+        final Section oneToTwoInLine1 = new Section(1L, 1L, 2L, new Distance(1));
+        final Section twoToThreeInLine1 = new Section(1L, 2L, 3L, new Distance(2));
+        final Section threeToFourInLine1 = new Section(1L, 3L, 4L, new Distance(4));
         final Sections sections = new Sections(List.of(oneToTwoInLine1, twoToThreeInLine1, threeToFourInLine1));
         final Path path = Path.of(new Dijkstra(sections), 1L, 4L);
-        final int result = path.getShortestDistance();
+        final Distance result = path.getShortestDistance();
 
-        assertThat(result).isEqualTo(7);
+        assertThat(result).isEqualTo(new Distance(7));
     }
 
     @DisplayName("최단 경로를 정상적으로 찾는지 확인한다.")
     @Test
     void findShortestPath() {
-        final Section oneToTwoInLine1 = new Section(1L, 1L, 2L, 1);
-        final Section twoToThreeInLine1 = new Section(1L, 2L, 3L, 2);
-        final Section threeToFourInLine1 = new Section(1L, 3L, 4L, 4);
+        final Section oneToTwoInLine1 = new Section(1L, 1L, 2L, new Distance(1));
+        final Section twoToThreeInLine1 = new Section(1L, 2L, 3L, new Distance(2));
+        final Section threeToFourInLine1 = new Section(1L, 3L, 4L, new Distance(4));
         final Sections sections = new Sections(List.of(oneToTwoInLine1, twoToThreeInLine1, threeToFourInLine1));
         final Path path = Path.of(new Dijkstra(sections), 1L, 4L);
         final List<Long> shortestPath = path.getShortestPath();
@@ -41,9 +41,9 @@ public class PathTest {
     @DisplayName("등록한 구간과 반대방향 일 때 최단 경로를 정상적으로 찾는지 확인한다.")
     @Test
     void findShortestPathReverse() {
-        final Section oneToTwoInLine1 = new Section(1L, 1L, 2L, 1);
-        final Section twoToThreeInLine1 = new Section(1L, 2L, 3L, 2);
-        final Section threeToFourInLine1 = new Section(1L, 3L, 4L, 4);
+        final Section oneToTwoInLine1 = new Section(1L, 1L, 2L, new Distance(1));
+        final Section twoToThreeInLine1 = new Section(1L, 2L, 3L, new Distance(2));
+        final Section threeToFourInLine1 = new Section(1L, 3L, 4L, new Distance(4));
         final Sections sections = new Sections(List.of(oneToTwoInLine1, twoToThreeInLine1, threeToFourInLine1));
         final Path path = Path.of(new Dijkstra(sections), 4L, 1L);
         final List<Long> shortestPath = path.getShortestPath();
@@ -54,38 +54,38 @@ public class PathTest {
     @DisplayName("노선이 다를 때 최단 거리를 정상적으로 찾는지 확인한다.")
     @Test
     void findShortestPathWithDifferenceLine() {
-        final Section oneToTwoInLine1 = new Section(1L, 1L, 2L, 1);
-        final Section twoToThreeInLine1 = new Section(1L, 2L, 3L, 2);
-        final Section threeToFourInLine1 = new Section(1L, 3L, 4L, 4);
-        final Section threeToFourInLine2 = new Section(2L, 3L, 4L, 8);
+        final Section oneToTwoInLine1 = new Section(1L, 1L, 2L, new Distance(1));
+        final Section twoToThreeInLine1 = new Section(1L, 2L, 3L, new Distance(2));
+        final Section threeToFourInLine1 = new Section(1L, 3L, 4L, new Distance(4));
+        final Section threeToFourInLine2 = new Section(2L, 3L, 4L, new Distance(8));
         final Sections sections = new Sections(List.of(oneToTwoInLine1, twoToThreeInLine1, threeToFourInLine1, threeToFourInLine2));
         final Path path = Path.of(new Dijkstra(sections), 1L, 4L);
-        final int result = path.getShortestDistance();
+        final Distance result = path.getShortestDistance();
 
-        assertThat(result).isEqualTo(7);
+        assertThat(result).isEqualTo(new Distance(7));
     }
 
     @DisplayName("환승 역이 있을 때 최단 거리를 정상적으로 찾는지 확인한다.")
     @Test
     void findShortestPathWithTransferStations() {
-        final Section oneToTwoInLine1 = new Section(1L, 1L, 2L, 1);
-        final Section twoToThreeInLine1 = new Section(1L, 2L, 3L, 2);
-        final Section threeToFourInLine1 = new Section(1L, 3L, 4L, 4);
-        final Section twoToSixInLine2 = new Section(2L, 2L, 6L, 16);
-        final Section sevenToTwoInLine2 = new Section(2L, 7L, 2L, 32);
+        final Section oneToTwoInLine1 = new Section(1L, 1L, 2L, new Distance(1));
+        final Section twoToThreeInLine1 = new Section(1L, 2L, 3L, new Distance(2));
+        final Section threeToFourInLine1 = new Section(1L, 3L, 4L, new Distance(4));
+        final Section twoToSixInLine2 = new Section(2L, 2L, 6L, new Distance(16));
+        final Section sevenToTwoInLine2 = new Section(2L, 7L, 2L, new Distance(32));
         final Sections sections = new Sections(List.of(oneToTwoInLine1, twoToThreeInLine1, threeToFourInLine1, sevenToTwoInLine2, twoToSixInLine2));
         final Path path = Path.of(new Dijkstra(sections), 7L, 6L);
-        final int result = path.getShortestDistance();
+        final Distance result = path.getShortestDistance();
 
-        assertThat(result).isEqualTo(48);
+        assertThat(result).isEqualTo(new Distance(48));
     }
 
     @DisplayName("출발역과 도착역이 같을 때 예외를 발생시키는지 확인한다.")
     @Test
     void findShortestPathSameStationsException() {
-        final Section oneToTwoInLine1 = new Section(1L, 1L, 2L, 1);
-        final Section twoToThreeInLine1 = new Section(1L, 2L, 3L, 2);
-        final Section threeToFourInLine1 = new Section(1L, 3L, 4L, 4);
+        final Section oneToTwoInLine1 = new Section(1L, 1L, 2L, new Distance(1));
+        final Section twoToThreeInLine1 = new Section(1L, 2L, 3L, new Distance(2));
+        final Section threeToFourInLine1 = new Section(1L, 3L, 4L, new Distance(4));
         final Sections sections = new Sections(List.of(oneToTwoInLine1, twoToThreeInLine1, threeToFourInLine1));
         assertThatThrownBy(() ->
                 Path.of(new Dijkstra(sections), 1L, 1L))
@@ -96,9 +96,9 @@ public class PathTest {
     @DisplayName("구간에 등록되지 않은 역을 선택했을 때 예외를 발생시키는지 확인한다.")
     @Test
     void findShortestPathNoneStationException() {
-        final Section oneToTwoInLine1 = new Section(1L, 1L, 2L, 1);
-        final Section twoToThreeInLine1 = new Section(1L, 2L, 3L, 2);
-        final Section threeToFourInLine1 = new Section(1L, 3L, 4L, 4);
+        final Section oneToTwoInLine1 = new Section(1L, 1L, 2L, new Distance(1));
+        final Section twoToThreeInLine1 = new Section(1L, 2L, 3L, new Distance(2));
+        final Section threeToFourInLine1 = new Section(1L, 3L, 4L, new Distance(4));
         final Sections sections = new Sections(List.of(oneToTwoInLine1, twoToThreeInLine1, threeToFourInLine1));
         assertThatThrownBy(() ->
                 Path.of(new Dijkstra(sections), 5L, 1L))
@@ -109,8 +109,8 @@ public class PathTest {
     @DisplayName("갈수 없는 구간을 선택했을 때 예외를 발생시키는지 확인한다.")
     @Test
     void findShortestPathNoneSectionException() {
-        final Section oneToTwoInLine1 = new Section(1L, 1L, 2L, 1);
-        final Section threeToFourInLine1 = new Section(1L, 3L, 4L, 4);
+        final Section oneToTwoInLine1 = new Section(1L, 1L, 2L, new Distance(1));
+        final Section threeToFourInLine1 = new Section(1L, 3L, 4L, new Distance(4));
         final Sections sections = new Sections(List.of(threeToFourInLine1, oneToTwoInLine1));
         assertThatThrownBy(() ->
                 Path.of(new Dijkstra(sections), 1L, 3L))
@@ -121,9 +121,9 @@ public class PathTest {
     @DisplayName("최단 경로의 노선 아이디를 올바르게 반환하는지 확인한다.")
     @Test
     void findLines() {
-        final Section oneToTwoInLine1 = new Section(1L, 1L, 2L, 1);
-        final Section twoToThreeInLine1 = new Section(1L, 2L, 3L, 2);
-        final Section threeToFourInLine2 = new Section(2L, 3L, 4L, 8);
+        final Section oneToTwoInLine1 = new Section(1L, 1L, 2L, new Distance(1));
+        final Section twoToThreeInLine1 = new Section(1L, 2L, 3L, new Distance(2));
+        final Section threeToFourInLine2 = new Section(2L, 3L, 4L, new Distance(8));
         final Sections sections = new Sections(List.of(oneToTwoInLine1, twoToThreeInLine1, threeToFourInLine2));
         final Path path = Path.of(new Dijkstra(sections), 1L, 4L);
         final Set<Long> lineIds = path.getLineIds();

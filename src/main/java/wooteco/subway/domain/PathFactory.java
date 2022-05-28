@@ -5,7 +5,7 @@ import java.util.Set;
 
 public interface PathFactory {
 
-    int findShortestDistance(Long source, Long target);
+    Distance findShortestDistance(Long source, Long target);
 
     List<Long> findShortestPath(Long source, Long target);
 

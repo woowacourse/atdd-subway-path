@@ -5,11 +5,11 @@ import java.util.Set;
 
 public class Path {
 
-    private final int shortestDistance;
+    private final Distance shortestDistance;
     private final List<Long> shortestPath;
     private final Set<Long> lineIds;
 
-    private Path(int shortestDistance, List<Long> shortestPath, Set<Long> lineIds) {
+    private Path(Distance shortestDistance, List<Long> shortestPath, Set<Long> lineIds) {
         this.shortestDistance = shortestDistance;
         this.shortestPath = shortestPath;
         this.lineIds = lineIds;
@@ -28,7 +28,7 @@ public class Path {
         }
     }
 
-    public int getShortestDistance() {
+    public Distance getShortestDistance() {
         return shortestDistance;
     }
 

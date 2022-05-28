@@ -3,6 +3,7 @@ package wooteco.subway.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.SectionDao;
+import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.service.dto.SectionServiceDeleteRequest;
@@ -32,7 +33,7 @@ public class SectionService {
 
     private Section toSection(SectionServiceRequest sectionRequest, Long lineId) {
         return new Section(lineId, sectionRequest.getUpStationId(),
-                sectionRequest.getDownStationId(), sectionRequest.getDistance());
+                sectionRequest.getDownStationId(), new Distance(sectionRequest.getDistance()));
     }
 
     private Long updateMiddleSection(Section section, Sections sections) {
@@ -44,11 +45,11 @@ public class SectionService {
 
     private Long updateUpStationSection(Section section, Sections sections) {
         Section updateSection = sections.findSectionByDownStationId(section.getDownStationId());
-        if (updateSection.getDistance() <= section.getDistance()) {
+        if (updateSection.getDistance().getValue() <= section.getDistance().getValue()) {
             throw new IllegalArgumentException("등록할 구간의 길이가 기존 역 사이의 길이보다 길거나 같으면 안됩니다.");
         }
         sectionDao.update(updateSection.getId(), section.getUpStationId(),
-                updateSection.getDistance() - section.getDistance());
+                updateSection.getDistance().subtract(section.getDistance()));
 
         return sectionDao.save(
                 new Section(section.getLineId(), section.getUpStationId(),
@@ -58,16 +59,18 @@ public class SectionService {
     private Long updateDownStationSection(Section section, Sections sections) {
         Section updateSection = sections.findSectionByUpStationId(section.getUpStationId());
 
-        if (updateSection.getDistance() <= section.getDistance()) {
+        if (updateSection.getDistance().getValue() <= section.getDistance().getValue()) {
             throw new IllegalArgumentException("등록할 구간의 길이가 기존 역 사이의 길이보다 길거나 같으면 안됩니다.");
         }
 
         sectionDao.update(updateSection.getId(), section.getDownStationId(),
                 section.getDistance());
 
-        return sectionDao.save(new Section(section.getLineId(), section.getDownStationId(),
+        return sectionDao.save(new Section(
+                section.getLineId(),
+                section.getDownStationId(),
                 updateSection.getDownStationId(),
-                updateSection.getDistance() - section.getDistance()));
+                updateSection.getDistance().subtract(section.getDistance())));
     }
 
     @Transactional
@@ -97,9 +100,8 @@ public class SectionService {
         Section deleteSectionStation = sections.findSectionByUpStationId(
                 sectionServiceDeleteRequest.getStationId());
 
-        int totalDistance = downStationSection.getDistance() + deleteSectionStation.getDistance();
-        sectionDao.update(downStationSection.getId(), deleteSectionStation.getDownStationId(),
-                totalDistance);
+        Distance totalDistance = downStationSection.getDistance().sum(deleteSectionStation.getDistance());
+        sectionDao.update(downStationSection.getId(), deleteSectionStation.getDownStationId(), totalDistance);
         return sectionDao.deleteById(deleteSectionStation.getId());
     }
 

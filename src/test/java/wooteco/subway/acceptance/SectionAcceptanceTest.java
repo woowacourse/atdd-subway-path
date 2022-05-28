@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.dao.SectionDao;
+import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Section;
 import wooteco.subway.ui.dto.LineRequest;
 import wooteco.subway.ui.dto.SectionRequest;
@@ -55,7 +56,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         assertAll(
-                () -> assertThat(section.getDistance()).isEqualTo(1),
+                () -> assertThat(section.getDistance()).isEqualTo(new Distance(1)),
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
         );
     }
@@ -96,7 +97,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         assertAll(
-                () -> assertThat(section.getDistance()).isEqualTo(4),
+                () -> assertThat(section.getDistance()).isEqualTo(new Distance(4)),
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
         );
     }

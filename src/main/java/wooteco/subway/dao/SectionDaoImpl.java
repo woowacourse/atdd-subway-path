@@ -15,6 +15,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Section;
 
 @Repository
@@ -34,7 +35,7 @@ public class SectionDaoImpl implements SectionDao {
         params.addValue("lineId", section.getLineId());
         params.addValue("upStationId", section.getUpStationId());
         params.addValue("downStationId", section.getDownStationId());
-        params.addValue("distance", section.getDistance());
+        params.addValue("distance", section.getDistance().getValue());
         jdbcTemplate.update(sql, params, keyHolder, new String[]{"id"});
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
@@ -47,11 +48,11 @@ public class SectionDaoImpl implements SectionDao {
     }
 
     @Override
-    public boolean update(Long sectionId, Long downStationId, int distance) {
+    public boolean update(Long sectionId, Long downStationId, Distance distance) {
         final String sql = "UPDATE section SET down_station_id = :downStationId, distance = :distance where id = :id";
         final Map<String, Object> params = new HashMap<>();
         params.put("downStationId", downStationId);
-        params.put("distance", distance);
+        params.put("distance", distance.getValue());
         params.put("id", sectionId);
         final int updateSize = jdbcTemplate.update(sql, params);
         return updateSize != 0;
@@ -73,7 +74,7 @@ public class SectionDaoImpl implements SectionDao {
 
     private static class SectionMapper implements RowMapper<Section> {
         public Section mapRow(final ResultSet rs, final int rowNum) throws SQLException {
-            return new Section(rs.getLong("id"), rs.getLong("line_id"), rs.getLong("up_station_id"), rs.getLong("down_station_id"), rs.getInt("distance"));
+            return new Section(rs.getLong("id"), rs.getLong("line_id"), rs.getLong("up_station_id"), rs.getLong("down_station_id"), new Distance(rs.getInt("distance")));
         }
     }
 }
