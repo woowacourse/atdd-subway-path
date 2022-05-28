@@ -1,24 +1,19 @@
 package wooteco.subway.dao;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import org.springframework.dao.DuplicateKeyException;
-
 import wooteco.subway.domain.Line;
+
+import java.util.*;
 
 public class FakeLineDao implements LineDao {
 
-    private Long seq = 0L;
     private final Map<Long, Line> lines = new HashMap<>();
+    private Long seq = 0L;
 
     @Override
     public Long save(Line line) {
         validateDuplicateName(line);
-        Line newLine = new Line(++seq, line.getName(), line.getColor());
+        Line newLine = new Line(++seq, line.getName(), line.getColor(), line.getExtraFare());
         lines.put(seq, newLine);
         return seq;
     }
@@ -52,10 +47,16 @@ public class FakeLineDao implements LineDao {
     @Override
     public boolean updateById(Long savedId, Line line) {
         if (lines.containsKey(savedId)) {
-            lines.replace(savedId, new Line(savedId, line.getName(), line.getColor()));
+            lines.replace(savedId, new Line(savedId, line.getName(), line.getColor(), 0));
             return true;
         }
 
         return false;
     }
+
+    @Override
+    public Optional<List<Integer>> findExtraFareByIds(List<Long> id) {
+        return Optional.of(new ArrayList<>());
+    }
+
 }

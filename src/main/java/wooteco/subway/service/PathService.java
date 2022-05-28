@@ -1,55 +1,59 @@
 package wooteco.subway.service;
 
-import java.util.List;
-import java.util.function.Supplier;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import wooteco.subway.dao.LineDao;
-import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Path;
 import wooteco.subway.domain.Station;
-import wooteco.subway.domain.SubwayMap;
-import wooteco.subway.dto.PathResponse;
-import wooteco.subway.exception.EmptyResultException;
+import wooteco.subway.domain.fare.Fare;
+import wooteco.subway.dto.path.PathRequest;
+import wooteco.subway.dto.path.PathResponse;
+import wooteco.subway.infra.path.PathFinder;
+
+import java.util.Collections;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
 public class PathService {
     private final LineDao lineDao;
-    private final StationDao stationDao;
+    private final LineService lineService;
+    private final PathFinder pathFinder;
 
-    public PathService(LineDao lineDao, StationDao stationDao) {
+    public PathService(LineDao lineDao, LineService lineService, PathFinder pathFinder) {
         this.lineDao = lineDao;
-        this.stationDao = stationDao;
+        this.lineService = lineService;
+        this.pathFinder = pathFinder;
     }
 
-    public PathResponse findShortestPath(Long sourceStationId, Long targetStationId) {
+    public PathResponse findShortestPath(PathRequest pathRequest) {
+        Long sourceStationId = pathRequest.getSource();
+        Long targetStationId = pathRequest.getTarget();
+        int age = pathRequest.getAge();
+
         validateSameStation(sourceStationId, targetStationId);
 
         List<Line> lines = lineDao.findAll();
-        SubwayMap subwayMap = SubwayMap.of(lines);
-        Station source = findStationById(sourceStationId);
-        Station target = findStationById(targetStationId);
+        Station source = lineService.findStationById(sourceStationId);
+        Station target = lineService.findStationById(targetStationId);
 
-        Path path = subwayMap.findShortestPath(source, target);
-        return PathResponse.of(path);
+        Path path = pathFinder.findShortestPath(source, target, lines);
+        int maxAdditionalLineFare = findLineFare(path);
+
+        return PathResponse.of(path, new Fare(path.getDistance(), maxAdditionalLineFare, age));
+    }
+
+    private int findLineFare(Path path) {
+        List<Long> shortestPathLineIds = path.findShortestPathLines();
+        List<Integer> extraFares = lineDao.findExtraFareByIds(shortestPathLineIds)
+                .orElseThrow(() -> new IllegalArgumentException("특정 라인의 extraFare가 비어있습니다."));
+        return Collections.max(extraFares);
     }
 
     private void validateSameStation(Long sourceStationId, Long targetStationId) {
         if (sourceStationId.equals(targetStationId)) {
             throw new IllegalArgumentException("출발역과 도착역이 동일합니다.");
         }
-    }
-
-    private Station findStationById(Long id) {
-        return stationDao.findById(id)
-            .orElseThrow((throwEmptyStationException()));
-    }
-
-    private Supplier<EmptyResultException> throwEmptyStationException() {
-        return () -> new EmptyResultException("해당 역을 찾을 수 없습니다.");
     }
 }

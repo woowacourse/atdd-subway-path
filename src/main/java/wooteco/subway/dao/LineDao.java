@@ -1,9 +1,9 @@
 package wooteco.subway.dao;
 
+import wooteco.subway.domain.Line;
+
 import java.util.List;
 import java.util.Optional;
-
-import wooteco.subway.domain.Line;
 
 public interface LineDao {
 
@@ -16,4 +16,6 @@ public interface LineDao {
     Optional<Line> findById(Long id);
 
     boolean updateById(Long id, Line line);
+
+    Optional<List<Integer>> findExtraFareByIds(List<Long> id);
 }

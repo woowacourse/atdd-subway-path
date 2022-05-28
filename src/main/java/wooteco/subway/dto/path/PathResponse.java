@@ -1,11 +1,12 @@
-package wooteco.subway.dto;
+package wooteco.subway.dto.path;
+
+import wooteco.subway.domain.Path;
+import wooteco.subway.domain.Station;
+import wooteco.subway.domain.fare.Fare;
+import wooteco.subway.dto.station.StationResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import wooteco.subway.domain.Fare;
-import wooteco.subway.domain.Path;
-import wooteco.subway.domain.Station;
 
 public class PathResponse {
     private List<StationResponse> stations;
@@ -18,12 +19,12 @@ public class PathResponse {
         this.fare = fare;
     }
 
-    public static PathResponse of(Path path) {
+    public static PathResponse of(Path path, Fare fare) {
         List<Station> stations = path.getStations();
         List<StationResponse> stationResponses = stations.stream()
-            .map(StationResponse::from)
-            .collect(Collectors.toList());
-        return new PathResponse(stationResponses, path.getDistance(), new Fare(path.getDistance()).getAmount());
+                .map(StationResponse::from)
+                .collect(Collectors.toList());
+        return new PathResponse(stationResponses, path.getDistance(), (int) fare.getAmount());
     }
 
     public List<StationResponse> getStations() {

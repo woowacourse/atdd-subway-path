@@ -1,4 +1,4 @@
-package wooteco.subway.dto;
+package wooteco.subway.dto.station;
 
 import wooteco.subway.domain.Station;
 
@@ -33,7 +33,7 @@ public class StationResponse {
         if (o == null || getClass() != o.getClass())
             return false;
 
-        StationResponse that = (StationResponse)o;
+        StationResponse that = (StationResponse) o;
 
         return getName() != null ? getName().equals(that.getName()) : that.getName() == null;
     }

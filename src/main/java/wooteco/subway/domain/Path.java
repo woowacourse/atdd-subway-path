@@ -1,19 +1,31 @@
 package wooteco.subway.domain;
 
+import wooteco.subway.infra.path.CustomEdge;
+
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Path {
     private final List<Station> stations;
     private final int distance;
+    private final List<CustomEdge> edges;
 
-    private Path(List<Station> stations, int distance) {
+    private Path(List<Station> stations, int distance, List<CustomEdge> edges) {
         this.stations = stations;
         this.distance = distance;
+        this.edges = edges;
     }
 
-    public static Path of(List<Station> stations, double distance) {
-        return new Path(stations, (int) Math.floor(distance));
+    public static Path of(List<Station> stations, double distance, List<CustomEdge> edges) {
+        return new Path(stations, (int) Math.floor(distance), edges);
+    }
+
+    public List<Long> findShortestPathLines() {
+        return edges.stream()
+                .map(CustomEdge::getLineId)
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     public List<Station> getStations() {

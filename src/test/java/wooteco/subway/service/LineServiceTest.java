@@ -1,32 +1,32 @@
 package wooteco.subway.service;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.LineRequest;
-import wooteco.subway.dto.LineResponse;
-import wooteco.subway.dto.SectionRequest;
-import wooteco.subway.dto.StationResponse;
+import wooteco.subway.dto.line.LineRequest;
+import wooteco.subway.dto.line.LineResponse;
+import wooteco.subway.dto.section.SectionRequest;
+import wooteco.subway.dto.station.StationResponse;
 import wooteco.subway.exception.EmptyResultException;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 @SpringBootTest
-@Transactional
+@Sql(scripts = {"classpath:schema-reset.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class LineServiceTest {
 
     private Long upStationId;
@@ -54,15 +54,15 @@ class LineServiceTest {
     @Test
     void save() {
         // given
-        LineRequest lineRequest = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 1);
+        LineRequest lineRequest = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 1, 0);
 
         // when
         LineResponse lineResponse = lineService.save(lineRequest);
 
         // then
         assertAll(
-            () -> assertThat(lineRequest.getName()).isEqualTo(lineResponse.getName()),
-            () -> assertThat(lineRequest.getColor()).isEqualTo(lineResponse.getColor())
+                () -> assertThat(lineRequest.getName()).isEqualTo(lineResponse.getName()),
+                () -> assertThat(lineRequest.getColor()).isEqualTo(lineResponse.getColor())
         );
 
     }
@@ -70,22 +70,22 @@ class LineServiceTest {
     @Test
     void validateDuplication() {
         // given
-        LineRequest lineRequest1 = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5);
-        LineRequest lineRequest2 = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5);
+        LineRequest lineRequest1 = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5, 0);
+        LineRequest lineRequest2 = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5, 0);
 
         // when
         lineService.save(lineRequest1);
 
         // then
         assertThatThrownBy(() -> lineService.save(lineRequest2))
-            .isInstanceOf(DuplicateKeyException.class);
+                .isInstanceOf(DuplicateKeyException.class);
     }
 
     @Test
     void findAll() {
         // given
-        LineRequest lineRequest1 = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5);
-        LineRequest lineRequest2 = new LineRequest("2호선", "bg-green-600", upStationId, downStationId, 5);
+        LineRequest lineRequest1 = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5, 0);
+        LineRequest lineRequest2 = new LineRequest("2호선", "bg-green-600", upStationId, downStationId, 5, 0);
 
         // when
         lineService.save(lineRequest1);
@@ -93,19 +93,19 @@ class LineServiceTest {
 
         // then
         List<String> names = lineService.findAll()
-            .stream()
-            .map(LineResponse::getName)
-            .collect(Collectors.toList());
+                .stream()
+                .map(LineResponse::getName)
+                .collect(Collectors.toList());
 
         assertThat(names)
-            .hasSize(2)
-            .contains(lineRequest1.getName(), lineRequest2.getName());
+                .hasSize(2)
+                .contains(lineRequest1.getName(), lineRequest2.getName());
     }
 
     @Test
     void delete() {
         // given
-        LineRequest lineRequest = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5);
+        LineRequest lineRequest = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5, 0);
         LineResponse lineResponse = lineService.save(lineRequest);
 
         // when
@@ -113,23 +113,23 @@ class LineServiceTest {
 
         // then
         List<Long> lineIds = lineService.findAll()
-            .stream()
-            .map(LineResponse::getId)
-            .collect(Collectors.toList());
+                .stream()
+                .map(LineResponse::getId)
+                .collect(Collectors.toList());
 
         assertThat(lineIds)
-            .hasSize(0)
-            .doesNotContain(lineResponse.getId());
+                .hasSize(0)
+                .doesNotContain(lineResponse.getId());
     }
 
     @Test
     void update() {
         // given
-        LineRequest originLine = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5);
+        LineRequest originLine = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5, 0);
         LineResponse lineResponse = lineService.save(originLine);
 
         // when
-        LineRequest newLine = new LineRequest("2호선", "bg-green-600", upStationId, downStationId, 5);
+        LineRequest newLine = new LineRequest("2호선", "bg-green-600", upStationId, downStationId, 5, 0);
         lineService.updateById(lineResponse.getId(), newLine);
         Line line = lineDao.findById(lineResponse.getId()).get();
 
@@ -140,7 +140,7 @@ class LineServiceTest {
     @Test
     void insertSection() {
         // given
-        LineRequest originLine = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5);
+        LineRequest originLine = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5, 0);
         LineResponse lineResponse = lineService.save(originLine);
 
         // when
@@ -151,21 +151,21 @@ class LineServiceTest {
         lineService.insertSection(lineResponse.getId(), sectionRequest);
         LineResponse newLineResponse = lineService.findById(lineResponse.getId());
         assertAll(
-            () -> assertThat(lineResponse.getId()).isEqualTo(newLineResponse.getId()),
-            () -> assertThat(lineResponse.getName()).isEqualTo(newLineResponse.getName()),
-            () -> assertThat(lineResponse.getColor()).isEqualTo(newLineResponse.getColor()),
-            () -> assertThat(newLineResponse.getStations())
-                .hasSize(3)
-                .contains(StationResponse.from(new Station("강남역")),
-                    StationResponse.from(new Station("교대역")),
-                    StationResponse.from(new Station("선릉역")))
+                () -> assertThat(lineResponse.getId()).isEqualTo(newLineResponse.getId()),
+                () -> assertThat(lineResponse.getName()).isEqualTo(newLineResponse.getName()),
+                () -> assertThat(lineResponse.getColor()).isEqualTo(newLineResponse.getColor()),
+                () -> assertThat(newLineResponse.getStations())
+                        .hasSize(3)
+                        .contains(StationResponse.from(new Station("강남역")),
+                                StationResponse.from(new Station("교대역")),
+                                StationResponse.from(new Station("선릉역")))
         );
     }
 
     @Test
     void insertInvalidSection() {
         // given
-        LineRequest originLine = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5);
+        LineRequest originLine = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5, 0);
         LineResponse lineResponse = lineService.save(originLine);
 
         // when
@@ -175,14 +175,14 @@ class LineServiceTest {
 
         // then
         assertThatThrownBy(
-            () -> lineService.insertSection(lineResponse.getId(), sectionRequest)
+                () -> lineService.insertSection(lineResponse.getId(), sectionRequest)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void deleteStation() {
         // given
-        LineRequest originLine = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5);
+        LineRequest originLine = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5, 0);
         LineResponse lineResponse = lineService.save(originLine);
         Long newDownStationId = stationDao.save(new Station("교대역")).getId();
         SectionRequest sectionRequest = new SectionRequest(upStationId, newDownStationId, 3);
@@ -194,14 +194,14 @@ class LineServiceTest {
         // then
         LineResponse newLineResponse = lineService.findById(lineResponse.getId());
         assertAll(
-            () -> assertThat(lineResponse.getId()).isEqualTo(newLineResponse.getId()),
-            () -> assertThat(lineResponse.getName()).isEqualTo(newLineResponse.getName()),
-            () -> assertThat(lineResponse.getColor()).isEqualTo(newLineResponse.getColor()),
-            () -> assertThat(newLineResponse.getStations().stream()
-                .map(StationResponse::getName)
-                .collect(Collectors.toList()))
-                .hasSize(2)
-                .contains("강남역", "선릉역")
+                () -> assertThat(lineResponse.getId()).isEqualTo(newLineResponse.getId()),
+                () -> assertThat(lineResponse.getName()).isEqualTo(newLineResponse.getName()),
+                () -> assertThat(lineResponse.getColor()).isEqualTo(newLineResponse.getColor()),
+                () -> assertThat(newLineResponse.getStations().stream()
+                        .map(StationResponse::getName)
+                        .collect(Collectors.toList()))
+                        .hasSize(2)
+                        .contains("강남역", "선릉역")
         );
     }
 
@@ -209,7 +209,7 @@ class LineServiceTest {
     @DisplayName("삭제할 구간을 찾지 못했을 경우 예외를 반환해야 합니다.")
     void deleteNone() {
         // given
-        LineRequest originLine = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5);
+        LineRequest originLine = new LineRequest("1호선", "bg-red-600", upStationId, downStationId, 5, 0);
         LineResponse lineResponse = lineService.save(originLine);
         Long newDownStationId = stationDao.save(new Station("교대역")).getId();
         SectionRequest sectionRequest = new SectionRequest(upStationId, newDownStationId, 3);
@@ -220,7 +220,7 @@ class LineServiceTest {
 
         // then
         assertThatThrownBy(() -> lineService.deleteStation(lineResponse.getId(), notInLineStationId))
-            .hasMessage("삭제할 구간을 찾지 못했습니다.")
-            .isInstanceOf(EmptyResultException.class);
+                .hasMessage("삭제할 구간을 찾지 못했습니다.")
+                .isInstanceOf(EmptyResultException.class);
     }
 }

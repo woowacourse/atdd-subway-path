@@ -76,14 +76,14 @@ public class Section {
         if (o == null || getClass() != o.getClass())
             return false;
 
-        Section section = (Section)o;
+        Section section = (Section) o;
 
         if (getDistance() != section.getDistance())
             return false;
         if (getUpStation() != null ? !getUpStation().equals(section.getUpStation()) : section.getUpStation() != null)
             return false;
         return getDownStation() != null ? getDownStation().equals(section.getDownStation()) :
-            section.getDownStation() == null;
+                section.getDownStation() == null;
     }
 
     @Override

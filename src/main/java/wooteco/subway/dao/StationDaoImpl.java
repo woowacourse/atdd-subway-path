@@ -1,17 +1,16 @@
 package wooteco.subway.dao;
 
-import java.sql.PreparedStatement;
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-
 import wooteco.subway.domain.Station;
+
+import java.sql.PreparedStatement;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class StationDaoImpl implements StationDao {
@@ -38,7 +37,7 @@ public class StationDaoImpl implements StationDao {
         final String sql = "INSERT INTO STATION (name) VALUES (?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, new String[] {"id"});
+            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, station.getName());
             return ps;
         }, keyHolder);
@@ -55,8 +54,8 @@ public class StationDaoImpl implements StationDao {
 
     private RowMapper<Station> stationMapper() {
         return (resultSet, rowNum) -> new Station(
-            resultSet.getLong("id"),
-            resultSet.getString("name")
+                resultSet.getLong("id"),
+                resultSet.getString("name")
         );
     }
 

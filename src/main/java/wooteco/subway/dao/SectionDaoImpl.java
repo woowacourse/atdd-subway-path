@@ -1,18 +1,17 @@
 package wooteco.subway.dao;
 
-import java.sql.PreparedStatement;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-
 import wooteco.subway.domain.Section;
 
+import java.sql.PreparedStatement;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Repository
-public class SectionDaoImpl implements SectionDao{
+public class SectionDaoImpl implements SectionDao {
     private final JdbcTemplate jdbcTemplate;
 
     public SectionDaoImpl(JdbcTemplate jdbcTemplate) {
@@ -25,7 +24,7 @@ public class SectionDaoImpl implements SectionDao{
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, new String[] {"id"});
+            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setLong(1, lineId);
             ps.setLong(2, section.getUpStation().getId());
             ps.setLong(3, section.getDownStation().getId());
@@ -40,11 +39,11 @@ public class SectionDaoImpl implements SectionDao{
     public void update(List<Section> sections) {
         final String sql = "UPDATE SECTION SET up_station_id = ?, down_station_id = ?, distance = ? WHERE id = ?";
         List<Object[]> updateSections = sections.stream()
-            .map(section -> new Object[] {section.getUpStation().getId(),
-                section.getDownStation().getId(),
-                section.getDistance(),
-                section.getId()})
-            .collect(Collectors.toList());
+                .map(section -> new Object[]{section.getUpStation().getId(),
+                        section.getDownStation().getId(),
+                        section.getDistance(),
+                        section.getId()})
+                .collect(Collectors.toList());
         jdbcTemplate.batchUpdate(sql, updateSections);
     }
 

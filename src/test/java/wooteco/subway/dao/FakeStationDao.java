@@ -1,19 +1,14 @@
 package wooteco.subway.dao;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import org.springframework.dao.DuplicateKeyException;
-
 import wooteco.subway.domain.Station;
+
+import java.util.*;
 
 public class FakeStationDao implements StationDao {
 
-    private Long seq = 0L;
     private final Map<Long, Station> stations = new HashMap<>();
+    private Long seq = 0L;
 
     @Override
     public Station save(Station station) {
