@@ -1,44 +1,43 @@
 package wooteco.subway.domain;
 
-import java.util.Collections;
-import java.util.List;
+import wooteco.subway.exception.ClientException;
+import java.util.*;
 
 public class Path {
 
-    private static final int BASIC_FARE = 1250;
-    private static final int FIRST_SECTION_FULL_FARE = 800;
-    private static final int FIRST_SECTION_UNIT = 5;
-    private static final int SECOND_SECTION_UNIT = 8;
-
     private final List<Long> stationIds;
+    private final List<Long> lineIds;
     private final int distance;
 
-    public Path(List<Long> stationIds, int distance) {
-        this.stationIds = stationIds;
+    public Path(List<Long> stationIds, List<Long> lineIds, int distance) {
+        this.stationIds = Collections.unmodifiableList(stationIds);
+        this.lineIds = lineIds;
         this.distance = distance;
     }
 
-    public int calculateFare() {
-        if (distance < 10) {
-            return BASIC_FARE;
-        }
-        if (distance <= 50) {
-            return calcAdditionalFare(distance - 10, FIRST_SECTION_UNIT);
-        }
-        return FIRST_SECTION_FULL_FARE + calcAdditionalFare(distance - 50, SECOND_SECTION_UNIT);
+    public double calculateFare(List<Line> lines, Long age) {
+        int lineExtraFare = findMostExpensiveExtraFare(lines);
+        return Age.findByAge(age).calc(lineExtraFare + Fare.calculateFare(distance));
     }
 
-    private int calcAdditionalFare(int distance, int unit) {
-        int fare = 0;
-        fare += (distance / unit) * 100;
-        if (distance % unit > 0 || (distance / unit == 0)) {
-            fare += 100;
-        }
-        return BASIC_FARE + fare;
+    private int findMostExpensiveExtraFare(List<Line> lines) {
+        return lineIds
+                .stream()
+                .mapToInt(id -> findExtraFare(lines, id))
+                .max()
+                .orElseThrow(NoSuchElementException::new);
+    }
+
+    private int findExtraFare(List<Line> lines, Long id) {
+        return lines.stream()
+                .filter(line -> line.getId().equals(id))
+                .findAny()
+                .orElseThrow(() -> new ClientException("존재하지 않은 line id입니다."))
+                .getExtraFare();
     }
 
     public List<Long> getStationIds() {
-        return Collections.unmodifiableList(stationIds);
+        return stationIds;
     }
 
     public int getDistance() {

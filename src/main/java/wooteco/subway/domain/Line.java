@@ -40,7 +40,7 @@ public class Line {
         return name.equals(target);
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

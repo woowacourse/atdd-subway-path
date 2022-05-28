@@ -6,7 +6,6 @@ import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.*;
-import wooteco.subway.domain.Path;
 import wooteco.subway.dto.LineResponse;
 import wooteco.subway.dto.PathResponse;
 import wooteco.subway.dto.SectionRequest;
@@ -101,16 +100,5 @@ public class SectionService {
         if (downSection.isEmpty()) {
             sectionDao.delete(id, upSection.get());
         }
-    }
-
-    public PathResponse findShortestPath(Long source, Long target) {
-        Sections sections = new Sections(sectionDao.findAll());
-        Path shortestPath = sections.findShortestPath(source, target);
-        List<Station> stations = shortestPath.getStationIds().stream()
-                .map(stationDao::findById)
-                .collect(Collectors.toList());
-
-        int distance = shortestPath.getDistance();
-        return new PathResponse(stations, distance, shortestPath.calculateFare());
     }
 }
