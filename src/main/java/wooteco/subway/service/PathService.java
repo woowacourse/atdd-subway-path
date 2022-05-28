@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.Age;
 import wooteco.subway.domain.DiscountSpecification;
 import wooteco.subway.domain.FareCacluateSpecification;
 import wooteco.subway.domain.Path;
@@ -45,7 +46,7 @@ public class PathService {
     public PathResponse searchPaths(PathRequest pathRequest) {
         Path path = getPath(pathFindStrategy, pathRequest.getSource(), pathRequest.getTarget());
         int fare = getFare(path);
-        int discountFare = applyFare(discountStrategy, pathRequest.getAge(), fare);
+        int discountFare = applyFare(discountStrategy, new Age(pathRequest.getAge()), fare);
 
         return new PathResponse(
                 path.getDistance(),
@@ -54,7 +55,7 @@ public class PathService {
         );
     }
 
-    private int applyFare(DiscountStrategy discountStrategy, int age, int fare) {
+    private int applyFare(DiscountStrategy discountStrategy, Age age, int fare) {
         DiscountSpecification specification = new DiscountSpecification(age, fare);
         return discountStrategy.discount(specification);
     }
