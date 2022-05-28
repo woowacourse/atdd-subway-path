@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.domain.distance.Distance;
 import wooteco.subway.exception.IllegalInputException;
 import wooteco.subway.exception.section.NoSuchSectionException;
 
@@ -33,7 +34,7 @@ class SectionsTest {
 
     @BeforeEach
     void setUpDate() {
-        line = new Line(1L, "red-line", "red");
+        line = new Line(1L, "red-line", "red", 1000);
         distance = new Distance(7);
 
         station1 = new Station(1L, "station1");

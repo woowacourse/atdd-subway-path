@@ -8,10 +8,10 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.distance.Distance;
 import wooteco.subway.exception.station.NoSuchStationException;
 
 class StationDaoTest extends DaoTest {
@@ -89,10 +89,10 @@ class StationDaoTest extends DaoTest {
         // given
         final String lineName = "2호선";
         final String lineColor = "bg-green-600";
-        final Long lineId = lineDao.insert(new Line(lineName, lineColor))
+        final Long lineId = lineDao.insert(new Line(lineName, lineColor, 1000))
                 .orElseThrow()
                 .getId();
-        final Line line = new Line(lineId, lineName, lineColor);
+        final Line line = new Line(lineId, lineName, lineColor, 1000);
 
         final Station upStation = stationDao.insert(redStation)
                 .orElseThrow();

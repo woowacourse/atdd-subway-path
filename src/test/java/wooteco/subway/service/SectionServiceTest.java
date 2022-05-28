@@ -14,12 +14,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
-import wooteco.subway.domain.Distance;
+import wooteco.subway.domain.ExtraFare;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Name;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.distance.Distance;
 import wooteco.subway.dto.section.SectionCreationRequest;
 import wooteco.subway.dto.section.SectionDeletionRequest;
 import wooteco.subway.exception.IllegalInputException;
@@ -42,7 +43,7 @@ class SectionServiceTest extends ServiceTest {
         downStation = new Station(2L, "왕십리역");
         final Section section = new Section(1L, line, upStation, downStation, new Distance(10));
         sections = new Sections(List.of(section));
-        line = new Line(1L, new Name("수인분당선"), "bg-yellow-600", sections);
+        line = new Line(1L, new Name("수인분당선"), "bg-yellow-600", new ExtraFare(1000), sections);
     }
 
     @Test

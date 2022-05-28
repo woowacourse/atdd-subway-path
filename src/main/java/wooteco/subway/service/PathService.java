@@ -5,11 +5,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.SubwayMap;
+import wooteco.subway.domain.distance.Distance;
+import wooteco.subway.dto.path.PathRequest;
 import wooteco.subway.dto.path.PathResponse;
 import wooteco.subway.exception.station.NoSuchStationException;
 
@@ -25,14 +26,15 @@ public class PathService {
         this.stationDao = stationDao;
     }
 
-    public PathResponse find(final Long sourceStationId, final Long targetStationId) {
+    public PathResponse find(PathRequest pathRequest) {
         final SubwayMap subwayMap = toSubwayMap();
-        final Station sourceStation = findStationById(sourceStationId);
-        final Station targetStation = findStationById(targetStationId);
+        final Station sourceStation = findStationById(pathRequest.getSourceStationId());
+        final Station targetStation = findStationById(pathRequest.getTargetStationId());
 
         final List<Station> stations = subwayMap.searchPath(sourceStation, targetStation);
         final Distance distance = subwayMap.searchDistance(sourceStation, targetStation);
-        final Fare fare = Fare.from(distance);
+        final int extraFare = subwayMap.searchExtraFareOfPath(sourceStation, targetStation);
+        final Fare fare = Fare.from(distance, extraFare, pathRequest.getAge());
 
         return PathResponse.of(stations, distance, fare);
     }

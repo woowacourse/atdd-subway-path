@@ -12,9 +12,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.distance.Distance;
 import wooteco.subway.dto.line.LineRequest;
 import wooteco.subway.dto.path.PathResponse;
 import wooteco.subway.dto.section.SectionRequest;
@@ -58,21 +58,21 @@ class PathAcceptanceTest extends AcceptanceTest {
         oksu = createStation(new StationRequest("옥수역")).as(Station.class);
 
         final long greenLineId = createAndGetLineId(
-                new LineRequest("2호선", "green", gangnam.getId(), yeoksam.getId(), 10));
+                new LineRequest("2호선", "green", gangnam.getId(), yeoksam.getId(), 10, 0));
         createSection(new SectionRequest(yeoksam.getId(), seolleung.getId(), 8), greenLineId);
         createSection(new SectionRequest(seolleung.getId(), samsung.getId(), 5), greenLineId);
 
         final long yellowLineId = createAndGetLineId(
-                new LineRequest("수인분당선", "yellow", seolleung.getId(), seoulForest.getId(), 12));
+                new LineRequest("수인분당선", "yellow", seolleung.getId(), seoulForest.getId(), 12, 1000));
         createSection(new SectionRequest(seoulForest.getId(), wangsimni.getId(), 7), yellowLineId);
 
         final long purpleLineId = createAndGetLineId(
-                new LineRequest("5호선", "purple", heangdang.getId(), wangsimni.getId(), 11));
+                new LineRequest("5호선", "purple", heangdang.getId(), wangsimni.getId(), 11, 300));
         createSection(new SectionRequest(wangsimni.getId(), majang.getId(), 17), purpleLineId);
         createSection(new SectionRequest(majang.getId(), dapsimni.getId(), 15), purpleLineId);
 
         final long orangeLineId = createAndGetLineId(
-                new LineRequest("3호선", "orange", yacksu.getId(), geumho.getId(), 7));
+                new LineRequest("3호선", "orange", yacksu.getId(), geumho.getId(), 7, 600));
         createSection(new SectionRequest(geumho.getId(), oksu.getId(), 12), orangeLineId);
     }
 
@@ -81,16 +81,19 @@ class PathAcceptanceTest extends AcceptanceTest {
     void ShowPath_SameStations_BadRequestReturned() {
         // when
         final ExtractableResponse<Response> response = findPath(
-                getPathQueryParams(gangnam.getId(), gangnam.getId()));
+                getPathQueryParams(gangnam.getId(), gangnam.getId(), 10));
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    private Map<String, Long> getPathQueryParams(final Long sourceStationId, final Long targetStationId) {
-        final Map<String, Long> queryParams = new HashMap<>();
+    private Map<String, Object> getPathQueryParams(final Long sourceStationId,
+                                                   final Long targetStationId,
+                                                   final Integer age) {
+        final Map<String, Object> queryParams = new HashMap<>();
         queryParams.put("source", sourceStationId);
         queryParams.put("target", targetStationId);
+        queryParams.put("age", age);
         return queryParams;
     }
 
@@ -98,7 +101,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("이동할 수 없는 경로를 조회할 경우 404 을 응답한다.")
     void ShowPath_InvalidPath_BadRequestReturned() {
         // when
-        final ExtractableResponse<Response> response = findPath(getPathQueryParams(gangnam.getId(), oksu.getId()));
+        final ExtractableResponse<Response> response = findPath(getPathQueryParams(gangnam.getId(), oksu.getId(), 10));
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
@@ -115,11 +118,11 @@ class PathAcceptanceTest extends AcceptanceTest {
                 seoulForest
         );
         final Distance expectedDistance = new Distance(30);
-        final PathResponse expected = PathResponse.of(expectedStations, expectedDistance, new Fare(1650));
+        final PathResponse expected = PathResponse.of(expectedStations, expectedDistance, new Fare(1150));
 
         // when
         final ExtractableResponse<Response> response = findPath(
-                getPathQueryParams(gangnam.getId(), seoulForest.getId()));
+                getPathQueryParams(gangnam.getId(), seoulForest.getId(), 10));
 
         final PathResponse actual = response.as(PathResponse.class);
 
@@ -143,10 +146,11 @@ class PathAcceptanceTest extends AcceptanceTest {
                 dapsimni
         );
         final Distance expectedDistance = new Distance(59);
-        final PathResponse expected = PathResponse.of(expectedStations, expectedDistance, new Fare(2250));
+        final PathResponse expected = PathResponse.of(expectedStations, expectedDistance, new Fare(1450));
 
         // when
-        final ExtractableResponse<Response> response = findPath(getPathQueryParams(yeoksam.getId(), dapsimni.getId()));
+        final ExtractableResponse<Response> response = findPath(
+                getPathQueryParams(yeoksam.getId(), dapsimni.getId(), 10));
         final PathResponse actual = response.as(PathResponse.class);
 
         // then
@@ -157,10 +161,21 @@ class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("경로 조회시 파라미터 데이터가 정확하지 않은 경우 400 을 응답한다.")
-    void ShowPath_InvalidParameter_BadRequestReturned() {
+    @DisplayName("경로 조회시 역 관련 파라미터 데이터가 정확하지 않은 경우 400 을 응답한다.")
+    void ShowPath_InvalidStationParameter_BadRequestReturned() {
         // when
-        final ExtractableResponse<Response> response = findPath(getPathQueryParams(gangnam.getId(), null));
+        final ExtractableResponse<Response> response = findPath(getPathQueryParams(gangnam.getId(), null, 10));
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    @DisplayName("경로 조회시 나이 관련 파라미터 데이터가 정확하지 않은 경우 400 을 응답한다.")
+    void ShowPath_InvalidAgeParameter_BadRequestReturned() {
+        // when
+        final ExtractableResponse<Response> response = findPath(
+                getPathQueryParams(gangnam.getId(), seoulForest.getId(), null));
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());

@@ -22,7 +22,7 @@ public class Sections {
         validateMinSize();
         final List<Section> deletableSections = value
                 .stream()
-                .filter(it -> it.contains(stationToDelete))
+                .filter(section -> section.contains(stationToDelete))
                 .collect(Collectors.toList());
         if (deletableSections.isEmpty()) {
             throw new NoSuchSectionException();
@@ -82,7 +82,7 @@ public class Sections {
     }
 
     public List<Section> getValue() {
-        return value;
+        return List.copyOf(value);
     }
 
     @Override

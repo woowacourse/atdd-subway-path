@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import wooteco.subway.domain.distance.Distance;
 import wooteco.subway.exception.IllegalInputException;
 
 public class Section {

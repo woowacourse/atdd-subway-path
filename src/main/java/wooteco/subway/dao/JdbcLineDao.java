@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.domain.ExtraFare;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Name;
 import wooteco.subway.domain.Sections;
@@ -26,7 +27,8 @@ public class JdbcLineDao implements LineDao {
     private final RowMapper<Line> rowMapper = (resultSet, rowNumber) -> new Line(
             resultSet.getLong("id"),
             new Name(resultSet.getString("name")),
-            resultSet.getString("color")
+            resultSet.getString("color"),
+            new ExtraFare(resultSet.getInt("extra_fare"))
     );
 
     public JdbcLineDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource, final SectionDao sectionDao) {
@@ -41,7 +43,7 @@ public class JdbcLineDao implements LineDao {
         try {
             final SqlParameterSource parameters = new BeanPropertySqlParameterSource(line);
             final long id = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
-            return Optional.of(new Line(id, line.getName(), line.getColor()));
+            return Optional.of(new Line(id, line.getName(), line.getColor(), line.getExtraFare()));
         } catch (final DuplicateKeyException e) {
             return Optional.empty();
         }
@@ -71,10 +73,12 @@ public class JdbcLineDao implements LineDao {
 
     public Optional<Line> updateById(final Long id, final Line line) {
         try {
-            final String sql = "UPDATE line SET name = ?, color = ? WHERE id = ?";
-            final int affectedRows = jdbcTemplate.update(sql, line.getName(), line.getColor(), id);
+            final String sql = "UPDATE line SET name = ?, color = ?, extra_fare = ? WHERE id = ?";
+            final int affectedRows = jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getExtraFare(), id);
             checkAffectedRows(affectedRows);
-            return Optional.of(new Line(id, new Name(line.getName()), line.getColor(), line.getSections()));
+            return Optional.of(
+                    new Line(id, new Name(line.getName()), line.getColor(), new ExtraFare(line.getExtraFare()),
+                            line.getSections()));
         } catch (final DuplicateKeyException e) {
             return Optional.empty();
         }

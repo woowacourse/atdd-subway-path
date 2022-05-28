@@ -1,0 +1,26 @@
+package wooteco.subway.domain.distance;
+
+import java.util.Arrays;
+import wooteco.subway.exception.IllegalInputException;
+
+public enum DistanceType {
+
+    BASE_DISTANCE(1, 10),
+    MIDDLE_DISTANCE(11, 50),
+    LONG_DISTANCE(50, Integer.MAX_VALUE);
+
+    private final int minValue;
+    private final int maxValue;
+
+    DistanceType(final int minValue, final int maxValue) {
+        this.minValue = minValue;
+        this.maxValue = maxValue;
+    }
+
+    public static DistanceType from(final Distance distance) {
+        return Arrays.stream(values())
+                .filter(distanceType -> distance.isBetween(distanceType.minValue, distanceType.maxValue))
+                .findFirst()
+                .orElseThrow(() -> new IllegalInputException("해당하는 거리 유형을 찾을 수 없습니다."));
+    }
+}

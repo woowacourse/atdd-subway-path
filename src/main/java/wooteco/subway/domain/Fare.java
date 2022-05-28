@@ -1,16 +1,13 @@
 package wooteco.subway.domain;
 
 import java.util.Objects;
+import wooteco.subway.domain.age.AgeType;
+import wooteco.subway.domain.age.FareByAgePolicy;
+import wooteco.subway.domain.distance.Distance;
+import wooteco.subway.domain.distance.FareByDistancePolicy;
 import wooteco.subway.exception.IllegalInputException;
 
 public class Fare {
-
-    private static final int DISTANCE_OF_BASIC_FARE = 10;
-    private static final int BASIC_FARE = 1250;
-    private static final int DISTANCE_OF_OVER_FARE = 50;
-    private static final int STANDARD_DISTANCE_OF_OVER_FARE = 5;
-    private static final int MAX_STANDARD_DISTANCE_OF_OVER_FARE = 8;
-    private static final int STANDARD_OF_OVER_FARE = 100;
 
     private final int value;
 
@@ -19,33 +16,40 @@ public class Fare {
         this.value = value;
     }
 
+    public static Fare from(final Distance distance, final int extraFare, final int age) {
+        return FareByDistancePolicy.apply(distance)
+                .add(extraFare)
+                .applyAgePolicy(age);
+    }
+
+    private Fare applyAgePolicy(final int age) {
+        return FareByAgePolicy.from(AgeType.from(age))
+                .applyDiscount(this);
+    }
+
     private void validateFareValue(final int value) {
         if (value < 0) {
             throw new IllegalInputException("요금은 0보다 작을 수 없습니다.");
         }
     }
 
-    public static Fare from(final Distance distance) {
-        return new Fare(calculateFare(distance));
+    public Fare add(final int value) {
+        return new Fare(this.value + value);
     }
 
-    public static int calculateFare(final Distance distance) {
-        if (distance.isLessThanOrEqualByValue(DISTANCE_OF_BASIC_FARE)) {
-            return BASIC_FARE;
-        }
-
-        if (distance.isLessThanOrEqualByValue(DISTANCE_OF_OVER_FARE)) {
-            return BASIC_FARE +
-                    calculateOverFare(distance.getValue() - DISTANCE_OF_BASIC_FARE, STANDARD_DISTANCE_OF_OVER_FARE);
-        }
-
-        return BASIC_FARE +
-                calculateOverFare(DISTANCE_OF_OVER_FARE - DISTANCE_OF_BASIC_FARE, STANDARD_DISTANCE_OF_OVER_FARE) +
-                calculateOverFare(distance.getValue() - DISTANCE_OF_OVER_FARE, MAX_STANDARD_DISTANCE_OF_OVER_FARE);
+    public Fare minus(final int value) {
+        return new Fare(this.value - value);
     }
 
-    private static int calculateOverFare(final int value, final int standardValue) {
-        return (int) ((Math.ceil((value - 1) / standardValue) + 1) * STANDARD_OF_OVER_FARE);
+    public Fare discount(final double percent) {
+        validateDiscountPercent(percent);
+        return new Fare((int) Math.ceil((value) * (100 - percent) / 100));
+    }
+
+    private void validateDiscountPercent(final double percent) {
+        if (percent < 0 || percent > 100) {
+            throw new IllegalInputException("할인 퍼센트는 0 이상 100 이하여야 합니다.");
+        }
     }
 
     public int getValue() {

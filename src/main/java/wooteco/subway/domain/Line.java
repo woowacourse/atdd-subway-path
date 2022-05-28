@@ -7,29 +7,31 @@ public class Line {
     private final Long id;
     private final Name name;
     private final String color;
+    private final ExtraFare extraFare;
     private final Sections sections;
 
-    public Line(final Long id, final Name name, final String color, final Sections sections) {
+    public Line(Long id, Name name, String color, ExtraFare extraFare, Sections sections) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
         this.sections = sections;
     }
 
-    public Line(final Long id, final Name name, final String color) {
-        this(id, name, color, null);
+    public Line(final Long id, final Name name, final String color, final ExtraFare extraFare) {
+        this(id, name, color, extraFare, null);
     }
 
-    public Line(final String name, final String color) {
-        this(null, new Name(name), color, null);
+    public Line(final String name, final String color, final int extraFare) {
+        this(null, new Name(name), color, new ExtraFare(extraFare), null);
     }
 
-    public Line(final Long id, final String name, final String color) {
-        this(id, new Name(name), color, null);
+    public Line(final Long id, final String name, final String color, final int extraFare) {
+        this(id, new Name(name), color, new ExtraFare(extraFare), null);
     }
 
     public Line addSections(final Sections sections) {
-        return new Line(id, name, color, sections);
+        return new Line(id, name, color, extraFare, sections);
     }
 
     public Long getId() {
@@ -42,6 +44,10 @@ public class Line {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare.getValue();
     }
 
     public Sections getSections() {

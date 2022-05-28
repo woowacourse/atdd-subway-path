@@ -43,7 +43,7 @@ abstract class AcceptanceTest {
         jdbcTemplate.execute("DELETE FROM line");
     }
 
-    protected ExtractableResponse<Response> findPath(final Map<String, Long> queryParams) {
+    protected ExtractableResponse<Response> findPath(final Map<String, Object> queryParams) {
         return RestAssured.given().log().all()
                 .queryParams(queryParams)
                 .when()

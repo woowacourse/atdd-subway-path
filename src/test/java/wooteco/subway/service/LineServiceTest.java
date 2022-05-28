@@ -15,11 +15,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.distance.Distance;
 import wooteco.subway.dto.line.LineRequest;
 import wooteco.subway.dto.line.LineResponse;
 import wooteco.subway.dto.station.StationResponse;
@@ -43,14 +43,14 @@ class LineServiceTest extends ServiceTest {
     void setUpData() {
         upStation = new Station(1L, "선릉역");
         downStation = new Station(2L, "삼성역");
-        request = new LineRequest(LINE_NAME, LINE_COLOR, upStation.getId(), downStation.getId(), 10);
+        request = new LineRequest(LINE_NAME, LINE_COLOR, upStation.getId(), downStation.getId(), 10, 400);
     }
 
     @Test
     @DisplayName("노선과 구간을 생성한다.")
     void Create_WithSection_Success() {
         // given
-        final Line expected = new Line(1L, LINE_NAME, LINE_COLOR);
+        final Line expected = new Line(1L, LINE_NAME, LINE_COLOR, 1000);
         given(lineDao.insert(any(Line.class)))
                 .willReturn(Optional.of(expected));
 
@@ -95,8 +95,8 @@ class LineServiceTest extends ServiceTest {
     void FindAll() {
         // given
         final List<Line> expected = List.of(
-                new Line(1L, LINE_NAME, LINE_COLOR),
-                new Line(2L, "5호선", "bg-blue-600")
+                new Line(1L, LINE_NAME, LINE_COLOR, 300),
+                new Line(2L, "5호선", "bg-blue-600", 700)
         );
         given(lineDao.findAll())
                 .willReturn(expected);
@@ -142,7 +142,7 @@ class LineServiceTest extends ServiceTest {
     void FindById() {
         // given
         final long id = 1L;
-        final Line expected = new Line(id, LINE_NAME, LINE_COLOR);
+        final Line expected = new Line(id, LINE_NAME, LINE_COLOR, 300);
 
         given(lineDao.findById(any(Long.class)))
                 .willReturn(Optional.of(expected));
@@ -185,7 +185,7 @@ class LineServiceTest extends ServiceTest {
     @DisplayName("노선에 해당하는 역이 존재하지 않으면 예외를 던진다.")
     void FindById_EmptyStations_ExceptionThrown() {
         // given
-        final Line line = new Line(1L, LINE_NAME, LINE_COLOR);
+        final Line line = new Line(1L, LINE_NAME, LINE_COLOR, 300);
         given(lineDao.findById(any(Long.class)))
                 .willReturn(Optional.of(line));
 
@@ -204,11 +204,11 @@ class LineServiceTest extends ServiceTest {
         // given
         final long id = 1L;
 
-        final Line existLine = new Line("xxx", "xx-x-xx");
+        final Line existLine = new Line("xxx", "xx-x-xx", 1100);
         given(lineDao.findById(any(Long.class)))
                 .willReturn(Optional.of(existLine));
 
-        final Line updateLine = new Line(LINE_NAME, LINE_COLOR);
+        final Line updateLine = new Line(LINE_NAME, LINE_COLOR, 900);
         given(lineDao.updateById(id, updateLine))
                 .willReturn(Optional.of(updateLine));
 
@@ -235,11 +235,11 @@ class LineServiceTest extends ServiceTest {
         // given
         final long id = 1L;
 
-        final Line existLine = new Line("xxx", "xx-x-xx");
+        final Line existLine = new Line("xxx", "xx-x-xx", 1000);
         given(lineDao.findById(any(Long.class)))
                 .willReturn(Optional.of(existLine));
 
-        final Line updateLine = new Line(LINE_NAME, LINE_COLOR);
+        final Line updateLine = new Line(LINE_NAME, LINE_COLOR, 900);
         given(lineDao.updateById(id, updateLine))
                 .willReturn(Optional.empty());
 

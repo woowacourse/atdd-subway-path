@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import wooteco.subway.domain.distance.Distance;
 import wooteco.subway.exception.IllegalInputException;
 
 class SectionTest {
@@ -24,7 +25,7 @@ class SectionTest {
 
     @BeforeEach
     void setUpData() {
-        line = new Line(1L, "2호선", "bg-green-600");
+        line = new Line(1L, "2호선", "bg-green-600", 1000);
 
         seolleung = new Station(1L, "선릉역");
         samseong = new Station(2L, "삼성역");

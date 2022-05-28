@@ -47,11 +47,12 @@ class SectionAcceptanceTest extends AcceptanceTest {
                 LINE_COLOR,
                 yeoksam.getId(),
                 samseong.getId(),
-                10
+                10,
+                400
         ));
 
         final LineResponse expectedResponse = LineResponse.of(
-                new Line(lineId, LINE_NAME, LINE_COLOR),
+                new Line(lineId, LINE_NAME, LINE_COLOR, 1000),
                 List.of(yeoksam, seolleung, samseong)
         );
 
@@ -82,11 +83,12 @@ class SectionAcceptanceTest extends AcceptanceTest {
                 LINE_COLOR,
                 yeoksam.getId(),
                 samseong.getId(),
-                10
+                10,
+                400
         ));
 
         final LineResponse expectedResponse = LineResponse.of(
-                new Line(lineId, LINE_NAME, LINE_COLOR),
+                new Line(lineId, LINE_NAME, LINE_COLOR, 1000),
                 List.of(yeoksam, seolleung, samseong)
         );
 
@@ -110,7 +112,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
                 LINE_COLOR,
                 yeoksam.getId(),
                 samseong.getId(),
-                10
+                10,
+                400
         ));
 
         // when
@@ -132,7 +135,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
                 LINE_COLOR,
                 yeoksam.getId(),
                 samseong.getId(),
-                10
+                10,
+                400
         ));
         // when
         final ExtractableResponse<Response> actual = createSection(request, lineId);
@@ -155,7 +159,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
                 LINE_COLOR,
                 yeoksam.getId(),
                 samseong.getId(),
-                10
+                10,
+                400
         ));
         // when
         final ExtractableResponse<Response> actual = createSection(request, lineId);
@@ -176,11 +181,12 @@ class SectionAcceptanceTest extends AcceptanceTest {
                 LINE_COLOR,
                 yeoksam.getId(),
                 samseong.getId(),
-                10
+                10,
+                400
         ));
 
         final LineResponse expectedResponse = LineResponse.of(
-                new Line(lineId, LINE_NAME, LINE_COLOR),
+                new Line(lineId, LINE_NAME, LINE_COLOR, 1000),
                 List.of(seolleung, yeoksam, samseong)
         );
 
@@ -203,11 +209,12 @@ class SectionAcceptanceTest extends AcceptanceTest {
                 LINE_COLOR,
                 yeoksam.getId(),
                 samseong.getId(),
-                10
+                10,
+                400
         ));
 
         final LineResponse expectedResponse = LineResponse.of(
-                new Line(lineId, LINE_NAME, LINE_COLOR),
+                new Line(lineId, LINE_NAME, LINE_COLOR, 1000),
                 List.of(yeoksam, samseong, seolleung)
         );
 
@@ -229,13 +236,14 @@ class SectionAcceptanceTest extends AcceptanceTest {
                 LINE_COLOR,
                 yeoksam.getId(),
                 samseong.getId(),
-                10
+                10,
+                400
         ));
 
         createSection(new SectionRequest(samseong.getId(), seolleung.getId(), 7), lineId);
 
         final LineResponse expectedResponse = LineResponse.of(
-                new Line(lineId, LINE_NAME, LINE_COLOR),
+                new Line(lineId, LINE_NAME, LINE_COLOR, 1000),
                 List.of(samseong, seolleung)
         );
 
@@ -266,13 +274,14 @@ class SectionAcceptanceTest extends AcceptanceTest {
                 LINE_COLOR,
                 yeoksam.getId(),
                 samseong.getId(),
-                10
+                10,
+                400
         ));
 
         createSection(new SectionRequest(samseong.getId(), seolleung.getId(), 7), lineId);
 
         final LineResponse expectedResponse = LineResponse.of(
-                new Line(lineId, LINE_NAME, LINE_COLOR),
+                new Line(lineId, LINE_NAME, LINE_COLOR, 1000),
                 List.of(yeoksam, samseong)
         );
 
@@ -294,13 +303,14 @@ class SectionAcceptanceTest extends AcceptanceTest {
                 LINE_COLOR,
                 yeoksam.getId(),
                 samseong.getId(),
-                10
+                10,
+                400
         ));
 
         createSection(new SectionRequest(samseong.getId(), seolleung.getId(), 7), lineId);
 
         final LineResponse expectedResponse = LineResponse.of(
-                new Line(lineId, LINE_NAME, LINE_COLOR),
+                new Line(lineId, LINE_NAME, LINE_COLOR, 1000),
                 List.of(yeoksam, seolleung)
         );
 
@@ -322,7 +332,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
                 LINE_COLOR,
                 yeoksam.getId(),
                 samseong.getId(),
-                10
+                10,
+                400
         ));
 
         // when
@@ -343,7 +354,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
                 LINE_COLOR,
                 yeoksam.getId(),
                 samseong.getId(),
-                10
+                10,
+                400
         ));
 
         createSection(new SectionRequest(samseong.getId(), seolleung.getId(), 7), lineId);

@@ -46,14 +46,16 @@ class LineAcceptanceTest extends AcceptanceTest {
                 LINE_ONE_COLOR,
                 seolleung.getId(),
                 yeoksam.getId(),
-                10
+                10,
+                0
         );
         lineTwoRequest = new LineRequest(
                 LINE_TWO_NAME,
                 LINE_TWO_COLOR,
                 wangsimni.getId(),
                 dapsimni.getId(),
-                7
+                7,
+                900
         );
     }
 
@@ -65,7 +67,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         final long lineId = extractId(actual);
 
         final LineResponse expected = LineResponse.of(
-                new Line(lineId, LINE_ONE_NAME, LINE_ONE_COLOR),
+                new Line(lineId, LINE_ONE_NAME, LINE_ONE_COLOR, 1000),
                 List.of(seolleung, yeoksam)
         );
 
@@ -104,7 +106,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         final long id = createAndGetLineId(lineOneRequest);
 
         final LineResponse expected = LineResponse.of(
-                new Line(id, LINE_ONE_NAME, LINE_ONE_COLOR),
+                new Line(id, LINE_ONE_NAME, LINE_ONE_COLOR, 1000),
                 List.of(seolleung, yeoksam)
         );
 
@@ -134,7 +136,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         createSection(new SectionRequest(samseongId, yeoksam.getId(), 3), (int) id);
 
         final LineResponse expected = LineResponse.of(
-                new Line(id, LINE_ONE_NAME, LINE_ONE_COLOR),
+                new Line(id, LINE_ONE_NAME, LINE_ONE_COLOR, 1000),
                 List.of(seolleung, dapsimni, new Station(samseongId, "삼성역"), yeoksam, wangsimni)
         );
 

@@ -11,7 +11,7 @@ class LineTest {
     @DisplayName("노선 객체 생성에 성공한다.")
     void NewLine() {
         // when
-        final Line line = new Line("7호선", "bg-red-600");
+        final Line line = new Line("7호선", "bg-red-600", 1000);
 
         // then
         assertThat(line).isNotNull();
