@@ -1,5 +1,6 @@
 package wooteco.subway.domain.path;
 
+import java.util.Objects;
 import wooteco.subway.exception.SubwayException;
 
 public class Fare {
@@ -49,11 +50,28 @@ public class Fare {
         return (int) Math.ceil((distance - restrictionDistance) / standardDistance) * ADDITIONAL_FARE_PER_UNIT;
     }
 
-    public Fare discountByAge(AgeDiscountStrategy strategy) {
-        return new Fare(strategy.discount(fare));
+    public Fare discountByAge(AgeBoundary ageBoundary) {
+        return new Fare(ageBoundary.discountFare(fare));
     }
 
     public int getFare() {
         return fare;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Fare fare1 = (Fare) o;
+        return fare == fare1.fare;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fare);
     }
 }

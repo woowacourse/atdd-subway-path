@@ -9,19 +9,19 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import wooteco.subway.exception.DataNotExistException;
 
-class AgeDiscountStrategyTest {
+class AgeBoundaryTest {
 
-    @DisplayName("나이에 맞는 AgeDiscountStrategy를 가져온다.")
+    @DisplayName("나이에 맞는 AgeBoundary를 가져온다.")
     @ParameterizedTest
     @CsvSource(value = {"0:BABY", "4:BABY", "5:CHILD", "12:CHILD", "13:YOUTH", "18:YOUTH", "19:ADULT"}, delimiter = ':')
-    void getAgeDiscountStrategyTest(int age, AgeDiscountStrategy expected) {
-        assertThat(AgeDiscountStrategy.from(age)).isEqualTo(expected);
+    void getAgeDiscountStrategyTest(int age, AgeBoundary expected) {
+        assertThat(AgeBoundary.from(age)).isEqualTo(expected);
     }
 
-    @DisplayName("존재하지 않는 나이를 입력한 경우 예외가 발생한다.")
+    @DisplayName("AgeBoundary애 벗어나는 나이를 입력한 경우 예외가 발생한다.")
     @Test
     void invalidAge() {
-        assertThatThrownBy(() -> AgeDiscountStrategy.from(-1))
+        assertThatThrownBy(() -> AgeBoundary.from(-1))
                 .isInstanceOf(DataNotExistException.class)
                 .hasMessage("존재하지 않는 나이입니다.");
     }
@@ -29,7 +29,7 @@ class AgeDiscountStrategyTest {
     @DisplayName("나이별로 할인된 요금을 계산하여 반환한다.")
     @ParameterizedTest
     @CsvSource(value = {"BABY:0", "CHILD:450", "YOUTH:720", "ADULT:1250"}, delimiter = ':')
-    void calculateDiscountFare(AgeDiscountStrategy strategy, int expected) {
-        assertThat(strategy.discount(1250)).isEqualTo(expected);
+    void calculateDiscountFare(AgeBoundary ageBoundary, int expected) {
+        assertThat(ageBoundary.discountFare(1250)).isEqualTo(expected);
     }
 }

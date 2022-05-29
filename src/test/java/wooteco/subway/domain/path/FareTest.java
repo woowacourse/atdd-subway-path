@@ -24,8 +24,9 @@ class FareTest {
             delimiter = ':')
     void calculateExtraFareByDistanceAddDefault(int distance, int expected) {
         Fare extraFareByDistance = new Fare(100);
+        Fare expectedFare = new Fare(expected);
 
-        assertThat(extraFareByDistance.addDefault(distance).getFare()).isEqualTo(expected);
+        assertThat(extraFareByDistance.addDefault(distance)).isEqualTo(expectedFare);
     }
 
     @DisplayName("노선별 추가 요금에 거리별 기본 요금을 더한 값을 계산한다.")
@@ -33,9 +34,10 @@ class FareTest {
     @CsvSource(value = {"0:0", "5:1000", "13:1600", "19:2350"}, delimiter = ':')
     void discountFareByAge(int age, int expected) {
         Fare defaultFareByDistance = new Fare(2350);
-        AgeDiscountStrategy strategy = AgeDiscountStrategy.from(age);
+        AgeBoundary ageBoundary = AgeBoundary.from(age);
+        Fare expectedFare = new Fare(expected);
 
-        assertThat(defaultFareByDistance.discountByAge(strategy).getFare()).isEqualTo(expected);
+        assertThat(defaultFareByDistance.discountByAge(ageBoundary)).isEqualTo(expectedFare);
     }
 
 }

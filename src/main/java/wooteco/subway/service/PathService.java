@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.domain.line.Lines;
-import wooteco.subway.domain.path.AgeDiscountStrategy;
+import wooteco.subway.domain.path.AgeBoundary;
 import wooteco.subway.domain.path.Fare;
 import wooteco.subway.domain.path.Path;
 import wooteco.subway.domain.path.PathDijkstraAlgorithm;
@@ -49,6 +49,6 @@ public class PathService {
         Lines lines = lineService.findAll();
         Fare maxExtraFareByDistance = lines.findMaxExtraFareByDistance(path.getUsedLineIds());
         return path.calculateFareByDistance(maxExtraFareByDistance)
-                .discountByAge(AgeDiscountStrategy.from(age));
+                .discountByAge(AgeBoundary.from(age));
     }
 }
