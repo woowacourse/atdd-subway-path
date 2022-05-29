@@ -1,11 +1,11 @@
 package wooteco.subway.domain;
 
-public class Station {
-    private Long id;
-    private String name;
+import java.util.Objects;
 
-    public Station() {
-    }
+public class Station {
+
+    private final String name;
+    private Long id;
 
     public Station(Long id, String name) {
         this.id = id;
@@ -13,7 +13,11 @@ public class Station {
     }
 
     public Station(String name) {
-        this.name = name;
+        this(null, name);
+    }
+
+    public boolean isSameStation(Station target) {
+        return this.equals(target);
     }
 
     public Long getId() {
@@ -22,5 +26,22 @@ public class Station {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Station)) {
+            return false;
+        }
+        Station station = (Station) o;
+        return Objects.equals(getId(), station.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }
