@@ -38,7 +38,7 @@ public class PathService {
 
         List<Long> path = pathFinder.findPath(from, to);
         int distance = pathFinder.findDistance(from, to);
-        List<Long> lineIds = getLineList(pathFinder, from, to);
+        List<Long> lineIds = getLinesAlongSections(pathFinder, from, to);
         int fare = calculateAndGetFinalFare(age, distance, lineIds);
         List<Station> stations = stationDao.findByIdIn(path);
 
@@ -59,7 +59,9 @@ public class PathService {
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    private List<Long> getLineList(PathFinder pathFinder, Long from, Long to) {
+    // 경로중에 거치는 노선들을 가져온다
+    // Get the routes that pass along the route
+    private List<Long> getLinesAlongSections(PathFinder pathFinder, Long from, Long to) {
         List<SectionWeightedEdge> edges = pathFinder.findEdges(from, to);
         return edges.stream()
                 .map(edge -> edge.getLineId())

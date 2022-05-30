@@ -8,24 +8,24 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public interface StationDao {
-    long save(Station station);
+public abstract class StationDao {
+    abstract public long save(Station station);
 
-    List<Station> findAll();
+    abstract public List<Station> findAll();
 
-    Optional<Station> findById(Long id);
+    abstract public Optional<Station> findById(Long id);
 
-    List<Station> findByIdIn(Collection<Long> sortedStationIds);
+    abstract public List<Station> findByIdIn(Collection<Long> sortedStationIds);
 
-    boolean existById(Long id);
+    abstract public boolean existById(Long id);
 
-    boolean existByName(String name);
+    abstract public boolean existByName(String name);
 
-    void deleteById(Long id);
+    abstract public void deleteById(Long id);
 
-    void deleteAll();
+    abstract public void deleteAll();
 
-    default LinkedList<Station> sort(Collection<Long> sortedIds, Collection<Station> stations) {
+    protected LinkedList<Station> sort(Collection<Long> sortedIds, Collection<Station> stations) {
         return sortedIds.stream()
                 .flatMap(sortedId -> stations.stream()
                         .filter(station -> station.getId().equals(sortedId)))

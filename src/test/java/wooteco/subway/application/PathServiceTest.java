@@ -1,6 +1,7 @@
 package wooteco.subway.application;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.Infrastructure.line.LineDao;
 import wooteco.subway.Infrastructure.line.MemoryLineDao;
@@ -78,17 +79,34 @@ class PathServiceTest {
         }
     }
 
-    @DisplayName("경로를 조회한 결과가 순서에 맞게 출력되었는지 검증한다")
-    @Test
-    void findPath() {
-        PathResponse result = pathService.findPath(기흥역_ID, 한티역_ID, 0);
-        assertAll(
-                () -> assertThat(result.getStations().get(0).getId()).isEqualTo(기흥역_ID),
-                () -> assertThat(result.getStations().get(1).getId()).isEqualTo(모란역_ID),
-                () -> assertThat(result.getStations().get(2).getId()).isEqualTo(선정릉역_ID),
-                () -> assertThat(result.getStations().get(3).getId()).isEqualTo(한티역_ID),
-                () -> assertThat(result.getDistance()).isEqualTo(24),
-                () -> assertThat(result.getFare()).isEqualTo(1550 + 900)
-        );
+    @DisplayName("경로를 조회한 결과가 순서, 거리, 운임에 맞게 출력되었는지 검증한다")
+    @Nested
+    class findPath {
+        @DisplayName("노선 추가 운임: 0원")
+        @Test
+        void findPath_0won() {
+            PathResponse result = pathService.findPath(선릉역_ID, 한티역_ID, 0);
+            assertAll(
+                    () -> assertThat(result.getStations().get(0).getId()).isEqualTo(선릉역_ID),
+                    () -> assertThat(result.getStations().get(1).getId()).isEqualTo(선정릉역_ID),
+                    () -> assertThat(result.getStations().get(2).getId()).isEqualTo(한티역_ID),
+                    () -> assertThat(result.getDistance()).isEqualTo(58),
+                    () -> assertThat(result.getFare()).isEqualTo(2150)
+            );
+        }
+
+        @DisplayName("가장 높은 노선 추가 운임: 900원")
+        @Test
+        void findPath_900won() {
+            PathResponse result = pathService.findPath(기흥역_ID, 한티역_ID, 0);
+            assertAll(
+                    () -> assertThat(result.getStations().get(0).getId()).isEqualTo(기흥역_ID),
+                    () -> assertThat(result.getStations().get(1).getId()).isEqualTo(모란역_ID),
+                    () -> assertThat(result.getStations().get(2).getId()).isEqualTo(선정릉역_ID),
+                    () -> assertThat(result.getStations().get(3).getId()).isEqualTo(한티역_ID),
+                    () -> assertThat(result.getDistance()).isEqualTo(24),
+                    () -> assertThat(result.getFare()).isEqualTo(1550 + 900)
+            );
+        }
     }
 }

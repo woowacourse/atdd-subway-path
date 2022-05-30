@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
-public class DbStationDao implements StationDao {
+public class DbStationDao extends StationDao {
 
     private static final RowMapper<Station> ROW_MAPPER = (rs, rowNum) -> {
         long id = rs.getLong("id");

@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-public class MemoryStationDao implements StationDao {
+public class MemoryStationDao extends StationDao {
     private List<Station> stations = new ArrayList<>();
 
     private AtomicLong sequence = new AtomicLong();
