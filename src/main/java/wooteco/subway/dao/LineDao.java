@@ -132,11 +132,4 @@ public class LineDao {
             throw new IllegalStateException("삭제하고자 하는 노선이 존재하지 않습니다.");
         }
     }
-
-    public void deleteAll() {
-        String sql = "TRUNCATE TABLE line";
-        jdbcTemplate.update(sql, new MapSqlParameterSource());
-        String resetIdSql = "ALTER TABLE line ALTER COLUMN id RESTART WITH 1";
-        jdbcTemplate.update(resetIdSql, new MapSqlParameterSource());
-    }
 }

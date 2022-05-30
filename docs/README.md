@@ -171,14 +171,14 @@
 - [X] PathService 의 DB O(n)번 접근하는 비용 문제 해결
 - [X] sql 파일 자동 정렬로 인한 가독성 문제 해결
 - test
-    - [ ] id 를 직접 사용하지 않으며 테스트를 할 수 있도록 수정
-    - [ ] 테스트에만 사용되는 deleteAll 메서드를 사용하지 않는 구조로 수정
+    - [X] id 를 직접 사용하지 않으며 테스트를 할 수 있도록 수정
+    - [X] 테스트에만 사용되는 deleteAll 메서드를 사용하지 않는 구조로 수정
 - JgraphtTest
     - [X] assertThat 이 반복되는 곳은 assertAll 사용하기
     - [X] test 명을 명시적으로 수정, DisplayName 사용
     - [X] 변수명을 명시적으로 수정
 - AcceptanceTest
-    - [ ] test fixture 만들기
+    - [X] test fixture 만들기
     - [X] 1, 2와 같은 의미를 나타내지 못하는 변수명 구분 수정
 
 </details>

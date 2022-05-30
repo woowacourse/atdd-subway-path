@@ -8,6 +8,7 @@ import wooteco.subway.acceptance.fixture.SimpleCreate;
 import wooteco.subway.acceptance.fixture.SimpleResponse;
 import wooteco.subway.acceptance.fixture.SimpleRestAssured;
 import wooteco.subway.dto.request.StationRequest;
+import wooteco.subway.dto.response.LineCreateResponse;
 import wooteco.subway.dto.response.StationResponse;
 
 public class SectionAcceptanceTest extends AcceptanceTest {
@@ -35,11 +36,12 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         StationResponse 역삼역 = SimpleCreate.createStation(new StationRequest("역삼역")).toObject(StationResponse.class);
         StationResponse 선릉역 = SimpleCreate.createStation(new StationRequest("선릉역")).toObject(StationResponse.class);
 
-        SimpleCreate.createLine(강남역, 역삼역);
+        LineCreateResponse line = SimpleCreate.createLine(강남역, 역삼역).toObject(LineCreateResponse.class);
 
         SimpleCreate.createSection(역삼역, 선릉역);
         // when
-        SimpleResponse response = SimpleRestAssured.delete("/lines/1/sections?stationId=3");
+        SimpleResponse response = SimpleRestAssured.delete(
+                "/lines/" + line.getId() + "/sections?stationId=" + 선릉역.getId());
         // then
         response.assertStatus(HttpStatus.OK);
     }
