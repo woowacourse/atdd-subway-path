@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
@@ -37,7 +36,7 @@ public class SectionDaoTest {
     }
 
     private void insertSection(Long lineId, SectionRequest sectionRequest) {
-        sectionDao.save(lineId, sectionRequest);
+        sectionDao.create(lineId, sectionRequest);
     }
 
     @Test
@@ -113,8 +112,7 @@ public class SectionDaoTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 구간 아이디로 생성시 예외발생")
-    void updateInvalidSection() {
+    void updateByInvalidSectionId() {
         var invalidSectionId = -1L;
         var invalidSection = new Section(invalidSectionId, UP_STATION_ID, DOWN_STATION_ID, DEFAULT_DISTANCE);
 

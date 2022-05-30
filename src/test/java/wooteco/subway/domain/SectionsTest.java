@@ -25,12 +25,12 @@ public class SectionsTest {
 
         var expected = new Section(2L, 3L, 1);
 
+        var actual = sections.createSection(section).get();
+
         assertAll(
-                () -> assertThat(sections.createSection(section).get().getUpStationId()).isEqualTo(
-                        expected.getUpStationId()),
-                () -> assertThat(sections.createSection(section).get().getDownStationId()).isEqualTo(
-                        expected.getDownStationId()),
-                () -> assertThat(sections.createSection(section).get().getDistance()).isEqualTo(expected.getDistance())
+                () -> assertThat(actual.getUpStationId()).isEqualTo(expected.getUpStationId()),
+                () -> assertThat(actual.getDownStationId()).isEqualTo(expected.getDownStationId()),
+                () -> assertThat(actual.getDistance()).isEqualTo(expected.getDistance())
         );
     }
 
@@ -41,12 +41,12 @@ public class SectionsTest {
 
         var expected = new Section(1L, 2L, 1);
 
+        var actual = sections.createSection(section).get();
+
         assertAll(
-                () -> assertThat(sections.createSection(section).get().getUpStationId()).isEqualTo(
-                        expected.getUpStationId()),
-                () -> assertThat(sections.createSection(section).get().getDownStationId()).isEqualTo(
-                        expected.getDownStationId()),
-                () -> assertThat(sections.createSection(section).get().getDistance()).isEqualTo(expected.getDistance())
+                () -> assertThat(actual.getUpStationId()).isEqualTo(expected.getUpStationId()),
+                () -> assertThat(actual.getDownStationId()).isEqualTo(expected.getDownStationId()),
+                () -> assertThat(actual.getDistance()).isEqualTo(expected.getDistance())
         );
     }
 

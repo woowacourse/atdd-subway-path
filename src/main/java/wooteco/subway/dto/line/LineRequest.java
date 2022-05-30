@@ -1,29 +1,29 @@
 package wooteco.subway.dto.line;
 
 public class LineRequest {
-
-    private static final long DEFAULT_ID = -1L;
-    private static final int DEFAULT_DISTANCE = 0;
-
     private String name;
     private String color;
     private Long upStationId;
     private Long downStationId;
     private int distance;
+    private int extraFare;
 
     public LineRequest() {
     }
 
-    public LineRequest(String name, String color) {
-        this(name, color, DEFAULT_ID, DEFAULT_ID, DEFAULT_DISTANCE);
+    public LineRequest(String name, String color, int extraFare) {
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
     }
 
-    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
+    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance, int extraFare) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+        this.extraFare = extraFare;
     }
 
     public String getName() {
@@ -44,5 +44,9 @@ public class LineRequest {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 }

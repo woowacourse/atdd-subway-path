@@ -17,14 +17,15 @@ public class SectionDao {
         var upStationId = rs.getLong("up_station_id");
         var downStationId = rs.getLong("down_station_id");
         var distance = rs.getInt("distance");
-        return new Section(id, upStationId, downStationId, distance);
+        var lineId = rs.getLong("line_id");
+        return new Section(id, upStationId, downStationId, distance, lineId);
     };
 
     public SectionDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void save(long lineId, SectionRequest sectionRequest) {
+    public void create(long lineId, SectionRequest sectionRequest) {
         var sql = "INSERT INTO section (up_station_id, down_station_id, distance, line_id) VALUES (?, ?, ?, ?)";
         jdbcTemplate.update(
                 sql,

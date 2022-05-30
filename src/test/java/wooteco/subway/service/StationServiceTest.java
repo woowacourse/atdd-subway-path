@@ -28,7 +28,7 @@ class StationServiceTest {
     @BeforeEach
     void setUp() {
         stationService = new StationService(new StationDao(jdbcTemplate), new SectionDao(jdbcTemplate));
-        stationService.createStation(STATION_NAME);
+        stationService.create(STATION_NAME);
     }
 
     @Test
@@ -51,9 +51,8 @@ class StationServiceTest {
     }
 
     @Test
-    @DisplayName("중복된 이름으로 생성시 예외발생")
-    void failCreateStation() {
-        Assertions.assertThatThrownBy(() -> stationService.createStation(STATION_NAME))
+    void createByDuplicateName() {
+        Assertions.assertThatThrownBy(() -> stationService.create(STATION_NAME))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 이미 존재하는 역 이름 입니다.");
     }
@@ -62,26 +61,25 @@ class StationServiceTest {
     void deleteStation() {
         var stationId = findStation().getId();
 
-        assertDoesNotThrow(() -> stationService.deleteStation(stationId));
+        assertDoesNotThrow(() -> stationService.delete(stationId));
     }
 
     @Test
-    @DisplayName("존재하지 않는 역 아이디로 삭제시 예외발생")
-    void failDeleteStation() {
+    void createByInvalidId() {
         var invalidStationId = -1L;
 
-        Assertions.assertThatThrownBy(() -> stationService.deleteStation(invalidStationId))
+        Assertions.assertThatThrownBy(() -> stationService.delete(invalidStationId))
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("[ERROR] 존재하지 않는 역 입니다.");
     }
 
     @Test
     @DisplayName("구간에 등록된 역 제거를 시도할 경우 예외발생")
-    void failDeleteStation2() {
+    void failDeleteStation() {
         var stationId = findStation().getId();
         insertSection(stationId);
 
-        Assertions.assertThatThrownBy(() -> stationService.deleteStation(stationId))
+        Assertions.assertThatThrownBy(() -> stationService.delete(stationId))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 구간에 추가돼 있는 역은 삭제할 수 없습니다.");
     }

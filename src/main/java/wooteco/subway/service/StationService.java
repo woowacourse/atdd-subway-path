@@ -18,11 +18,11 @@ public class StationService {
         this.sectionDao = sectionDao;
     }
 
-    public StationResponse createStation(String name) {
+    public StationResponse create(String name) {
         return new StationResponse(stationDao.save(name));
     }
 
-    public void deleteStation(Long stationId) {
+    public void delete(Long stationId) {
         checkValidation(stationId);
         stationDao.deleteById(stationId);
     }

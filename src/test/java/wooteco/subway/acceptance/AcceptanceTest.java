@@ -25,7 +25,7 @@ public class AcceptanceTest {
         return response.header("Location").split("/")[2];
     }
 
-    final protected ExtractableResponse<Response> requestCreate(String path, Map<String, String> params) {
+    final protected ExtractableResponse<Response> create(String path, Map<String, String> params) {
         return RestAssured.given().log().all()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -35,7 +35,7 @@ public class AcceptanceTest {
                 .extract();
     }
 
-    final protected ExtractableResponse<Response> requestGet(String path) {
+    final protected ExtractableResponse<Response> find(String path) {
         return RestAssured.given().log().all()
                 .when()
                 .get(path)
@@ -43,7 +43,7 @@ public class AcceptanceTest {
                 .extract();
     }
 
-    final protected ExtractableResponse<Response> requestDelete(String path) {
+    final protected ExtractableResponse<Response> delete(String path) {
         return RestAssured.given().log().all()
                 .when()
                 .delete(path)

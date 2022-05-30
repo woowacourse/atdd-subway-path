@@ -1,10 +1,13 @@
 package wooteco.subway.domain;
 
-public class Section {
+import java.util.Objects;
+
+public final class Section {
     private Long id;
     private final Long downStationId;
     private final Long upStationId;
     private final int distance;
+    private Long lineId;
 
     public Section(Long id, Long upStationId, Long downStationId, int distance) {
         this.id = id;
@@ -13,10 +16,25 @@ public class Section {
         this.distance = distance;
     }
 
+    public Section(Long id, Long upStationId, Long downStationId, int distance, Long lineId) {
+        this.id = id;
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
+        this.distance = distance;
+        this.lineId = lineId;
+    }
+
     public Section(Long upStationId, Long downStationId, int distance) {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+    }
+
+    public Section(long upStationId, long downStationId, int distance, long lineId) {
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
+        this.distance = distance;
+        this.lineId = lineId;
     }
 
     public static Section createWhenSameUpStation(Section target, Section subSection) {
@@ -77,5 +95,27 @@ public class Section {
 
     public boolean isSameStationId(Long stationId) {
         return downStationId.equals(stationId) || upStationId.equals(stationId);
+    }
+
+    public Long getLineId() {
+        return lineId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Section section = (Section) o;
+        return distance == section.distance && Objects.equals(id, section.id) && Objects.equals(
+                downStationId, section.downStationId) && Objects.equals(upStationId, section.upStationId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, downStationId, upStationId, distance);
     }
 }

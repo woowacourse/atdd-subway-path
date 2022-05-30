@@ -1,5 +1,8 @@
 package wooteco.subway.domain;
 
+import wooteco.subway.domain.discountstrategy.AgeDiscountStrategy;
+import wooteco.subway.domain.discountstrategy.AgeDiscountStrategyFactory;
+
 public class Fare {
 
     private static final int DEFAULT_FARE = 1250;
@@ -12,11 +15,16 @@ public class Fare {
 
     private final int fare;
 
-    public Fare(double distance) {
-        fare = calculateFare((int) distance);
+    public Fare(double distance, int extraFare, int age) {
+        var fare = calculateFareByDistance((int) distance) + extraFare;
+        this.fare = (int) createAgeDiscountStrategy(age).calculateFare(fare);
     }
 
-    private int calculateFare(int distance) {
+    private AgeDiscountStrategy createAgeDiscountStrategy(int age) {
+        return AgeDiscountStrategyFactory.from(age);
+    }
+
+    private int calculateFareByDistance(int distance) {
         if (distance > DEFAULT_FARE_DISTANCE) {
             return DEFAULT_FARE + calculateOverFare(distance);
         }

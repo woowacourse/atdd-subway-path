@@ -1,10 +1,11 @@
 package wooteco.subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 public class FareTest {
 
@@ -14,30 +15,19 @@ public class FareTest {
     @Test
     @DisplayName("거리가 10km 이하 경우 기본요금")
     void calculateFare() {
-        assertAll(
-                () -> assertThat(new Fare(10).getFare()).isEqualTo(DEFAULT_FARE),
-                () -> assertThat(new Fare(11).getFare()).isNotEqualTo(DEFAULT_FARE)
-        );
+        assertThat(new Fare(10, 0, 0).getFare()).isEqualTo(DEFAULT_FARE);
     }
 
-    @Test
     @DisplayName("거리가 11km 이상 50km 이하인 경우 5km 마다 추가요금")
-    void calculateFare2() {
-        assertAll(
-                () -> assertThat(new Fare(11).getFare()).isEqualTo(DEFAULT_FARE + ADDITIONAL_FARE * 1),
-                () -> assertThat(new Fare(15).getFare()).isEqualTo(DEFAULT_FARE + ADDITIONAL_FARE * 1),
-                () -> assertThat(new Fare(46).getFare()).isEqualTo(DEFAULT_FARE + ADDITIONAL_FARE * 8),
-                () -> assertThat(new Fare(50).getFare()).isEqualTo(DEFAULT_FARE + ADDITIONAL_FARE * 8)
-        );
+    @ParameterizedTest
+    @CsvSource(value = {"11,1", "50,8"})
+    void calculateFare2(int distance, int additionalFareCount) {
+        assertThat(new Fare(distance, 0, 0).getFare()).isEqualTo(DEFAULT_FARE + ADDITIONAL_FARE * additionalFareCount);
     }
 
     @Test
     @DisplayName("거리가 50km 초과하는 경우 8km 마다 추가요금")
     void calculateFare3() {
-        assertAll(
-                () -> assertThat(new Fare(51).getFare()).isEqualTo(DEFAULT_FARE + ADDITIONAL_FARE * 9),
-                () -> assertThat(new Fare(58).getFare()).isEqualTo(DEFAULT_FARE + ADDITIONAL_FARE * 9),
-                () -> assertThat(new Fare(59).getFare()).isEqualTo(DEFAULT_FARE + ADDITIONAL_FARE * 10)
-        );
+        assertThat(new Fare(58, 0, 0).getFare()).isEqualTo(DEFAULT_FARE + ADDITIONAL_FARE * 9);
     }
 }

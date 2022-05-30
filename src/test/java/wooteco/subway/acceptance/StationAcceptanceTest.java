@@ -10,12 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import wooteco.subway.dto.station.StationResponse;
 
-@DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> responseCreateStation;
@@ -30,10 +28,9 @@ public class StationAcceptanceTest extends AcceptanceTest {
     private ExtractableResponse<Response> insertStation(String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
-        return requestCreate("/stations", params);
+        return create("/stations", params);
     }
 
-    @DisplayName("새로운 지하철역을 생성한다.")
     @Test
     void createStation() {
         assertAll(
@@ -42,22 +39,20 @@ public class StationAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    @DisplayName("기존에 존재하는 지하철역 이름으로 생성시 400에러 발생.")
     @Test
-    void createStationWithDuplicateName() {
+    void createStationByDuplicateName() {
         var response = insertStation("테스트역");
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("지하철역을 조회한다.")
     @Test
-    void getStations() {
+    void findAllStations() {
         /// given
         var responseCreateStation2 = insertStation("테스트2역");
 
         // when
-        var response = requestGet("/stations");
+        var response = find("/stations");
 
         // then
         var ids = getIds(response);
@@ -76,10 +71,9 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
     }
 
-    @DisplayName("지하철역을 제거한다.")
     @Test
-    void deleteStation() {
-        var response = requestDelete("/stations/" + getId(responseCreateStation));
+    void deleteStationById() {
+        var response = delete("/stations/" + getId(responseCreateStation));
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
