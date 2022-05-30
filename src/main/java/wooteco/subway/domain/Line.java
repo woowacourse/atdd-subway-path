@@ -1,32 +1,29 @@
 package wooteco.subway.domain;
 
 import java.util.Objects;
+import wooteco.subway.domain.vo.LineColor;
+import wooteco.subway.domain.vo.Name;
 
 public class Line {
 
     private final Long id;
-    private final String name;
-    private final String color;
+    private final Name name;
+    private final LineColor color;
+    private final int extraFare;
 
-    public Line(String name, String color) {
-        this(null, name, color);
+    public Line(String name, String color, int extraFare) {
+        this(null, name, color, extraFare);
     }
 
     public Line(Long id, String name, String color) {
-        validateArgument(name, color);
-
-        this.id = id;
-        this.name = name;
-        this.color = color;
+        this(id, name, color, 0);
     }
 
-    private void validateArgument(String name, String color) {
-        if (name.isBlank() || color.isBlank()) {
-            throw new IllegalArgumentException("노선의 이름 혹은 색이 공백일 수 없습니다.");
-        }
-        if (name.length() > 255 || color.length() > 20) {
-            throw new IllegalArgumentException("노선의 이름이 255자 보다 크거나, 색이 20자 보다 큽니다.");
-        }
+    public Line(Long id, String name, String color, int extraFare) {
+        this.id = id;
+        this.name = Name.of(name);
+        this.color = LineColor.of(color);
+        this.extraFare = extraFare;
     }
 
     public Long getId() {
@@ -34,11 +31,15 @@ public class Line {
     }
 
     public String getName() {
-        return name;
+        return name.getName();
     }
 
     public String getColor() {
-        return color;
+        return color.getColor();
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     @Override
@@ -46,15 +47,15 @@ public class Line {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Line)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
         Line line = (Line) o;
-        return Objects.equals(name, line.name) && Objects.equals(color, line.color);
+        return Objects.equals(id, line.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, color);
+        return Objects.hash(id);
     }
 }

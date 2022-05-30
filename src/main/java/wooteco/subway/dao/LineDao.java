@@ -10,6 +10,8 @@ public interface LineDao {
 
     Optional<Line> findById(Long id);
 
+    List<Line> findAllByIds(List<Long> ids);
+
     List<Line> findAll();
 
     Long updateByLine(Line line);

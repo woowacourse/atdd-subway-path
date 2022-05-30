@@ -2,26 +2,36 @@ package wooteco.subway.domain.vo;
 
 import java.util.Objects;
 
-public class StationName {
+public class Name {
 
-    private String name;
+    private static final int MAX_NAME_LENGTH = 255;
 
-    private StationName(String name) {
+    private final String name;
+
+    private Name(String name) {
         this.name = name;
     }
 
-    public static StationName of(String name) {
+    public static Name of(String name) {
         validateArgument(name);
 
-        return new StationName(name);
+        return new Name(name);
     }
 
     private static void validateArgument(String name) {
+        validateBlank(name);
+        validateLength(name);
+    }
+
+    private static void validateBlank(String name) {
         if (name.isBlank()) {
-            throw new IllegalArgumentException("지하철역 이름이 공백일 수 없습니다.");
+            throw new IllegalArgumentException("이름이 공백일 수 없습니다.");
         }
-        if (name.length() > 255) {
-            throw new IllegalArgumentException("지하철역 이름은 255자 보다 클 수 없습니다.");
+    }
+
+    private static void validateLength(String name) {
+        if (name.length() > MAX_NAME_LENGTH) {
+            throw new IllegalArgumentException("이름은 255자 보다 클 수 없습니다.");
         }
     }
 
@@ -37,7 +47,7 @@ public class StationName {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        StationName that = (StationName) o;
+        Name that = (Name) o;
         return Objects.equals(name, that.name);
     }
 
