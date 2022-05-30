@@ -3,9 +3,9 @@ package wooteco.subway.application;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.Infrastructure.SectionDao;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
+import wooteco.subway.Infrastructure.section.SectionDao;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Sections;
 import wooteco.subway.exception.constant.SectionNotRegisterException;
 
 import java.util.LinkedList;

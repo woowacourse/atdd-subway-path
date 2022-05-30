@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.application.StationService;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.request.StationRequest;
 import wooteco.subway.dto.response.StationResponse;
 

@@ -1,17 +1,15 @@
 package wooteco.subway.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Station;
+import lombok.*;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.station.Station;
 
 import java.util.List;
 
 @Getter
 @ToString
 @Builder
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
 public class LineResponse {
 
@@ -19,9 +17,6 @@ public class LineResponse {
     private String name;
     private String color;
     private List<Station> stations;
-
-    private LineResponse() {
-    }
 
     public LineResponse(Long id, String name, String color) {
         this.id = id;

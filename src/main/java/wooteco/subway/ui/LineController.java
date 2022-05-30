@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import wooteco.subway.application.LineService;
 import wooteco.subway.application.SectionService;
 import wooteco.subway.application.StationService;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Station;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.request.LineRequest;
 import wooteco.subway.dto.response.LineResponse;
 
@@ -59,14 +59,17 @@ public class LineController {
     @ResponseStatus(HttpStatus.OK)
     public LineResponse showLine(@PathVariable Long id) {
         Line line = lineService.findById(id);
-        return new LineResponse(line.getId(), line.getName(), line.getColor());
+        LinkedList<Long> sortedStationIds = sectionService.findSortedStationIds(line.getId());
+        List<Station> stations = stationService.findByIdIn(sortedStationIds);
+        return new LineResponse(line, stations);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public LineResponse updateLine(@PathVariable Long id, @RequestBody LineRequest lineRequest) {
-        Line line = lineService.update(id, lineRequest.getName(), lineRequest.getColor());
-        return new LineResponse(line.getId(), line.getName(), line.getColor());
+        Line updateLine = lineRequest.toLine(id);
+        lineService.updateAndGet(updateLine);
+        return new LineResponse(updateLine.getId(), updateLine.getName(), updateLine.getColor());
     }
 
     @DeleteMapping("/{id}")

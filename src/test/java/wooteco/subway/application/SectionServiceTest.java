@@ -6,11 +6,11 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import wooteco.subway.Infrastructure.MemorySectionDao;
-import wooteco.subway.Infrastructure.SectionDao;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
-import wooteco.subway.domain.constant.TerminalStation;
+import wooteco.subway.Infrastructure.section.MemorySectionDao;
+import wooteco.subway.Infrastructure.section.SectionDao;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.section.Sections;
+import wooteco.subway.domain.section.TerminalStation;
 import wooteco.subway.exception.constant.SectionNotDeleteException;
 import wooteco.subway.exception.constant.SectionNotRegisterException;
 

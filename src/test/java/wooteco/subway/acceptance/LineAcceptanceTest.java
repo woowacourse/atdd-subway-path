@@ -10,11 +10,11 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.Infrastructure.DbLineDao;
-import wooteco.subway.Infrastructure.DbSectionDao;
-import wooteco.subway.Infrastructure.DbStationDao;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Station;
+import wooteco.subway.Infrastructure.line.DbLineDao;
+import wooteco.subway.Infrastructure.section.DbSectionDao;
+import wooteco.subway.Infrastructure.station.DbStationDao;
+import wooteco.subway.domain.section.Section;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.dto.request.LineRequest;
 import wooteco.subway.dto.response.LineResponse;
 
@@ -24,8 +24,10 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static wooteco.subway.utils.FixtureUtils._7호선;
+import static wooteco.subway.utils.FixtureUtils.신분당선;
 import static wooteco.subway.utils.FixtureUtils.*;
-import static wooteco.subway.utils.LineFixtureUtils.*;
+import static wooteco.subway.utils.LineFixtures.*;
 
 @DisplayName("지하철 노선 E2E")
 @Sql("/init.sql")
