@@ -3,6 +3,8 @@ package wooteco.subway.application;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import wooteco.subway.Infrastructure.line.LineDao;
 import wooteco.subway.Infrastructure.line.MemoryLineDao;
 import wooteco.subway.Infrastructure.section.MemorySectionDao;
@@ -106,6 +108,23 @@ class PathServiceTest {
                     () -> assertThat(result.getStations().get(3).getId()).isEqualTo(한티역_ID),
                     () -> assertThat(result.getDistance()).isEqualTo(24),
                     () -> assertThat(result.getFare()).isEqualTo(1550 + 900)
+            );
+        }
+
+        @DisplayName("연령 할인 적용")
+        @ParameterizedTest(name = "{0}일 경우")
+        @CsvSource(value = {
+                "어린이 - 7 - 900",
+                "청소년 - 14 - 1440"
+        }, delimiterString = " - ")
+        void findPath_youth(String ageClassification, int age, int fare) {
+            PathResponse result = pathService.findPath(선릉역_ID, 한티역_ID, age);
+            assertAll(
+                    () -> assertThat(result.getStations().get(0).getId()).isEqualTo(선릉역_ID),
+                    () -> assertThat(result.getStations().get(1).getId()).isEqualTo(선정릉역_ID),
+                    () -> assertThat(result.getStations().get(2).getId()).isEqualTo(한티역_ID),
+                    () -> assertThat(result.getDistance()).isEqualTo(58),
+                    () -> assertThat(result.getFare()).isEqualTo(fare)
             );
         }
     }
