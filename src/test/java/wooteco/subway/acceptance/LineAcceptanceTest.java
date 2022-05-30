@@ -11,13 +11,11 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import wooteco.subway.exception.ExceptionMessage;
-import wooteco.subway.repository.dao.StationDao;
-import wooteco.subway.repository.entity.StationEntity;
 import wooteco.subway.service.dto.LineRequest;
 import wooteco.subway.service.dto.LineResponse;
+import wooteco.subway.service.dto.StationRequest;
 import wooteco.subway.service.dto.StationResponse;
 
 @DisplayName("지하철 노선 관련 기능")
@@ -25,18 +23,24 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     private static final String LOCATION = "Location";
 
-    @Autowired
-    private StationDao stationDao;
+    ExtractableResponse<Response> response_동묘;
+    ExtractableResponse<Response> response_신설동;
+    ExtractableResponse<Response> response_용두;
 
-    private StationEntity 강남역;
-    private StationEntity 노원역;
+    Long 동묘_StationId;
+    Long 신설동_StationId;
+    Long 용두_StationId;
 
     @Override
     @BeforeEach
     void setUp() {
         super.setUp();
-        강남역 = stationDao.save(new StationEntity(null, "강남역"));
-        노원역 = stationDao.save(new StationEntity(null, "노원역"));
+        response_동묘 = postWithBody("/stations", new StationRequest("동묘앞역"));
+        response_신설동 = postWithBody("/stations", new StationRequest("신설동역"));
+        response_용두 = postWithBody("/stations", new StationRequest("용두역"));
+        동묘_StationId = response_동묘.jsonPath().getLong("id");
+        신설동_StationId = response_신설동.jsonPath().getLong("id");
+        용두_StationId = response_용두.jsonPath().getLong("id");
     }
 
     @Test
@@ -47,7 +51,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         String lineColor = "bg-red-600";
 
         // when
-        LineRequest requestBody = new LineRequest(lineName, lineColor, 노원역.getId(), 강남역.getId(), 10);
+        LineRequest requestBody = new LineRequest(lineName, lineColor, 신설동_StationId, 용두_StationId, 10, 800);
         ExtractableResponse<Response> response = postWithBody("/lines", requestBody);
 
         // then
@@ -63,7 +67,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             assertThat(lineResponse.getId()).isNotNull();
             assertThat(lineResponse.getName()).isEqualTo(lineName);
             assertThat(lineResponse.getColor()).isEqualTo(lineColor);
-            assertThat(stationIds).containsExactly(노원역.getId(), 강남역.getId());
+            assertThat(stationIds).containsExactly(신설동_StationId, 용두_StationId);
         });
     }
 
@@ -71,7 +75,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("잘못된 값 입력해서 노선 생성 시도")
     void createLine_invalid() {
         // given
-        LineRequest lineRequest = new LineRequest(null, null, null, null, null);
+        LineRequest lineRequest = new LineRequest(null, null, null, null, null, null);
 
         // when
         ExtractableResponse<Response> response = postWithBody("/lines", lineRequest);
@@ -88,11 +92,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
         String redColor = "bg-red-600";
         String blueColor = "bg-blue-600";
 
-        LineRequest lineRequest = new LineRequest(lineName, redColor, 노원역.getId(), 강남역.getId(), 10);
+        LineRequest lineRequest = new LineRequest(lineName, redColor, 신설동_StationId, 용두_StationId, 10, 0);
         postWithBody("/lines", lineRequest);
 
         // when
-        LineRequest duplicatedNameRequest = new LineRequest(lineName, blueColor, 노원역.getId(), 강남역.getId(), 10);
+        LineRequest duplicatedNameRequest = new LineRequest(lineName, blueColor, 신설동_StationId, 용두_StationId, 10, 0);
         ExtractableResponse<Response> response = postWithBody("/lines", duplicatedNameRequest);
 
         // then
@@ -107,10 +111,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void getLines() {
         /// given
 
-        LineRequest requestBody1 = new LineRequest("7호선", "bg-green-600", 강남역.getId(), 노원역.getId(), 10);
+        LineRequest requestBody1 = new LineRequest("7호선", "bg-green-600", 신설동_StationId, 용두_StationId, 10, 0);
         ExtractableResponse<Response> createResponse1 = postWithBody("/lines", requestBody1);
 
-        LineRequest requestBody2 = new LineRequest("5호선", "bg-red-600", 노원역.getId(), 강남역.getId(), 10);
+        LineRequest requestBody2 = new LineRequest("5호선", "bg-red-600", 동묘_StationId, 신설동_StationId, 10, 0);
         ExtractableResponse<Response> createResponse2 = postWithBody("/lines", requestBody2);
 
         // when
@@ -144,7 +148,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         String lineName = "7호선";
         String lineColor = "bg-green-600";
 
-        LineRequest lineRequest = new LineRequest(lineName, lineColor, 강남역.getId(), 노원역.getId(), 5);
+        LineRequest lineRequest = new LineRequest(lineName, lineColor, 신설동_StationId, 용두_StationId, 5, 0);
 
         ExtractableResponse<Response> createResponse = postWithBody("/lines", lineRequest);
         long id = getIdFromLocation(createResponse);
@@ -182,13 +186,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void updateLine() {
         // given
 
-        LineRequest requestBody = new LineRequest("7호선", "bg-red-600", 강남역.getId(), 노원역.getId(), 10);
+        LineRequest requestBody = new LineRequest("7호선", "bg-red-600", 신설동_StationId, 용두_StationId, 10, 0);
         ExtractableResponse<Response> response = postWithBody("/lines", requestBody);
 
         long id = getIdFromLocation(response);
 
         // when
-        LineRequest updateBody = new LineRequest("5호선", "bg-green-600", 노원역.getId(), 강남역.getId(), 10);
+        LineRequest updateBody = new LineRequest("5호선", "bg-green-600", 신설동_StationId, 동묘_StationId, 10, 0);
 
         ExtractableResponse<Response> updateResponse = putWithBody("/lines/" + id, updateBody);
 
@@ -201,7 +205,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void deleteLine() {
         // given
 
-        LineRequest requestBody = new LineRequest("7호선", "bg-red-600", 강남역.getId(), 노원역.getId(), 0);
+        LineRequest requestBody = new LineRequest("7호선", "bg-red-600", 신설동_StationId, 용두_StationId, 0, 0);
         ExtractableResponse<Response> response = postWithBody("/lines", requestBody);
 
         long id = getIdFromLocation(response);

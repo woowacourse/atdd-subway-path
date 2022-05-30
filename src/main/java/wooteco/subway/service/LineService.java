@@ -31,7 +31,7 @@ public class LineService {
             Station upStation = stationService.findById(request.getUpStationId());
             Station downStation = stationService.findById(request.getDownStationId());
             Section section = new Section(null, upStation, downStation, request.getDistance());
-            Line line = new Line(request.getName(), request.getColor(), List.of(section));
+            Line line = new Line(request.getName(), request.getColor(), List.of(section), request.getExtraFare());
             Line saved = lineRepository.save(line);
             return createResponseFrom(saved);
         } catch (DuplicateKeyException e) {
@@ -61,7 +61,7 @@ public class LineService {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
         Section section = new Section(null, id, upStation, downStation, request.getDistance());
-        Line updated = new Line(id, request.getName(), request.getColor(), List.of(section));
+        Line updated = new Line(id, request.getName(), request.getColor(), List.of(section), request.getExtraFare());
         lineRepository.update(updated);
     }
 

@@ -21,8 +21,7 @@ public class Sections {
 
     public Sections(List<Section> sections) {
         if (sections == null) {
-            this.sections = new ArrayList<>();
-            return;
+            throw new SectionException(ExceptionMessage.BLANK_SECTIONS.getContent());
         }
         this.sections = new ArrayList<>(sections);
     }
