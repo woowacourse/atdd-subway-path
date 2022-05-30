@@ -1,11 +1,12 @@
 package wooteco.subway.domain.path;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class PathFinder<E> {
-    private PathAlgorithm<Long, E> pathAlgorithm;
+public class PathFinder {
+    private final PathAlgorithm<Long, SectionWeightedEdge> pathAlgorithm;
 
-    public PathFinder(PathAlgorithm<Long, E> pathAlgorithm) {
+    public PathFinder(PathAlgorithm<Long, SectionWeightedEdge> pathAlgorithm) {
         this.pathAlgorithm = pathAlgorithm;
     }
 
@@ -17,7 +18,13 @@ public class PathFinder<E> {
         return (int) pathAlgorithm.findDistance(from, to);
     }
 
-    public List<E> findEdges(Long from, Long to) {
+    public List<Long> getLinesAlongSections(Long from, Long to) {
+        return findEdges(from, to).stream()
+                .map(SectionWeightedEdge::getLineId)
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    private List<SectionWeightedEdge> findEdges(Long from, Long to) {
         return pathAlgorithm.findEdges(from, to);
     }
 }
