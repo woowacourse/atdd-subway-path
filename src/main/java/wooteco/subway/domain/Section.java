@@ -11,11 +11,18 @@ public class Section {
     private final Distance distance;
 
     public Section(Long id, Long lineId, Long upStationId, Long downStationId, Distance distance) {
+        validateNull(upStationId, downStationId);
         this.id = id;
         this.lineId = lineId;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+    }
+
+    private static void validateNull(Long upStationId, Long downStationId) {
+        if (upStationId == null || downStationId == null) {
+            throw new IllegalArgumentException("구간의 상행역과 하행역에 올바른 정보를 입력해주세요.");
+        }
     }
 
     public Section(Long lineId, Long upStationId, Long downStationId, Distance distance) {

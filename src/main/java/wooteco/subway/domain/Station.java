@@ -13,9 +13,9 @@ public class Station {
         this.name = name;
     }
 
-    private void validate(String name) {
-        if (name == null ||name.isBlank()) {
-            throw new IllegalArgumentException("역 이름을 입력해주세요.");
+    private static void validate(String name) {
+        if (name.isBlank()) {
+            throw new IllegalArgumentException("올바른 역 이름을 입력해주세요.");
         }
     }
 

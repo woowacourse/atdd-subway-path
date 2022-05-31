@@ -10,11 +10,25 @@ public class Line {
     private final int extraFare;
 
     public Line(Long id, String name, String color, int extraFare) {
+        validateColor(color);
+        validateName(name);
         validateFare(extraFare);
         this.id = id;
         this.name = name;
         this.color = color;
         this.extraFare = extraFare;
+    }
+
+    private static void validateColor(String color) {
+        if (color.isBlank()) {
+            throw new IllegalArgumentException("올바른 색상을 입력해주세요.");
+        }
+    }
+
+    private static void validateName(String name) {
+        if (name.isBlank()) {
+            throw new IllegalArgumentException("올바른 이름을 입력해주세요.");
+        }
     }
 
     public Line(String name, String color) {
