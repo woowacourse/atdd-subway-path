@@ -4,10 +4,10 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 public enum AgeFare {
-    KID((age) -> age.isSameOrBiggerThan(6) && age.isSmallerThan(13),new Fare(350), 0.5),
-    TEENAGER((age) -> age.isSameOrBiggerThan(13) && age.isSmallerThan(19), new Fare(350), 0.2),
-    FREE((age) -> age.isSmallerThan(6) || age.isSameOrBiggerThan(65), new Fare(0), 1),
-    OTHER((age) -> false, new Fare(0), 0)
+    KID(age -> age.isSameOrBiggerThan(6) && age.isSmallerThan(13),new Fare(350), 0.5),
+    TEENAGER(age -> age.isSameOrBiggerThan(13) && age.isSmallerThan(19), new Fare(350), 0.2),
+    FREE(age -> age.isSmallerThan(6) || age.isSameOrBiggerThan(65), new Fare(0), 1),
+    OTHER(age -> false, new Fare(0), 0)
     ;
 
     private final Predicate<Age> condition;
