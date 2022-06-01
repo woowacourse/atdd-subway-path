@@ -12,13 +12,17 @@ public class Line {
     private final String color;
     private final Sections sections;
 
-    public Line(Long id, String name, String color, List<Section> sections) {
+    public Line(Long id, String name, String color, Sections sections) {
         validateNotNull(name, "name");
         validateNotNull(color, "color");
         this.id = id;
         this.name = name;
         this.color = color;
-        this.sections = new Sections(sections);
+        this.sections = sections;
+    }
+
+    public Line(Long id, String name, String color, List<Section> sections) {
+        this(id, name, color, new Sections(sections));
     }
 
     private void validateNotNull(String input, String param) {
@@ -59,8 +63,8 @@ public class Line {
         return color;
     }
 
-    public Sections getSections() {
-        return sections;
+    public List<Section> getSections() {
+        return sections.getSections();
     }
 
     public List<Station> getStations() {

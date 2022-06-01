@@ -17,7 +17,6 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.section.Distance;
 import wooteco.subway.domain.path.Fare;
 import wooteco.subway.domain.section.Section;
-import wooteco.subway.domain.section.Sections;
 import wooteco.subway.domain.Station;
 
 @Repository
@@ -38,10 +37,9 @@ public class JdbcSectionDao implements SectionDao {
     }
 
     @Override
-    public void save(Sections sections, Long lineId) {
-        List<Section> values = sections.getSections();
-        for (int i = 0; i < values.size(); i++) {
-            Section section = values.get(i);
+    public void save(List<Section> sections, Long lineId) {
+        for (int i = 0; i < sections.size(); i++) {
+            Section section = sections.get(i);
             update(section, lineId, i);
         }
     }

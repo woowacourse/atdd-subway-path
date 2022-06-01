@@ -1,6 +1,5 @@
 package wooteco.subway.dao;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import javax.sql.DataSource;
 
@@ -11,7 +10,6 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.ReflectionUtils;
 
 import wooteco.subway.domain.Station;
 
@@ -33,17 +31,10 @@ public class JdbcStationDao implements StationDao {
         SqlParameterSource param = new BeanPropertySqlParameterSource(station);
         try {
             final Long id = jdbcInsert.executeAndReturnKey(param).longValue();
-            return createNewObject(station, id);
+            return new Station(id, station.getName());
         } catch (DuplicateKeyException ignored) {
             throw new IllegalStateException("이미 존재하는 역 이름입니다.");
         }
-    }
-
-    private Station createNewObject(Station station, Long id) {
-        Field field = ReflectionUtils.findField(Station.class, "id");
-        field.setAccessible(true);
-        ReflectionUtils.setField(field, station, id);
-        return station;
     }
 
     @Override

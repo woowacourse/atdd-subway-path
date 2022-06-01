@@ -1,10 +1,10 @@
 package wooteco.subway.dao;
 
-import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.sql.DataSource;
 
 import org.springframework.dao.DuplicateKeyException;
@@ -12,7 +12,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.ReflectionUtils;
 
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
@@ -34,24 +33,17 @@ public class JdbcLineDao implements LineDao {
 
     @Override
     public Line save(Line line, Fare extraFare) {
+        Map<String, Object> param = Map.of(
+                "name", line.getName(),
+                "color", line.getColor(),
+                "extra_fare", extraFare.getValue()
+        );
         try {
-            Map<String, Object> param = Map.of(
-                    "name", line.getName(),
-                    "color", line.getColor(),
-                    "extra_fare", extraFare.getValue()
-            );
             final Long id = jdbcInsert.executeAndReturnKey(param).longValue();
-            return createNewObject(line, id);
+            return new Line(id, line.getName(), line.getColor(), line.getSections());
         } catch (DuplicateKeyException ignored) {
             throw new IllegalStateException("이미 존재하는 노선 이름입니다.");
         }
-    }
-
-    private Line createNewObject(Line line, Long id) {
-        final Field field = ReflectionUtils.findField(Line.class, "id");
-        field.setAccessible(true);
-        ReflectionUtils.setField(field, line, id);
-        return line;
     }
 
     @Override
@@ -75,6 +67,9 @@ public class JdbcLineDao implements LineDao {
         final String sql = "SELECT extra_fare FROM line WHERE id = ?";
         try {
             Integer extraFare = jdbcTemplate.queryForObject(sql, Integer.class, id);
+            if (Objects.isNull(extraFare)) {
+                return new Fare(0);
+            }
             return new Fare(extraFare);
         } catch (EmptyResultDataAccessException e) {
             throw new IllegalStateException("조회하고자 하는 노선이 존재하지 않습니다.");
