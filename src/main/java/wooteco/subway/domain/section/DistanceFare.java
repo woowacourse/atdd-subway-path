@@ -1,5 +1,6 @@
 package wooteco.subway.domain.section;
 
+import java.util.Arrays;
 import java.util.function.Function;
 import wooteco.subway.domain.path.Fare;
 
@@ -25,9 +26,11 @@ public enum DistanceFare {
     private static final int BASIC_FARE = 1250;
 
     static Function<Double, Fare> fareCalculator() {
-        return (distance) -> {
-            int totalAmount = BASIC_FARE + OVER_TEN_KM.calculate(distance) + OVER_FIFTY_KM.calculate(distance);
-            return new Fare(totalAmount);
+        return distance -> {
+            int totalExtraFare = Arrays.stream(values())
+                    .mapToInt(distanceFare -> distanceFare.calculate(distance))
+                    .sum();
+            return new Fare(BASIC_FARE + totalExtraFare);
         };
     }
 
