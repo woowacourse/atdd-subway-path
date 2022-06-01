@@ -13,7 +13,7 @@ public class StationRequest {
     }
 
     public Station toStation() {
-        return new Station(getName());
+        return new Station(name);
     }
 
     public StationRequest(final String name) {

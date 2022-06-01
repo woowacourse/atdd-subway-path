@@ -39,11 +39,11 @@ public class LineSaveRequest {
     }
 
     public Line toLine() {
-        return Line.of(getName(), getColor(), getExtraFare());
+        return Line.of(name, color, extraFare);
     }
 
     public Section convertSection() {
-        return Section.of(getUpStationId(), getDownStationId(), getDistance());
+        return Section.of(upStationId, downStationId, distance);
     }
 
     public String getName() {

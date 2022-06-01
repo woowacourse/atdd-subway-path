@@ -26,7 +26,7 @@ public class PathRequest {
     }
 
     public Path toPath() {
-        return Path.of(getSource(), getTarget());
+        return Path.of(source, target);
     }
 
     public Long getSource() {
