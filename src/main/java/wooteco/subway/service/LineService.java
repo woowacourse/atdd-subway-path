@@ -52,7 +52,7 @@ public class LineService {
         List<StationResponse> stations = line.getStations().stream()
                 .map(station -> new StationResponse(station.getId(), station.getName()))
                 .collect(Collectors.toList());
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), 0, stations);
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare(), stations);
     }
 
     public List<LineResponse> findAll() {
@@ -73,7 +73,8 @@ public class LineService {
     public void update(Long id, LineBasicRequest lineRequest) {
         validateById(id);
         validateDuplicatedName(lineRequest.getName());
-        Line line = new Line(id, lineRequest.getName(), lineRequest.getColor(), 0);
+        Line line = lineDao.findById(id);
+        line.update(lineRequest.getName(), lineRequest.getColor());
         lineDao.update(line);
     }
 
