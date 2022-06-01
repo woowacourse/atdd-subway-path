@@ -24,7 +24,7 @@ public class Path {
         return distance;
     }
 
-    public Lines getUsedLines() {
-        return usedLines;
+    public int findMaxExtraFare() {
+        return usedLines.findMaxExtraFare();
     }
 }

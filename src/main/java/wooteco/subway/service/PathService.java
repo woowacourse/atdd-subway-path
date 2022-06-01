@@ -35,7 +35,7 @@ public class PathService {
         AgeDiscountPolicy ageDiscountPolicy = AgeDiscountPolicy.of(pathRequest.getAge());
 
         Path path = pathFindStrategy.findPath(lines, sourceStation, targetStation);
-        int fare = FarePolicy.calculateFare(path.getDistance(), path.getUsedLines().findMaxExtraFare());
+        int fare = FarePolicy.calculateFare(path.getDistance(), path.findMaxExtraFare());
 
         return PathResponse.of(path, ageDiscountPolicy.discount(fare));
     }
