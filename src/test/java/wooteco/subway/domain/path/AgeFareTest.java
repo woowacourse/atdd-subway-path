@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class AgeFareTest {
 
@@ -25,11 +27,11 @@ class AgeFareTest {
         assertThat(discountedFare.getValue()).isEqualTo(0);
     }
 
-    @DisplayName("19세 이상이면 할인이 적용되지 않는다")
-    @Test
-    void calculate_other_1250() {
+    @ParameterizedTest(name = "19세 이상 65세 미만이면 할인이 적용되지 않는다 : {0}")
+    @ValueSource(ints = {19, 64})
+    void calculate_other_1250(int age) {
         Fare fare = new Fare(1250);
-        Fare discountedFare = AgeFare.calculate(fare, new Age(19));
+        Fare discountedFare = AgeFare.calculate(fare, new Age(age));
 
         assertThat(discountedFare.getValue()).isEqualTo(1250);
     }
