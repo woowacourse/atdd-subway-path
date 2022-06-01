@@ -48,13 +48,13 @@ public class JdbcLineDao implements LineDao {
 
     @Override
     public List<Line> findAll() {
-        final String sql = "SELECT * FROM line";
+        final String sql = "SELECT id, name, color FROM line";
         return jdbcTemplate.query(sql, this::mapToLine);
     }
 
     @Override
     public Line findById(Long id) {
-        final String sql = "SELECT * FROM line WHERE id = ?";
+        final String sql = "SELECT id, name, color FROM line WHERE id = ?";
         try {
             return jdbcTemplate.queryForObject(sql, this::mapToLine, id);
         } catch (EmptyResultDataAccessException e) {

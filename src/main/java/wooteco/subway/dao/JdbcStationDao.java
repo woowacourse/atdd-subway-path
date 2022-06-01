@@ -39,7 +39,7 @@ public class JdbcStationDao implements StationDao {
 
     @Override
     public List<Station> findAll() {
-        final String sql = "SELECT * FROM station";
+        final String sql = "SELECT id, name FROM station";
         return jdbcTemplate.query(sql, (resultSet, rowNum) -> new Station(
                 resultSet.getLong("id"),
                 resultSet.getString("name")
@@ -48,7 +48,7 @@ public class JdbcStationDao implements StationDao {
 
     @Override
     public Station findById(Long id) {
-        final String sql = "SELECT * FROM station WHERE id = ?";
+        final String sql = "SELECT id, name FROM station WHERE id = ?";
         try {
             return jdbcTemplate.queryForObject(sql, (resultSet, rowNum) -> new Station(
                     resultSet.getLong("id"),
