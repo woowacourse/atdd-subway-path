@@ -129,8 +129,11 @@ public class LineDao {
     public void update(Line line) {
         final String sql = "UPDATE line SET name = :name, color = :color "
                 + "WHERE id = :id";
-        SqlParameterSource paramSource = new BeanPropertySqlParameterSource(line);
-
+        MapSqlParameterSource paramSource = new MapSqlParameterSource();
+        paramSource.addValue("name", line.getName());
+        paramSource.addValue("color", line.getColor());
+        paramSource.addValue("id", line.getId());
+        
         jdbcTemplate.update(sql, paramSource);
     }
 

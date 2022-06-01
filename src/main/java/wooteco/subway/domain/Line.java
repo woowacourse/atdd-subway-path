@@ -6,8 +6,8 @@ import java.util.Objects;
 public class Line {
 
     private final Long id;
-    private final String name;
-    private final String color;
+    private String name;
+    private String color;
     private final int extraFare;
     private Sections sections = new Sections();
 
@@ -41,6 +41,11 @@ public class Line {
 
     public void removeSection(Station station) {
         sections.removeStation(station);
+    }
+
+    public void update(String name, String color) {
+        this.name = name;
+        this.color = color;
     }
 
     public Long getId() {
