@@ -9,9 +9,9 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.LineBasicRequest;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
+import wooteco.subway.dto.LineUpdateRequest;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.exception.NotFoundException;
@@ -70,11 +70,11 @@ public class LineService {
     }
 
     @Transactional
-    public void update(Long id, LineBasicRequest lineRequest) {
+    public void update(Long id, LineUpdateRequest lineRequest) {
         validateById(id);
         validateDuplicatedName(lineRequest.getName());
         Line line = lineDao.findById(id);
-        line.update(lineRequest.getName(), lineRequest.getColor());
+        line.update(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         lineDao.update(line);
     }
 

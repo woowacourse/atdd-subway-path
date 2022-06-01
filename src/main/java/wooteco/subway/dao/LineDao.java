@@ -127,13 +127,14 @@ public class LineDao {
     }
 
     public void update(Line line) {
-        final String sql = "UPDATE line SET name = :name, color = :color "
+        final String sql = "UPDATE line SET name = :name, color = :color, extra_fare = :extra_fare "
                 + "WHERE id = :id";
         MapSqlParameterSource paramSource = new MapSqlParameterSource();
         paramSource.addValue("name", line.getName());
         paramSource.addValue("color", line.getColor());
         paramSource.addValue("id", line.getId());
-        
+        paramSource.addValue("extra_fare", line.getExtraFare());
+
         jdbcTemplate.update(sql, paramSource);
     }
 

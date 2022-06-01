@@ -14,9 +14,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
-import wooteco.subway.dto.LineBasicRequest;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
+import wooteco.subway.dto.LineUpdateRequest;
 import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.exception.NotFoundException;
@@ -124,7 +124,7 @@ class LineServiceTest {
 
         @Test
         void 유효한_입력값인_경우_성공() {
-            LineBasicRequest lineRequest = new LineBasicRequest("5호선", "보라색");
+            LineUpdateRequest lineRequest = new LineUpdateRequest("5호선", "보라색", 500);
 
             lineService.update(1L, lineRequest);
 
@@ -132,12 +132,13 @@ class LineServiceTest {
             assertAll(() -> {
                 assertThat(actual.getName()).isEqualTo("5호선");
                 assertThat(actual.getColor()).isEqualTo("보라색");
+                assertThat(actual.getExtraFare()).isEqualTo(500);
             });
         }
 
         @Test
         void 중복되는_이름으로_수정하려는_경우_예외발생() {
-            LineBasicRequest lineRequest = new LineBasicRequest("2호선", "보라색");
+            LineUpdateRequest lineRequest = new LineUpdateRequest("2호선", "보라색", 500);
 
             assertThatThrownBy(() -> lineService.update(1L, lineRequest))
                     .isInstanceOf(IllegalArgumentException.class);
@@ -145,7 +146,7 @@ class LineServiceTest {
 
         @Test
         void 존재하지_않는_노선을_수정하려는_경우_예외발생() {
-            LineBasicRequest lineRequest = new LineBasicRequest("1호선", "보라색");
+            LineUpdateRequest lineRequest = new LineUpdateRequest("1호선", "보라색", 500);
 
             assertThatThrownBy(() -> lineService.update(9999L, lineRequest))
                     .isInstanceOf(IllegalArgumentException.class);

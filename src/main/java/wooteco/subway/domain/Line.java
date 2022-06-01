@@ -8,7 +8,7 @@ public class Line {
     private final Long id;
     private String name;
     private String color;
-    private final int extraFare;
+    private int extraFare;
     private Sections sections = new Sections();
 
     public Line(Long id, String name, String color, int extraFare, Sections sections) {
@@ -43,9 +43,10 @@ public class Line {
         sections.removeStation(station);
     }
 
-    public void update(String name, String color) {
+    public void update(String name, String color, int extraFare) {
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
     }
 
     public Long getId() {

@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.domain.Line;
@@ -66,13 +65,13 @@ class LineDaoTest {
     @Test
     void update_메서드는_데이터를_수정한다() {
         LineFixtures.setUp(jdbcTemplate, new Line("분당선", "노란색", 0));
-        dao.update(new Line(1L, "8호선", "노란색", 0));
+        dao.update(new Line(1L, "8호선", "노란색", 100));
 
-        String actual = jdbcTemplate.queryForObject("SELECT name FROM line WHERE id = 1",
-                new EmptySqlParameterSource(), String.class);
-        String expected = "8호선";
+        Line line = dao.findById(1L);
 
-        assertThat(actual).isEqualTo(expected);
+        assertThat(line)
+                .extracting("name", "color", "extraFare")
+                .containsExactly("8호선", "노란색", 100);
     }
 
     @Test
