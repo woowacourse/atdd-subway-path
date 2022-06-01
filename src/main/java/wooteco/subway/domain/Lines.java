@@ -4,6 +4,8 @@ import java.util.List;
 
 public class Lines {
 
+    public static final int STANDARD = 0;
+
     private final List<Line> lines;
 
     public Lines(List<Line> lines) {
@@ -12,8 +14,8 @@ public class Lines {
 
     public int findMaxExtraFare() {
         return lines.stream()
-                .mapToInt(line -> line.getExtraFare())
+                .mapToInt(Line::getExtraFare)
                 .max()
-                .orElse(0);
+                .orElse(STANDARD);
     }
 }
