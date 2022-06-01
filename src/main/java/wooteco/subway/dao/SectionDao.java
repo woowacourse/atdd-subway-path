@@ -56,17 +56,18 @@ public class SectionDao {
     }
 
     public List<Section> findAllByLineId(final Long lineId) {
-        final String sql = "select * from SECTION where line_id = ?";
+        final String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION where line_id = ?";
         return jdbcTemplate.query(sql, SECTION_ROW_MAPPER, lineId);
     }
 
     public List<Section> findAll() {
-        final String sql = "select * from SECTION";
+        final String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION";
         return jdbcTemplate.query(sql, SECTION_ROW_MAPPER);
     }
 
     public Optional<Section> findByStationId(final Long stationId) {
-        final String sql = "select * from SECTION where up_station_id = ? or down_station_id = ? limit 1";
+        final String sql = "select id, line_id, up_station_id, down_station_id, distance " +
+                "from SECTION where up_station_id = ? or down_station_id = ? limit 1";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, SECTION_ROW_MAPPER, stationId, stationId));
         } catch (EmptyResultDataAccessException exception) {
@@ -76,17 +77,17 @@ public class SectionDao {
 
     public boolean existStation(final Long lineId, final Long stationId) {
         final String sql = "select exists " +
-                "(select * from SECTION where line_id = ? and (up_station_id = ? or down_station_id = ?))";
+                "(select id from SECTION where line_id = ? and (up_station_id = ? or down_station_id = ?))";
         return jdbcTemplate.queryForObject(sql, Boolean.class, lineId, stationId, stationId);
     }
 
     public boolean existUpStation(final Long lineId, final Long stationId) {
-        final String sql = "select exists (select * from SECTION where line_id = ? and up_station_id = ?)";
+        final String sql = "select exists (select id from SECTION where line_id = ? and up_station_id = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, lineId, stationId);
     }
 
     public boolean existDownStation(final Long lineId, final Long stationId) {
-        final String sql = "select exists (select * from SECTION where line_id = ? and down_station_id = ?)";
+        final String sql = "select exists (select id from SECTION where line_id = ? and down_station_id = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, lineId, stationId);
     }
 

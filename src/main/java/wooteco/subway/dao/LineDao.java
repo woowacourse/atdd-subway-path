@@ -47,17 +47,17 @@ public class LineDao {
     }
 
     public boolean existLineById(final Long id) {
-        final String sql = "select exists (select * from LINE where id = ?)";
+        final String sql = "select exists (select id from LINE where id = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, id);
     }
 
     public boolean existLineByName(final String name) {
-        final String sql = "select exists (select * from LINE where name = ?)";
+        final String sql = "select exists (select id from LINE where name = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, name);
     }
 
     public boolean existLineByColor(final String color) {
-        final String sql = "select exists (select * from LINE where color = ?)";
+        final String sql = "select exists (select id from LINE where color = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, color);
     }
 
