@@ -28,7 +28,7 @@ public class Path {
             Fare extraFare = path.getEdgeList().stream()
                     .map(PathEdge::getExtraFare)
                     .max(Fare::compareTo)
-                    .get();
+                    .orElse(new Fare(0));
             return new Path(path.getVertexList(), Distance.fromKilometer(path.getWeight()), extraFare);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("해당 역은 경로에 존재하지 않습니다.");

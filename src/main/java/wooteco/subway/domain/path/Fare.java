@@ -1,6 +1,7 @@
 package wooteco.subway.domain.path;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class Fare implements Comparable<Fare> {
     private final int value;
@@ -50,5 +51,22 @@ public class Fare implements Comparable<Fare> {
     @Override
     public int compareTo(Fare otherFare) {
         return Integer.compare(this.value, otherFare.value);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Fare fare = (Fare) o;
+        return value == fare.value;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 }
