@@ -21,7 +21,7 @@ public enum Discounter {
     }
 
     public static double discount(final double fare, final int age) {
-        return Arrays.stream(Discounter.values())
+        return Arrays.stream(values())
                 .filter(discounter -> discounter.condition.test(age))
                 .map(discounter -> discounter.discount.apply(fare))
                 .findFirst()
