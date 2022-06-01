@@ -3,6 +3,7 @@ package wooteco.subway.ui.controller;
 import java.net.URI;
 import java.util.List;
 
+import javax.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
@@ -30,7 +31,7 @@ public class LineController {
     }
 
     @PostMapping("/lines")
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
+    public ResponseEntity<LineResponse> createLine(@Valid @RequestBody LineRequest lineRequest) {
         LineResponse lineResponse = lineService.create(lineRequest);
         Long id = lineResponse.getId();
         return ResponseEntity.created(URI.create("/lines/" + id)).body(lineResponse);

@@ -1,5 +1,7 @@
 package wooteco.subway.dto.response;
 
+import org.springframework.validation.FieldError;
+
 public class ExceptionResponse {
 
     private final String message;
@@ -14,6 +16,10 @@ public class ExceptionResponse {
 
     public static ExceptionResponse of(Exception exception) {
         return new ExceptionResponse(exception.getMessage());
+    }
+
+    public static ExceptionResponse of(FieldError fieldError) {
+        return new ExceptionResponse(fieldError.getDefaultMessage());
     }
 
     public String getMessage() {

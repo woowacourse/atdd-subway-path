@@ -54,7 +54,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // then
         Assertions.assertAll(
                 () -> response.assertStatus(HttpStatus.BAD_REQUEST),
-                () -> assertThat(response.containsExceptionMessage("필수 입력")).isTrue()
+                () -> assertThat(response.containsExceptionMessage("필수")).isTrue()
         );
     }
 
