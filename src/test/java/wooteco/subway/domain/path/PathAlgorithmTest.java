@@ -9,6 +9,7 @@ import static wooteco.subway.domain.path.Fixture.선릉;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.domain.Station;
+import wooteco.subway.support.ShortestPath;
 
 class PathAlgorithmTest {
     private PathAlgorithm pathAlgorithm = new ShortestPath(강남_역삼_선릉);

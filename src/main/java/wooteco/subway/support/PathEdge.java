@@ -1,17 +1,18 @@
-package wooteco.subway.domain.path;
+package wooteco.subway.support;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
+import wooteco.subway.domain.path.Fare;
 
 public class PathEdge extends DefaultWeightedEdge {
     private final Fare extraFare;
     private final double distance;
 
-    public PathEdge(Fare extraFare, double distance) {
+    PathEdge(Fare extraFare, double distance) {
         this.extraFare = extraFare;
         this.distance = distance;
     }
 
-    public Fare getExtraFare() {
+    Fare getExtraFare() {
         return extraFare;
     }
 

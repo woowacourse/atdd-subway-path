@@ -9,6 +9,7 @@ import static wooteco.subway.domain.path.Fixture.역삼;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.support.ShortestPath;
 
 public class PathTest {
     public static final int BASIC_FARE = 1250;
