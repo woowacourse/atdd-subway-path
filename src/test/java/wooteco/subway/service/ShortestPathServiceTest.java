@@ -17,7 +17,7 @@ import wooteco.subway.dto.StationRequest;
 
 @SpringBootTest
 @Sql(scripts = {"classpath:test-schema.sql"})
-public class PathServiceTest {
+public class ShortestPathServiceTest {
     @Autowired
     PathService pathService;
 

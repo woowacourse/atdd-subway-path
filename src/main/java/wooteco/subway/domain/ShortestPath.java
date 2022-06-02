@@ -6,11 +6,11 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
-public class Path {
+public class ShortestPath {
     private final WeightedMultigraph<Long, ShortestPathEdge> graph
             = new WeightedMultigraph<>(ShortestPathEdge.class);
 
-    public Path(List<Station> stations, List<Section> sections) {
+    public ShortestPath(List<Station> stations, List<Section> sections) {
         for (Station station : stations) {
             graph.addVertex(station.getId());
         }

@@ -9,7 +9,7 @@ import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Fare;
-import wooteco.subway.domain.Path;
+import wooteco.subway.domain.ShortestPath;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.PathResponse;
 
@@ -28,12 +28,12 @@ public class PathService {
     @Transactional(readOnly = true)
     public PathResponse findShortestPath(Long upStationId, Long downStationId, int age) {
         validateStations(upStationId, downStationId);
-        Path path = new Path(stationDao.findAll(), sectionDao.findAll());
+        ShortestPath shortestPath = new ShortestPath(stationDao.findAll(), sectionDao.findAll());
 
-        final List<Station> stations = findStations(upStationId, downStationId, path);
-        final int shortestDistance = path.findShortestDistance(upStationId, downStationId);
+        final List<Station> stations = findStations(upStationId, downStationId, shortestPath);
+        final int shortestDistance = shortestPath.findShortestDistance(upStationId, downStationId);
 
-        List<Integer> extraFares = findExtraFares(upStationId, downStationId, path);
+        List<Integer> extraFares = findExtraFares(upStationId, downStationId, shortestPath);
 
         final Fare fare = Fare.of(shortestDistance, extraFares, age);
 
@@ -54,14 +54,14 @@ public class PathService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 역이 존재하지 않습니다."));
     }
 
-    private List<Station> findStations(Long upStationId, Long downStationId, Path path) {
-        return path.findStationIds(upStationId, downStationId).stream()
+    private List<Station> findStations(Long upStationId, Long downStationId, ShortestPath shortestPath) {
+        return shortestPath.findStationIds(upStationId, downStationId).stream()
                 .map(this::findStation)
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    private List<Integer> findExtraFares(Long upStationId, Long downStationId, Path path) {
-        List<Long> passedLineIds = path.findPassedLineIds(upStationId, downStationId);
+    private List<Integer> findExtraFares(Long upStationId, Long downStationId, ShortestPath shortestPath) {
+        List<Long> passedLineIds = shortestPath.findPassedLineIds(upStationId, downStationId);
         return lineDao.findExtraFareByIds(passedLineIds);
     }
 }

@@ -20,7 +20,7 @@ import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationRequest;
 
 @DisplayName("지하철경로 관련 기능")
-public class PathAcceptanceTest extends AcceptanceTest {
+public class ShortestPathAcceptanceTest extends AcceptanceTest {
     private final Station 잠실 = new Station(1L, "잠실");
     private final Station 잠실새내 = new Station(2L, "잠실새내");
     private final Station 종합운동장 = new Station(3L, "종합운동장");
