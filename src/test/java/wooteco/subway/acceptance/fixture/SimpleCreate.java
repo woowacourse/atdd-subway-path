@@ -1,7 +1,5 @@
 package wooteco.subway.acceptance.fixture;
 
-import javax.print.DocFlavor;
-
 import wooteco.subway.dto.request.LineCreateRequest;
 import wooteco.subway.dto.request.SectionRequest;
 import wooteco.subway.dto.request.StationRequest;
