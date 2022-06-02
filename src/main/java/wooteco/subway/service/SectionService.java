@@ -51,10 +51,10 @@ public class SectionService {
 
         sections.checkSections(inputSection);
         sections.getTargetSectionToInsert(inputSection)
-                .ifPresent(targetSection -> processTargetSection(lineId, inputSection, targetSection));
+                .ifPresent(targetSection -> processTargetSection(inputSection, targetSection));
     }
 
-    private void processTargetSection(Long lineId, Section inputSection, Section targetSection) {
+    private void processTargetSection(Section inputSection, Section targetSection) {
         Section section = targetSection.splitSection(inputSection);
         sectionDao.deleteById(targetSection.getId());
         sectionDao.insert(section);
