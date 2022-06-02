@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
 import java.util.List;
+import wooteco.subway.util.NullChecker;
 
 public class Path {
 
@@ -9,6 +10,7 @@ public class Path {
     private final int distance;
 
     public Path(List<Station> stationsInPath, List<Section> sectionsInPath, int distance) {
+        NullChecker.validateNonNull(stationsInPath, sectionsInPath);
         this.stationsInPath = stationsInPath;
         this.sectionsInPath = sectionsInPath;
         this.distance = distance;

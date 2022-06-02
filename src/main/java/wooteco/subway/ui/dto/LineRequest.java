@@ -4,13 +4,15 @@ public class LineRequest {
 
     private String name;
     private String color;
+    private int extraFare;
 
     private LineRequest() {
     }
 
-    public LineRequest(String name, String color) {
+    public LineRequest(String name, String color, int extraFare) {
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
     }
 
     public String getName() {
@@ -21,11 +23,16 @@ public class LineRequest {
         return color;
     }
 
+    public int getExtraFare() {
+        return extraFare;
+    }
+
     @Override
     public String toString() {
-        return "LineUpdateRequest{" +
+        return "LineRequest{" +
                 "name='" + name + '\'' +
                 ", color='" + color + '\'' +
+                ", extraFare=" + extraFare +
                 '}';
     }
 }

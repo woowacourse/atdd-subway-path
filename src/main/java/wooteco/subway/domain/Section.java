@@ -2,6 +2,7 @@ package wooteco.subway.domain;
 
 import java.util.Objects;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import wooteco.subway.util.NullChecker;
 
 public class Section extends DefaultWeightedEdge {
 
@@ -17,6 +18,7 @@ public class Section extends DefaultWeightedEdge {
 
     public Section(Long lineId, Long upStationId, Long downStationId, int distance) {
         validSection(upStationId, downStationId, distance);
+        NullChecker.validateNonNull(lineId, upStationId, downStationId);
         this.lineId = lineId;
         this.upStationId = upStationId;
         this.downStationId = downStationId;

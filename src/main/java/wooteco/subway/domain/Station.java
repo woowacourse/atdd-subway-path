@@ -1,6 +1,7 @@
 package wooteco.subway.domain;
 
 import java.util.Objects;
+import wooteco.subway.util.NullChecker;
 
 public class Station {
 
@@ -8,6 +9,7 @@ public class Station {
     private String name;
 
     public Station(String name) {
+        NullChecker.validateNonNull(name);
         this.name = name;
     }
 

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Line;
 import wooteco.subway.ui.dto.LineCreateRequest;
 import wooteco.subway.ui.dto.LineRequest;
@@ -24,20 +25,20 @@ class LineDaoTest {
     @Test
     void save() {
         // given
-        LineCreateRequest line = new LineCreateRequest("분당선", "yellow", 1L, 2L, 2);
+        LineCreateRequest line = new LineCreateRequest("분당선", "yellow", 1L, 2L, 2, 0);
 
         // when
         Long id = lineDao.save(line);
 
         // then
-        assertThat(id).isEqualTo(3L);
+        assertThat(id).isEqualTo(4L);
     }
 
     @DisplayName("노선 이름이 존재하는지 확인")
     @Test
     void existsByName() {
         // given
-        String name = "신분당선";
+        String name = "1호선";
 
         // when
         boolean result = lineDao.existsByName(name);
@@ -75,14 +76,14 @@ class LineDaoTest {
     @Test
     void findById() {
         // given
-        Line expected = new Line(1L, "신분당선", "red");
+        Line expected = new Line(1L, "1호선", "black", new Fare(200));
 
         // when
         Optional<Line> line = lineDao.findById(1L);
 
         // then
-        assertThat(line.isPresent()).isTrue();
-        assertThat(line.get()).isEqualTo(expected);
+        assertThat(line).isPresent();
+        assertThat(line).contains(expected);
     }
 
     @DisplayName("노선 전체 조회")
@@ -94,7 +95,7 @@ class LineDaoTest {
         List<Line> lines = lineDao.findAll();
 
         // then
-        assertThat(lines.size()).isEqualTo(2);
+        assertThat(lines.size()).isEqualTo(3);
     }
 
     @DisplayName("노선 정보 수정")
@@ -102,7 +103,7 @@ class LineDaoTest {
     void update() {
         // given
         Long id = 1L;
-        LineRequest lineRequest = new LineRequest("신분당선", "pink");
+        LineRequest lineRequest = new LineRequest("신분당선", "pink", 0);
 
         // when
         lineDao.update(id, lineRequest);
@@ -111,8 +112,8 @@ class LineDaoTest {
         Optional<Line> line = lineDao.findById(id);
 
         assertThat(line.isPresent()).isTrue();
-        assertThat(line.get()).extracting(Line::getName, Line::getColor)
-                .contains(lineRequest.getName(), lineRequest.getColor());
+        assertThat(line.get()).extracting(Line::getName, Line::getColor, Line::getExtraFare)
+                .contains(lineRequest.getName(), lineRequest.getColor(), new Fare(lineRequest.getExtraFare()));
     }
 
     @DisplayName("노선 삭제")

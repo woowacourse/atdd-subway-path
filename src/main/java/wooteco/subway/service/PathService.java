@@ -2,40 +2,78 @@ package wooteco.subway.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.domain.Age;
+import wooteco.subway.domain.DiscountSpecification;
+import wooteco.subway.domain.Fare;
+import wooteco.subway.domain.FareCacluateSpecification;
 import wooteco.subway.domain.Path;
-import wooteco.subway.domain.path.PathStrategy;
-import wooteco.subway.domain.pricing.PricingStrategy;
+import wooteco.subway.domain.PathFindSpecification;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.discount.DiscountStrategy;
+import wooteco.subway.domain.path.PathFindStrategy;
+import wooteco.subway.domain.pricing.PricingStrategy;
 import wooteco.subway.service.dto.PathResponse;
 import wooteco.subway.service.dto.StationResponse;
+import wooteco.subway.ui.dto.PathRequest;
 
 @Service
 public class PathService {
 
     private final StationDao stationDao;
+    private final LineDao lineDao;
     private final SectionDao sectionDao;
+    private final PathFindStrategy pathFindStrategy;
+    private final PricingStrategy pricingStrategy;
+    private final DiscountStrategy discountStrategy;
 
-    public PathService(StationDao stationDao, SectionDao sectionDao) {
+    public PathService(StationDao stationDao, LineDao lineDao, SectionDao sectionDao,
+                       @Qualifier("MinimumDistance") PathFindStrategy pathFindStrategy,
+                       @Qualifier("AllPricingStrategy") PricingStrategy pricingStrategy,
+                       @Qualifier("Age") DiscountStrategy discountStrategy) {
         this.stationDao = stationDao;
+        this.lineDao = lineDao;
         this.sectionDao = sectionDao;
+        this.pathFindStrategy = pathFindStrategy;
+        this.pricingStrategy = pricingStrategy;
+        this.discountStrategy = discountStrategy;
     }
 
-    public PathResponse searchPaths(PathStrategy pathStrategy, PricingStrategy pricingStrategy, Long sourceId, Long targetId) {
+    public PathResponse searchPaths(PathRequest pathRequest) {
+        Path path = getPath(pathFindStrategy, pathRequest.getSource(), pathRequest.getTarget());
+        Fare fare = getFare(path);
+        Fare discountedFare = applyDiscount(discountStrategy, new Age(pathRequest.getAge()), fare);
+
+        return new PathResponse(
+                path.getDistance(),
+                discountedFare.getValue(),
+                generateStationResponses(path.getStationsInPath())
+        );
+    }
+
+    private Fare applyDiscount(DiscountStrategy discountStrategy, Age age, Fare fare) {
+        DiscountSpecification specification = new DiscountSpecification(age, fare);
+        return discountStrategy.discount(specification);
+    }
+
+    private Fare getFare(Path path) {
+        FareCacluateSpecification fareCacluateSpecification = new FareCacluateSpecification(path.getSectionsInPath(), lineDao.findAll());
+        return pricingStrategy.calculateFare(fareCacluateSpecification);
+    }
+
+    private Path getPath(PathFindStrategy pathFindStrategy, Long sourceId, Long targetId) {
         List<Section> sections = sectionDao.findAll();
         List<Station> stations = stationDao.findAll();
         Station from = findById(stations, sourceId);
         Station to = findById(stations, targetId);
-        Path path = pathStrategy.findPath(stations, sections, from, to);
 
-        return new PathResponse(
-                path.getDistance(),
-                pricingStrategy.calculateFee(path.getSectionsInPath()),
-                generateStationResponses(path.getStationsInPath())
-        );
+        PathFindSpecification pathFindSpecification = new PathFindSpecification(from, to, stations, sections);
+        return pathFindStrategy.findPath(pathFindSpecification);
     }
 
     private Station findById(List<Station> stations, Long id) {

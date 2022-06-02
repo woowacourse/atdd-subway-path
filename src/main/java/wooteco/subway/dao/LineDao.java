@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.domain.Fare;
 import wooteco.subway.domain.Line;
 import wooteco.subway.ui.dto.LineCreateRequest;
 import wooteco.subway.ui.dto.LineRequest;
@@ -24,14 +25,15 @@ public class LineDao {
     private final RowMapper<Line> eventRowMapper = (resultSet, rowNum)
             -> new Line(resultSet.getLong("id")
             , resultSet.getString("name")
-            , resultSet.getString("color"));
+            , resultSet.getString("color")
+            , new Fare(resultSet.getInt("extraFare")));
 
     public LineDao(NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     public Long save(LineCreateRequest line) {
-        String sql = "insert into LINE (name, color) values (:name, :color)";
+        String sql = "insert into LINE (name, color, extraFare) values (:name, :color, :extraFare)";
         SqlParameterSource source = new BeanPropertySqlParameterSource(line);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(sql, source, keyHolder);
@@ -74,11 +76,12 @@ public class LineDao {
     }
 
     public void update(Long id, LineRequest lineRequest) {
-        String sql = "update LINE set name=:name, color=:color where id=:id";
+        String sql = "update LINE set name=:name, color=:color, extraFare=:extraFare where id=:id";
         MapSqlParameterSource source = new MapSqlParameterSource();
         source.addValue("id", id);
         source.addValue("color", lineRequest.getColor());
         source.addValue("name", lineRequest.getName());
+        source.addValue("extraFare", lineRequest.getExtraFare());
         jdbcTemplate.update(sql, source);
     }
 

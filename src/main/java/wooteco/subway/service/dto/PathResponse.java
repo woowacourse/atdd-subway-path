@@ -1,6 +1,7 @@
 package wooteco.subway.service.dto;
 
 import java.util.List;
+import java.util.Objects;
 
 public class PathResponse {
 
@@ -27,6 +28,24 @@ public class PathResponse {
 
     public List<StationResponse> getStations() {
         return stations;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PathResponse response = (PathResponse) o;
+        return distance == response.distance && fare == response.fare && Objects.equals(stations,
+                response.stations);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(distance, fare, stations);
     }
 
     @Override

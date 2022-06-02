@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Section;
 import wooteco.subway.ui.dto.SectionRequest;
 
@@ -29,7 +28,7 @@ class SectionDaoTest {
         List<Section> sections = sectionDao.findAll();
 
         // then
-        assertThat(sections.size()).isEqualTo(1);
+        assertThat(sections.size()).isEqualTo(8);
     }
 
     @DisplayName("구간을 노선 id로 검색")
@@ -41,7 +40,7 @@ class SectionDaoTest {
         List<Section> sections = sectionDao.findByLineId(1L);
 
         // then
-        assertThat(sections.size()).isEqualTo(1);
+        assertThat(sections.size()).isEqualTo(4);
     }
 
     @DisplayName("구간 역 id로 조회")
@@ -53,7 +52,7 @@ class SectionDaoTest {
         List<Section> sections = sectionDao.findByStationId(2L);
 
         // then
-        assertThat(sections.size()).isEqualTo(1);
+        assertThat(sections.size()).isEqualTo(3);
     }
 
     @DisplayName("구간 역 id와 노선 id로 조회")
@@ -65,7 +64,7 @@ class SectionDaoTest {
         List<Section> sections = sectionDao.findByLineIdAndStationId(1L, 2L);
 
         // then
-        assertThat(sections.size()).isEqualTo(1);
+        assertThat(sections.size()).isEqualTo(2);
     }
 
     @DisplayName("구간 생성")
@@ -78,7 +77,7 @@ class SectionDaoTest {
         Long id = sectionDao.save(section.toEntity(1L));
 
         // then
-        assertThat(id).isEqualTo(2L);
+        assertThat(id).isEqualTo(9L);
     }
 
     @DisplayName("구간 수정")

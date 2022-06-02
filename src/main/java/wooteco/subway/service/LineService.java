@@ -50,7 +50,7 @@ public class LineService {
         sectionDao.save(sectionRequest.toEntity(lineId));
 
         List<StationResponse> stations = generateStationResponses(line.getDownStationId(), line.getUpStationId());
-        return new LineResponse(lineId, line.getName(), line.getColor(), stations);
+        return new LineResponse(lineId, line.getName(), line.getColor(), line.getExtraFare(), stations);
     }
 
     private void validDuplicatedName(String name) {
@@ -135,7 +135,6 @@ public class LineService {
     private Map<Long, String> initNameMap(Long id) {
         return stationDao.findByLineId(id)
                 .stream()
-                .distinct()
                 .collect(Collectors.toMap(Station::getId, Station::getName));
     }
 

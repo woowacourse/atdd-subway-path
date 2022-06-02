@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.util.CollectionUtils;
+import wooteco.subway.util.NullChecker;
 
 public class Sections {
 
@@ -18,6 +19,7 @@ public class Sections {
     private final List<Section> value;
 
     public Sections(List<Section> value) {
+        NullChecker.validateNonNull(value);
         this.value = value;
     }
 
