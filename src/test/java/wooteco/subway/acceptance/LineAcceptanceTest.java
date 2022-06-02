@@ -12,7 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import wooteco.subway.acceptance.fixture.SimpleCreate;
+import wooteco.subway.acceptance.fixture.SubwayFixture;
 import wooteco.subway.acceptance.fixture.SimpleResponse;
 import wooteco.subway.acceptance.fixture.SimpleRestAssured;
 import wooteco.subway.dto.request.LineCreateRequest;
@@ -23,8 +23,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void setUpStations() {
-        SimpleCreate.createStation(new StationRequest("강남역"));
-        SimpleCreate.createStation(new StationRequest("역삼역"));
+        SubwayFixture.createStation(new StationRequest("강남역"));
+        SubwayFixture.createStation(new StationRequest("역삼역"));
     }
 
     @Test

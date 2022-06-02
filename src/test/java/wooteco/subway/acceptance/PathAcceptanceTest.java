@@ -13,8 +13,10 @@ import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import wooteco.subway.acceptance.fixture.SimpleCreate;
+import wooteco.subway.acceptance.fixture.SimpleResponse;
+import wooteco.subway.acceptance.fixture.SubwayFixture;
 import wooteco.subway.dto.request.StationRequest;
+import wooteco.subway.dto.response.LineCreateResponse;
 import wooteco.subway.dto.response.PathResponse;
 import wooteco.subway.dto.response.StationResponse;
 
@@ -24,13 +26,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("출발역과 도착역으로 최단 경로를 조회한다.")
     public void getPath() {
         // given
-        StationResponse 강남역 = SimpleCreate.createStation(new StationRequest("강남역")).toObject(StationResponse.class);
-        StationResponse 역삼역 = SimpleCreate.createStation(new StationRequest("역삼역")).toObject(StationResponse.class);
-        StationResponse 선릉역 = SimpleCreate.createStation(new StationRequest("선릉역")).toObject(StationResponse.class);
+        StationResponse 강남역 = SubwayFixture.createStation(new StationRequest("강남역")).toObject(StationResponse.class);
+        StationResponse 역삼역 = SubwayFixture.createStation(new StationRequest("역삼역")).toObject(StationResponse.class);
+        StationResponse 선릉역 = SubwayFixture.createStation(new StationRequest("선릉역")).toObject(StationResponse.class);
 
-        SimpleCreate.createLine(강남역, 역삼역);
+        SimpleResponse line = SubwayFixture.createLine(강남역, 역삼역);
 
-        SimpleCreate.createSection(역삼역, 선릉역);
+        SubwayFixture.createSection(역삼역, 선릉역, line.toObject(LineCreateResponse.class).getId());
 
         Map<String, Integer> params = Map.of("source", 1, "target", 3, "age", 15);
 

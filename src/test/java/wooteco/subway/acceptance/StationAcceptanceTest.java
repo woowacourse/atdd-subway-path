@@ -11,7 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import wooteco.subway.acceptance.fixture.SimpleCreate;
+import wooteco.subway.acceptance.fixture.SubwayFixture;
 import wooteco.subway.acceptance.fixture.SimpleResponse;
 import wooteco.subway.acceptance.fixture.SimpleRestAssured;
 import wooteco.subway.dto.request.StationRequest;
@@ -24,7 +24,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStation() {
         // given
-        SimpleResponse response = SimpleCreate.createStation(new StationRequest("강남역"));
+        SimpleResponse response = SubwayFixture.createStation(new StationRequest("강남역"));
         // then
         Assertions.assertAll(
                 () -> response.assertStatus(HttpStatus.CREATED),
@@ -36,9 +36,9 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStationWithDuplicateName() {
         // given
-        SimpleCreate.createStation(new StationRequest("강남역"));
+        SubwayFixture.createStation(new StationRequest("강남역"));
         // when
-        SimpleResponse response = SimpleCreate.createStation(new StationRequest("강남역"));
+        SimpleResponse response = SubwayFixture.createStation(new StationRequest("강남역"));
         // then
         response.assertStatus(HttpStatus.BAD_REQUEST);
     }
@@ -47,8 +47,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void getStations() {
         /// given
-        SimpleResponse 강남역 = SimpleCreate.createStation(new StationRequest("강남역"));
-        SimpleResponse 역삼역 = SimpleCreate.createStation(new StationRequest("역삼역"));
+        SimpleResponse 강남역 = SubwayFixture.createStation(new StationRequest("강남역"));
+        SimpleResponse 역삼역 = SubwayFixture.createStation(new StationRequest("역삼역"));
 
         // when
         SimpleResponse response = SimpleRestAssured.get("/stations");
@@ -70,7 +70,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteStation() {
         // given
-        SimpleResponse 강남역 = SimpleCreate.createStation(new StationRequest("강남역"));
+        SimpleResponse 강남역 = SubwayFixture.createStation(new StationRequest("강남역"));
         // when
         String uri = 강남역.getHeader("Location");
         SimpleResponse response = SimpleRestAssured.delete(uri);
@@ -82,7 +82,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않는 지하철 역을 삭제하면 예외를 던진다.")
     void deleteStation_throwsExceptionWithInvalidStation() {
         // given
-        SimpleCreate.createStation(new StationRequest("강남역"));
+        SubwayFixture.createStation(new StationRequest("강남역"));
         // when
         SimpleResponse deleteResponse = SimpleRestAssured.delete("/lines/100");
         // then
