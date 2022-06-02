@@ -6,54 +6,48 @@ import java.util.stream.Collectors;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
 
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.Lines;
 
+@Component
 public class DijkstraPathCalculator implements PathCalculator {
-    private final DijkstraShortestPath<Station, ShortestPathEdge> dijkstraShortestPath;
 
-    private DijkstraPathCalculator(
-            DijkstraShortestPath<Station, ShortestPathEdge> dijkstraShortestPath) {
-        this.dijkstraShortestPath = dijkstraShortestPath;
-    }
-
-    public static DijkstraPathCalculator from(List<Line> inputLines) {
+    @Override
+    public Path calculatePath(Station source, Station target, List<Line> inputLines) {
         Lines lines = new Lines(inputLines);
         Set<Station> stations = lines.extractStations();
-        WeightedMultigraph<Station, ShortestPathEdge> graph = getMultiGraph(stations, lines);
-        return new DijkstraPathCalculator(new DijkstraShortestPath<>(graph));
-    }
-
-    private static WeightedMultigraph<Station, ShortestPathEdge> getMultiGraph(Set<Station> stations, Lines lines) {
         WeightedMultigraph<Station, ShortestPathEdge> graph = new WeightedMultigraph<>(ShortestPathEdge.class);
-        addVertex(stations, graph);
-        lines.addEdge(graph);
-        return graph;
-    }
-
-    private static void addVertex(Set<Station> stations, WeightedMultigraph<Station, ShortestPathEdge> graph) {
         for (Station station : stations) {
             graph.addVertex(station);
         }
+        lines.addEdge(graph);
+
+        DijkstraShortestPath<Station, ShortestPathEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+
+        List<Station> vertexes = calculateShortestPath(source, target, dijkstraShortestPath);
+        List<Long> lineIds = calculateShortestPathLines(source, target, dijkstraShortestPath);
+        double distance = calculateShortestDistance(source, target, dijkstraShortestPath);
+        return new Path(vertexes, lineIds, distance);
     }
 
-    @Override
-    public List<Station> calculateShortestPath(Station source, Station target) {
+    private List<Station> calculateShortestPath(Station source, Station target,
+            DijkstraShortestPath<Station, ShortestPathEdge> dijkstraShortestPath) {
         return dijkstraShortestPath.getPath(source, target).getVertexList();
     }
 
-    @Override
-    public List<Long> calculateShortestPathLines(Station source, Station target) {
+    private List<Long> calculateShortestPathLines(Station source, Station target,
+            DijkstraShortestPath<Station, ShortestPathEdge> dijkstraShortestPath) {
         List<ShortestPathEdge> edges = dijkstraShortestPath.getPath(source, target).getEdgeList();
         return edges.stream()
                 .map(ShortestPathEdge::getLineId)
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public double calculateShortestDistance(Station source, Station target) {
+    private double calculateShortestDistance(Station source, Station target,
+            DijkstraShortestPath<Station, ShortestPathEdge> dijkstraShortestPath) {
         return dijkstraShortestPath.getPathWeight(source, target);
     }
 }

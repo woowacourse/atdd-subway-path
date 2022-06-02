@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.path.DijkstraPathCalculator;
+import wooteco.subway.domain.path.Path;
 
 public class DijkstraPathCalculatorTest {
 
@@ -30,8 +31,9 @@ public class DijkstraPathCalculatorTest {
         Line line1 = new Line(1L, "2호선", "green", 500, sections1);
         Line line2 = new Line(1L, "3호선", "green", 300, sections2);
 
-        DijkstraPathCalculator dijkstraPathCalculator = DijkstraPathCalculator.from(List.of(line1, line2));
-        List<Station> stations = dijkstraPathCalculator.calculateShortestPath(선릉, 강남);
+        DijkstraPathCalculator dijkstraPathCalculator = new DijkstraPathCalculator();
+        Path path = dijkstraPathCalculator.calculatePath(선릉, 강남, List.of(line1, line2));
+        List<Station> stations = path.getStations();
 
         assertThat(stations).hasSize(3);
     }
@@ -54,8 +56,9 @@ public class DijkstraPathCalculatorTest {
         Line line1 = new Line(1L, "2호선", "green", 500, sections1);
         Line line2 = new Line(1L, "3호선", "green", 300, sections2);
 
-        DijkstraPathCalculator dijkstraPathCalculator = DijkstraPathCalculator.from(List.of(line1, line2));
-        double distance = dijkstraPathCalculator.calculateShortestDistance(선릉, 강남);
+        DijkstraPathCalculator dijkstraPathCalculator = new DijkstraPathCalculator();
+        Path path = dijkstraPathCalculator.calculatePath(선릉, 강남, List.of(line1, line2));
+        double distance = path.getDistance();
 
         assertThat(distance).isEqualTo(20);
     }

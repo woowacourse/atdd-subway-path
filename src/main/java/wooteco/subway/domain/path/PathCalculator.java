@@ -3,12 +3,9 @@ package wooteco.subway.domain.path;
 import java.util.List;
 
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.line.Line;
 
 public interface PathCalculator {
 
-    List<Station> calculateShortestPath(Station source, Station target);
-
-    List<Long> calculateShortestPathLines(Station source, Station target);
-
-    double calculateShortestDistance(Station source, Station target);
+    Path calculatePath(Station source, Station target, List<Line> lines);
 }
