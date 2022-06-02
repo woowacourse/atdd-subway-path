@@ -39,10 +39,12 @@ public class DijkstraPathCalculator implements PathCalculator {
         }
     }
 
+    @Override
     public List<Station> calculateShortestPath(Station source, Station target) {
         return dijkstraShortestPath.getPath(source, target).getVertexList();
     }
 
+    @Override
     public List<Long> calculateShortestPathLines(Station source, Station target) {
         List<ShortestPathEdge> edges = dijkstraShortestPath.getPath(source, target).getEdgeList();
         return edges.stream()
@@ -50,6 +52,7 @@ public class DijkstraPathCalculator implements PathCalculator {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public double calculateShortestDistance(Station source, Station target) {
         return dijkstraShortestPath.getPathWeight(source, target);
     }
