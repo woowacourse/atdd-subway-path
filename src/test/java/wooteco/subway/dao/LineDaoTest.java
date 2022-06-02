@@ -1,7 +1,6 @@
 package wooteco.subway.dao;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
@@ -9,14 +8,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-
 import org.springframework.context.annotation.Import;
-import wooteco.subway.domain.line.Line;
+
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.line.Line;
 
 @JdbcTest
 @Import({LineDao.class, StationDao.class})
@@ -64,7 +62,7 @@ class LineDaoTest {
     @DisplayName("노선을 하나 추가한 뒤, 전체 노선을 조회한다")
     public void findAll_afterSaveOneLine() {
         // given
-        linDao.save(new Line(LINE_NAME, LINE_COLOR,900, section));
+        linDao.save(new Line(LINE_NAME, LINE_COLOR, 900, section));
         // when
         List<Line> lines = linDao.findAll();
         // then
@@ -75,7 +73,7 @@ class LineDaoTest {
     @DisplayName("ID 값으로 노선을 조회한다")
     public void findById() {
         // given
-        final Line saved = linDao.save(new Line(LINE_NAME, LINE_COLOR,900, section));
+        final Line saved = linDao.save(new Line(LINE_NAME, LINE_COLOR, 900, section));
         // when
         final Line found = linDao.findById(saved.getId()).get();
         // then
@@ -90,7 +88,7 @@ class LineDaoTest {
     @DisplayName("노선 정보를 수정한다.")
     public void update() {
         // given & when
-        Line saved = linDao.save(new Line(LINE_NAME, LINE_COLOR,900, section));
+        Line saved = linDao.save(new Line(LINE_NAME, LINE_COLOR, 900, section));
         // then
         assertThat(linDao.update(new Line(saved.getId(), "구분당선", LINE_COLOR, 900))).isEqualTo(1);
     }
@@ -99,7 +97,7 @@ class LineDaoTest {
     @DisplayName("존재하지 않는 ID값을 수정하는 경우 예외를 던진다.")
     public void update_throwsExceptionWithInvalidId() {
         // given
-        linDao.save(new Line(LINE_NAME, LINE_COLOR,900, section));
+        linDao.save(new Line(LINE_NAME, LINE_COLOR, 900, section));
         // when
         Line updateLine = new Line(100L, "사랑이넘치는", "우테코", 900);
         // then
@@ -111,7 +109,7 @@ class LineDaoTest {
     @DisplayName("ID값으로 노선을 삭제한다.")
     public void delete() {
         // given & when
-        Line saved = linDao.save(new Line(LINE_NAME, LINE_COLOR,900, section));
+        Line saved = linDao.save(new Line(LINE_NAME, LINE_COLOR, 900, section));
         // then
         assertThat(linDao.delete(saved.getId())).isEqualTo(1);
     }
@@ -120,7 +118,7 @@ class LineDaoTest {
     @DisplayName("존재하지않는 ID값을 삭제하는 경우 예외를 던진다.")
     public void delete_throwsExceptionWithInvalidId() {
         // given
-        linDao.save(new Line(LINE_NAME, LINE_COLOR,900, section));
+        linDao.save(new Line(LINE_NAME, LINE_COLOR, 900, section));
         // when
         Long deleteId = 100L;
         // then
