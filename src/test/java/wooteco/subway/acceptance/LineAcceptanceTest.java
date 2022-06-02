@@ -1,12 +1,16 @@
 package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.equalTo;
-import static wooteco.subway.acceptance.AcceptanceTestFixture.createLineResponse;
-import static wooteco.subway.acceptance.AcceptanceTestFixture.createStationResponse;
+import static wooteco.subway.acceptance.AcceptanceTestFixture.delete;
+import static wooteco.subway.acceptance.AcceptanceTestFixture.get;
+import static wooteco.subway.acceptance.AcceptanceTestFixture.getLineRequest;
+import static wooteco.subway.acceptance.AcceptanceTestFixture.getStationRequest;
+import static wooteco.subway.acceptance.AcceptanceTestFixture.insert;
+import static wooteco.subway.acceptance.AcceptanceTestFixture.line1Post;
+import static wooteco.subway.acceptance.AcceptanceTestFixture.line2Post;
+import static wooteco.subway.acceptance.AcceptanceTestFixture.line2Put;
+import static wooteco.subway.acceptance.AcceptanceTestFixture.update;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
@@ -16,206 +20,191 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
-import wooteco.subway.dto.StationRequest;
 
-@DisplayName("지하철노선 관련 기능")
+@DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
-    private final StationRequest stationRequest1 = new StationRequest("강남역");
-    private final StationRequest stationRequest2 = new StationRequest("역삼역");
-    private final StationRequest stationRequest3 = new StationRequest("분당역");
-    private final LineRequest lineRequest1 =
-            new LineRequest("신분당선", "bg-red-600",
-                    1L, 2L, 20, 900);
-    private final LineRequest lineRequest2 =
-            new LineRequest("분당선", "bg-green-600",
-                    1L, 3L, 15, 900);
 
     @BeforeEach
-    void init(){
-        createStationResponse(stationRequest1);
-        createStationResponse(stationRequest2);
+    void setStations() {
+        insert(getStationRequest("name1"), "/stations");
+        insert(getStationRequest("name2"), "/stations");
+        insert(getStationRequest("name3"), "/stations");
+        insert(getStationRequest("name4"), "/stations");
     }
 
-    @DisplayName("지하철노선을 생성한다.")
     @Test
+    @DisplayName("지하철 노선을 생성한다.")
     void createLine() {
-        // given
-        // when
-        ExtractableResponse<Response> response = createLineResponse(lineRequest1);
+        // given & when
+        ExtractableResponse<Response> response = insert(getLineRequest(line1Post), "/lines");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
     }
 
-    @DisplayName("기존에 존재하는 지하철노선 이름으로 지하철노선을 생성할 때 예외를 발생시킨다.")
+    @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성할 시 400에러를 발생시킨다.")
     @Test
     void createLineWithDuplicateName() {
         // given
-        createLineResponse(lineRequest1);
+        insert(getLineRequest(line1Post), "/lines");
 
         // when
-        ExtractableResponse<Response> response = createLineResponse(lineRequest1);
+        ExtractableResponse<Response> createResponse = insert(getLineRequest(line1Post), "/lines");
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("지하철노선 목록을 조회한다.")
+    @DisplayName("중복되는 상하행 지하철역 id로 지하철 노선을 생성할 시 400에러를 발생시킨다.")
+    @Test
+    void createLineWithDuplicateStationId() {
+        // when
+        ExtractableResponse<Response> createResponse = insert(
+                getLineRequest(new LineRequest("1호선", "blue", 1L, 1L, 10, 0)), "/lines");
+
+        // then
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+
+    @DisplayName("지하철 전체 노선을 조회한다.")
     @Test
     void getLines() {
         /// given
-        createStationResponse(stationRequest3);
-        ExtractableResponse<Response> createResponse1 = createLineResponse(lineRequest1);
-        ExtractableResponse<Response> createResponse2 = createLineResponse(lineRequest2);
+        ExtractableResponse<Response> createResponse1 = insert(getLineRequest(line1Post), "/lines");
 
+        ExtractableResponse<Response> createResponse2 = insert(getLineRequest(line2Post), "/lines");
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .when()
-                .get("/lines")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> getResponse = get("/lines");
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(getResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+
         List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
                 .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
                 .collect(Collectors.toList());
-        List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
+        List<Long> resultLineIds = getResponse.jsonPath().getList(".", LineResponse.class).stream()
                 .map(LineResponse::getId)
                 .collect(Collectors.toList());
         assertThat(resultLineIds).containsAll(expectedLineIds);
-        RestAssured.given().log().all()
-                .when()
-                .get("/lines/")
-                .then().log().all()
-                .body("name", contains(lineRequest1.getName(), lineRequest2.getName()))
-                .body("color", contains(lineRequest1.getColor(), lineRequest2.getColor()));
     }
 
-    @DisplayName("지하철 단일 노선을 조회한다.")
+
+    @DisplayName("지하철 노선을 조회한다.")
     @Test
-    void getLineById() {
+    void getLine() {
         /// given
-        ExtractableResponse<Response> createResponse = createLineResponse(lineRequest1);
-        int expectedLineId = Integer.parseInt(createResponse.header("Location").split("/")[2]);
+        ExtractableResponse<Response> createResponse1 = insert(getLineRequest(line1Post), "/lines");
+
+        ExtractableResponse<Response> createResponse2 = insert(getLineRequest(line2Post), "/lines");
+
+        Long expectedId = Long.parseLong(createResponse1.header("Location").split("/")[2]);
 
         // when
+        ExtractableResponse<Response> response = get("/lines/" + expectedId);
+
+        Long resultId = response.jsonPath().getLong("id");
+
         // then
-        RestAssured.given().log().all()
-                .when()
-                .get("/lines/" + expectedLineId)
-                .then().log().all()
-                .body("id", equalTo(expectedLineId))
-                .body("name", equalTo(lineRequest1.getName()))
-                .body("color", equalTo(lineRequest1.getColor()));
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(resultId).isEqualTo(expectedId);
     }
 
-    @DisplayName("존재하지 않는 id로 지하철 단일 노선을 조회할 때 예외를 발생시킨다.")
+    @DisplayName("존재하지 않는 노선을 조회할 시 404에러가 발생한다.")
     @Test
-    void getLineByInvalidId() {
+    void getLineNotExist() {
         /// given
-        ExtractableResponse<Response> createResponse = createLineResponse(lineRequest1);
+        ExtractableResponse<Response> createResponse = insert(getLineRequest(line1Post), "/lines");
+        long expectedId = Long.parseLong(createResponse.header("Location").split("/")[2]);
 
         // when
-        int resultLineId = Integer.parseInt(createResponse.header("Location").split("/")[2]) + 1;
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .when()
-                .get("/lines/" + resultLineId)
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = get("/lines/" + expectedId + 1);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
-    @DisplayName("지하철 노선을 수정한다.")
-    @Test
-    void updateLine() {
-        // given
-        ExtractableResponse<Response> createResponse = createLineResponse(lineRequest1);
-        // when
-        int resultLineId = Integer.parseInt(createResponse.header("Location").split("/")[2]);
-        RestAssured.given().log().all()
-                .body(lineRequest2)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .put("/lines/" + resultLineId)
-                .then().log().all()
-                .extract();
 
-        // then
-        RestAssured.given().log().all()
-                .when()
-                .get("/lines/" + resultLineId)
-                .then().log().all()
-                .statusCode(equalTo(HttpStatus.OK.value()))
-                .body("name", equalTo("분당선"))
-                .body("color", equalTo("bg-green-600"));
-    }
-
-    @DisplayName("존재하지 않는 지하철노선을 수정할 때 예외를 발생시킨다.")
+    @DisplayName("지하철 노선을 제거한다.")
     @Test
-    void updateInvalidLine() {
+    void deleteLine() {
         // given
-        ExtractableResponse<Response> createResponse = createLineResponse(lineRequest1);
+        ExtractableResponse<Response> createResponse = insert(getLineRequest(line1Post), "/lines");
 
         // when
-        int resultLineId = Integer.parseInt(createResponse.header("Location").split("/")[2]) + 1;
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(lineRequest2)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .put("/lines/" + resultLineId)
-                .then().log().all()
-                .extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @DisplayName("지하철노선을 제거한다.")
-    @Test
-    void deleteStation() {
-        // given
-        ExtractableResponse<Response> createResponse = createLineResponse(lineRequest1);
-
-        // when
-        String uri = createResponse.header("Location");
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .when()
-                .delete(uri)
-                .then().log().all()
-                .extract();
+        String path = createResponse.header("Location");
+        ExtractableResponse<Response> response = delete(path);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    @DisplayName("존재하지 않는 지하철을 삭제하려할 때 예외를 발생시킨다.")
+    @DisplayName("기존에 존재하지 않는 노선을 삭제할 시 404에러를 발생한다.")
     @Test
-    void deleteInvalidStation() {
-        // given
-        ExtractableResponse<Response> createResponse = createLineResponse(lineRequest1);
+    void deleteLineNotExist() {
+        /// given
+        ExtractableResponse<Response> createResponse = insert(getLineRequest(line1Post), "/lines");
+        long expectedId = Long.parseLong(createResponse.header("Location").split("/")[2]);
 
         // when
-        String uri = createResponse.header("Location");
-        RestAssured.given().log().all()
-                .when()
-                .delete(uri)
-                .then().log().all()
-                .extract();
-
-        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
-                .when()
-                .delete(uri)
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = delete("/lines/" + expectedId + 1);
 
         // then
-        assertThat(response2.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
+
+
+    @DisplayName("지하철 노선을 수정한다.")
+    @Test
+    void updateLine() {
+        // given
+        ExtractableResponse<Response> createResponse = insert(getLineRequest(line1Post), "/lines");
+        String path = createResponse.header("Location");
+
+        //when
+        ExtractableResponse<Response> updateResponse = update(getLineRequest(line2Put), path);
+
+        // then
+        ExtractableResponse<Response> findResponse = get(path);
+
+        LineResponse lineResponse = findResponse.as(LineResponse.class);
+
+        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(lineResponse.getName()).isEqualTo("2호선");
+        assertThat(lineResponse.getColor()).isEqualTo("blue");
+    }
+
+    @DisplayName("기존에 존재하는 지하철 노선명으로 지하철 노선명을 수정할 경우 400에러를 발생시킨다.")
+    @Test
+    void updateLineWithDuplicateName() {
+        /// given
+        ExtractableResponse<Response> createResponse1 = insert(getLineRequest(line1Post), "/lines");
+        ExtractableResponse<Response> createResponse2 = insert(getLineRequest(line2Post), "/lines");
+        String path = createResponse1.header("Location");
+
+        //when
+        ExtractableResponse<Response> updateResponse = update(getLineRequest(line2Put), path);
+
+        // then
+        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+
+    @DisplayName("기존에 존재하지 않는 노선을 수정할 시 404에러를 발생한다.")
+    @Test
+    void updateLineNotExist() {
+        /// given
+        ExtractableResponse<Response> createResponse = insert(getLineRequest(line1Post), "/lines");
+        long expectedId = Long.parseLong(createResponse.header("Location").split("/")[2]);
+
+        //when
+        ExtractableResponse<Response> updateResponse = update(getLineRequest(line2Put), "/lines/" + expectedId + 1);
+
+        // then
+        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
 }

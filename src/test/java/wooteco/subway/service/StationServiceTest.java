@@ -1,52 +1,102 @@
 package wooteco.subway.service;
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import wooteco.subway.domain.Station;
-import wooteco.subway.dto.StationRequest;
-import wooteco.subway.dto.StationResponse;
-import wooteco.subway.service.fakeDao.FakeSectionDao;
-import wooteco.subway.service.fakeDao.FakeStationDao;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static wooteco.subway.service.ServiceTestFixture.선릉역_요청;
+import static wooteco.subway.service.ServiceTestFixture.일호선_생성;
+import static wooteco.subway.service.ServiceTestFixture.잠실역_요청;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
+import wooteco.subway.dto.StationResponse;
+import wooteco.subway.exception.NotFoundException;
 
-public class StationServiceTest {
+@SpringBootTest
+@Sql(scripts = {"classpath:test-schema.sql"})
+class StationServiceTest {
 
-    private final StationService stationService =
-            new StationService(FakeStationDao.getInstance(), FakeSectionDao.getInstance());
+    @Autowired
+    private StationService stationService;
 
-    @BeforeEach
-    void setUp() {
-        final FakeStationDao stationDao = FakeStationDao.getInstance();
-        final List<Station> stations = stationDao.findAll();
-        stations.clear();
+    @Autowired
+    private LineService lineService;
+
+    @Test
+    @DisplayName("지하철 역 이름이 중복되지 않는다면 등록할 수 있다.")
+    void save() {
+        //when
+        stationService.insert(선릉역_요청);
+
+        //then
+        assertThat(stationService.insert(잠실역_요청).getName()).isEqualTo("잠실");
     }
 
     @Test
-    @DisplayName("이미 존재하는 역을 생성하려고 하면 에러를 발생한다.")
-    void save_duplicate_station() {
-        final StationRequest stationRequest1 = new StationRequest("강남역");
-        final StationRequest stationRequest2 = new StationRequest("강남역");
+    @DisplayName("지하철 역 이름이 중복된다면 등록할 수 없다.")
+    void saveDuplicate() {
+        //when
+        stationService.insert(선릉역_요청);
+        stationService.insert(잠실역_요청);
 
-        stationService.saveStation(stationRequest1);
-
-        Assertions.assertThatThrownBy(() -> stationService.saveStation(stationRequest2))
+        //then
+        assertThatThrownBy(() -> stationService.insert(잠실역_요청))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("같은 이름의 역이 존재합니다.");
+                .hasMessage("지하철 이름이 중복될 수 없습니다.");
     }
 
     @Test
-    @DisplayName("존재하지 않는 역을 접근하려고 하면 에러를 발생한다.")
-    void not_exist_station() {
-        final StationRequest stationRequest = new StationRequest("강남역");
+    @DisplayName("지하철 역 목록을 조회할 수 있다.")
+    void findAll() {
+        //given
+        stationService.insert(선릉역_요청);
+        stationService.insert(잠실역_요청);
 
-        final StationResponse stationResponse = stationService.saveStation(stationRequest);
-        final Long invalidStationId = stationResponse.getId() + 1L;
+        //when
+        List<String> responseNames = stationService.findAll().stream()
+                .map(StationResponse::getName)
+                .collect(Collectors.toList());
 
-        Assertions.assertThatThrownBy(() -> stationService.deleteStation(invalidStationId))
+        //then
+        assertThat(responseNames).contains("선릉", "잠실");
+    }
+
+    @Test
+    @DisplayName("존재하는 지하철 역을 삭제할 수 있다.")
+    void delete() {
+        //when
+        StationResponse insert = stationService.insert(선릉역_요청);
+
+        //then
+        assertDoesNotThrow(() -> stationService.delete(insert.getId()));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 지하철 역은 삭제할 수 없다.")
+    void deleteNotFound() {
+        //given
+        stationService.insert(선릉역_요청);
+
+        assertThatThrownBy(() -> stationService.delete(2L))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("존재하지 않는 지하철역입니다.");
+    }
+
+    @Test
+    @DisplayName("노선에 등록된 지하철 역은 삭제할 수 없다.")
+    void deleteExistsInSection() {
+        //given
+        Long id1 = stationService.insert(선릉역_요청).getId();
+        Long id2 = stationService.insert(잠실역_요청).getId();
+        lineService.insert(일호선_생성(id1, id2));
+
+        assertThatThrownBy(() -> stationService.delete(id1))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(invalidStationId + "번에 해당하는 역이 존재하지 않습니다.");
+                .hasMessage("해당 지하철역은 노선에 등록되어 있어 삭제할 수 없습니다.");
     }
 }

@@ -8,17 +8,15 @@ public class LineResponse {
     private Long id;
     private String name;
     private String color;
-    private int extraFare;
     private List<StationResponse> stations;
 
-    private LineResponse() {
+    public LineResponse() {
     }
 
     public LineResponse(Line line, List<StationResponse> stations) {
-        this.id = line.getId();
-        this.name = line.getName();
-        this.color = line.getColor();
-        this.extraFare = line.getExtraFare();
+        id = line.getId();
+        name = line.getName();
+        color = line.getColor();
         this.stations = stations;
     }
 
@@ -34,10 +32,6 @@ public class LineResponse {
         return color;
     }
 
-    public int getExtraFare() {
-        return extraFare;
-    }
-
     public List<StationResponse> getStations() {
         return stations;
     }
@@ -51,11 +45,12 @@ public class LineResponse {
             return false;
         }
         LineResponse that = (LineResponse) o;
-        return Objects.equals(name, that.name);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name)
+                && Objects.equals(color, that.color) && Objects.equals(stations, that.stations);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(id, name, color, stations);
     }
 }

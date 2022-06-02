@@ -1,10 +1,10 @@
 package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.acceptance.AcceptanceTestFixture.createLineResponse;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static wooteco.subway.acceptance.AcceptanceTestFixture.convertValueAsString;
 import static wooteco.subway.acceptance.AcceptanceTestFixture.createPathResponse;
-import static wooteco.subway.acceptance.AcceptanceTestFixture.createSectionResponse;
-import static wooteco.subway.acceptance.AcceptanceTestFixture.createStationResponse;
+import static wooteco.subway.acceptance.AcceptanceTestFixture.insert;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -51,27 +51,28 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private final SectionRequest 석촌_석촌고분 = new SectionRequest(4L, 5L, 1);
     private final SectionRequest 석촌고분_삼전 = new SectionRequest(5L, 6L, 1);
 
+
     @BeforeEach
     void init() {
-        createStationResponse(new StationRequest(잠실.getName()));
-        createStationResponse(new StationRequest(잠실새내.getName()));
-        createStationResponse(new StationRequest(종합운동장.getName()));
-        createStationResponse(new StationRequest(석촌.getName()));
-        createStationResponse(new StationRequest(석촌고분.getName()));
-        createStationResponse(new StationRequest(삼전.getName()));
-        createStationResponse(new StationRequest(선릉.getName()));
-        createStationResponse(new StationRequest(선정릉.getName()));
-        createStationResponse(new StationRequest(강남구청.getName()));
+        insert(convertValueAsString(new StationRequest(잠실.getName())), "/stations");
+        insert(convertValueAsString(new StationRequest(잠실새내.getName())), "/stations");
+        insert(convertValueAsString(new StationRequest(종합운동장.getName())), "/stations");
+        insert(convertValueAsString(new StationRequest(석촌.getName())), "/stations");
+        insert(convertValueAsString(new StationRequest(석촌고분.getName())), "/stations");
+        insert(convertValueAsString(new StationRequest(삼전.getName())), "/stations");
+        insert(convertValueAsString(new StationRequest(선릉.getName())), "/stations");
+        insert(convertValueAsString(new StationRequest(선정릉.getName())), "/stations");
+        insert(convertValueAsString(new StationRequest(강남구청.getName())), "/stations");
 
-        createLineResponse(이호선);
-        createLineResponse(팔호선);
-        createLineResponse(구호선);
-        createLineResponse(수인분당선);
-        createLineResponse(경의중앙선);
+        insert(convertValueAsString(이호선), "/lines");
+        insert(convertValueAsString(팔호선), "/lines");
+        insert(convertValueAsString(구호선), "/lines");
+        insert(convertValueAsString(수인분당선), "/lines");
+        insert(convertValueAsString(경의중앙선), "/lines");
 
-        createSectionResponse(1L, 잠실_잠실새내);
-        createSectionResponse(3L, 석촌_석촌고분);
-        createSectionResponse(3L, 석촌고분_삼전);
+        insert(convertValueAsString(잠실_잠실새내), "/lines/1/sections");
+        insert(convertValueAsString(석촌_석촌고분), "/lines/3/sections");
+        insert(convertValueAsString(석촌고분_삼전), "/lines/3/sections");
     }
 
     @Test
@@ -82,7 +83,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
         final PathResponse actual = response.jsonPath().getObject(".", PathResponse.class);
         final PathResponse expected = new PathResponse(List.of(석촌, 석촌고분, 삼전), 2, 1250);
 
-        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+        assertAll(
+                () -> assertThat(actual.getDistance()).isEqualTo(expected.getDistance()),
+                () -> assertThat(actual.getStations()).containsAll(expected.getStations()),
+                () -> assertThat(actual.getFare()).isEqualTo(expected.getFare())
+        );
+
     }
 
     @Test

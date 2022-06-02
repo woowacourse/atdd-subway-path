@@ -1,143 +1,121 @@
 package wooteco.subway.domain;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static wooteco.subway.domain.domainTestFixture.section1to2;
+import static wooteco.subway.domain.domainTestFixture.section1to3;
+import static wooteco.subway.domain.domainTestFixture.section2to3;
+import static wooteco.subway.domain.domainTestFixture.section2to6;
+import static wooteco.subway.domain.domainTestFixture.section5to4;
 
-public class SectionsTest {
-    private final Section section1 = new Section(1L, 2L, 30);
-    private final Section section2 = new Section(2L, 3L, 20);
-    private final Section section3 = new Section(3L, 4L, 5);
-    private Sections sections;
+import java.util.List;
+import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-    @BeforeEach
-    void setUp() {
-        sections = new Sections(List.of(section1, section2, section3));
-    }
-
-    @Test
-    @DisplayName("상행역 종점 구간을 등록한다.")
-    void saveUpStationSection() {
-        final Section section = new Section(5L, 1L, 20);
-
-        sections.add(section);
-
-        assertThat(sections.hasSection(section)).isTrue();
-    }
+class SectionsTest {
 
     @Test
-    @DisplayName("하행역 종점 구간을 등록한다.")
-    void saveDownStationSection() {
-        final Section section = new Section(4L, 6L, 30);
+    @DisplayName("상행과 하행이 이미 등록된 경우 에러를 발생시킨다")
+    void checkSectionErrorByAlreadyExist() {
+        //given
+        Sections sections = new Sections(List.of(section1to2, section2to3));
 
-        sections.add(section);
-
-        assertThat(sections.hasSection(section)).isTrue();
-    }
-
-    @Test
-    @DisplayName("상행역이 같은 구간을 등록할 때 구간을 쪼개서 등록한다.")
-    void saveSectionBySameUpStation() {
-        final Section section = new Section(1L, 5L, 5);
-        final Section expected = new Section(5L, 2L, 25);
-
-        sections.add(section);
-
-        assertThat(sections.hasSection(expected)).isTrue();
-    }
-
-    @Test
-    @DisplayName("하행역이 같은 구간을 등록할 때 구간을 쪼개서 등록한다.")
-    void saveSectionBySameDownStation() {
-        final Section section = new Section(5L, 2L, 25);
-        final Section expected = new Section(1L, 5L, 5);
-
-        sections.add(section);
-
-        assertThat(sections.hasSection(expected)).isTrue();
-    }
-
-    @Test
-    @DisplayName("역 사이에 새로운 역을 등록할 경우 기존 역 사이 길이보다 크거나 같으면 예외를 발생시킨다.")
-    void saveLongerSection() {
-        final Section section = new Section(1L, 7L, 35);
-
-        assertThatThrownBy(() -> sections.add(section))
+        //then
+        assertThatThrownBy(() -> sections.checkSections(section1to2))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("존재하는 구간보다 긴 구간을 등록할 수 없습니다. 상행역, 하행역을 다시 설정해주세요.");
+                .hasMessage("상행역과 하행역이 이미 모두 노선에 등록되어 있습니다.");
     }
 
-    @ParameterizedTest
-    @DisplayName("상행역과 하행역이 이미 노선에 존재할 경우 등록하려할 때 예외를 발생시킨다.")
-    @CsvSource({"2, 3, 20", "1, 3, 50", "3, 2, 20", "4, 2, 25"})
-    void saveWhenSameStations(Long upStationId, Long downStationId, int distance) {
-        final Section section = new Section(upStationId, downStationId, distance);
+    @Test
+    @DisplayName("상행과 하행이 존재하지 않는 경우 에러를 발생시킨다")
+    void checkSectionErrorByNotExist() {
+        //given
+        Sections sections = new Sections(List.of(section1to2, section2to3));
 
-        assertThatThrownBy(() -> sections.add(section))
+        //then
+        assertThatThrownBy(() -> sections.checkSections(section5to4))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("상행역과 하행역이 이미 노선에 존재합니다.");
+                .hasMessage("상행역과 하행역이 모두 노선에 등록되어 있지 않습니다.");
     }
 
     @Test
-    @DisplayName("노선에 상행역과 하행역 둘 다 포함돼있지 않은 구간을 등록하려할 때 예외를 발생시킨다.")
-    void saveWhenNotSameStations() {
-        final Section section = new Section(5L, 6L, 40);
+    @DisplayName("해당하는 Section과 겹치는 Section이 없는 경우 null을 return 시킨다.")
+    void getTargetSectionToInsertNull() {
+        //given
+        Sections sections = new Sections(List.of(section1to2, section2to3));
 
-        assertThatThrownBy(() -> sections.add(section))
+        //when
+        Optional<Section> targetSectionBySection = sections.getTargetSectionToInsert(section5to4);
+
+        //then
+        assertThat(targetSectionBySection).isEmpty();
+    }
+
+    @Test
+    @DisplayName("해당하는 Section과 겹치는 Section이 있는 경우 해당 Section을 return한다.")
+    void getTargetSectionToInsert() {
+        //given
+        Sections sections = new Sections(List.of(section1to2, section2to3));
+
+        //when
+        Optional<Section> targetSectionBySection = sections.getTargetSectionToInsert(section2to6);
+
+        //then
+        assertThat(targetSectionBySection).isEqualTo(Optional.of(section2to3));
+    }
+
+    @Test
+    @DisplayName("상하행의 순서에 맞게 id list로 반환한다.")
+    void convertToStationIds() {
+        //given
+        Sections sections = new Sections(List.of(section1to2, section2to3));
+
+        //when
+         sections.convertToStationIds();
+
+        //then
+    }
+
+    @Test
+    @DisplayName("sections의 길이가 1인 경우 에러를 발생시킨다.")
+    void checkCanDeleteErrorBySizeOne() {
+        //given
+        Sections sections = new Sections(List.of(section1to2));
+
+        //then
+        assertThatThrownBy(sections::checkCanDelete)
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("등록하려는 구간의 상행역과 하행역 둘 중 하나는 노선에 포함된 역이어야 합니다.");
+                .hasMessage("해당 노선은 더 삭제할 수 없습니다.");
     }
 
     @Test
-    @DisplayName("상행역 종점을 제거한다.")
-    void deleteFinalUpStation() {
-        sections.delete(new Station(1L));
+    @DisplayName("삭제하려는 TargetSection을 찾을 때, 대상 section의 개수가 2개가 아니라면 에러가 발생한다.")
+    void getMergedTargetSectionToDeleteErrorByWrongSectionSize() {
+        //given
+        Sections sections = new Sections(List.of(section1to2, section2to3));
 
-        assertThat(sections.hasSection(section1)).isFalse();
-    }
-
-    @Test
-    @DisplayName("하행역 종점을 제거한다.")
-    void deleteFinalDownStation() {
-        sections.delete(new Station(4L));
-
-        assertThat(sections.hasSection(section3)).isFalse();
-    }
-
-    @Test
-    @DisplayName("중간역을 제거한다.")
-    void deleteMiddleStation() {
-        final Section section =
-                new Section(2L, 4L, 25);
-
-        sections.delete(new Station(3L));
-
-        assertThat(sections.hasSection(section)).isTrue();
-    }
-
-    @Test
-    @DisplayName("존재하지 않는 역을 제거하려 할 때 예외를 발생시킨다.")
-    void deleteNotExistSection() {
-        assertThatThrownBy(() -> sections.delete(new Station(5L)))
+        //then
+        assertThatThrownBy(()-> sections.getMergedTargetSectionToDelete(1L))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("존재하지 않는 역입니다.");
+                .hasMessage("대상 Sections의 크기가 올바르지 않습니다.");
     }
 
     @Test
-    @DisplayName("구간이 하나인 노선에서 역을 제거할 때 예외를 발생시킨다.")
-    void deleteWhenOnlyOneSection() {
-        sections.delete(new Station(3L));
-        sections.delete(new Station(2L));
+    @DisplayName("삭제하려는 stationId 값을 통해서 노선에서 해당 id값을 가진 두 노선의 병합된 값을 가질 수 있다.")
+    void getMergedTargetSectionToDelete() {
+        //given
+        Sections sections = new Sections(List.of(section1to2, section2to3));
 
-        assertThatThrownBy(() -> sections.delete(new Station(4L)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("구간이 하나만 존재하는 노선입니다.");
+        //when
+        Section section = sections.getMergedTargetSectionToDelete(2L);
+
+        //then
+        assertAll(
+                () -> assertThat(section.getDistance()).isEqualTo(section1to3.getDistance()),
+                () -> assertThat(section.isSameUpStationId(section1to3.getUpStation().getId())).isTrue(),
+                () -> assertThat(section.isSameDownStationId(section1to3.getDownStation().getId())).isTrue()
+        );
     }
 }

@@ -15,7 +15,7 @@ public class Path {
             graph.addVertex(station.getId());
         }
         for (Section section : sections) {
-            graph.addEdge(section.getUpStationId(), section.getDownStationId(),
+            graph.addEdge(section.getUpStation().getId(), section.getDownStation().getId(),
                     new ShortestPathEdge(section.getLineId(), section.getDistance()));
         }
     }

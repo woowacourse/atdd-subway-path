@@ -1,9 +1,13 @@
 package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.acceptance.AcceptanceTestFixture.createStationResponse;
+import static wooteco.subway.acceptance.AcceptanceTestFixture.delete;
+import static wooteco.subway.acceptance.AcceptanceTestFixture.get;
+import static wooteco.subway.acceptance.AcceptanceTestFixture.getLineRequest;
+import static wooteco.subway.acceptance.AcceptanceTestFixture.getStationRequest;
+import static wooteco.subway.acceptance.AcceptanceTestFixture.insert;
+import static wooteco.subway.acceptance.AcceptanceTestFixture.line1Post;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
@@ -12,61 +16,56 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import wooteco.subway.dto.StationRequest;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dto.StationResponse;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
-    private final StationRequest 강남역 = new StationRequest("강남역");
-    private final StationRequest 역삼역 = new StationRequest("역삼역");
 
     @DisplayName("지하철역을 생성한다.")
     @Test
     void createStation() {
-        // given
-        // when
-        ExtractableResponse<Response> response = createStationResponse(강남역);
+        // given & when
+        ExtractableResponse<Response> response = insert(getStationRequest("name"), "/stations");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
     }
 
-    @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성할 때 예외를 발생시킨다.")
+    @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성할 시 400에러를 발생한다.")
     @Test
     void createStationWithDuplicateName() {
         // given
-        createStationResponse(강남역);
+        insert(getStationRequest("name"), "/stations");
 
         // when
-        ExtractableResponse<Response> response = createStationResponse(강남역);
+        ExtractableResponse<Response> response = insert(getStationRequest("name"), "/stations");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("지하철역 목록을 조회한다.")
+    @DisplayName("지하철역을 조회한다.")
     @Test
     void getStations() {
         /// given
-        ExtractableResponse<Response> createResponse1 = createStationResponse(강남역);
-        ExtractableResponse<Response> createResponse2 = createStationResponse(역삼역);
+        ExtractableResponse<Response> createResponse1 = insert(getStationRequest("name"), "/stations");
+        ExtractableResponse<Response> createResponse2 = insert(getStationRequest("name2"), "/stations");
 
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .when()
-                .get("/stations")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = get("/stations");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
         List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
                 .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
                 .collect(Collectors.toList());
         List<Long> resultLineIds = response.jsonPath().getList(".", StationResponse.class).stream()
                 .map(StationResponse::getId)
                 .collect(Collectors.toList());
+
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
 
@@ -74,39 +73,43 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteStation() {
         // given
-        ExtractableResponse<Response> createResponse = createStationResponse(강남역);
+        ExtractableResponse<Response> createResponse = insert(getStationRequest("name"), "/stations");
 
         // when
-        String uri = createResponse.header("Location");
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .when()
-                .delete(uri)
-                .then().log().all()
-                .extract();
+        String path = createResponse.header("Location");
+        ExtractableResponse<Response> response = delete(path);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    @DisplayName("존재하지 않는 지하철역을 제거할 때 예외를 발생시킨다.")
+    @DisplayName("존재하지 않는 지하철역을 삭제할 시 404에러를 발생시킨다.")
     @Test
-    void deleteInvalidStation() {
+    void deleteStationNotExist() {
         // given
-        ExtractableResponse<Response> createResponse = createStationResponse(강남역);
+        ExtractableResponse<Response> createResponse = insert(getStationRequest("name"), "/stations");
 
         // when
-        String uri = createResponse.header("Location");
-        RestAssured.given().log().all()
-                .when()
-                .delete(uri)
-                .then().log().all()
-                .extract();
+        int id = Integer.parseInt(createResponse.header("Location").split("/")[2]);
+        ExtractableResponse<Response> response = delete("/stations/"+ id+1);
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .when()
-                .delete(uri)
-                .then().log().all()
-                .extract();
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
+
+    @DisplayName("구간에 추간된 지하철역을 삭제할 시 400에러를 발생시킨다.")
+    @Test
+    void deleteStationInSection() {
+        // given
+        insert(getStationRequest("1호선"), "/stations");
+        ExtractableResponse<Response> createResponse = insert(getStationRequest("2호선"), "/stations");
+
+        insert(getLineRequest(line1Post), "/lines");
+
+        // when
+        String path = createResponse.header("Location");
+        ExtractableResponse<Response> response = delete(path);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());

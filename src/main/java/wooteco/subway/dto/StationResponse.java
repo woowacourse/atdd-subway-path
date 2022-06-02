@@ -11,8 +11,8 @@ public class StationResponse {
     }
 
     public StationResponse(Station station) {
-        this.id = station.getId();
-        this.name = station.getName();
+        id = station.getId();
+        name = station.getName();
     }
 
     public Long getId() {
@@ -25,14 +25,18 @@ public class StationResponse {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         StationResponse that = (StationResponse) o;
-        return Objects.equals(name, that.name);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(id, name);
     }
 }

@@ -3,251 +3,171 @@ package wooteco.subway.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static wooteco.subway.service.ServiceTestFixture.경의중앙_생성;
+import static wooteco.subway.service.ServiceTestFixture.선릉역_요청;
+import static wooteco.subway.service.ServiceTestFixture.수인분당선_수정;
+import static wooteco.subway.service.ServiceTestFixture.이호선_생성;
+import static wooteco.subway.service.ServiceTestFixture.일호선_생성;
+import static wooteco.subway.service.ServiceTestFixture.일호선_수정;
+import static wooteco.subway.service.ServiceTestFixture.잠실역_요청;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
-import wooteco.subway.dto.SectionRequest;
-import wooteco.subway.service.fakeDao.FakeLineDao;
-import wooteco.subway.service.fakeDao.FakeSectionDao;
-import wooteco.subway.service.fakeDao.FakeStationDao;
+import wooteco.subway.dto.StationResponse;
+import wooteco.subway.exception.NotFoundException;
 
-public class LineServiceTest {
-    private final LineService lineService =
-            new LineService(FakeLineDao.getInstance(), FakeStationDao.getInstance(), FakeSectionDao.getInstance());
+@SpringBootTest
+@Sql(scripts = {"classpath:test-schema.sql"})
+class LineServiceTest {
+    @Autowired
+    LineService lineService;
 
-    private Station 애플역;
-    private Station 갤럭시역;
-    private Station 옵티머스역;
-    private Station 롤리팝역;
+    @Autowired
+    StationService stationService;
+
+    private Long id1, id2;
 
     @BeforeEach
-    void setUp() {
-        final List<Line> lines = FakeLineDao.getInstance().findAll();
-        lines.clear();
-        final List<Station> stations = FakeStationDao.getInstance().findAll();
-        stations.clear();
-        final List<Section> sections = FakeSectionDao.getInstance().findAll();
-        sections.clear();
-
-        애플역 = new Station("애플역");
-        갤럭시역 = new Station("갤럭시역");
-        옵티머스역 = new Station("옵티머스역");
-        롤리팝역 = new Station("롤리팝역");
+    void init() {
+        id1 = stationService.insert(잠실역_요청).getId();
+        id2 = stationService.insert(선릉역_요청).getId();
     }
 
     @Test
-    @DisplayName("노선을 올바르게 저장한다.")
-    void saveLine() {
-        final LineRequest lineRequest = createLineRequest();
+    @DisplayName("지하철 노선을 추가할 수 있다.")
+    void insert() {
+        //when
+        LineResponse lineResponse = lineService.insert(일호선_생성(id1, id2));
+        Line line = new Line(lineResponse.getId(), "1호선", "blue", 0);
 
-        final LineResponse lineResponse = lineService.saveLine(lineRequest);
+        Station station1 = new Station(id1, "잠실");
+        Station station2 = new Station(id2, "선릉");
+
+        List<StationResponse> stationsResponse = List.of(new StationResponse(station1), new StationResponse(station2));
+        LineResponse expectedResponse = new LineResponse(line, stationsResponse);
+
+        //then
         assertAll(
-                () -> assertThat(lineResponse.getName()).isEqualTo(lineRequest.getName()),
-                () -> assertThat(lineResponse.getColor()).isEqualTo(lineRequest.getColor())
+                () -> assertThat(expectedResponse.getId()).isEqualTo(lineResponse.getId()),
+                () -> assertThat(expectedResponse.getName()).isEqualTo(lineResponse.getName()),
+                () -> assertThat(expectedResponse.getColor()).isEqualTo(lineResponse.getColor()),
+                () -> assertThat(expectedResponse.getStations()).containsAll(lineResponse.getStations())
         );
     }
 
     @Test
-    @DisplayName("노선을 저장할 때 구간도 같이 등록된다.")
-    void saveLineWithSection() {
-        final Long id1 = FakeStationDao.getInstance().save(애플역);
-        final Long id2 = FakeStationDao.getInstance().save(갤럭시역);
-        final LineRequest lineRequest =
-                new LineRequest("신분당선", "bg-red-600", id1, id2, 20);
+    @DisplayName("지하철 노선 이름이 중복된다면 등록할 수 없다.")
+    void insertErrorByDuplicateName() {
+        //given
+        lineService.insert(일호선_생성(id1, id2));
 
-        final LineResponse lineResponse = lineService.saveLine(lineRequest);
-        final List<Section> actual = FakeSectionDao.getInstance().findByLineId(lineResponse.getId());
-
-        assertThat(actual).contains(new Section(lineResponse.getId(), id1, id2, 20));
-    }
-
-    @Test
-    @DisplayName("이미 존재하는 노선을 생성하려고 하면 에러를 발생한다.")
-    void save_duplicate_station() {
-        final Long id1 = FakeStationDao.getInstance().save(애플역);
-        final Long id2 = FakeStationDao.getInstance().save(갤럭시역);
-        final Long id3 = FakeStationDao.getInstance().save(옵티머스역);
-
-        final LineRequest lineRequest1 =
-                new LineRequest("신분당선", "bg-green-600", id1, id2, 15);
-        final LineRequest lineRequest2 =
-                new LineRequest("신분당선", "bg-green-600", id1, id3, 15);
-
-        lineService.saveLine(lineRequest1);
-
-        assertThatThrownBy(() -> lineService.saveLine(lineRequest2))
+        //then
+        assertThatThrownBy(() -> lineService.insert(일호선_생성(id1, id2)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("같은 이름의 노선이 존재합니다.");
+                .hasMessage("지하철 노선 이름이 중복될 수 없습니다.");
     }
 
     @Test
-    @DisplayName("존재하지 않는 노선을 접근하려고 하면 에러를 발생한다.")
-    void not_exist_station() {
-        final LineRequest lineRequest = createLineRequest();
-
-        final LineResponse lineResponse = lineService.saveLine(lineRequest);
-        final Long invalidLineId = lineResponse.getId() + 1L;
-
-        assertThatThrownBy(() -> lineService.deleteLine(invalidLineId))
+    @DisplayName("지하철 노선 입력 시 id값이 동일하다면 등록할 수 없다.")
+    void insertErrorByDuplicateStationId() {
+        assertThatThrownBy(() -> lineService.insert(일호선_생성(id1, id1)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(invalidLineId + "번에 해당하는 노선이 존재하지 않습니다.");
-    }
-
-    private LineRequest createLineRequest() {
-        final Long id1 = FakeStationDao.getInstance().save(애플역);
-        final Long id2 = FakeStationDao.getInstance().save(갤럭시역);
-        return new LineRequest("신분당선", "bg-red-600", id1, id2, 20);
+                .hasMessage("상행과 하행의 지하철 역이 같을 수 없습니다.");
     }
 
     @Test
-    @DisplayName("상행 종점 구간을 추가한다.")
-    void saveFinalUpSection() {
-        final Long id1 = FakeStationDao.getInstance().save(애플역);
-        final Long id2 = FakeStationDao.getInstance().save(갤럭시역);
-        final Long id3 = FakeStationDao.getInstance().save(옵티머스역);
-        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", id1, id2, 20);
-        final LineResponse lineResponse = lineService.saveLine(lineRequest);
-        final SectionRequest sectionRequest = new SectionRequest(id3, id1, 10);
-
-        lineService.addSection(lineResponse.getId(), sectionRequest);
-
-        final List<Section> actual = FakeSectionDao.getInstance().findByLineId(lineResponse.getId());
-
-        assertThat(actual).contains(new Section(lineResponse.getId(), id3, id1, 10));
-    }
-
-    @Test
-    @DisplayName("하행 종점 구간을 추가한다.")
-    void saveFinalDownSection() {
-        final Long id1 = FakeStationDao.getInstance().save(애플역);
-        final Long id2 = FakeStationDao.getInstance().save(갤럭시역);
-        final Long id3 = FakeStationDao.getInstance().save(옵티머스역);
-        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", id1, id2, 20);
-        final LineResponse lineResponse = lineService.saveLine(lineRequest);
-        final SectionRequest sectionRequest = new SectionRequest(id2, id3, 10);
-
-        lineService.addSection(lineResponse.getId(), sectionRequest);
-        final List<Section> actual = FakeSectionDao.getInstance().findByLineId(lineResponse.getId());
-
-        assertThat(actual).contains(new Section(lineResponse.getId(), id2, id3, 10));
-    }
-
-    @Test
-    @DisplayName("상행역이 동일한 구간을 추가한다.")
-    void saveSameUpStationSection() {
-        final Long id1 = FakeStationDao.getInstance().save(애플역);
-        final Long id2 = FakeStationDao.getInstance().save(갤럭시역);
-        final Long id3 = FakeStationDao.getInstance().save(옵티머스역);
-        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", id1, id2, 20);
-        final LineResponse lineResponse = lineService.saveLine(lineRequest);
-        final SectionRequest sectionRequest = new SectionRequest(id1, id3, 10);
-
-        lineService.addSection(lineResponse.getId(), sectionRequest);
-        final List<Section> actual = FakeSectionDao.getInstance().findByLineId(lineResponse.getId());
-
-        assertThat(actual).contains(new Section(lineResponse.getId(), id1, id3, 10));
-    }
-
-    @Test
-    @DisplayName("하행역이 동일한 구간을 추가한다.")
-    void saveSameDownStationSection() {
-        final Long id1 = FakeStationDao.getInstance().save(애플역);
-        final Long id2 = FakeStationDao.getInstance().save(갤럭시역);
-        final Long id3 = FakeStationDao.getInstance().save(옵티머스역);
-        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", id1, id2, 20);
-        final LineResponse lineResponse = lineService.saveLine(lineRequest);
-        final SectionRequest sectionRequest = new SectionRequest(id3, id2, 10);
-
-        lineService.addSection(lineResponse.getId(), sectionRequest);
-        final List<Section> actual = FakeSectionDao.getInstance().findByLineId(lineResponse.getId());
-
-        assertThat(actual).contains(new Section(lineResponse.getId(), id3, id2, 10));
-    }
-
-    @Test
-    @DisplayName("올바르지 않은 구간을 추가할 때 예외를 발생시킨다.")
-    void saveInvalidSection() {
-        final Long id1 = FakeStationDao.getInstance().save(애플역);
-        final Long id2 = FakeStationDao.getInstance().save(갤럭시역);
-        final Long id3 = FakeStationDao.getInstance().save(옵티머스역);
-        final Long id4 = FakeStationDao.getInstance().save(롤리팝역);
-        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", id1, id2, 20);
-        final LineResponse lineResponse = lineService.saveLine(lineRequest);
-        final SectionRequest sectionRequest = new SectionRequest(id4, id3, 50);
-
-        assertThatThrownBy(() -> lineService.addSection(lineResponse.getId(), sectionRequest))
+    @DisplayName("지하철 노선 입력 시 distance값이 0이하라면 등록할 수 없다.")
+    void insertErrorByDistanceUnderZero() {
+        assertThatThrownBy(() -> lineService.insert(new LineRequest("1호선", "blue", 1L, 2L, 0, 0)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("등록하려는 구간의 상행역과 하행역 둘 중 하나는 노선에 포함된 역이어야 합니다.");
+                .hasMessage("거리는 양수여야 합니다.");
+    }
+
+
+    @Test
+    @DisplayName("지하철 노선 목록을 조회할 수 있다.")
+    void findAll() {
+        //given
+        lineService.insert(일호선_생성(id1, id2));
+        lineService.insert(이호선_생성(id1, id2));
+
+        //when
+        List<LineResponse> lineResponses = lineService.findAll();
+
+        List<String> names = lineResponses.stream()
+                .map(LineResponse::getName)
+                .collect(Collectors.toList());
+
+        List<String> colors = lineResponses.stream()
+                .map(LineResponse::getColor)
+                .collect(Collectors.toList());
+
+        //then
+        assertAll(
+                () -> assertThat(names).containsOnly("1호선", "2호선"),
+                () -> assertThat(colors).containsOnly("green", "blue")
+        );
     }
 
     @Test
-    @DisplayName("상행 종점 구간을 삭제한다.")
-    void deleteFinalUpSection() {
-        final Long id1 = FakeStationDao.getInstance().save(애플역);
-        final Long id2 = FakeStationDao.getInstance().save(갤럭시역);
-        final Long id3 = FakeStationDao.getInstance().save(옵티머스역);
-        final LineResponse lineResponse = addSection(id1, id2, id3);
-
-        lineService.deleteSection(lineResponse.getId(), id1);
-        final List<Section> actual = FakeSectionDao.getInstance().findByLineId(lineResponse.getId());
-
-        assertThat(actual).doesNotContain(new Section(lineResponse.getId(), id1, id3, 10));
+    @DisplayName("존재하지 않는 지하철 노선은 조회할 수 없다.")
+    void findByIdNotFound() {
+        assertThatThrownBy(() -> lineService.findById(10L))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessageContaining("존재하지 않는 노선입니다.");
     }
 
     @Test
-    @DisplayName("하행 종점 구간을 삭제한다.")
-    void deleteFinalDownSection() {
-        final Long id1 = FakeStationDao.getInstance().save(애플역);
-        final Long id2 = FakeStationDao.getInstance().save(갤럭시역);
-        final Long id3 = FakeStationDao.getInstance().save(옵티머스역);
-        final LineResponse lineResponse = addSection(id1, id2, id3);
-
-        lineService.deleteSection(lineResponse.getId(), id2);
-        final List<Section> actual = FakeSectionDao.getInstance().findByLineId(lineResponse.getId());
-
-        assertThat(actual).doesNotContain(new Section(lineResponse.getId(), id3, id2, 10));
+    @DisplayName("존재하지 않는 지하철 노선은 삭제할 수 없다.")
+    void deleteByIdNotFound() {
+        assertThatThrownBy(() -> lineService.deleteById(30L))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("존재하지 않는 노선입니다.");
     }
 
     @Test
-    @DisplayName("중간 구간을 삭제한다.")
-    void deleteMiddleSection() {
-        final Long id1 = FakeStationDao.getInstance().save(애플역);
-        final Long id2 = FakeStationDao.getInstance().save(갤럭시역);
-        final Long id3 = FakeStationDao.getInstance().save(옵티머스역);
-        final LineResponse lineResponse = addSection(id1, id2, id3);
+    @DisplayName("존재하는 지하철 노선을 수정할 수 있다.")
+    void update() {
+        //given
+        LineResponse insert = lineService.insert(경의중앙_생성(id1, id2));
 
-        lineService.deleteSection(lineResponse.getId(), id3);
-        final List<Section> actual = FakeSectionDao.getInstance().findByLineId(lineResponse.getId());
-
-        assertThat(actual).doesNotContain(new Section(lineResponse.getId(), id1, id3, 10));
+        //when & then
+        assertDoesNotThrow(() -> lineService.update(insert.getId(), 수인분당선_수정));
     }
 
     @Test
-    @DisplayName("올바르지 않은 구간을 삭제할 때 예외를 발생시킨다..")
-    void deleteInvalidSection() {
-        final Long id1 = FakeStationDao.getInstance().save(애플역);
-        final Long id2 = FakeStationDao.getInstance().save(갤럭시역);
-        final Long id3 = FakeStationDao.getInstance().save(옵티머스역);
-        final Long id4 = FakeStationDao.getInstance().save(롤리팝역);
-        final LineResponse lineResponse = addSection(id1, id2, id3);
+    @DisplayName("존재하지 않는 지하철 노선을 수정할 수 없다.")
+    void updateNotFound() {
+        //given
+        LineResponse insert = lineService.insert(경의중앙_생성(id1, id2));
 
-        assertThatThrownBy(() -> lineService.deleteSection(lineResponse.getId(), id4))
+        //when & then
+        assertThatThrownBy(() -> lineService.update(insert.getId() + 1, 수인분당선_수정))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("존재하지 않는 노선입니다.");
+    }
+
+    @Test
+    @DisplayName("지하철 노선 이름이 중복된다면 수정할 수 없다.")
+    void updateDuplicate() {
+        //given
+        lineService.insert(일호선_생성(id1, id2));
+        LineResponse insert = lineService.insert(경의중앙_생성(id1, id2));
+
+        //when & then
+        assertThatThrownBy(() -> lineService.update(insert.getId(), 일호선_수정))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("존재하지 않는 역입니다.");
-    }
-
-    private LineResponse addSection(Long id1, Long id2, Long id3) {
-        final LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", id1, id2, 20);
-        final LineResponse lineResponse = lineService.saveLine(lineRequest);
-        final SectionRequest sectionRequest = new SectionRequest(id3, id2, 10);
-        lineService.addSection(lineResponse.getId(), sectionRequest);
-        return lineResponse;
+                .hasMessage("지하철 노선 이름이 중복될 수 없습니다.");
     }
 }
