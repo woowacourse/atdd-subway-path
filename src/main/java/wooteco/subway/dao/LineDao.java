@@ -2,7 +2,6 @@ package wooteco.subway.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,11 +52,9 @@ public class LineDao {
     }
 
     public List<Line> findByIds(List<Long> ids) {
-        List<Line> lines = new ArrayList<>();
-        for (Long id : ids) {
-            findById(id).ifPresent(lines::add);
-        }
-        return lines;
+        String sql = "SELECT * FROM line WHERE id IN (:ids)";
+        SqlParameterSource parameterSource = new MapSqlParameterSource("ids", ids);
+        return jdbcTemplate.query(sql, parameterSource, (resultSet, rowNum) -> mapToLine(resultSet));
     }
 
     public Optional<Line> findById(Long id) {
