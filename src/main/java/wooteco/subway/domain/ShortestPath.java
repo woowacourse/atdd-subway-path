@@ -11,12 +11,20 @@ public class ShortestPath {
             = new WeightedMultigraph<>(ShortestPathEdge.class);
 
     public ShortestPath(List<Station> stations, List<Section> sections) {
+        addVertex(stations);
+        addEdge(sections);
+    }
+
+    private void addVertex(List<Station> stations) {
         for (Station station : stations) {
             graph.addVertex(station.getId());
         }
+    }
+
+    private void addEdge(List<Section> sections) {
         for (Section section : sections) {
-            graph.addEdge(section.getUpStation().getId(), section.getDownStation().getId(),
-                    new ShortestPathEdge(section.getLineId(), section.getDistance()));
+            ShortestPathEdge shortestPathEdge = new ShortestPathEdge(section.getLineId(), section.getDistance());
+            graph.addEdge(section.getUpStation().getId(), section.getDownStation().getId(), shortestPathEdge);
         }
     }
 
