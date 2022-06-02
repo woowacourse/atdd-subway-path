@@ -21,17 +21,9 @@ public class Lines {
     public Set<Station> extractStations() {
         Set<Station> stations = new HashSet<>();
         for (Line line : lines) {
-            Sections sections = line.getSections();
-            addStations(stations, sections);
+            stations.addAll(line.getStations());
         }
         return stations;
-    }
-
-    private void addStations(Set<Station> stations, Sections sections) {
-        for (Section section : sections.getSections()) {
-            stations.add(section.getUpStation());
-            stations.add(section.getDownStation());
-        }
     }
 
     public void addEdge(WeightedMultigraph<Station, ShortestPathEdge> graph) {

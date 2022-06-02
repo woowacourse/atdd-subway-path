@@ -93,12 +93,12 @@ public class JgraphtTest {
 
         DijkstraShortestPath<Station, ShortestPathEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, ShortestPathEdge> path = dijkstraShortestPath.getPath(강남역, 선릉역);
-        List<ShortestPathEdge> edgeList = path.getEdgeList();
+        List<ShortestPathEdge> edges = path.getEdgeList();
 
         Assertions.assertAll(
-                () -> assertThat(edgeList).hasSize(2),
-                () -> assertThat(edgeList.get(0).getLineId()).isEqualTo(1L),
-                () -> assertThat(edgeList.get(1).getLineId()).isEqualTo(2L),
+                () -> assertThat(edges).hasSize(2),
+                () -> assertThat(edges.get(0).getLineId()).isEqualTo(1L),
+                () -> assertThat(edges.get(1).getLineId()).isEqualTo(2L),
                 () -> assertThat(path.getWeight()).isEqualTo(30)
         );
     }
