@@ -19,6 +19,7 @@ import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.path.PathDijkstraDecisionStrategy;
 import wooteco.subway.service.dto.request.PathRequest;
 import wooteco.subway.service.dto.response.PathResponse;
 import wooteco.subway.service.dto.response.StationResponse;
@@ -35,7 +36,6 @@ class PathServiceTest {
     private LineDao lineDao;
     private PathService pathService;
 
-
     private long stationId1;
     private long stationId2;
     private long stationId3;
@@ -45,7 +45,7 @@ class PathServiceTest {
         stationDao = new StationDao(jdbcTemplate);
         sectionDao = new SectionDao(jdbcTemplate);
         lineDao = new LineDao(jdbcTemplate);
-        pathService = new PathService(stationDao, sectionDao, lineDao);
+        pathService = new PathService(stationDao, sectionDao, lineDao, new PathDijkstraDecisionStrategy());
 
         stationId1 = stationDao.save(new Station(1L, "강남역"));
         stationId2 = stationDao.save(new Station(2L, "삼성역"));

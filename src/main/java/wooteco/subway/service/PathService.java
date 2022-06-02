@@ -12,9 +12,10 @@ import wooteco.subway.domain.fare.Discounter;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.fare.Fare;
 import wooteco.subway.domain.path.Path;
-import wooteco.subway.domain.path.PathCalculator;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.path.PathDecision;
+import wooteco.subway.domain.path.PathDecisionStrategy;
 import wooteco.subway.service.dto.request.PathRequest;
 import wooteco.subway.service.dto.response.PathResponse;
 
@@ -26,23 +27,23 @@ public class PathService {
     private final StationDao stationDao;
     private final SectionDao sectionDao;
     private final LineDao lineDao;
+    private final PathDecisionStrategy pathDecisionStrategy;
 
-    public PathService(final StationDao stationDao, final SectionDao sectionDao, final LineDao lineDao) {
+    public PathService(final StationDao stationDao, final SectionDao sectionDao, final LineDao lineDao, final PathDecisionStrategy pathDecisionStrategy) {
         this.stationDao = stationDao;
         this.sectionDao = sectionDao;
         this.lineDao = lineDao;
+        this.pathDecisionStrategy = pathDecisionStrategy;
     }
 
     public PathResponse findShortestPath(final PathRequest pathRequest) {
         final Path path = pathRequest.toPath();
         final int age = pathRequest.getAge();
 
-        final PathCalculator pathCalculator = new PathCalculator(sectionDao.findAll());
-        final List<Long> stationIds = pathCalculator.findShortestPath(path);
-        final double distance = pathCalculator.findShortestDistance(path);
-        final double fare = Fare.calculate(distance, getExtraFare(stationIds));
+        final PathDecision pathDecision = pathDecisionStrategy.decidePath(sectionDao.findAll(), path);
+        final double fare = Fare.calculate(pathDecision.getDistance(), getExtraFare(pathDecision.getStationIds()));
 
-        return PathResponse.from(convertStation(stationIds), distance, Discounter.discount(fare, age));
+        return PathResponse.from(convertStation(pathDecision.getStationIds()), pathDecision.getDistance(), Discounter.discount(fare, age));
     }
 
     private int getExtraFare(final List<Long> stationIds) {
