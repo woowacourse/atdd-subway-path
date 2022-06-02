@@ -3,18 +3,9 @@ package wooteco.subway.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static wooteco.subway.service.ServiceTestFixture.경의중앙_생성;
-import static wooteco.subway.service.ServiceTestFixture.선릉역_요청;
-import static wooteco.subway.service.ServiceTestFixture.수인분당선_수정;
-import static wooteco.subway.service.ServiceTestFixture.이호선_생성;
-import static wooteco.subway.service.ServiceTestFixture.일호선_생성;
-import static wooteco.subway.service.ServiceTestFixture.일호선_수정;
-import static wooteco.subway.service.ServiceTestFixture.잠실역_요청;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +15,7 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
+import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.StationResponse;
 import wooteco.subway.exception.NotFoundException;
 
@@ -36,23 +28,23 @@ class LineServiceTest {
     @Autowired
     StationService stationService;
 
-    private Long id1, id2;
-
-    @BeforeEach
-    void init() {
-        id1 = stationService.insert(잠실역_요청).getId();
-        id2 = stationService.insert(선릉역_요청).getId();
-    }
-
     @Test
     @DisplayName("지하철 노선을 추가할 수 있다.")
     void insert() {
         //when
-        LineResponse lineResponse = lineService.insert(일호선_생성(id1, id2));
-        Line line = new Line(lineResponse.getId(), "1호선", "blue", 0);
+        Station station1 = new Station(1L, "잠실");
+        Station station2 = new Station(2L, "선릉");
 
-        Station station1 = new Station(id1, "잠실");
-        Station station2 = new Station(id2, "선릉");
+        StationRequest 잠실역_요청 = new StationRequest("잠실");
+        StationRequest 선릉역_요청 = new StationRequest("선릉");
+
+        long 잠실_id = stationService.insert(잠실역_요청).getId();
+        long 선릉_id = stationService.insert(선릉역_요청).getId();
+
+        LineRequest 일호선 = new LineRequest("1호선", "blue", 잠실_id, 선릉_id, 10, 0);
+        LineResponse lineResponse = lineService.insert(일호선);
+
+        Line line = new Line(lineResponse.getId(), "1호선", "blue", 0);
 
         List<StationResponse> stationsResponse = List.of(new StationResponse(station1), new StationResponse(station2));
         LineResponse expectedResponse = new LineResponse(line, stationsResponse);
@@ -70,10 +62,17 @@ class LineServiceTest {
     @DisplayName("지하철 노선 이름이 중복된다면 등록할 수 없다.")
     void insertErrorByDuplicateName() {
         //given
-        lineService.insert(일호선_생성(id1, id2));
+        StationRequest 잠실역_요청 = new StationRequest("잠실");
+        StationRequest 선릉역_요청 = new StationRequest("선릉");
+
+        long 잠실_id = stationService.insert(잠실역_요청).getId();
+        long 선릉_id = stationService.insert(선릉역_요청).getId();
+
+        LineRequest 일호선 = new LineRequest("1호선", "blue", 잠실_id, 선릉_id, 10, 0);
+        lineService.insert(일호선);
 
         //then
-        assertThatThrownBy(() -> lineService.insert(일호선_생성(id1, id2)))
+        assertThatThrownBy(() -> lineService.insert(일호선))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("지하철 노선 이름이 중복될 수 없습니다.");
     }
@@ -81,7 +80,13 @@ class LineServiceTest {
     @Test
     @DisplayName("지하철 노선 입력 시 id값이 동일하다면 등록할 수 없다.")
     void insertErrorByDuplicateStationId() {
-        assertThatThrownBy(() -> lineService.insert(일호선_생성(id1, id1)))
+        StationRequest 잠실역_요청 = new StationRequest("잠실");
+
+        long 잠실_id = stationService.insert(잠실역_요청).getId();
+
+        LineRequest 일호선 = new LineRequest("1호선", "blue", 잠실_id, 잠실_id, 10, 0);
+
+        assertThatThrownBy(() -> lineService.insert(일호선))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("상행과 하행의 지하철 역이 같을 수 없습니다.");
     }
@@ -89,7 +94,15 @@ class LineServiceTest {
     @Test
     @DisplayName("지하철 노선 입력 시 distance값이 0이하라면 등록할 수 없다.")
     void insertErrorByDistanceUnderZero() {
-        assertThatThrownBy(() -> lineService.insert(new LineRequest("1호선", "blue", 1L, 2L, 0, 0)))
+        StationRequest 잠실역_요청 = new StationRequest("잠실");
+        StationRequest 선릉역_요청 = new StationRequest("선릉");
+
+        long 잠실_id = stationService.insert(잠실역_요청).getId();
+        long 선릉_id = stationService.insert(선릉역_요청).getId();
+
+        LineRequest 일호선 = new LineRequest("1호선", "blue", 잠실_id, 선릉_id, 0, 0);
+
+        assertThatThrownBy(() -> lineService.insert(일호선))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("거리는 양수여야 합니다.");
     }
@@ -99,8 +112,17 @@ class LineServiceTest {
     @DisplayName("지하철 노선 목록을 조회할 수 있다.")
     void findAll() {
         //given
-        lineService.insert(일호선_생성(id1, id2));
-        lineService.insert(이호선_생성(id1, id2));
+        StationRequest 잠실역_요청 = new StationRequest("잠실");
+        StationRequest 선릉역_요청 = new StationRequest("선릉");
+
+        long 잠실_id = stationService.insert(잠실역_요청).getId();
+        long 선릉_id = stationService.insert(선릉역_요청).getId();
+
+        LineRequest 일호선 = new LineRequest("1호선", "blue", 잠실_id, 선릉_id, 10, 0);
+        LineRequest 이호선 = new LineRequest("2호선", "green", 잠실_id, 선릉_id, 10, 0);
+
+        lineService.insert(일호선);
+        lineService.insert(이호선);
 
         //when
         List<LineResponse> lineResponses = lineService.findAll();
@@ -116,7 +138,7 @@ class LineServiceTest {
         //then
         assertAll(
                 () -> assertThat(names).containsOnly("1호선", "2호선"),
-                () -> assertThat(colors).containsOnly("green", "blue")
+                () -> assertThat(colors).containsOnly("blue", "green")
         );
     }
 
@@ -137,20 +159,19 @@ class LineServiceTest {
     }
 
     @Test
-    @DisplayName("존재하는 지하철 노선을 수정할 수 있다.")
-    void update() {
-        //given
-        LineResponse insert = lineService.insert(경의중앙_생성(id1, id2));
-
-        //when & then
-        assertDoesNotThrow(() -> lineService.update(insert.getId(), 수인분당선_수정));
-    }
-
-    @Test
     @DisplayName("존재하지 않는 지하철 노선을 수정할 수 없다.")
     void updateNotFound() {
         //given
-        LineResponse insert = lineService.insert(경의중앙_생성(id1, id2));
+        StationRequest 잠실역_요청 = new StationRequest("잠실");
+        StationRequest 선릉역_요청 = new StationRequest("선릉");
+
+        long 잠실_id = stationService.insert(잠실역_요청).getId();
+        long 선릉_id = stationService.insert(선릉역_요청).getId();
+
+        LineRequest 일호선 = new LineRequest("1호선", "blue", 잠실_id, 선릉_id, 10, 0);
+        LineResponse insert = lineService.insert(일호선);
+
+        LineRequest 수인분당선_수정 = new LineRequest("수인분당선", "blue");
 
         //when & then
         assertThatThrownBy(() -> lineService.update(insert.getId() + 1, 수인분당선_수정))
@@ -161,9 +182,19 @@ class LineServiceTest {
     @Test
     @DisplayName("지하철 노선 이름이 중복된다면 수정할 수 없다.")
     void updateDuplicate() {
-        //given
-        lineService.insert(일호선_생성(id1, id2));
-        LineResponse insert = lineService.insert(경의중앙_생성(id1, id2));
+        StationRequest 잠실역_요청 = new StationRequest("잠실");
+        StationRequest 선릉역_요청 = new StationRequest("선릉");
+
+        long 잠실_id = stationService.insert(잠실역_요청).getId();
+        long 선릉_id = stationService.insert(선릉역_요청).getId();
+
+        LineRequest 일호선 = new LineRequest("1호선", "blue", 잠실_id, 선릉_id, 10, 0);
+        LineRequest 이호선 = new LineRequest("2호선", "green", 잠실_id, 선릉_id, 10, 0);
+        lineService.insert(일호선);
+        LineResponse insert = lineService.insert(이호선);
+
+        LineRequest 일호선_수정 = new LineRequest("1호선", "blue");//given
+
 
         //when & then
         assertThatThrownBy(() -> lineService.update(insert.getId(), 일호선_수정))
