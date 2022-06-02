@@ -1,12 +1,6 @@
 package wooteco.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.acceptance.AcceptanceTestFixture.delete;
-import static wooteco.subway.acceptance.AcceptanceTestFixture.get;
-import static wooteco.subway.acceptance.AcceptanceTestFixture.getLineRequest;
-import static wooteco.subway.acceptance.AcceptanceTestFixture.getStationRequest;
-import static wooteco.subway.acceptance.AcceptanceTestFixture.insert;
-import static wooteco.subway.acceptance.AcceptanceTestFixture.line1Post;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -16,7 +10,8 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.dto.LineRequest;
+import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.StationResponse;
 
 @DisplayName("지하철역 관련 기능")
@@ -26,7 +21,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStation() {
         // given & when
-        ExtractableResponse<Response> response = insert(getStationRequest("name"), "/stations");
+        StationRequest 선릉 = new StationRequest("선릉역");
+        ExtractableResponse<Response> response = insert(convertRequest(선릉), "/stations");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -37,10 +33,11 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStationWithDuplicateName() {
         // given
-        insert(getStationRequest("name"), "/stations");
+        StationRequest 선릉 = new StationRequest("선릉역");
+        insert(convertRequest(선릉), "/stations");
 
         // when
-        ExtractableResponse<Response> response = insert(getStationRequest("name"), "/stations");
+        ExtractableResponse<Response> response = insert(convertRequest(선릉), "/stations");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -50,8 +47,11 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void getStations() {
         /// given
-        ExtractableResponse<Response> createResponse1 = insert(getStationRequest("name"), "/stations");
-        ExtractableResponse<Response> createResponse2 = insert(getStationRequest("name2"), "/stations");
+        StationRequest 선릉 = new StationRequest("선릉역");
+        StationRequest 잠실 = new StationRequest("잠실역");
+
+        ExtractableResponse<Response> createResponse1 = insert(convertRequest(선릉), "/stations");
+        ExtractableResponse<Response> createResponse2 = insert(convertRequest(잠실), "/stations");
 
         // when
         ExtractableResponse<Response> response = get("/stations");
@@ -73,7 +73,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteStation() {
         // given
-        ExtractableResponse<Response> createResponse = insert(getStationRequest("name"), "/stations");
+        StationRequest 선릉 = new StationRequest("선릉역");
+        ExtractableResponse<Response> createResponse = insert(convertRequest(선릉), "/stations");
 
         // when
         String path = createResponse.header("Location");
@@ -87,11 +88,12 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteStationNotExist() {
         // given
-        ExtractableResponse<Response> createResponse = insert(getStationRequest("name"), "/stations");
+        StationRequest 선릉 = new StationRequest("선릉역");
+        ExtractableResponse<Response> createResponse = insert(convertRequest(선릉), "/stations");
 
         // when
         int id = Integer.parseInt(createResponse.header("Location").split("/")[2]);
-        ExtractableResponse<Response> response = delete("/stations/"+ id+1);
+        ExtractableResponse<Response> response = delete("/stations/" + id + 1);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
@@ -102,10 +104,14 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteStationInSection() {
         // given
-        insert(getStationRequest("1호선"), "/stations");
-        ExtractableResponse<Response> createResponse = insert(getStationRequest("2호선"), "/stations");
+        StationRequest 선릉 = new StationRequest("선릉역");
+        StationRequest 잠실 = new StationRequest("잠실역");
 
-        insert(getLineRequest(line1Post), "/lines");
+        insert(convertRequest(선릉), "/stations");
+        ExtractableResponse<Response> createResponse = insert(convertRequest(잠실), "/stations");
+
+        LineRequest 일호선 = new LineRequest("1호선", "blue", 1L, 2L, 10, 0);
+        insert(convertRequest(일호선), "/lines");
 
         // when
         String path = createResponse.header("Location");
