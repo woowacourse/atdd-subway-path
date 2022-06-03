@@ -28,7 +28,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // given
         Long station1 = createStation("강남역");
         Long station2 = createStation("역삼역");
-        LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4);
+        LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4, 0);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -54,7 +54,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // given
         Long station1 = createStation("강남역");
         Long station2 = createStation("역삼역");
-        LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4);
+        LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4, 0);
         RestAssured.given().log().all()
                 .body(lineRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -83,7 +83,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // given
         Long station1 = createStation("강남역");
         Long station2 = createStation("역삼역");
-        LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4);
+        LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4, 0);
 
         ExtractableResponse<Response> createResponse1 = RestAssured.given().log().all()
                 .body(lineRequest)
@@ -117,7 +117,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // given
         Long station1 = createStation("강남역");
         Long station2 = createStation("역삼역");
-        LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4);
+        LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4, 0);
         ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
                 .body(lineRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -154,7 +154,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // given
         Long station1 = createStation("강남역");
         Long station2 = createStation("역삼역");
-        LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4);
+        LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4, 0);
         ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
                 .body(lineRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -184,7 +184,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않는 노선을 수정한다. 상태코드는 204이어야 한다.")
     void updateNonLine() {
         // given
-        LineRequest lineRequest1 = new LineRequest("3호선", "bg-orange-600", 1L, 2L, 4);
+        LineRequest lineRequest1 = new LineRequest("3호선", "bg-orange-600", 1L, 2L, 4, 0);
 
         RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -199,7 +199,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않는 노선을 수정한다. 상태코드는 204이어야 한다.")
     void updateLineById() {
         // given
-        LineRequest lineRequest1 = new LineRequest("3호선", "bg-orange-600", 1L, 2L, 4);
+        LineRequest lineRequest1 = new LineRequest("3호선", "bg-orange-600", 1L, 2L, 4, 0);
 
         RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -246,7 +246,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // given
         Long station1 = createStation("강남역");
         Long station2 = createStation("역삼역");
-        LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4);
+        LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4, 0);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()

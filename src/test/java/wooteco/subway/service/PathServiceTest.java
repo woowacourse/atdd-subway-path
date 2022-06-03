@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import wooteco.subway.dao.*;
+import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
@@ -30,7 +31,7 @@ public class PathServiceTest {
         stationDao = new StationDaoImpl(jdbcTemplate);
         sectionDao = new SectionDaoImpl(jdbcTemplate);
         lineDao = new LineDaoImpl(jdbcTemplate);
-        pathService = new PathService(sectionDao, stationDao);
+        pathService = new PathService(sectionDao, stationDao, lineDao);
     }
 
     @Test
@@ -40,11 +41,11 @@ public class PathServiceTest {
         stationDao.save(new Station("역삼역"));
         stationDao.save(new Station("선릉역"));
 
-        lineDao.save(new Line("1호선", "red"));
+        lineDao.save(new Line("1호선", "red", 0));
 
-        sectionDao.save(new Section(1L, 1L, 2L, 3));
-        sectionDao.save(new Section(1L, 2L, 3L, 4));
-        sectionDao.save(new Section(1L, 3L, 4L, 5));
+        sectionDao.save(new Section(1L, 1L, 2L, new Distance(3)));
+        sectionDao.save(new Section(1L, 2L, 3L, new Distance(4)));
+        sectionDao.save(new Section(1L, 3L, 4L, new Distance(5)));
 
         PathServiceResponse pathServiceResponse = pathService.findShortestPath(new PathServiceRequest(1L, 4L, 20));
 

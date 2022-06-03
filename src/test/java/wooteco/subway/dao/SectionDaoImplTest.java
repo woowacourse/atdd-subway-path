@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Section;
 
 @JdbcTest
@@ -26,14 +27,14 @@ public class SectionDaoImplTest {
 
     @Test
     void save() {
-        Section section = new Section(1L, 2L, 3L, 10);
+        Section section = new Section(1L, 2L, 3L, new Distance(10));
         assertDoesNotThrow(() -> sectionDao.save(section));
     }
 
     @Test
     void delete() {
         // given
-        Long savedId = sectionDao.save(new Section(1L, 2L, 3L, 3));
+        Long savedId = sectionDao.save(new Section(1L, 2L, 3L, new Distance(3)));
 
         // when
         sectionDao.deleteById(savedId);

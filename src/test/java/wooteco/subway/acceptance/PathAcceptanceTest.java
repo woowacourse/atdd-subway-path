@@ -26,7 +26,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         createStation("역삼역");
         createStation("선릉역");
 
-        createLine(new LineRequest("3호선", "bg-orange-600", 1L, 2L, 3));
+        createLine(new LineRequest("3호선", "bg-orange-600", 1L, 2L, 3, 0));
 
         createSection(1L, new SectionRequest(2L, 3L, 4));
         createSection(1L, new SectionRequest(3L, 4L, 5));

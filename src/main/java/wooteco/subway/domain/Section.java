@@ -8,9 +8,10 @@ public class Section {
     private final Long lineId;
     private final Long upStationId;
     private final Long downStationId;
-    private final int distance;
+    private final Distance distance;
 
-    public Section(Long id, Long lineId, Long upStationId, Long downStationId, int distance) {
+    public Section(Long id, Long lineId, Long upStationId, Long downStationId, Distance distance) {
+        validateNull(upStationId, downStationId);
         this.id = id;
         this.lineId = lineId;
         this.upStationId = upStationId;
@@ -18,12 +19,18 @@ public class Section {
         this.distance = distance;
     }
 
-    public Section(Long lineId, Long upStationId, Long downStationId, int distance) {
+    private static void validateNull(Long upStationId, Long downStationId) {
+        if (upStationId == null || downStationId == null) {
+            throw new IllegalArgumentException("구간의 상행역과 하행역에 올바른 정보를 입력해주세요.");
+        }
+    }
+
+    public Section(Long lineId, Long upStationId, Long downStationId, Distance distance) {
         this(null, lineId, upStationId, downStationId, distance);
     }
 
     public Section(Long upStationId, Long downStationId) {
-        this(null, upStationId, downStationId, 0);
+        this(null, upStationId, downStationId, new Distance(1));
     }
 
     public Long getId() {
@@ -38,7 +45,7 @@ public class Section {
         return downStationId;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 

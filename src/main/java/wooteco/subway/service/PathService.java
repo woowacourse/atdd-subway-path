@@ -1,10 +1,12 @@
 package wooteco.subway.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.*;
@@ -18,17 +20,19 @@ public class PathService {
 
     private final SectionDao sectionDao;
     private final StationDao stationDao;
+    private final LineDao lineDao;
 
-    public PathService(SectionDao sectionDao, StationDao stationDao) {
+    public PathService(SectionDao sectionDao, StationDao stationDao, LineDao lineDao) {
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
+        this.lineDao = lineDao;
     }
 
     public PathServiceResponse findShortestPath(PathServiceRequest pathRequest) {
         Path path = Path.of(new Dijkstra(new Sections(sectionDao.findAll())), pathRequest.getSource(), pathRequest.getTarget());
-        int fee = Fare.calculateFare(path.getShortestDistance());
-
-        return new PathServiceResponse(getShortestPathStations(path.getShortestPath()), path.getShortestDistance(), fee);
+        final Lines lines = new Lines(lineDao.findByIds(new ArrayList<>(path.getLineIds())));
+        final Fare fare = new Fare(path.getShortestDistance(), lines.getMaxExtraFare(), pathRequest.getAge());
+        return new PathServiceResponse(getShortestPathStations(path.getShortestPath()), path.getShortestDistance().getValue(), fare.calculateFare());
     }
 
     private List<StationServiceResponse> getShortestPathStations(List<Long> shortestPath) {

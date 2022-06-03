@@ -2,36 +2,31 @@ package wooteco.subway.domain;
 
 public class Fare {
 
-    private static final int BASIC_FARES = 1250;
-    private static final int SECOND_SECTION_FARES = 800;
-    private static final int BASIC_DISTANCE = 10;
-    private static final int SECOND_DISTANCE = 50;
-    private static final int SECOND_CHARGING_UNITS = 5;
-    private static final int THIRD_CHARGING_UNITS = 8;
-    private static final int UNIT_FARES = 100;
-    private static final int MINIMUM_DISTANCE = 0;
+    private final Distance distance;
+    private final int extraFare;
+    private final int age;
+    private static final int MINIMUM_EXTRA_FARE = 0;
+    private static final int MINIMUM_AGE = 0;
 
-    private Fare() {
+    public Fare(final Distance distance, final int extraFare, final int age) {
+        validateZeroOrPositiveDistance(extraFare, age);
+        this.distance = distance;
+        this.extraFare = extraFare;
+        this.age = age;
     }
 
-    public static int calculateFare(int distance) {
-        validateZeroOrPositiveDistance(distance);
-        if (distance <= BASIC_DISTANCE) {
-            return BASIC_FARES;
+    private void validateZeroOrPositiveDistance(int extraFare, int age) {
+        if (extraFare < MINIMUM_EXTRA_FARE) {
+            throw new IllegalArgumentException("추가요금은 음수일 수 없습니다.");
         }
-        if (distance <= SECOND_DISTANCE) {
-            return BASIC_FARES + calculateOverFare(distance - BASIC_DISTANCE, SECOND_CHARGING_UNITS);
-        }
-        return BASIC_FARES + SECOND_SECTION_FARES + calculateOverFare(distance - SECOND_DISTANCE, THIRD_CHARGING_UNITS);
-    }
-
-    private static void validateZeroOrPositiveDistance(int distance) {
-        if (distance <= MINIMUM_DISTANCE) {
-            throw new IllegalArgumentException("거리는 음수일 수 없습니다.");
+        if (age < MINIMUM_AGE) {
+            throw new IllegalArgumentException("나이는 음수일 수 없습니다.");
         }
     }
 
-    private static int calculateOverFare(int distance, int farePerKilometre) {
-        return (int) ((Math.ceil((distance - 1) / farePerKilometre) + 1) * UNIT_FARES);
+    public int calculateFare() {
+        FareAgeStrategy ageStrategy = FareAgeStrategy.of(age);
+        return ageStrategy.calculate(FareRangeStrategy.getFare(distance)) + extraFare;
     }
+
 }

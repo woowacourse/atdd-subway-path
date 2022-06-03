@@ -4,9 +4,9 @@ import java.util.*;
 
 public class Sections {
 
-    private static final int MINIMUM_SIZE = 1;
-
     private final List<Section> sections;
+
+    private static final int MINIMUM_SIZE = 1;
 
     public Sections(List<Section> sections) {
         this.sections = sections;

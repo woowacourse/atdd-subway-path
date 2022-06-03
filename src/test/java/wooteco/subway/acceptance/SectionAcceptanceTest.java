@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.dao.SectionDao;
+import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Section;
 import wooteco.subway.ui.dto.LineRequest;
 import wooteco.subway.ui.dto.SectionRequest;
@@ -55,7 +56,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         assertAll(
-                () -> assertThat(section.getDistance()).isEqualTo(1),
+                () -> assertThat(section.getDistance()).isEqualTo(new Distance(1)),
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
         );
     }
@@ -96,13 +97,13 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         assertAll(
-                () -> assertThat(section.getDistance()).isEqualTo(4),
+                () -> assertThat(section.getDistance()).isEqualTo(new Distance(4)),
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
         );
     }
 
     Long saveLine(Long station1, Long station2) {
-        LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4);
+        LineRequest lineRequest = new LineRequest("3호선", "bg-orange-600", station1, station2, 4, 0);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .body(lineRequest)
