@@ -7,7 +7,10 @@ import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.fare.AgeDiscountPolicy;
+import wooteco.subway.domain.fare.FarePolicy;
 import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.path.PathFindStrategy;
 import wooteco.subway.dto.PathRequest;
 import wooteco.subway.dto.PathResponse;
 
@@ -17,20 +20,24 @@ public class PathService {
 
     private final LineDao lineDao;
     private final StationDao stationDao;
+    private final PathFindStrategy pathFindStrategy;
 
-    public PathService(LineDao lineDao, StationDao stationDao) {
+    public PathService(LineDao lineDao, StationDao stationDao, PathFindStrategy pathFindStrategy) {
         this.lineDao = lineDao;
         this.stationDao = stationDao;
+        this.pathFindStrategy = pathFindStrategy;
     }
 
     public PathResponse findShortestPath(PathRequest pathRequest) {
         List<Line> lines = lineDao.findAll();
-
         Station sourceStation = findStationById(pathRequest.getSource());
         Station targetStation = findStationById(pathRequest.getTarget());
-        Path path = Path.of(lines, sourceStation, targetStation);
+        AgeDiscountPolicy ageDiscountPolicy = AgeDiscountPolicy.of(pathRequest.getAge());
 
-        return PathResponse.of(path);
+        Path path = pathFindStrategy.findPath(lines, sourceStation, targetStation);
+        int fare = FarePolicy.calculateFare(path.getDistance(), path.findMaxExtraFare());
+
+        return PathResponse.of(path, ageDiscountPolicy.discount(fare));
     }
 
     private Station findStationById(Long id) {

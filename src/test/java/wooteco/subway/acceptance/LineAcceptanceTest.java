@@ -44,8 +44,8 @@ class LineAcceptanceTest extends AcceptanceTest {
 
             LineResponse actual = response.jsonPath().getObject(".", LineResponse.class);
             List<StationResponse> stations = List.of(new StationResponse(1L, "강남역"),
-                new StationResponse(2L, "양재역"));
-            LineResponse expected = new LineResponse(1L, "신분당선", "빨간색", stations);
+                    new StationResponse(2L, "양재역"));
+            LineResponse expected = new LineResponse(1L, "신분당선", "빨간색", 0, stations);
             assertAll(() -> {
                 assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
                 assertThat(response.header("Location")).isNotBlank();
@@ -100,10 +100,10 @@ class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = SimpleRestAssured.get("/lines");
 
         List<LineResponse> responseBody = response.jsonPath()
-            .getList(".", LineResponse.class);
+                .getList(".", LineResponse.class);
         List<LineResponse> expected = List.of(
-            new LineResponse(1L, "신분당선", "빨간색", List.of(STATION_RESPONSE_1, STATION_RESPONSE_2)),
-            new LineResponse(2L, "분당선", "노란색", List.of(STATION_RESPONSE_3, STATION_RESPONSE_4))
+                new LineResponse(1L, "신분당선", "빨간색", 0, List.of(STATION_RESPONSE_1, STATION_RESPONSE_2)),
+                new LineResponse(2L, "분당선", "노란색", 0, List.of(STATION_RESPONSE_3, STATION_RESPONSE_4))
         );
 
         assertAll(() -> {
@@ -127,7 +127,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
             LineResponse actual = response.jsonPath().getObject(".", LineResponse.class);
             LineResponse expected = new LineResponse(1L, "신분당선", "빨간색",
-                List.of(STATION_RESPONSE_1, STATION_RESPONSE_2));
+                    0, List.of(STATION_RESPONSE_1, STATION_RESPONSE_2));
             assertAll(() -> {
                 assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
                 assertThat(actual).isEqualTo(expected);
@@ -218,7 +218,7 @@ class LineAcceptanceTest extends AcceptanceTest {
             HashMap<String, Object> sectionParams = makeSectionJson(2L, 3L, 4);
 
             ExtractableResponse<Response> response = SimpleRestAssured.post(sectionParams,
-                "/lines/1/sections");
+                    "/lines/1/sections");
 
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         }
@@ -231,7 +231,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
             HashMap<String, Object> sectionParams = makeSectionJson(2L, 3L, 4);
             ExtractableResponse<Response> response = SimpleRestAssured.post(sectionParams,
-                "/lines/1/sections");
+                    "/lines/1/sections");
 
             assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         }
@@ -245,7 +245,7 @@ class LineAcceptanceTest extends AcceptanceTest {
             HashMap<String, Object> sectionParams = makeSectionJson(1L, 2L, 5);
 
             ExtractableResponse<Response> response = SimpleRestAssured.post(sectionParams,
-                "/lines/1/sections");
+                    "/lines/1/sections");
 
             assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         }
@@ -258,7 +258,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
             HashMap<String, Object> params = makeSectionJson(3L, 4L, 5);
             ExtractableResponse<Response> response = SimpleRestAssured.post(params,
-                "/lines/1/sections");
+                    "/lines/1/sections");
 
             assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         }
@@ -272,7 +272,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
             HashMap<String, Object> params = makeSectionJson(1L, 2L, 7);
             ExtractableResponse<Response> response = SimpleRestAssured.post(params,
-                "/lines/1/sections");
+                    "/lines/1/sections");
 
             assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         }
@@ -286,7 +286,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
             HashMap<String, Object> params = makeSectionJson(1L, 2L, 5);
             ExtractableResponse<Response> response = SimpleRestAssured.post(params,
-                "/lines/1/sections");
+                    "/lines/1/sections");
 
             assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         }
@@ -305,7 +305,7 @@ class LineAcceptanceTest extends AcceptanceTest {
             SimpleRestAssured.post(makeSectionJson(1L, 2L, 5), "/lines/1/sections");
 
             ExtractableResponse<Response> response = SimpleRestAssured.delete(
-                "/lines/1/sections?stationId=" + 2);
+                    "/lines/1/sections?stationId=" + 2);
 
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         }
@@ -313,7 +313,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         @Test
         void 입력한_노선이_존재하지_않는_경우_404_NOT_FOUND() {
             ExtractableResponse<Response> response = SimpleRestAssured.delete(
-                "/lines/1/sections?stationId=" + 2);
+                    "/lines/1/sections?stationId=" + 2);
 
             assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
         }
@@ -325,7 +325,7 @@ class LineAcceptanceTest extends AcceptanceTest {
             postLine(makeLineJson("신분당선", "빨간색", 1L, 2L, 10));
 
             ExtractableResponse<Response> response = SimpleRestAssured.delete(
-                "/lines/1/sections?stationId=" + 3);
+                    "/lines/1/sections?stationId=" + 3);
 
             assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         }
@@ -338,7 +338,7 @@ class LineAcceptanceTest extends AcceptanceTest {
             SimpleRestAssured.delete("/lines/1/sections?stationId=" + 1);
 
             ExtractableResponse<Response> response = SimpleRestAssured.delete(
-                "/lines/1/sections?stationId=" + 2);
+                    "/lines/1/sections?stationId=" + 2);
 
             assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         }

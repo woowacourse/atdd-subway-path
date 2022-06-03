@@ -25,20 +25,25 @@ public class LineRequest {
     @Min(value = 1, message = "거리는 1 이상이여야 합니다")
     private int distance;
 
+    @NotNull
+    @Min(value = 0, message = "추가요금은 0 이상이여야 합니다.")
+    private int extraFare;
+
     public LineRequest() {
     }
 
     public LineRequest(String name, String color, Long upStationId, Long downStationId,
-                       int distance) {
+                       int distance, int extraFare) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+        this.extraFare = extraFare;
     }
 
     public Line toLine() {
-        return new Line(name, color);
+        return new Line(name, color, extraFare);
     }
 
     public String getName() {
@@ -47,6 +52,10 @@ public class LineRequest {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     public Long getUpStationId() {

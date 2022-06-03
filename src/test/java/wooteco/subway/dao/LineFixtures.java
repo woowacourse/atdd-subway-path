@@ -15,10 +15,11 @@ public class LineFixtures {
             MapSqlParameterSource source = new MapSqlParameterSource();
             source.addValue("name", line.getName());
             source.addValue("color", line.getColor());
+            source.addValue("extraFare", line.getExtraFare());
             params.add(source);
         }
 
-        jdbcTemplate.batchUpdate("INSERT INTO line (name, color) VALUES (:name, :color)",
-            params.toArray(MapSqlParameterSource[]::new));
+        jdbcTemplate.batchUpdate("INSERT INTO line (name, color, extra_fare) VALUES (:name, :color, :extraFare)",
+                params.toArray(MapSqlParameterSource[]::new));
     }
 }

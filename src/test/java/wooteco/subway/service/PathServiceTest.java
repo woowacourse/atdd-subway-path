@@ -41,7 +41,7 @@ class PathServiceTest {
                         .containsExactly(1L, 2L, 3L);
                 assertThat(path)
                         .extracting("distance", "fare")
-                        .containsExactly(15, 1350);
+                        .containsExactly(15, 500);
             });
         }
 
