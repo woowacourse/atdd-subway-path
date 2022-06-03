@@ -1,5 +1,7 @@
 package wooteco.subway.service.dto.request;
 
+import wooteco.subway.domain.path.Path;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
@@ -21,6 +23,10 @@ public class PathRequest {
         this.source = source;
         this.target = target;
         this.age = age;
+    }
+
+    public Path toPath() {
+        return Path.of(source, target);
     }
 
     public Long getSource() {

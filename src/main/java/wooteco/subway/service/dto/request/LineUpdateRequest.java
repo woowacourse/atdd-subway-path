@@ -1,5 +1,7 @@
 package wooteco.subway.service.dto.request;
 
+import wooteco.subway.domain.Line;
+
 import javax.validation.constraints.NotBlank;
 
 public class LineUpdateRequest {
@@ -10,12 +12,19 @@ public class LineUpdateRequest {
     @NotBlank(message = "지하철 노선의 색상을 선택해주세요.")
     private String color;
 
+    private int extraFare;
+
     private LineUpdateRequest() {
     }
 
-    public LineUpdateRequest(String name, String color) {
+    public LineUpdateRequest(String name, String color, int extraFare) {
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
+    }
+
+    public Line toLine() {
+        return Line.of(name, color, extraFare);
     }
 
     public String getName() {
@@ -24,5 +33,9 @@ public class LineUpdateRequest {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 }

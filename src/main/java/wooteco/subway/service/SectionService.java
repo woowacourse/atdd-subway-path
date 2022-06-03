@@ -49,11 +49,11 @@ public class SectionService {
     }
 
     private Section convertSection(final SectionRequest sectionRequest) {
-        return new Section(sectionRequest.getUpStationId(), sectionRequest.getDownStationId(), sectionRequest.getDistance());
+        return Section.of(sectionRequest.getUpStationId(), sectionRequest.getDownStationId(), sectionRequest.getDistance());
     }
 
     private Sections getAllSections(final Long lineId) {
-        return new Sections(sectionDao.findAllById(lineId));
+        return new Sections(sectionDao.findAllByLineId(lineId));
     }
 
     private void update(final Long lineId, final Sections sections) {

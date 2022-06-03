@@ -1,5 +1,8 @@
 package wooteco.subway.service.dto.request;
 
+import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Section;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -21,15 +24,26 @@ public class LineSaveRequest {
     @Positive(message = "구간 거리는 1 이상이어야 합니다.")
     private int distance;
 
+    private int extraFare;
+
     private LineSaveRequest() {
     }
 
-    public LineSaveRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
+    public LineSaveRequest(String name, String color, Long upStationId, Long downStationId, int distance, int extraFare) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+        this.extraFare = extraFare;
+    }
+
+    public Line toLine() {
+        return Line.of(name, color, extraFare);
+    }
+
+    public Section convertSection() {
+        return Section.of(upStationId, downStationId, distance);
     }
 
     public String getName() {
@@ -50,5 +64,9 @@ public class LineSaveRequest {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 }

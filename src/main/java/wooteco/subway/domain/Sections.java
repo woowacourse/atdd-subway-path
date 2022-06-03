@@ -39,7 +39,7 @@ public class Sections {
     }
 
     private void addStationInSection(final Section existSection, final Section section) {
-        Section replacedSection = Section.replaced(existSection, section);
+        Section replacedSection = Section.getReplacedSection(existSection, section);
 
         sections.remove(existSection);
         sections.add(section);
@@ -49,7 +49,7 @@ public class Sections {
     private void deleteStationInSection(final Long stationId) {
         Section sectionIncludedUpStation = getExistUpStation(stationId);
         Section sectionIncludedDownStation = getExistDownStation(stationId);
-        Section deletedSection = Section.deleted(sectionIncludedDownStation, sectionIncludedUpStation);
+        Section deletedSection = Section.getDeletedSection(sectionIncludedDownStation, sectionIncludedUpStation);
 
         sections.remove(sectionIncludedUpStation);
         sections.remove(sectionIncludedDownStation);

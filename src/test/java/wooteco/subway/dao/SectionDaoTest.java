@@ -2,7 +2,6 @@ package wooteco.subway.dao;
 
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +31,7 @@ class SectionDaoTest {
     @Test
     void save() {
         // when
-        sectionDao.save(1L, new Section(1L, 2L, 10));
+        sectionDao.save(1L, Section.of(1L, 2L, 10));
 
         // then
         Integer count = jdbcTemplate.queryForObject("select count(*) from SECTION", Integer.class);
@@ -44,9 +43,9 @@ class SectionDaoTest {
     void saveAll() {
         // given
         Sections sections = new Sections(List.of(
-                new Section(1L, 2L, 10),
-                new Section(2L, 3L, 10),
-                new Section(3L, 4L, 10)
+                Section.of(1L, 2L, 10),
+                Section.of(2L, 3L, 10),
+                Section.of(3L, 4L, 10)
         ));
 
         // when
@@ -62,20 +61,20 @@ class SectionDaoTest {
     void findById() {
         // given
         Sections savedSections = new Sections(List.of(
-                new Section(1L, 2L, 10),
-                new Section(2L, 3L, 10),
-                new Section(3L, 4L, 10)
+                Section.of(1L, 2L, 10),
+                Section.of(2L, 3L, 10),
+                Section.of(3L, 4L, 10)
         ));
         sectionDao.saveAll(1L, savedSections);
 
         // when
-        List<Section> sections = sectionDao.findAllById(1L);
+        List<Section> sections = sectionDao.findAllByLineId(1L);
 
         // then
         assertThat(sections).contains(
-                new Section(1L, 2L, 10),
-                new Section(2L, 3L, 10),
-                new Section(3L, 4L, 10)
+                Section.of(1L, 2L, 10),
+                Section.of(2L, 3L, 10),
+                Section.of(3L, 4L, 10)
         );
     }
 
@@ -84,9 +83,9 @@ class SectionDaoTest {
     void findAll() {
         // given
         Sections savedSections = new Sections(List.of(
-                new Section(1L, 2L, 10),
-                new Section(2L, 3L, 10),
-                new Section(3L, 4L, 10)
+                Section.of(1L, 2L, 10),
+                Section.of(2L, 3L, 10),
+                Section.of(3L, 4L, 10)
         ));
         sectionDao.saveAll(1L, savedSections);
 
@@ -95,9 +94,9 @@ class SectionDaoTest {
 
         // then
         assertThat(sections).contains(
-                new Section(1L, 2L, 10),
-                new Section(2L, 3L, 10),
-                new Section(3L, 4L, 10)
+                Section.of(1L, 2L, 10),
+                Section.of(2L, 3L, 10),
+                Section.of(3L, 4L, 10)
         );
     }
 
@@ -105,7 +104,7 @@ class SectionDaoTest {
     @Test
     void existStation() {
         // given
-        sectionDao.save(1L, new Section(1L, 2L, 10));
+        sectionDao.save(1L, Section.of(1L, 2L, 10));
 
         // when & then
         assertThat(sectionDao.existStation(1L, 1L)).isTrue();
@@ -115,7 +114,7 @@ class SectionDaoTest {
     @Test
     void existUpStation() {
         // given
-        sectionDao.save(1L, new Section(1L, 2L, 10));
+        sectionDao.save(1L, Section.of(1L, 2L, 10));
 
         // when & then
         assertThat(sectionDao.existUpStation(1L, 1L)).isTrue();
@@ -125,7 +124,7 @@ class SectionDaoTest {
     @Test
     void existDownStation() {
         // given
-        sectionDao.save(1L, new Section(1L, 2L, 10));
+        sectionDao.save(1L, Section.of(1L, 2L, 10));
 
         // when & then
         assertThat(sectionDao.existDownStation(1L, 2L)).isTrue();
@@ -135,14 +134,14 @@ class SectionDaoTest {
     @Test
     void update() {
         // given
-        long sectionId = sectionDao.save(1L, new Section(1L, 2L, 10));
+        long sectionId = sectionDao.save(1L, Section.of(1L, 2L, 10));
 
         // when
-        sectionDao.update(new Section(sectionId, 1L, 1L, 2L, 50));
+        sectionDao.update(Section.of(sectionId, 1L, 1L, 2L, 50));
 
         // then
-        assertThat(sectionDao.findAllById(1L)).contains(
-                new Section(sectionId, 1L, 1L, 2L, 50)
+        assertThat(sectionDao.findAllByLineId(1L)).contains(
+                Section.of(sectionId, 1L, 1L, 2L, 50)
         );
     }
 
@@ -150,7 +149,7 @@ class SectionDaoTest {
     @Test
     void delete() {
         // given
-        sectionDao.save(1L, new Section(1L, 2L, 10));
+        sectionDao.save(1L, Section.of(1L, 2L, 10));
 
         // when
         sectionDao.delete(1L);

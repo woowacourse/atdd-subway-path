@@ -1,5 +1,6 @@
 package wooteco.subway.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,8 +33,8 @@ public class LineService {
 
     @Transactional
     public LineResponse save(final LineSaveRequest lineSaveRequest) {
-        Line line = convertLine(lineSaveRequest);
-        Section section = convertSection(lineSaveRequest);
+        Line line = lineSaveRequest.toLine();
+        Section section = lineSaveRequest.convertSection();
 
         validateLine(line);
 
@@ -51,15 +52,15 @@ public class LineService {
     public LineResponse find(final Long id) {
         Line line = lineDao.find(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지하철 노선입니다."));
-        List<Station> stations = lineDao.findStations(id);
+        List<Station> stations = findStationsByLineId(id);
 
-        List<StationResponse> stationResponses = convertStationResponses(stations);
+        List<StationResponse> stationResponses = StationResponse.convertStationResponses(stations);
         return LineResponse.from(line, stationResponses);
     }
 
     @Transactional
     public void update(final long id, final LineUpdateRequest lineUpdateRequest) {
-        Line line = convertLine(lineUpdateRequest);
+        Line line = lineUpdateRequest.toLine();
         validateLine(line);
         validateExistedLine(id);
         lineDao.update(id, line);
@@ -69,12 +70,47 @@ public class LineService {
     public void delete(final Long id) {
         validateExistedLine(id);
 
-        List<Station> stations = lineDao.findStations(id);
+        List<Station> stations = findStationsByLineId(id);
         lineDao.delete(id);
         sectionDao.delete(id);
         for (Station station : stations) {
             stationDao.delete(station.getId());
         }
+    }
+
+    private List<Station> findStationsByLineId(final Long id) {
+        List<Long> stationIds = getStationIdsByLineId(id);
+
+        List<Station> stations = new ArrayList<>();
+        for (Long stationId : stationIds) {
+            stations.add(stationDao.findById(stationId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지하철역입니다.")));
+        }
+        return stations;
+    }
+
+    private List<Long> getStationIdsByLineId(final Long id) {
+        List<Section> sections = sectionDao.findAllByLineId(id);
+
+        List<Long> stationIds = new ArrayList<>();
+        stationIds.addAll(getUpStationIds(sections));
+        stationIds.addAll(getDownStationIds(sections));
+
+        return stationIds.stream()
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    private List<Long> getUpStationIds(final List<Section> sections) {
+        return sections.stream()
+                .map(Section::getUpStationId)
+                .collect(Collectors.toList());
+    }
+
+    private List<Long> getDownStationIds(final List<Section> sections) {
+        return sections.stream()
+                .map(Section::getDownStationId)
+                .collect(Collectors.toList());
     }
 
     private void validateLine(final Line line) {
@@ -98,23 +134,5 @@ public class LineService {
         if (!lineDao.existLineById(id)) {
             throw new IllegalArgumentException("존재하지 않는 지하철 노선입니다.");
         }
-    }
-
-    private Line convertLine(final LineSaveRequest lineSaveRequest) {
-        return new Line(lineSaveRequest.getName(), lineSaveRequest.getColor());
-    }
-
-    private Line convertLine(final LineUpdateRequest lineUpdateRequest) {
-        return new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor());
-    }
-
-    private Section convertSection(final LineSaveRequest lineSaveRequest) {
-        return new Section(lineSaveRequest.getUpStationId(), lineSaveRequest.getDownStationId(), lineSaveRequest.getDistance());
-    }
-
-    private List<StationResponse> convertStationResponses(final List<Station> stations) {
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
     }
 }

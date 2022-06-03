@@ -26,7 +26,7 @@ import wooteco.subway.service.dto.response.StationResponse;
 @JdbcTest
 class LineServiceTest {
 
-    private static final LineSaveRequest LINE_SAVE_REQUEST = new LineSaveRequest("신분당선", "bg-red-600", 1L, 2L, 10);
+    private static LineSaveRequest LINE_SAVE_REQUEST;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -41,6 +41,10 @@ class LineServiceTest {
         stationDao = new StationDao(jdbcTemplate);
 
         lineService = new LineService(lineDao, sectionDao, stationDao);
+
+        long upStationId = stationDao.save(new Station("출발역"));
+        long downStationId = stationDao.save(new Station("도착역"));
+        LINE_SAVE_REQUEST = new LineSaveRequest("신분당선", "bg-red-600", upStationId, downStationId, 10, 0);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -49,7 +53,7 @@ class LineServiceTest {
         // given
         long station1Id = stationDao.save(new Station(1L, "강남역"));
         long station2Id = stationDao.save(new Station(2L, "역삼역"));
-        LineSaveRequest lineSaveRequest = new LineSaveRequest("신분당선", "bg-red-600", station1Id, station2Id, 10);
+        LineSaveRequest lineSaveRequest = new LineSaveRequest("신분당선", "bg-red-600", station1Id, station2Id, 10, 0);
 
         // when
         LineResponse lineResponse = lineService.save(lineSaveRequest);
@@ -62,6 +66,7 @@ class LineServiceTest {
         assertAll(
                 () -> assertThat(lineResponse.getName()).isEqualTo("신분당선"),
                 () -> assertThat(lineResponse.getColor()).isEqualTo("bg-red-600"),
+                () -> assertThat(lineResponse.getExtraFare()).isEqualTo(0),
                 () -> assertThat(stationNames).contains("강남역", "역삼역")
         );
     }
@@ -74,7 +79,7 @@ class LineServiceTest {
 
         // when & then
         assertThatThrownBy(
-                () -> lineService.save(new LineSaveRequest("신분당선", "bg-green-600", 1L, 2L, 10))
+                () -> lineService.save(new LineSaveRequest("신분당선", "bg-green-600", 1L, 2L, 10, 0))
         ).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("지하철 노선 이름이 중복됩니다.");
     }
@@ -87,7 +92,7 @@ class LineServiceTest {
 
         // when & then
         assertThatThrownBy(
-                () -> lineService.save(new LineSaveRequest("다른분당선", "bg-red-600", 1L, 2L, 10))
+                () -> lineService.save(new LineSaveRequest("다른분당선", "bg-red-600", 1L, 2L, 10, 0))
         ).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("지하철 노선 색상이 중복됩니다.");
     }
@@ -111,13 +116,17 @@ class LineServiceTest {
     @Test
     void find() {
         // given
-        LineResponse lineResponse = lineService.save(LINE_SAVE_REQUEST);
-        long lineId = lineResponse.getId();
+        LineResponse lineSavedResponse = lineService.save(LINE_SAVE_REQUEST);
+        long lineId = lineSavedResponse.getId();
 
-        // when & then
+        // when
+        LineResponse lineResponse = lineService.find(lineId);
+
+        // then
         assertAll(
-                () -> assertThat(lineService.find(lineId).getName()).isEqualTo("신분당선"),
-                () -> assertThat(lineService.find(lineId).getColor()).isEqualTo("bg-red-600")
+                () -> assertThat(lineResponse.getName()).isEqualTo("신분당선"),
+                () -> assertThat(lineResponse.getColor()).isEqualTo("bg-red-600"),
+                () -> assertThat(lineResponse.getExtraFare()).isEqualTo(0)
         );
     }
 
@@ -138,7 +147,7 @@ class LineServiceTest {
         long lineId = lineResponse.getId();
 
         // when
-        lineService.update(lineId, new LineUpdateRequest("다른분당선", "bg-green-600"));
+        lineService.update(lineId, new LineUpdateRequest("다른분당선", "bg-green-600", 0));
 
         // then
         List<String> lineNames = lineService.findAll().stream()
@@ -156,7 +165,7 @@ class LineServiceTest {
         long lineId = lineResponse.getId();
 
         // when & then
-        assertThatThrownBy(() -> lineService.update(lineId, new LineUpdateRequest("신분당선", "bg-green-600")))
+        assertThatThrownBy(() -> lineService.update(lineId, new LineUpdateRequest("신분당선", "bg-green-600", 0)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("지하철 노선 이름이 중복됩니다.");
     }
@@ -169,7 +178,7 @@ class LineServiceTest {
         long lineId = lineResponse.getId();
 
         // when & then
-        assertThatThrownBy(() -> lineService.update(lineId, new LineUpdateRequest("다른분당선", "bg-red-600")))
+        assertThatThrownBy(() -> lineService.update(lineId, new LineUpdateRequest("다른분당선", "bg-red-600", 0)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("지하철 노선 색상이 중복됩니다.");
     }
@@ -178,7 +187,7 @@ class LineServiceTest {
     @Test
     void updateNotExistLine() {
         // when & then
-        assertThatThrownBy(() -> lineService.update(1L, new LineUpdateRequest("다른분당선", "bg-green-600")))
+        assertThatThrownBy(() -> lineService.update(1L, new LineUpdateRequest("다른분당선", "bg-green-600", 0)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하지 않는 지하철 노선입니다.");
     }

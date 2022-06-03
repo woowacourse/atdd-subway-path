@@ -16,7 +16,7 @@ class SectionTest {
     @Test
     void createSectionUnderDistance1() {
         // when & then
-        assertThatThrownBy(() -> new Section(1L, 1L, 1L, 2L, -1))
+        assertThatThrownBy(() -> Section.of(1L, 1L, 1L, 2L, -1))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("구간 거리는 1 이상이어야 합니다.");
     }
@@ -25,11 +25,11 @@ class SectionTest {
     @Test
     void replaceSection() {
         // given
-        Section existSection = new Section(1L, 1L, 1L, 3L, 10);
-        Section newSection = new Section(2L, 1L, 1L, 2L, 5);
+        Section existSection = Section.of(1L, 1L, 1L, 3L, 10);
+        Section newSection = Section.of(2L, 1L, 1L, 2L, 5);
 
         // when
-        Section replacedSection = Section.replaced(existSection, newSection);
+        Section replacedSection = Section.getReplacedSection(existSection, newSection);
 
         // then
         assertAll(
@@ -45,11 +45,11 @@ class SectionTest {
     @Test
     void deletedStation() {
         // given
-        Section section1 = new Section(1L, 1L, 1L, 2L, 5);
-        Section section2 = new Section(2L, 1L, 2L, 3L, 5);
+        Section section1 = Section.of(1L, 1L, 1L, 2L, 5);
+        Section section2 = Section.of(2L, 1L, 2L, 3L, 5);
 
         // when
-        Section deletedSection = Section.deleted(section1, section2);
+        Section deletedSection = Section.getDeletedSection(section1, section2);
 
         // then
         assertAll(
@@ -65,8 +65,8 @@ class SectionTest {
     @Test
     void subtractDistance() {
         // given
-        Section existSection = new Section(1L, 1L, 1L, 3L, 10);
-        Section newSection = new Section(2L, 1L, 1L, 2L, 5);
+        Section existSection = Section.of(1L, 1L, 1L, 3L, 10);
+        Section newSection = Section.of(2L, 1L, 1L, 2L, 5);
 
         // when & then
         assertThat(Section.subtractDistance(existSection, newSection))
@@ -78,8 +78,8 @@ class SectionTest {
     @DisplayName("새로 추가하려는 구간이 기존 구간의 거리보다 크거나 같을 경우 예외가 발생한다.")
     void subtractDistanceOverExist(int distance) {
         // given
-        Section existSection = new Section(1L, 1L, 1L, 3L, 10);
-        Section newSection = new Section(2L, 1L, 1L, 2L, distance);
+        Section existSection = Section.of(1L, 1L, 1L, 3L, 10);
+        Section newSection = Section.of(2L, 1L, 1L, 2L, distance);
 
         // when & then
         assertThatThrownBy(
@@ -93,7 +93,7 @@ class SectionTest {
     @DisplayName("지하철역의 아이디를 이용하여 구간에 속해있는지 확인한다.")
     void existStation(long stationId) {
         // given
-        Section section = new Section(1L, 1L, 1L, 2L, 10);
+        Section section = Section.of(1L, 1L, 1L, 2L, 10);
 
         // when & then
         assertThat(section.existStation(stationId)).isTrue();
@@ -103,10 +103,10 @@ class SectionTest {
     @Test
     void isAddingEndSection() {
         // given
-        Section section = new Section(1L, 1L, 1L, 2L, 10);
+        Section section = Section.of(1L, 1L, 1L, 2L, 10);
 
         // when & then
-        assertThat(section.isAddingEndSection(new Section(2L, 3L, 10)))
+        assertThat(section.isAddingEndSection(Section.of(2L, 3L, 10)))
                 .isTrue();
     }
 }
