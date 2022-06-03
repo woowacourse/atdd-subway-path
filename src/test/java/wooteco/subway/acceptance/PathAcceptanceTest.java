@@ -15,7 +15,7 @@ import wooteco.subway.dto.section.SectionRequest;
 import wooteco.subway.dto.station.StationRequest;
 
 @DisplayName("지하철 경로 관련 기능")
-public class PathAcceptanceTest extends AcceptanceTest {
+class PathAcceptanceTest extends AcceptanceTest {
 
     private static final StationRequest 강남역 = new StationRequest("강남역");
 
@@ -24,9 +24,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private Long stationId3;
     private Long stationId4;
     private Long stationId5;
-
-    private LineRequest 분당선;
-    private LineRequest 다른분당선;
     private Long lineId1;
     private Long lineId2;
 
@@ -38,8 +35,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         stationId4 = postStationId(광흥창역);
         stationId5 = postStationId(상수역);
 
-        분당선 = new LineRequest("분당선", "bg-green-600", stationId1, stationId2, 2);
-        다른분당선 = new LineRequest("다른분당선", "bg-red-600", stationId2, stationId5, 3);
+        LineRequest 분당선 = new LineRequest("분당선", "bg-green-600", stationId1, stationId2, 2, 100);
+        LineRequest 다른분당선 = new LineRequest("다른분당선", "bg-red-600", stationId2, stationId5, 3, 200);
         lineId1 = postLineId(분당선);
         lineId2 = postLineId(다른분당선);
     }
@@ -60,7 +57,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ValidatableResponse validatableResponse = RestAssured.given()
                 .log().all()
                 .when()
-                .get("/paths?source=" + stationId1 + "&target=" + stationId4)
+                .get("/paths?source=" + stationId1 + "&target=" + stationId4 + "&age=" + 10)
                 .then().log().all();
 
         // then
@@ -71,7 +68,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                         stationId5.intValue(),
                         stationId4.intValue()))
                 .body("distance", equalTo(9))
-                .body("fare", equalTo(1250));
+                .body("fare", equalTo(550));
     }
 
     @DisplayName("존재하지 않는 지하철 경로를 조회한다.")
@@ -88,7 +85,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ValidatableResponse validatableResponse = RestAssured.given()
                 .log().all()
                 .when()
-                .get("/paths?source=" + stationId1 + "&target=" + stationId4)
+                .get("/paths?source=" + stationId1 + "&target=" + stationId4 + "&age=" + 10)
                 .then().log().all();
 
         // then

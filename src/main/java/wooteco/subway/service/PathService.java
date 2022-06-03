@@ -3,57 +3,39 @@ package wooteco.subway.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import wooteco.subway.domain.Fare;
-import wooteco.subway.domain.Path;
+import wooteco.subway.domain.line.Lines;
+import wooteco.subway.domain.path.AgeBoundary;
+import wooteco.subway.domain.path.Fare;
+import wooteco.subway.domain.path.Path;
+import wooteco.subway.domain.path.PathDijkstraAlgorithm;
+import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Stations;
-import wooteco.subway.dto.PathResponse;
+import wooteco.subway.dto.path.PathRequest;
+import wooteco.subway.dto.path.PathResponse;
 import wooteco.subway.dto.station.StationResponse;
-import wooteco.subway.exception.DataNotExistException;
-import wooteco.subway.exception.SubwayException;
 
 @Service
 public class PathService {
 
     private final StationService stationService;
+    private final LineService lineService;
     private final SectionService sectionService;
 
-    public PathService(StationService stationService, SectionService sectionService) {
+    public PathService(StationService stationService, LineService lineService, SectionService sectionService) {
         this.stationService = stationService;
+        this.lineService = lineService;
         this.sectionService = sectionService;
     }
 
-    public PathResponse findPath(Long source, Long target) {
+    public PathResponse findPath(PathRequest pathRequest) {
+        List<Section> sections = sectionService.findAll();
         Stations stations = stationService.findAll();
-        validateStation(stations, source, target);
+        PathDijkstraAlgorithm algorithm = PathDijkstraAlgorithm.of(sections, stations);
+        Path path = algorithm.findPath(pathRequest.getSource(), pathRequest.getTarget());
 
-        Path path = Path.of(sectionService.findAll(), stations.getStationIds());
-        List<Long> shortestPath = path.findPath(source, target);
-        int distance = path.findDistance(source, target);
-        return getPathResponse(stations, shortestPath, distance);
-    }
-
-    private void validateStation(Stations stations, Long source, Long target) {
-        validateStationExist(stations, source);
-        validateStationExist(stations, target);
-        validateStationSame(source, target);
-    }
-
-    private void validateStationExist(Stations stations, Long stationId) {
-        if (!stations.contains(stationId)) {
-            throw new DataNotExistException("존재하지 않는 역입니다.");
-        }
-    }
-
-    private void validateStationSame(Long source, Long target) {
-        if (source.equals(target)) {
-            throw new SubwayException("출발역과 도착역이 같을 수 없습니다.");
-        }
-    }
-
-    private PathResponse getPathResponse(Stations stations, List<Long> shortestPath, int distance) {
-        List<StationResponse> stationsResponses = getStationsResponses(stations, shortestPath);
-        Fare fare = new Fare(distance);
-        return new PathResponse(stationsResponses, distance, fare.calculate());
+        List<StationResponse> stationsResponses = getStationsResponses(stations, path.getStationIds());
+        Fare fare = getFare(path, pathRequest.getAge());
+        return new PathResponse(stationsResponses, path.getDistance(), fare.getFare());
     }
 
     private List<StationResponse> getStationsResponses(Stations stations, List<Long> shortestPath) {
@@ -61,5 +43,12 @@ public class PathService {
                 .map(stations::findStationById)
                 .map(StationResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    private Fare getFare(Path path, int age) {
+        Lines lines = lineService.findAll();
+        Fare maxExtraFareByDistance = lines.findMaxExtraFareByDistance(path.getUsedLineIds());
+        return path.calculateFareByDistance(maxExtraFareByDistance)
+                .discountByAge(AgeBoundary.from(age));
     }
 }

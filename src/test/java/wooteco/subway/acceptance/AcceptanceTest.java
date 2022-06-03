@@ -17,7 +17,7 @@ import wooteco.subway.dto.station.StationRequest;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AcceptanceTest {
+class AcceptanceTest {
 
     protected static final StationRequest 대흥역 = new StationRequest("대흥역");
     protected static final StationRequest 공덕역 = new StationRequest("공덕역");

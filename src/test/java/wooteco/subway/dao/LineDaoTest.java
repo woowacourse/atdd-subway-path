@@ -15,7 +15,7 @@ import wooteco.subway.domain.line.Line;
 @JdbcTest
 class LineDaoTest {
 
-    private static final Line LINE = new Line("신분당선", "bg-red-600");
+    private static final Line LINE = new Line("신분당선", "bg-red-600", 100);
 
     private JdbcLineDao lineDao;
 
@@ -49,7 +49,7 @@ class LineDaoTest {
     @Test
     void findAll() {
         lineDao.save(LINE);
-        lineDao.save(new Line("다른분당선", "bg-green-600"));
+        lineDao.save(new Line("다른분당선", "bg-green-600", 100));
 
         List<Line> lines = lineDao.findAll();
 
@@ -70,7 +70,7 @@ class LineDaoTest {
     @Test
     void update() {
         long lineId = lineDao.save(LINE);
-        Line updatedLine = new Line(lineId, "다른분당선", "bg-red-600");
+        Line updatedLine = new Line(lineId, "다른분당선", "bg-red-600", 200);
 
         lineDao.update(updatedLine);
 

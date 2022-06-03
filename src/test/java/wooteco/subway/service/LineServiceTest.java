@@ -25,7 +25,7 @@ import wooteco.subway.exception.SubwayException;
 class LineServiceTest {
 
     private static final LineRequest LINE_REQUEST =
-            new LineRequest("신분당선", "bg-red-600", 1L, 2L, 10);
+            new LineRequest("신분당선", "bg-red-600", 1L, 2L, 10, 100);
 
     private LineService lineService;
 
@@ -55,7 +55,8 @@ class LineServiceTest {
     void saveDuplicatedName() {
         lineService.save(LINE_REQUEST);
 
-        LineRequest sameNameLine = new LineRequest("신분당선", "bg-green-600", 1L, 2L, 10);
+        LineRequest sameNameLine = new LineRequest("신분당선", "bg-green-600",
+                1L, 2L, 10, 100);
         assertThatThrownBy(() -> lineService.save(sameNameLine))
                 .isInstanceOf(SubwayException.class)
                 .hasMessage("지하철 노선 이름이 중복됩니다.");
@@ -66,7 +67,8 @@ class LineServiceTest {
     void saveDuplicatedColor() {
         lineService.save(LINE_REQUEST);
 
-        LineRequest sameColorLine = new LineRequest("다른분당선", "bg-red-600", 1L, 2L, 10);
+        LineRequest sameColorLine = new LineRequest("다른분당선", "bg-red-600",
+                1L, 2L, 10, 100);
         assertThatThrownBy(() -> lineService.save(sameColorLine))
                 .isInstanceOf(SubwayException.class)
                 .hasMessage("지하철 노선 색상이 중복됩니다.");
@@ -94,14 +96,14 @@ class LineServiceTest {
     void update() {
         long lineId = lineService.save(LINE_REQUEST);
 
-        assertThatCode(() -> lineService.update(new Line(lineId, "다른분당선", "bg-green-600")))
+        assertThatCode(() -> lineService.update(new Line(lineId, "다른분당선", "bg-green-600", 100)))
                 .doesNotThrowAnyException();
     }
 
     @DisplayName("존재하지 않는 지하철 노선을 수정할 경우 예외를 발생시킨다.")
     @Test
     void updateNotExistLine() {
-        assertThatThrownBy(() -> lineService.update(new Line(1L, "다른분당선", "bg-green-600")))
+        assertThatThrownBy(() -> lineService.update(new Line(1L, "다른분당선", "bg-green-600", 100)))
                 .isInstanceOf(DataNotExistException.class)
                 .hasMessage("존재하지 않는 지하철 노선입니다.");
     }
@@ -110,9 +112,10 @@ class LineServiceTest {
     @Test
     void updateDuplicatedName() {
         long lineId = lineService.save(LINE_REQUEST);
-        lineService.save(new LineRequest("다른분당선", "bg-green-600", 1L, 2L, 10));
+        lineService.save(new LineRequest("다른분당선", "bg-green-600",
+                1L, 2L, 10, 100));
 
-        assertThatThrownBy(() -> lineService.update(new Line(lineId, "다른분당선", "bg-green-600")))
+        assertThatThrownBy(() -> lineService.update(new Line(lineId, "다른분당선", "bg-green-600", 100)))
                 .isInstanceOf(SubwayException.class)
                 .hasMessage("지하철 노선 이름이 중복됩니다.");
     }
@@ -121,9 +124,10 @@ class LineServiceTest {
     @Test
     void updateDuplicatedColor() {
         long lineId = lineService.save(LINE_REQUEST);
-        lineService.save(new LineRequest("다른분당선", "bg-green-600", 1L, 2L, 10));
+        lineService.save(new LineRequest("다른분당선", "bg-green-600",
+                1L, 2L, 10, 100));
 
-        assertThatThrownBy(() -> lineService.update(new Line(lineId, "신분당선", "bg-green-600")))
+        assertThatThrownBy(() -> lineService.update(new Line(lineId, "신분당선", "bg-green-600", 100)))
                 .isInstanceOf(SubwayException.class)
                 .hasMessage("지하철 노선 색상이 중복됩니다.");
     }

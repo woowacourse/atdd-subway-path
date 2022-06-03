@@ -9,19 +9,25 @@ public class LineResponse {
     private Long id;
     private String name;
     private String color;
+    private int extraFare;
     private List<StationResponse> stations;
 
     private LineResponse() {
     }
 
     public LineResponse(Line line, List<StationResponse> stations) {
-        this(line.getId(), line.getName(), line.getColor(), stations);
+        this(line.getId(), line.getName(), line.getColor(), line.getExtraFare(), stations);
     }
 
-    public LineResponse(Long id, String name, String color, List<StationResponse> stations) {
+    public LineResponse(Long id, LineRequest lineRequest, List<StationResponse> stations) {
+        this(id, lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare(), stations);
+    }
+
+    public LineResponse(Long id, String name, String color, int extraFare, List<StationResponse> stations) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
         this.stations = stations;
     }
 
@@ -35,6 +41,10 @@ public class LineResponse {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     public List<StationResponse> getStations() {

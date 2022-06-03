@@ -30,3 +30,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### 추가 ###
+.DS_Store

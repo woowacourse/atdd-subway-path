@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import wooteco.subway.exception.DataNotExistException;
 import wooteco.subway.exception.SubwayException;
 
-public class SectionsTest {
+class SectionsTest {
 
     private static final Sections SECTIONS =
             new Sections(List.of(
@@ -35,7 +35,7 @@ public class SectionsTest {
     @DisplayName("지하철 구간의 상행역과 하행역 중 하나만 노선에 존재하는 경우 예외가 발생하지 않는다.")
     @Test
     void validateSectionInLineNotThrowAnyException() {
-        assertThatCode(() -> SECTIONS.validateSectionInLine(NEW_SECTION))
+        assertThatCode(() -> SECTIONS.getUpdatedSectionForSaveIfRequired(NEW_SECTION))
                 .doesNotThrowAnyException();
     }
 
@@ -44,9 +44,9 @@ public class SectionsTest {
     void validateSectionInLineForBothExclude() {
         Section newSection = new Section(1L, 4L, 5L, 5);
 
-        assertThatThrownBy(() -> SECTIONS.validateSectionInLine(newSection))
+        assertThatThrownBy(() -> SECTIONS.getUpdatedSectionForSaveIfRequired(newSection))
                 .isInstanceOf(SubwayException.class)
-                .hasMessage("상행역과 하행역이 모두 노선에 포함되어있지 않습니다.");
+                .hasMessage("상행역과 하행역 중 하나만 노선에 포함되어있어야 합니다.");
     }
 
     @DisplayName("지하철 구간의 상행역과 하행역이 이미 모두 노선에 포함되어 있는 경우 예외가 발생한다.")
@@ -54,15 +54,15 @@ public class SectionsTest {
     void validateSectionInLineForBothInclude() {
         Section newSection = new Section(1L, 1L, 2L, 5);
 
-        assertThatThrownBy(() -> SECTIONS.validateSectionInLine(newSection))
+        assertThatThrownBy(() -> SECTIONS.getUpdatedSectionForSaveIfRequired(newSection))
                 .isInstanceOf(SubwayException.class)
-                .hasMessage("상행역과 하행역이 이미 모두 노선에 포함되어 있습니다.");
+                .hasMessage("상행역과 하행역 중 하나만 노선에 포함되어있어야 합니다.");
     }
 
     @DisplayName("지하철 구간의 길이가 기존 역 사이의 길이보다 작은 경우 예외가 발생하지 않는다.")
     @Test
     void validateSectionDistanceNotThrowAnyException() {
-        assertThatCode(() -> SECTIONS.validateSectionDistance(NEW_SECTION))
+        assertThatCode(() -> SECTIONS.getUpdatedSectionForSaveIfRequired(NEW_SECTION))
                 .doesNotThrowAnyException();
     }
 
@@ -71,7 +71,7 @@ public class SectionsTest {
     void validateSectionDistanceForLongDistance() {
         Section newSection = new Section(1L, 1L, 4L, 4);
 
-        assertThatThrownBy(() -> SECTIONS.validateSectionDistance(newSection))
+        assertThatThrownBy(() -> SECTIONS.getUpdatedSectionForSaveIfRequired(newSection))
                 .isInstanceOf(SubwayException.class)
                 .hasMessage("구간의 길이는 기존 역 사이의 길이보다 작아야합니다.");
     }
@@ -79,31 +79,26 @@ public class SectionsTest {
     @DisplayName("구간 추가시 수정할 구간을 가져온다.")
     @Test
     void getUpdatedSectionForSave() {
-        Section updatedSection = SECTIONS.getUpdatedSectionForSave(NEW_SECTION);
+        Section updatedSection = SECTIONS.getUpdatedSectionForSaveIfRequired(NEW_SECTION)
+                .orElseThrow();
 
         assertThat(updatedSection)
                 .usingRecursiveComparison()
                 .isEqualTo(new Section(2L, 1L, 4L, 3L, 5));
     }
 
-    @DisplayName("구간 생성시 구간 수정이 필요한 경우 true를 반환한다.")
-    @Test
-    void isRequireUpdateForSaveTrue() {
-        assertThat(SECTIONS.isRequireUpdateForSave(NEW_SECTION)).isTrue();
-    }
-
-    @DisplayName("구간 생성시 구간 수정이 불필요한 경우 false를 반환한다.")
+    @DisplayName("구간 생성시 구간 수정이 불필요한 경우 Optional.empty를 반환한다.")
     @Test
     void isRequireUpdateForSaveFalse() {
         Section newSection = new Section(1L, 3L, 4L, 4);
 
-        assertThat(SECTIONS.isRequireUpdateForSave(newSection)).isFalse();
+        assertThat(SECTIONS.getUpdatedSectionForSaveIfRequired(newSection)).isEmpty();
     }
 
     @DisplayName("노선에 등록되지 않은 역을 삭제하는 경우 예외가 발생한다.")
     @Test
     void validateDeleteForNotExistStation() {
-        assertThatThrownBy(() -> SECTIONS.validateDelete(4L))
+        assertThatThrownBy(() -> SECTIONS.getUpdatedSectionForDeleteIfRequired(4L))
                 .isInstanceOf(DataNotExistException.class)
                 .hasMessage("해당 노선에 등록되지 않은 역입니다.");
     }
@@ -115,7 +110,7 @@ public class SectionsTest {
                 new Section(1L, 1L, 1L, 2L, 4)
         ));
 
-        assertThatThrownBy(() -> sections.validateDelete(2L))
+        assertThatThrownBy(() -> sections.getUpdatedSectionForDeleteIfRequired(2L))
                 .isInstanceOf(SubwayException.class)
                 .hasMessage("구간이 하나인 노선에서 마지막 구간을 삭제할 수 없습니다.");
     }
@@ -123,7 +118,8 @@ public class SectionsTest {
     @DisplayName("구간 삭제시 수정할 구간을 가져온다.")
     @Test
     void getUpdatedSectionForDelete() {
-        Section updatedSection = SECTIONS.getUpdatedSectionForDelete(2L);
+        Section updatedSection = SECTIONS.getUpdatedSectionForDeleteIfRequired(2L)
+                .orElseThrow();
 
         assertThat(updatedSection)
                 .usingRecursiveComparison()

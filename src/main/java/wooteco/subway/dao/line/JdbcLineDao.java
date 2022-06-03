@@ -12,10 +12,11 @@ import wooteco.subway.domain.line.Line;
 @Repository
 public class JdbcLineDao implements LineDao {
 
-    private final RowMapper<Line> lineRowMapper = (resultSet, rowNum) -> new Line(
+    private static final RowMapper<Line> LINE_ROW_MAPPER = (resultSet, rowNum) -> new Line(
             resultSet.getLong("id"),
             resultSet.getString("name"),
-            resultSet.getString("color")
+            resultSet.getString("color"),
+            resultSet.getInt("extra_fare")
     );
 
     private final JdbcTemplate jdbcTemplate;
@@ -26,13 +27,14 @@ public class JdbcLineDao implements LineDao {
 
     @Override
     public long save(Line line) {
-        final String sql = "insert into LINE (name, color) values (?, ?)";
+        final String sql = "insert into LINE (name, color, extra_fare) values (?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement preparedStatement = connection.prepareStatement(sql, new String[]{"id"});
             preparedStatement.setString(1, line.getName());
             preparedStatement.setString(2, line.getColor());
+            preparedStatement.setInt(3, line.getExtraFare());
             return preparedStatement;
         }, keyHolder);
 
@@ -42,25 +44,25 @@ public class JdbcLineDao implements LineDao {
     @Override
     public boolean existLineById(Long id) {
         final String sql = "select exists (select * from LINE where id = ?)";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, id);
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, id));
     }
 
     @Override
     public List<Line> findAll() {
-        final String sql = "select id, name, color from LINE";
-        return jdbcTemplate.query(sql, lineRowMapper);
+        final String sql = "select id, name, color, extra_fare from LINE";
+        return jdbcTemplate.query(sql, LINE_ROW_MAPPER);
     }
 
     @Override
     public Line findById(Long id) {
-        final String sql = "select id, name, color from LINE where id = ?";
-        return jdbcTemplate.queryForObject(sql, lineRowMapper, id);
+        final String sql = "select id, name, color, extra_fare from LINE where id = ?";
+        return jdbcTemplate.queryForObject(sql, LINE_ROW_MAPPER, id);
     }
 
     @Override
     public void update(Line line) {
-        final String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId());
+        final String sql = "update LINE set name = ?, color = ?, extra_fare = ? where id = ?";
+        jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getExtraFare(), line.getId());
     }
 
     @Override

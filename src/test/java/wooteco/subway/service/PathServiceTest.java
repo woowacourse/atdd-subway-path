@@ -11,25 +11,30 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import wooteco.subway.dao.line.JdbcLineDao;
+import wooteco.subway.dao.line.LineDao;
 import wooteco.subway.dao.section.JdbcSectionDao;
 import wooteco.subway.dao.section.SectionDao;
 import wooteco.subway.dao.station.JdbcStationDao;
 import wooteco.subway.dao.station.StationDao;
+import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.station.Station;
-import wooteco.subway.dto.PathResponse;
+import wooteco.subway.dto.path.PathRequest;
+import wooteco.subway.dto.path.PathResponse;
 import wooteco.subway.dto.station.StationResponse;
 import wooteco.subway.exception.DataNotExistException;
 import wooteco.subway.exception.SubwayException;
 
 @JdbcTest
-public class PathServiceTest {
+class PathServiceTest {
 
     private Long stationId1;
     private Long stationId2;
     private Long stationId3;
     private Long stationId4;
     private Long stationId5;
+    private PathRequest pathRequest;
 
     private PathService pathService;
 
@@ -45,22 +50,31 @@ public class PathServiceTest {
         stationId4 = stationDao.save(new Station("강남역"));
         stationId5 = stationDao.save(new Station("교대역"));
 
+        LineDao lineDao = new JdbcLineDao(jdbcTemplate);
+        Long lineId1 = lineDao.save(new Line("일호선", "bg-red-600", 200));
+        Long lineId2 = lineDao.save(new Line("이호선", "bg-green-600", 300));
+
         SectionDao sectionDao = new JdbcSectionDao(jdbcTemplate);
-        sectionDao.save(new Section(1L, 1L, stationId1, stationId2, 2));
-        sectionDao.save(new Section(2L, 1L, stationId2, stationId3, 2));
-        sectionDao.save(new Section(3L, 1L, stationId3, stationId4, 7));
-        sectionDao.save(new Section(4L, 2L, stationId2, stationId5, 3));
-        sectionDao.save(new Section(5L, 2L, stationId5, stationId4, 4));
+        sectionDao.save(new Section(1L, lineId1, stationId1, stationId2, 2));
+        sectionDao.save(new Section(2L, lineId1, stationId2, stationId3, 2));
+        sectionDao.save(new Section(3L, lineId1, stationId3, stationId4, 7));
+        sectionDao.save(new Section(4L, lineId2, stationId2, stationId5, 3));
+        sectionDao.save(new Section(5L, lineId2, stationId5, stationId4, 4));
+
 
         StationService stationService = new StationService(stationDao);
         SectionService sectionService = new SectionService(sectionDao, stationService);
-        pathService = new PathService(stationService, sectionService);
+        LineService lineService = new LineService(lineDao, sectionService);
+        pathService = new PathService(stationService, lineService, sectionService);
     }
 
     @DisplayName("경로를 조회한다.")
     @Test
     void findPath() {
-        PathResponse pathResponse = pathService.findPath(stationId1, stationId4);
+        pathRequest = new PathRequest(stationId1, stationId4, 10);
+
+        PathResponse pathResponse = pathService.findPath(pathRequest);
+
         assertAll(
                 () -> assertThat(pathResponse.getStations())
                         .extracting(StationResponse::getId, StationResponse::getName)
@@ -73,14 +87,16 @@ public class PathServiceTest {
                 () -> assertThat(pathResponse.getDistance())
                         .isEqualTo(9),
                 () -> assertThat(pathResponse.getFare())
-                        .isEqualTo(1250)
+                        .isEqualTo(600)
         );
     }
 
     @DisplayName("출발역과 도착역이 같은 경우 예외가 발생한다.")
     @Test
     void findPathSameTargetAndSource() {
-        assertThatThrownBy(() -> pathService.findPath(stationId1, stationId1))
+        pathRequest = new PathRequest(stationId1, stationId1, 0);
+
+        assertThatThrownBy(() -> pathService.findPath(pathRequest))
                 .isInstanceOf(SubwayException.class)
                 .hasMessage("출발역과 도착역이 같을 수 없습니다.");
     }
@@ -88,7 +104,9 @@ public class PathServiceTest {
     @DisplayName("역이 존재하지 않는 경우 예외가 발생한다.")
     @Test
     void findPathNotExistStation() {
-        assertThatThrownBy(() -> pathService.findPath(100L, stationId1))
+        pathRequest = new PathRequest(100L, stationId1, 0);
+
+        assertThatThrownBy(() -> pathService.findPath(pathRequest))
                 .isInstanceOf(DataNotExistException.class)
                 .hasMessage("존재하지 않는 역입니다.");
     }

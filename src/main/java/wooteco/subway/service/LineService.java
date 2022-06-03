@@ -21,7 +21,7 @@ public class LineService {
     }
 
     public long save(LineRequest lineRequest) {
-        Line line = new Line(lineRequest.getName(), lineRequest.getColor());
+        Line line = new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare());
         Lines lines = findAll();
         lines.validateDuplication(line);
         long lineId = lineDao.save(line);

@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import wooteco.subway.dto.station.StationResponse;
 
 @DisplayName("지하철역 관련 기능")
-public class StationAcceptanceTest extends AcceptanceTest {
+class StationAcceptanceTest extends AcceptanceTest {
 
     private List<Long> getResultLineIds(ExtractableResponse<Response> response) {
         return response.jsonPath().getList(".", StationResponse.class).stream()
