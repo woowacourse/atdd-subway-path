@@ -3,16 +3,16 @@ package wooteco.subway.ui.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Distance;
+import wooteco.subway.domain.section.Distance;
+import wooteco.subway.domain.path.Fare;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
+import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.request.LineRequest;
 import wooteco.subway.dto.response.LineResponse;
@@ -40,27 +40,32 @@ public class LineService {
         Section section = new Section(upStation, downStation, distance);
 
         Line line = new Line(name, color, section);
-        Line createdLine = lineDao.save(line);
+        Fare extraFare = new Fare(lineRequest.getExtraFare());
+        Line createdLine = lineDao.save(line, extraFare);
         sectionDao.save(section, createdLine.getId());
 
-        return LineResponse.from(createdLine);
+        return LineResponse.from(createdLine, extraFare);
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findAll() {
         final List<Line> lines = lineDao.findAll();
         return lines.stream()
-                .map(LineResponse::from)
+                .map(line -> LineResponse.from(line, lineDao.findExtraFareById(line.getId())))
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public LineResponse findById(Long id) {
         final Line line = lineDao.findById(id);
-        return LineResponse.from(line);
+        final Fare extraFare = lineDao.findExtraFareById(id);
+        return LineResponse.from(line, extraFare);
     }
 
     public void modify(Long id, LineRequest lineRequest) {
         final Line line = new Line(id, lineRequest.getName(), lineRequest.getColor());
-        lineDao.update(line);
+        final Fare extraFare = new Fare(lineRequest.getExtraFare());
+        lineDao.update(line, extraFare);
     }
 
     public void delete(Long id) {

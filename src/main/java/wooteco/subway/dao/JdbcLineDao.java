@@ -1,24 +1,23 @@
 package wooteco.subway.dao;
 
-import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import javax.sql.DataSource;
 
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.ReflectionUtils;
 
-import wooteco.subway.domain.Distance;
 import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.path.Fare;
+import wooteco.subway.domain.section.Distance;
+import wooteco.subway.domain.section.Section;
 
 @Repository
 public class JdbcLineDao implements LineDao {
@@ -33,34 +32,45 @@ public class JdbcLineDao implements LineDao {
     }
 
     @Override
-    public Line save(Line line) {
+    public Line save(Line line, Fare extraFare) {
+        Map<String, Object> param = Map.of(
+                "name", line.getName(),
+                "color", line.getColor(),
+                "extra_fare", extraFare.getValue()
+        );
         try {
-            SqlParameterSource param = new BeanPropertySqlParameterSource(line);
             final Long id = jdbcInsert.executeAndReturnKey(param).longValue();
-            return createNewObject(line, id);
+            return new Line(id, line.getName(), line.getColor(), line.getSections());
         } catch (DuplicateKeyException ignored) {
             throw new IllegalStateException("이미 존재하는 노선 이름입니다.");
         }
     }
 
-    private Line createNewObject(Line line, Long id) {
-        final Field field = ReflectionUtils.findField(Line.class, "id");
-        field.setAccessible(true);
-        ReflectionUtils.setField(field, line, id);
-        return line;
-    }
-
     @Override
     public List<Line> findAll() {
-        final String sql = "SELECT * FROM line";
+        final String sql = "SELECT id, name, color FROM line";
         return jdbcTemplate.query(sql, this::mapToLine);
     }
 
     @Override
     public Line findById(Long id) {
-        final String sql = "SELECT * FROM line WHERE id = ?";
+        final String sql = "SELECT id, name, color FROM line WHERE id = ?";
         try {
             return jdbcTemplate.queryForObject(sql, this::mapToLine, id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new IllegalStateException("조회하고자 하는 노선이 존재하지 않습니다.");
+        }
+    }
+
+    @Override
+    public Fare findExtraFareById(Long id) {
+        final String sql = "SELECT extra_fare FROM line WHERE id = ?";
+        try {
+            Integer extraFare = jdbcTemplate.queryForObject(sql, Integer.class, id);
+            if (Objects.isNull(extraFare)) {
+                return new Fare(0);
+            }
+            return new Fare(extraFare);
         } catch (EmptyResultDataAccessException e) {
             throw new IllegalStateException("조회하고자 하는 노선이 존재하지 않습니다.");
         }
@@ -103,9 +113,11 @@ public class JdbcLineDao implements LineDao {
     }
 
     @Override
-    public int update(Line line) {
-        final String sql = "UPDATE line SET name = ?, color = ? WHERE id = ?";
-        final int updatedCount = jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId());
+    public int update(Line line, Fare extraFare) {
+        final String sql = "UPDATE line SET name = ?, color = ?, extra_fare = ? WHERE id = ?";
+        final int updatedCount = jdbcTemplate.update(sql,
+                line.getName(), line.getColor(), extraFare.getValue(),
+                line.getId());
         validateUpdated(updatedCount);
         return updatedCount;
     }

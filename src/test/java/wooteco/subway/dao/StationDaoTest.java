@@ -5,16 +5,13 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
-import javax.sql.DataSource;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import wooteco.subway.domain.Station;
 
@@ -65,6 +62,25 @@ class StationDaoTest {
         final List<Station> stations = dao.findAll();
         // then
         assertThat(stations).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("ID값으로 노선을 조회할 수 있다.")
+    public void findById() {
+        //given
+        dao.save(new Station(STATION_NAME));
+        //when
+        Station station = dao.findById(1L);
+        //then
+        assertThat(station.getName()).isEqualTo(STATION_NAME);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 ID 값으로 노선을 조회하면 예외를 던진다")
+    public void findById_invalidID() {
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(() -> dao.findById(1L))
+                .withMessageContaining("존재하지 않습니다");
     }
 
     @Test

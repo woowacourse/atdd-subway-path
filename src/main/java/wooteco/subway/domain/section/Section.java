@@ -1,7 +1,6 @@
-package wooteco.subway.domain;
+package wooteco.subway.domain.section;
 
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
+import wooteco.subway.domain.Station;
 
 public class Section {
     private final Long id;
@@ -69,11 +68,6 @@ public class Section {
 
     boolean hasDownStation(Station station) {
         return downStation.equals(station);
-    }
-
-    void setEdgeWeightTo(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        DefaultWeightedEdge edge = graph.addEdge(upStation, downStation);
-        distance.consumeValueTo((value) -> graph.setEdgeWeight(edge, value));
     }
 
     public Long getId() {

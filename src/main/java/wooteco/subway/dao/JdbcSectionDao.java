@@ -3,20 +3,20 @@ package wooteco.subway.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import javax.sql.DataSource;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import wooteco.subway.domain.Distance;
-import wooteco.subway.domain.Section;
-import wooteco.subway.domain.Sections;
+import wooteco.subway.domain.section.Distance;
+import wooteco.subway.domain.path.Fare;
+import wooteco.subway.domain.section.Section;
 import wooteco.subway.domain.Station;
 
 @Repository
@@ -36,21 +36,10 @@ public class JdbcSectionDao implements SectionDao {
         save(section, lineId, 0);
     }
 
-    private void save(Section section, Long lineId, int index) {
-        Map<String, Object> param = new HashMap<>();
-        param.put("line_id", lineId);
-        param.put("up_station_id", section.getUpStationId());
-        param.put("down_station_id", section.getDownStationId());
-        param.put("distance", section.getDistance());
-        param.put("index_num", index);
-        jdbcInsert.execute(param);
-    }
-
     @Override
-    public void save(Sections sections, Long lineId) {
-        LinkedList<Section> values = sections.getSections();
-        for (int i = 0; i < values.size(); i++) {
-            Section section = values.get(i);
+    public void save(List<Section> sections, Long lineId) {
+        for (int i = 0; i < sections.size(); i++) {
+            Section section = sections.get(i);
             update(section, lineId, i);
         }
     }
@@ -66,6 +55,16 @@ public class JdbcSectionDao implements SectionDao {
         jdbcTemplate.update(sql,
                 section.getUpStationId(), section.getDownStationId(), section.getDistance(), index,
                 section.getId());
+    }
+
+    private void save(Section section, Long lineId, int index) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("line_id", lineId);
+        param.put("up_station_id", section.getUpStationId());
+        param.put("down_station_id", section.getDownStationId());
+        param.put("distance", section.getDistance());
+        param.put("index_num", index);
+        jdbcInsert.executeAndReturnKey(param);
     }
 
     @Override
@@ -90,6 +89,21 @@ public class JdbcSectionDao implements SectionDao {
                 + "JOIN station AS us ON sec.up_station_id = us.id "
                 + "JOIN station AS ds ON sec.down_station_id = ds.id ";
         return jdbcTemplate.query(sql, (resultSet, rowNum) -> mapToSection(resultSet));
+    }
+
+    @Override
+    public Fare findExtraFareById(Long id) {
+        String sql = "SELECT "
+                + "l.extra_fare "
+                + "FROM section AS sec "
+                + "JOIN line AS l ON sec.line_id = l.id "
+                + "WHERE sec.id = ?";
+        try {
+            Integer extraFare = jdbcTemplate.queryForObject(sql, Integer.class, id);
+            return new Fare(extraFare);
+        } catch (EmptyResultDataAccessException e) {
+            throw new IllegalStateException("조회하고자 하는 구간이 존재하지 않습니다.");
+        }
     }
 
     private Section mapToSection(ResultSet resultSet) throws SQLException {

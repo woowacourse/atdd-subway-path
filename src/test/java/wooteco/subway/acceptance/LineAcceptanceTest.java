@@ -35,10 +35,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Map<String, String> params = mapParams("신분당선", "bg-red-600");
         // when
         final SimpleResponse response = SimpleRestAssured.post("/lines", params);
+        LineResponse lineResponse = response.toObject(LineResponse.class);
         // then
         Assertions.assertAll(
                 () -> response.assertStatus(HttpStatus.CREATED),
-                () -> assertThat(response.getHeader("Location")).isNotBlank()
+                () -> assertThat(response.getHeader("Location")).isNotBlank(),
+                () -> assertThat(lineResponse.getExtraFare()).isEqualTo(1000)
         );
     }
 
@@ -52,7 +54,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // then
         Assertions.assertAll(
                 () -> response.assertStatus(HttpStatus.BAD_REQUEST),
-                () -> assertThat(response.containsExceptionMessage("필수 입력")).isTrue()
+                () -> assertThat(response.containsExceptionMessage("필수")).isTrue()
         );
     }
 
@@ -111,7 +113,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // then
         Assertions.assertAll(
                 () -> foundResponse.assertStatus(HttpStatus.OK),
-                () -> assertThat(foundLineResponse.getId()).isEqualTo(createdLineResponse.getId())
+                () -> assertThat(foundLineResponse.getId()).isEqualTo(createdLineResponse.getId()),
+                () -> assertThat(foundLineResponse.getExtraFare()).isEqualTo(createdLineResponse.getExtraFare())
         );
     }
 
@@ -137,7 +140,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         Map<String, String> params = mapParams("신분당선", "bg-red-600");
         SimpleResponse createdResponse = SimpleRestAssured.post("/lines", params);
         // when
-        final Map<String, String> modificationParam = mapParams("구분당선", "bg-red-800");
+        final Map<String, String> modificationParam = mapParams("구분당선", "bg-red-800", 700);
         final String uri = createdResponse.getHeader("Location");
         final SimpleResponse modifiedResponse = SimpleRestAssured.put(uri, modificationParam);
         // then
@@ -194,7 +197,19 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 "color", color,
                 "upStationId", "1",
                 "downStationId", "2",
-                "distance", "10"
+                "distance", "10",
+                "extraFare", "1000"
+        );
+    }
+
+    private Map<String, String> mapParams(String name, String color, int extraFare) {
+        return Map.of(
+                "name", name,
+                "color", color,
+                "upStationId", "1",
+                "downStationId", "2",
+                "distance", "10",
+                "extraFare", String.valueOf(extraFare)
         );
     }
 }

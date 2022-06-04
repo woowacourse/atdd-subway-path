@@ -1,16 +1,15 @@
 package wooteco.subway.dao;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import javax.sql.DataSource;
 
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.ReflectionUtils;
 
 import wooteco.subway.domain.Station;
 
@@ -32,22 +31,15 @@ public class JdbcStationDao implements StationDao {
         SqlParameterSource param = new BeanPropertySqlParameterSource(station);
         try {
             final Long id = jdbcInsert.executeAndReturnKey(param).longValue();
-            return createNewObject(station, id);
+            return new Station(id, station.getName());
         } catch (DuplicateKeyException ignored) {
             throw new IllegalStateException("이미 존재하는 역 이름입니다.");
         }
     }
 
-    private Station createNewObject(Station station, Long id) {
-        Field field = ReflectionUtils.findField(Station.class, "id");
-        field.setAccessible(true);
-        ReflectionUtils.setField(field, station, id);
-        return station;
-    }
-
     @Override
     public List<Station> findAll() {
-        final String sql = "SELECT * FROM station";
+        final String sql = "SELECT id, name FROM station";
         return jdbcTemplate.query(sql, (resultSet, rowNum) -> new Station(
                 resultSet.getLong("id"),
                 resultSet.getString("name")
@@ -56,11 +48,15 @@ public class JdbcStationDao implements StationDao {
 
     @Override
     public Station findById(Long id) {
-        final String sql = "SELECT * FROM station WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, (resultSet, rowNum) -> new Station(
-                resultSet.getLong("id"),
-                resultSet.getString("name")
-        ), id);
+        final String sql = "SELECT id, name FROM station WHERE id = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, (resultSet, rowNum) -> new Station(
+                    resultSet.getLong("id"),
+                    resultSet.getString("name")
+            ), id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new IllegalStateException("조회하고자 하는 역이 존재하지 않습니다.");
+        }
     }
 
     @Override
