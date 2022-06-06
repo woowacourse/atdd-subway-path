@@ -12,7 +12,7 @@ import wooteco.subway.dto.response.StationResponse;
 
 @Service
 public class StationService {
-    private StationDao stationDao;
+    private final StationDao stationDao;
 
     public StationService(StationDao stationDao) {
         this.stationDao = stationDao;

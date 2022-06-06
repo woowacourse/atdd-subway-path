@@ -10,11 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.dto.request.LineRequest;
-import wooteco.subway.dto.response.LineResponse;
+import wooteco.subway.domain.line.Line;
+import wooteco.subway.dto.request.LineCreateRequest;
+import wooteco.subway.dto.response.LineCreateResponse;
 
 @Service
 public class LineService {
@@ -29,46 +29,48 @@ public class LineService {
     }
 
     @Transactional
-    public LineResponse create(LineRequest lineRequest) {
-        String name = lineRequest.getName();
-        String color = lineRequest.getColor();
-        Section section = getSection(lineRequest);
-        Line line = new Line(name, color, section);
+    public LineCreateResponse create(LineCreateRequest lineCreateRequest) {
+        String name = lineCreateRequest.getName();
+        String color = lineCreateRequest.getColor();
+        Section section = getSection(lineCreateRequest);
+        int extraFare = lineCreateRequest.getExtraFare();
+        Line line = new Line(name, color, extraFare, section);
         return save(section, line);
     }
 
-    private Section getSection(LineRequest lineRequest) {
-        Station upStation = stationDao.findById(lineRequest.getUpStationId())
-                .orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 역이 존재하지 않습니다."));
-        Station downStation = stationDao.findById(lineRequest.getDownStationId())
-                .orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 역이 존재하지 않습니다."));
-        return new Section(upStation, downStation, lineRequest.getDistance());
+    private Section getSection(LineCreateRequest lineCreateRequest) {
+        Station upStation = stationDao.findById(lineCreateRequest.getUpStationId())
+                .orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 상행역이 존재하지 않습니다."));
+        Station downStation = stationDao.findById(lineCreateRequest.getDownStationId())
+                .orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 하행역이 존재하지 않습니다."));
+        return new Section(upStation, downStation, lineCreateRequest.getDistance());
     }
 
-    private LineResponse save(Section section, Line line) {
+    private LineCreateResponse save(Section section, Line line) {
         try {
             Line createdLine = lineDao.save(line);
             sectionDao.save(section, createdLine.getId());
-            return new LineResponse(createdLine);
+            return new LineCreateResponse(createdLine);
         } catch (DuplicateKeyException e) {
             throw new IllegalArgumentException("이미 존재하는 노선 이름입니다.");
         }
     }
 
-    public List<LineResponse> findAll() {
+    public List<LineCreateResponse> findAll() {
         List<Line> lines = lineDao.findAll();
         return lines.stream()
-                .map(LineResponse::new)
+                .map(LineCreateResponse::new)
                 .collect(Collectors.toList());
     }
 
-    public LineResponse findById(Long id) {
+    public LineCreateResponse findById(Long id) {
         Line line = lineDao.findById(id).orElseThrow(() -> new IllegalArgumentException("조회하고자 하는 노선이 존재하지 않습니다."));
-        return new LineResponse(line);
+        return new LineCreateResponse(line);
     }
 
-    public void modify(Long id, LineRequest lineRequest) {
-        Line line = new Line(id, lineRequest.getName(), lineRequest.getColor());
+    public void modify(Long id, LineCreateRequest lineCreateRequest) {
+        Line line = new Line(id, lineCreateRequest.getName(), lineCreateRequest.getColor(),
+                lineCreateRequest.getExtraFare());
         lineDao.update(line);
     }
 

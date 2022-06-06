@@ -1,3 +1,6 @@
+<details>
+<summary>1단계 페어 규칙 및 목표</summary>
+
 ## 페어 규칙
 
 - 방역수칙 준수
@@ -37,11 +40,14 @@
 - custom exception 써보기!
 - 해당 로직이 해당 계층에 어울리는지 한번 더 고민해보기
 
----
+</details>
+
+<details>
+<summary>1단계 기능 목록</summary>
 
 ### 기능 목록
 
-경로 조회 (**GET** /paths?source={id}&target={id}&age={age} → 200 OK)
+경로 조회 (**GET** /paths?source={id}&target={id}&discountFareCalculator={discountFareCalculator} → 200 OK)
 
 - [X] 최단 경로를 조회한다
     - [X] 모든 노선의 구간에 대해 조회한다
@@ -72,14 +78,107 @@
     - [X] 불필요한 중복이 없는지 확인
     - [X] 지역 변수 final 삭제
 
+</details>
+
+<details>
+<summary>1단계 첫번째 리뷰</summary>
+
 ### 스티치의 1단계 첫번째 리뷰
 
 - [X] Dao 에 @Repository 대신 @Component 사용하기
 - [X] RowMapper를 메서드 또는 상수로 관리하기
-- [ ] LineDao 의 createNewObject() 사용한 이유 알아보고, 새로운 객체를 반환하도록 수정하기
+- [X] LineDao 의 createNewObject() 사용한 이유 알아보고, 새로운 객체를 반환하도록 수정하기
 - [X] NamedParameterJdbcTemplate 으로 수정
 - [X] FareCalculator 가 필드로 distance 를 갖도록 수정
 - [x] 매직넘버 상수로 관리하기
 - [X] @RequestParam @ModelAttribute 로 묶어보기
 - [X] LineService 의 create 메서드를 기능 단위로 메서드 분리해보기
 - [X] StationService 의 try-catch 수정해보기
+
+</details>
+
+<details>
+<summary>1단계 두번째 리뷰</summary>
+
+### 스티치의 1단계 두번째 리뷰
+
+- [X] 요금을 관리하는 객체에서 요금을 필드로 갖게하기
+- [X] FareCalculator 의 생성자와 필드 위치 수정하기
+- [X] FareCalculator 의 메서드 명이 메서드의 의도를 드러내도록 수정하기
+
+</details>
+
+<details>
+<summary>2단계 기능 목록</summary>
+
+### 리팩터링
+
+- [X] test에서 map 대신 dto 를 사용하도록 수정
+
+### 기능 목록
+
+- 추가된 요금 정책
+    - [X] Line 테이블에 extraFare int 컬럼 추가
+    - [X] 추가 요금이 있는 노선을 이용할 경우 측정된 요금에 추가 요금을 추가
+    - [X] 추가 요금이 있는 노선을 환승해 이용할 경우 가장 높은 추가 요금을 추가
+
+- 연령별 요금 할인
+    - [X] 청소년 요금
+        - 13 <= discountFareCalculator < 19
+        - 350원을 공제한 금액의 20% 할인
+    - [X] 어린이 요금
+        - 6 <= discountFareCalculator < 13
+        - 350원을 공제한 금액의 50% 할인
+    - [X] 유아 요금
+        - discountFareCalculator < 6
+        - 0원
+
+### 도메인 설계
+
+- Line
+    - extraFare 를 필드로 만들기
+- Fare
+    - extraFare 가 있으면 추가해서 반환
+    - age 를 인자로 같이 받기
+        - 청소년 / 어린이 / 유아 의 경우 할인 계산해서 반환
+- Name
+    - 이름 원시값 포장
+    - [X] 이름이 null 이면 예외 반환
+    - [X] 이름에 공백이 포함되면 예외 반환
+    - [X] 이름에 특수문자가 포함되면 예외 반환
+- Color
+    - 색상 원시값 포장
+    - [X] 색상이 null 이거나 빈 값이면 예외 반환
+
+</details>
+
+<details>
+<summary>2단계 첫번째 리뷰</summary>
+
+### 네오의 2단계 첫번째 리뷰
+
+- [X] Color 의 상수와 필드 사이 1줄 띄우기
+- [ ] Color 를 enum 으로 만들어보기
+  - Color 가 너무 다양해서 실패.. ~~시러요~~
+- [X] DiscountFareCalculator enum 을 설명이 아닌 도메인에 가까운 이름으로 수정
+- [X] Fare 의 상수를 `50km, 10km` 가 아닌 `장거리, 단거리` 와 같은 이름으로 수정
+- [X] Name 의 Pattern 은 비싼 자원이므로 재사용 하기
+- [X] 알고리즘 or 라이브러리와 같이 변경이 될 수 있는 부분은 인터페이스를 사용
+- [X] Lines 도메인 만들기
+- [X] PathCalculator 자료형이 포함된 변수명 수정
+- [X] 에러 메세지를 더 친절하게 작성 (LineService)
+- [X] 900 으로 하드코딩 된 부분 수정
+- [X] PathService 의 DB O(n)번 접근하는 비용 문제 해결
+- [X] sql 파일 자동 정렬로 인한 가독성 문제 해결
+- test
+    - [X] id 를 직접 사용하지 않으며 테스트를 할 수 있도록 수정
+    - [X] 테스트에만 사용되는 deleteAll 메서드를 사용하지 않는 구조로 수정
+- JgraphtTest
+    - [X] assertThat 이 반복되는 곳은 assertAll 사용하기
+    - [X] test 명을 명시적으로 수정, DisplayName 사용
+    - [X] 변수명을 명시적으로 수정
+- AcceptanceTest
+    - [X] test fixture 만들기
+    - [X] 1, 2와 같은 의미를 나타내지 못하는 변수명 구분 수정
+
+</details>

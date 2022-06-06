@@ -1,6 +1,5 @@
 package wooteco.subway.dao;
 
-import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -15,11 +14,10 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ReflectionUtils;
 
-import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.line.Line;
 
 @Component
 public class LineDao {
@@ -36,14 +34,7 @@ public class LineDao {
     public Line save(Line line) {
         SqlParameterSource param = new BeanPropertySqlParameterSource(line);
         Long id = jdbcInsert.executeAndReturnKey(param).longValue();
-        return createNewObject(line, id);
-    }
-
-    private Line createNewObject(Line line, Long id) {
-        Field field = ReflectionUtils.findField(Line.class, "id");
-        field.setAccessible(true);
-        ReflectionUtils.setField(field, line, id);
-        return line;
+        return new Line(id, line);
     }
 
     private Line mapToLine(ResultSet resultSet) throws SQLException {
@@ -51,12 +42,19 @@ public class LineDao {
                 resultSet.getLong("id"),
                 resultSet.getString("name"),
                 resultSet.getString("color"),
+                resultSet.getInt("extra_fare"),
                 findSectionsById(resultSet.getLong("id")));
     }
 
     public List<Line> findAll() {
         String sql = "SELECT * FROM line";
         return jdbcTemplate.query(sql, (resultSet, rowNum) -> mapToLine(resultSet));
+    }
+
+    public List<Line> findByIds(List<Long> ids) {
+        String sql = "SELECT * FROM line WHERE id IN (:ids)";
+        SqlParameterSource parameterSource = new MapSqlParameterSource("ids", ids);
+        return jdbcTemplate.query(sql, parameterSource, (resultSet, rowNum) -> mapToLine(resultSet));
     }
 
     public Optional<Line> findById(Long id) {

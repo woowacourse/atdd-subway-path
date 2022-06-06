@@ -13,8 +13,12 @@ import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import wooteco.subway.acceptance.fixture.SimpleRestAssured;
+import wooteco.subway.acceptance.fixture.SimpleResponse;
+import wooteco.subway.acceptance.fixture.SubwayFixture;
+import wooteco.subway.dto.request.StationRequest;
+import wooteco.subway.dto.response.LineCreateResponse;
 import wooteco.subway.dto.response.PathResponse;
+import wooteco.subway.dto.response.StationResponse;
 
 public class PathAcceptanceTest extends AcceptanceTest {
 
@@ -22,27 +26,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("출발역과 도착역으로 최단 경로를 조회한다.")
     public void getPath() {
         // given
-        Map<String, String> stationParams1 = Map.of("name", "강남역");
-        Map<String, String> stationParams2 = Map.of("name", "역삼역");
-        Map<String, String> stationParams3 = Map.of("name", "선릉역");
-        SimpleRestAssured.post("/stations", stationParams1);
-        SimpleRestAssured.post("/stations", stationParams2);
-        SimpleRestAssured.post("/stations", stationParams3);
+        StationResponse 강남역 = SubwayFixture.createStation(new StationRequest("강남역")).toObject(StationResponse.class);
+        StationResponse 역삼역 = SubwayFixture.createStation(new StationRequest("역삼역")).toObject(StationResponse.class);
+        StationResponse 선릉역 = SubwayFixture.createStation(new StationRequest("선릉역")).toObject(StationResponse.class);
 
-        Map<String, String> lineParams = Map.of(
-                "name", "신분당선",
-                "color", "bg-red-600",
-                "upStationId", "1",
-                "downStationId", "2",
-                "distance", "10"
-        );
-        SimpleRestAssured.post("/lines", lineParams);
+        SimpleResponse line = SubwayFixture.createLine(강남역, 역삼역);
 
-        Map<String, String> sectionParams =
-                Map.of("upStationId", "2",
-                        "downStationId", "3",
-                        "distance", "7");
-        SimpleRestAssured.post("/lines/1/sections", sectionParams);
+        SubwayFixture.createSection(역삼역, 선릉역, line.toObject(LineCreateResponse.class).getId());
 
         Map<String, Integer> params = Map.of("source", 1, "target", 3, "age", 15);
 
@@ -59,8 +49,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(17),
                 () -> assertThat(pathResponse.getStationResponses()).hasSize(3),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(1450)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1950)
         );
     }
-
 }

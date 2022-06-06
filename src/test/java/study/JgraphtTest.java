@@ -8,8 +8,12 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import wooteco.subway.domain.Station;
+import wooteco.subway.domain.path.ShortestPathEdge;
 
 public class JgraphtTest {
 
@@ -70,5 +74,32 @@ public class JgraphtTest {
         double distance = path.getWeight();
 
         assertThat(distance).isEqualTo(4);
+    }
+
+    @Test
+    @DisplayName("커스텀한 PathEdge 를 사용해 가중치를 구할 수 있다.")
+    void CustomPathEdgeTest() {
+        WeightedMultigraph<Station, ShortestPathEdge> graph = new WeightedMultigraph<>(ShortestPathEdge.class);
+
+        Station 강남역 = new Station(1L, "강남역");
+        Station 역삼역 = new Station(2L, "역삼역");
+        Station 선릉역 = new Station(3L, "선릉역");
+        graph.addVertex(강남역);
+        graph.addVertex(역삼역);
+        graph.addVertex(선릉역);
+
+        graph.addEdge(강남역, 역삼역, new ShortestPathEdge(1L, 10));
+        graph.addEdge(역삼역, 선릉역, new ShortestPathEdge(2L, 20));
+
+        DijkstraShortestPath<Station, ShortestPathEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        GraphPath<Station, ShortestPathEdge> path = dijkstraShortestPath.getPath(강남역, 선릉역);
+        List<ShortestPathEdge> edges = path.getEdgeList();
+
+        Assertions.assertAll(
+                () -> assertThat(edges).hasSize(2),
+                () -> assertThat(edges.get(0).getLineId()).isEqualTo(1L),
+                () -> assertThat(edges.get(1).getLineId()).isEqualTo(2L),
+                () -> assertThat(path.getWeight()).isEqualTo(30)
+        );
     }
 }

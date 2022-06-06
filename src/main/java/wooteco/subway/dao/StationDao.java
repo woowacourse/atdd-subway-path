@@ -1,6 +1,5 @@
 package wooteco.subway.dao;
 
-import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -15,7 +14,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ReflectionUtils;
 
 import wooteco.subway.domain.Station;
 
@@ -35,14 +33,7 @@ public class StationDao {
     public Station save(Station station) {
         SqlParameterSource param = new BeanPropertySqlParameterSource(station);
         Long id = jdbcInsert.executeAndReturnKey(param).longValue();
-        return createNewObject(station, id);
-    }
-
-    private Station createNewObject(Station station, Long id) {
-        Field field = ReflectionUtils.findField(Station.class, "id");
-        field.setAccessible(true);
-        ReflectionUtils.setField(field, station, id);
-        return station;
+        return new Station(id, station.getName());
     }
 
     private Station mapToStation(ResultSet resultSet) throws SQLException {

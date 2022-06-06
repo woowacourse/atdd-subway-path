@@ -2,17 +2,20 @@ package wooteco.subway.dao;
 
 import static org.assertj.core.api.Assertions.*;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
 
-import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
+import wooteco.subway.domain.line.Line;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @JdbcTest
 @Import({SectionDao.class, StationDao.class, LineDao.class})
 public class SectionDaoTest {
@@ -35,8 +38,8 @@ public class SectionDaoTest {
         stationDao.save(station);
 
         Section section = new Section(upTermination, downTermination, 10);
-        line = new Line("신분당선", "bg-red-600", section);
-        lineDao.save(line);
+        line = new Line("신분당선", "bg-red-600", 900, section);
+        line = lineDao.save(line);
     }
 
     @DisplayName("기존 노선에 구간을 추가할 수 있다")
@@ -71,7 +74,7 @@ public class SectionDaoTest {
     @DisplayName("삭제할 구간이 없을 경우 예외가 발생한다")
     @Test
     void delete_no_data() {
-        Section section = new Section(1L, upTermination, downTermination, 10);
+        Section section = new Section(upTermination, downTermination, 10);
         assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(() -> sectionDao.deleteById(section))
                 .withMessageContaining("존재하지 않습니다");

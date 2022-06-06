@@ -1,13 +1,15 @@
 package wooteco.subway.acceptance;
 
-import java.util.Map;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import wooteco.subway.acceptance.fixture.SimpleResponse;
 import wooteco.subway.acceptance.fixture.SimpleRestAssured;
+import wooteco.subway.acceptance.fixture.SubwayFixture;
+import wooteco.subway.dto.request.StationRequest;
+import wooteco.subway.dto.response.LineCreateResponse;
+import wooteco.subway.dto.response.StationResponse;
 
 public class SectionAcceptanceTest extends AcceptanceTest {
 
@@ -15,28 +17,14 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("구간을 생성한다.")
     public void createSection() {
         // given
-        Map<String, String> stationParams1 = Map.of("name", "강남역");
-        Map<String, String> stationParams2 = Map.of("name", "역삼역");
-        Map<String, String> stationParams3 = Map.of("name", "선릉역");
-        SimpleRestAssured.post("/stations", stationParams1);
-        SimpleRestAssured.post("/stations", stationParams2);
-        SimpleRestAssured.post("/stations", stationParams3);
+        StationResponse 강남역 = SubwayFixture.createStation(new StationRequest("강남역")).toObject(StationResponse.class);
+        StationResponse 역삼역 = SubwayFixture.createStation(new StationRequest("역삼역")).toObject(StationResponse.class);
+        StationResponse 선릉역 = SubwayFixture.createStation(new StationRequest("선릉역")).toObject(StationResponse.class);
 
-        Map<String, String> lineParams = Map.of(
-                "name", "신분당선",
-                "color", "bg-red-600",
-                "upStationId", "1",
-                "downStationId", "2",
-                "distance", "10"
-        );
-        SimpleRestAssured.post("/lines", lineParams);
+        SimpleResponse line = SubwayFixture.createLine(강남역, 역삼역);
 
-        Map<String, String> sectionParams =
-                Map.of("upStationId", "2",
-                        "downStationId", "3",
-                        "distance", "7");
-        // when
-        SimpleResponse response = SimpleRestAssured.post("/lines/1/sections", sectionParams);
+        SimpleResponse response = SubwayFixture.createSection(역삼역, 선릉역,
+                line.toObject(LineCreateResponse.class).getId());
         // then
         response.assertStatus(HttpStatus.OK);
     }
@@ -45,29 +33,16 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("구간을 삭제한다.")
     public void deleteSection() {
         // given
-        Map<String, String> stationParams1 = Map.of("name", "강남역");
-        Map<String, String> stationParams2 = Map.of("name", "역삼역");
-        Map<String, String> stationParams3 = Map.of("name", "선릉역");
-        SimpleRestAssured.post("/stations", stationParams1);
-        SimpleRestAssured.post("/stations", stationParams2);
-        SimpleRestAssured.post("/stations", stationParams3);
+        StationResponse 강남역 = SubwayFixture.createStation(new StationRequest("강남역")).toObject(StationResponse.class);
+        StationResponse 역삼역 = SubwayFixture.createStation(new StationRequest("역삼역")).toObject(StationResponse.class);
+        StationResponse 선릉역 = SubwayFixture.createStation(new StationRequest("선릉역")).toObject(StationResponse.class);
 
-        Map<String, String> lineParams = Map.of(
-                "name", "신분당선",
-                "color", "bg-red-600",
-                "upStationId", "1",
-                "downStationId", "2",
-                "distance", "10"
-        );
-        SimpleRestAssured.post("/lines", lineParams);
+        LineCreateResponse line = SubwayFixture.createLine(강남역, 역삼역).toObject(LineCreateResponse.class);
 
-        Map<String, String> sectionParams =
-                Map.of("upStationId", "2",
-                        "downStationId", "3",
-                        "distance", "7");
-        SimpleResponse response = SimpleRestAssured.post("/lines/1/sections", sectionParams);
+        SubwayFixture.createSection(역삼역, 선릉역, line.getId());
         // when
-        SimpleRestAssured.delete("/lines/1/sections?stationId=3");
+        SimpleResponse response = SimpleRestAssured.delete(
+                "/lines/" + line.getId() + "/sections?stationId=" + 선릉역.getId());
         // then
         response.assertStatus(HttpStatus.OK);
     }
