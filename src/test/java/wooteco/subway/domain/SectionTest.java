@@ -1,106 +1,115 @@
 package wooteco.subway.domain;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
-public class SectionTest {
-    private final Section section = new Section(1L, 2L, 30);
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
+class SectionTest {
+
+    @DisplayName("상행과 하행의 id값이 같은 경우 에러를 발생시킨다")
     @Test
-    @DisplayName("상행역과 하행역이 같을 경우 예외를 발생시킨다.")
-    void sameUpAndDown() {
-        assertThatThrownBy(() -> new Section(1L, 1L, 0))
+    void validateErrorBySameStationId() {
+        Station upStation = new Station(1L, "상행");
+
+        assertThatThrownBy(() -> new Section(1L, upStation, upStation, 10))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("상행역과 하행역은 같을 수 없습니다.");
+                .hasMessage("상행과 하행의 지하철 역이 같을 수 없습니다.");
     }
 
+    @DisplayName("거리가 0이하인 경우 에러를 발생시킨다.")
     @Test
-    @DisplayName("거리가 0 미만일 경우 예외를 발생시킨다.")
-    void validateDistance() {
-        assertThatThrownBy(()->new Section(1L, 3L, 0))
+    void validateErrorByNonPositiveDistance() {
+        Station upStation = new Station(1L, "상행");
+        Station downStation = new Station(2L, "하행");
+
+        assertThatThrownBy(() -> new Section(1L, upStation, downStation, -1))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("구간 거리는 0 이하일 수 없습니다.");
+                .hasMessage("거리는 양수여야 합니다.");
     }
 
-    @ParameterizedTest
-    @DisplayName("해당 구간에 특정 구간의 상행역이 존재하는지 알려준다.")
-    @CsvSource({"1, 3, 5, true", "1, 2, 30, true",
-            "3, 2, 25, false", "3, 5, 45, false"})
-    void hasSameUpStation(Long upStationId, Long downStationId, int distance, boolean expected) {
-        final Section given = new Section(upStationId, downStationId, distance);
-
-        assertThat(section.hasSameUpStation(given)).isEqualTo(expected);
-    }
-
-    @ParameterizedTest
-    @DisplayName("해당 구간에 특정 구간의 하행역이 존재하는지 알려준다.")
-    @CsvSource({"1, 3, 5, false", "1, 2, 30, true",
-            "3, 2, 25, true", "3, 5, 45, false"})
-    void hasStation(Long upStationId, Long downStationId, int distance, boolean expected) {
-        final Section given = new Section(upStationId, downStationId, distance);
-
-        assertThat(section.hasSameDownStation(given)).isEqualTo(expected);
-    }
-
+    @DisplayName("입력한 Section을 기준으로 기존 Section을 나눈다 - 상행 지하철 역이 겹치는 경우")
     @Test
-    @DisplayName("특정 구간과 같은 상행역을 가지는지 비교한다.")
-    void saveSameUpStation() {
-        final Section given = new Section(1L, 3L, 5);
+    void splitSectionSameUpStation() {
+        //given
+        Station 선릉 = new Station(1L, "선릉");
+        Station 잠실 = new Station(2L, "잠실");
+        Station 잠실나루 = new Station(3L, "잠실나루");
 
-        assertThat(section.hasSameUpStation(given)).isTrue();
+        Section 선릉_잠실 = new Section(선릉, 잠실, 10);
+        Section 선릉_잠실나루 = new Section(선릉, 잠실나루, 4);
+        Section 잠실나루_잠실 = new Section(잠실나루, 잠실, 6);
+
+        //when
+        Section splitSection = 선릉_잠실.splitSection(선릉_잠실나루);
+
+        //then
+        assertAll(
+                () -> assertThat(splitSection.getDistance()).isEqualTo(잠실나루_잠실.getDistance()),
+                () -> assertThat(splitSection.isSameUpStation(잠실나루_잠실)).isTrue(),
+                () -> assertThat(splitSection.isSameDownStation(잠실나루_잠실)).isTrue()
+        );
     }
 
+    @DisplayName("입력한 Section을 기준으로 기존 Section을 나눈다 - 하행 지하철 역이 겹치는 경우")
     @Test
-    @DisplayName("특정 구간과 같은 하행역을 가지는지 비교한다.")
-    void hasSameDownStation() {
-        final Section given = new Section(3L, 2L, 25);
+    void splitSectionSameDownStation() {
+        //given
+        Station 선릉 = new Station(1L, "선릉");
+        Station 잠실 = new Station(3L, "잠실");
+        Station 잠실나루 = new Station(2L, "잠실나루");
 
-        assertThat(section.hasSameDownStation(given)).isTrue();
+        Section 선릉_잠실나루 = new Section(선릉, 잠실나루, 10);
+        Section 잠실_잠실나루 = new Section(잠실, 잠실나루, 4);
+        Section 선릉_잠실 = new Section(선릉, 잠실, 6);
+
+        //when
+        Section splitSection = 선릉_잠실나루.splitSection(잠실_잠실나루);
+
+        //then
+        assertAll(
+                () -> assertThat(splitSection.getDistance()).isEqualTo(선릉_잠실.getDistance()),
+                () -> assertThat(splitSection.isSameUpStation(선릉_잠실)).isTrue(),
+                () -> assertThat(splitSection.isSameDownStation(선릉_잠실)).isTrue()
+        );
     }
 
-    @ParameterizedTest
-    @DisplayName("특정 구간과의 길이를 비교한다.")
-    @CsvSource({"1, 3, 5, true", "1, 2, 30, false", "1, 5, 50, false"})
-    void isLongerThan(Long upStationId, Long downStationId, int distance, boolean expected) {
-        final Section given = new Section(upStationId, downStationId, distance);
-
-        assertThat(section.isLongerThan(given)).isEqualTo(expected);
-    }
-
+    @DisplayName("나누려는 Section의 distance가 기존 값보다 크거나 같은 경우 에러를 발생시킨다.")
     @Test
-    @DisplayName("상행역이 특정 구간의 하행역과 같은지 비교한다.")
-    void hasSameUpStationWithOtherDownStation() {
-        final Section given = new Section(4L, 1L, 20);
+    void splitSectionErrorByLongerDistance() {
+        Station 선릉 = new Station(1L, "선릉");
+        Station 잠실 = new Station(3L, "잠실");
+        Station 잠실나루 = new Station(2L, "잠실나루");
 
-        assertThat(section.hasSameUpStationWithOtherDownStation(given)).isTrue();
+        Section 선릉_잠실나루 = new Section(선릉, 잠실나루, 10);
+        Section 선릉_잠실 = new Section(선릉, 잠실, 11);
+
+        assertThatThrownBy(() -> 선릉_잠실나루.splitSection(선릉_잠실))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("기존 역 사이보다 긴 길이를 등록할 수 없습니다.");
     }
 
+    @DisplayName("입력된 Section과 upStationId값이 같으면 true를 반환한다.")
     @Test
-    @DisplayName("하행역이 특정 구간의 상행역과 같은지 비교한다.")
-    void hasSameDownStationWithOtherUpStation() {
-        final Section given = new Section(2L, 5L, 20);
+    void isSameUpStationId() {
+        Station 선릉 = new Station(1L, "선릉");
+        Station 잠실 = new Station(2L, "잠실");
 
-        assertThat(section.hasSameDownStationWithOtherUpStation(given)).isTrue();
+        Section 선릉_잠실 = new Section(선릉, 잠실, 10);
+
+        assertThat(선릉_잠실.isSameUpStationId(1L)).isTrue();
     }
 
+    @DisplayName("입력된 Section과 downStationId값이 같으면 true를 반환한다.")
     @Test
-    @DisplayName("특정 구간과 완전히 동일한 역을 가지는지 비교한다.")
-    void isSameStations() {
-        final Section given = new Section(1L, 2L, 30);
+    void isSameDownStationIdById() {
+        Station 선릉 = new Station(1L, "선릉");
+        Station 잠실 = new Station(2L, "잠실");
 
-        assertThat(section.isSameStations(given)).isTrue();
-    }
+        Section 선릉_잠실 = new Section(선릉, 잠실, 10);
 
-    @Test
-    @DisplayName("특정 구간과 겹치는 역이 하나도 없는지 비교한다.")
-    void isNotSameAnyStation() {
-        final Section given = new Section(3L, 6L, 40);
-
-        assertThat(section.isNotSameAnyStation(given)).isTrue();
+        assertThat(선릉_잠실.isSameDownStationId(2L)).isTrue();
     }
 }

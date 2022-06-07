@@ -1,143 +1,174 @@
 package wooteco.subway.domain;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
-public class SectionsTest {
-    private final Section section1 = new Section(1L, 2L, 30);
-    private final Section section2 = new Section(2L, 3L, 20);
-    private final Section section3 = new Section(3L, 4L, 5);
-    private Sections sections;
+import java.util.List;
+import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-    @BeforeEach
-    void setUp() {
-        sections = new Sections(List.of(section1, section2, section3));
-    }
+class SectionsTest {
 
     @Test
-    @DisplayName("상행역 종점 구간을 등록한다.")
-    void saveUpStationSection() {
-        final Section section = new Section(5L, 1L, 20);
+    @DisplayName("상행과 하행이 이미 등록된 경우 에러를 발생시킨다")
+    void checkSectionErrorByAlreadyExist() {
+        //given
+        Station 잠실 = new Station(1L, "잠실");
+        Station 선릉 = new Station(2L, "선릉");
+        Station 서울숲 = new Station(3L, "서울숲");
 
-        sections.add(section);
+        Section 잠실_선릉 = new Section(잠실, 선릉, 10);
+        Section 선릉_서울숲 = new Section(선릉, 서울숲, 10);
 
-        assertThat(sections.hasSection(section)).isTrue();
-    }
+        Sections sections = new Sections(List.of(잠실_선릉, 선릉_서울숲));
 
-    @Test
-    @DisplayName("하행역 종점 구간을 등록한다.")
-    void saveDownStationSection() {
-        final Section section = new Section(4L, 6L, 30);
-
-        sections.add(section);
-
-        assertThat(sections.hasSection(section)).isTrue();
-    }
-
-    @Test
-    @DisplayName("상행역이 같은 구간을 등록할 때 구간을 쪼개서 등록한다.")
-    void saveSectionBySameUpStation() {
-        final Section section = new Section(1L, 5L, 5);
-        final Section expected = new Section(5L, 2L, 25);
-
-        sections.add(section);
-
-        assertThat(sections.hasSection(expected)).isTrue();
-    }
-
-    @Test
-    @DisplayName("하행역이 같은 구간을 등록할 때 구간을 쪼개서 등록한다.")
-    void saveSectionBySameDownStation() {
-        final Section section = new Section(5L, 2L, 25);
-        final Section expected = new Section(1L, 5L, 5);
-
-        sections.add(section);
-
-        assertThat(sections.hasSection(expected)).isTrue();
-    }
-
-    @Test
-    @DisplayName("역 사이에 새로운 역을 등록할 경우 기존 역 사이 길이보다 크거나 같으면 예외를 발생시킨다.")
-    void saveLongerSection() {
-        final Section section = new Section(1L, 7L, 35);
-
-        assertThatThrownBy(() -> sections.add(section))
+        //then
+        assertThatThrownBy(() -> sections.checkSections(잠실_선릉))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("존재하는 구간보다 긴 구간을 등록할 수 없습니다. 상행역, 하행역을 다시 설정해주세요.");
+                .hasMessage("상행역과 하행역이 이미 모두 노선에 등록되어 있습니다.");
     }
 
-    @ParameterizedTest
-    @DisplayName("상행역과 하행역이 이미 노선에 존재할 경우 등록하려할 때 예외를 발생시킨다.")
-    @CsvSource({"2, 3, 20", "1, 3, 50", "3, 2, 20", "4, 2, 25"})
-    void saveWhenSameStations(Long upStationId, Long downStationId, int distance) {
-        final Section section = new Section(upStationId, downStationId, distance);
+    @Test
+    @DisplayName("상행과 하행이 존재하지 않는 경우 에러를 발생시킨다")
+    void checkSectionErrorByNotExist() {
+        //given
+        Station 잠실 = new Station(1L, "잠실");
+        Station 선릉 = new Station(2L, "선릉");
+        Station 서울숲 = new Station(3L, "서울숲");
+        Station 강남구청 = new Station(4L, "강남구청");
 
-        assertThatThrownBy(() -> sections.add(section))
+        Section 잠실_선릉 = new Section(잠실, 선릉, 10);
+        Section 서울숲_강남구청 = new Section(서울숲, 강남구청, 10);
+
+        Sections sections = new Sections(List.of(잠실_선릉));
+
+        //then
+        assertThatThrownBy(() -> sections.checkSections(서울숲_강남구청))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("상행역과 하행역이 이미 노선에 존재합니다.");
+                .hasMessage("상행역과 하행역이 모두 노선에 등록되어 있지 않습니다.");
     }
 
     @Test
-    @DisplayName("노선에 상행역과 하행역 둘 다 포함돼있지 않은 구간을 등록하려할 때 예외를 발생시킨다.")
-    void saveWhenNotSameStations() {
-        final Section section = new Section(5L, 6L, 40);
+    @DisplayName("해당하는 Section과 겹치는 Section이 없는 경우 null을 return 시킨다.")
+    void getTargetSectionToInsertNull() {
+        //given
+        Station 잠실 = new Station(1L, "잠실");
+        Station 선릉 = new Station(2L, "선릉");
+        Station 서울숲 = new Station(3L, "서울숲");
+        Station 강남구청 = new Station(4L, "강남구청");
 
-        assertThatThrownBy(() -> sections.add(section))
+        Section 잠실_선릉 = new Section(잠실, 선릉, 10);
+        Section 서울숲_강남구청 = new Section(서울숲, 강남구청, 10);
+
+        Sections sections = new Sections(List.of(잠실_선릉));
+
+        //when
+        Optional<Section> targetSectionBySection = sections.getTargetSectionToInsert(서울숲_강남구청);
+
+        //then
+        assertThat(targetSectionBySection).isEmpty();
+    }
+
+    @Test
+    @DisplayName("해당하는 Section과 겹치는 Section이 있는 경우 해당 Section을 return한다.")
+    void getTargetSectionToInsert() {
+        //given
+        Station 잠실 = new Station(1L, "잠실");
+        Station 선릉 = new Station(2L, "선릉");
+        Station 서울숲 = new Station(3L, "서울숲");
+        Station 강남구청 = new Station(4L, "강남구청");
+
+        Section 잠실_선릉 = new Section(잠실, 선릉, 10);
+        Section 선릉_서울숲 = new Section(선릉, 서울숲, 10);
+        Section 선릉_강남구청 = new Section(선릉, 강남구청, 5);
+
+        Sections sections = new Sections(List.of(잠실_선릉, 선릉_서울숲));
+
+        //when
+        Optional<Section> targetSectionBySection = sections.getTargetSectionToInsert(선릉_강남구청);
+
+        //then
+        assertThat(targetSectionBySection).isEqualTo(Optional.of(선릉_서울숲));
+    }
+
+    @Test
+    @DisplayName("상하행의 순서에 맞게 id list로 반환한다.")
+    void convertToStationIds() {
+        //given
+        Station 잠실 = new Station(1L, "잠실");
+        Station 선릉 = new Station(2L, "선릉");
+        Station 서울숲 = new Station(3L, "서울숲");
+
+        Section 잠실_선릉 = new Section(잠실, 선릉, 10);
+        Section 선릉_서울숲 = new Section(선릉, 서울숲, 10);
+
+        Sections sections = new Sections(List.of(잠실_선릉, 선릉_서울숲));
+
+        //when
+        List<Station> stations = sections.convertToStationIds();
+
+        assertThat(stations).containsOnly(잠실, 선릉, 서울숲);
+    }
+
+    @Test
+    @DisplayName("sections의 길이가 1인 경우 에러를 발생시킨다.")
+    void checkCanDeleteErrorBySizeOne() {
+        //given
+        Station 잠실 = new Station(1L, "잠실");
+        Station 선릉 = new Station(2L, "선릉");
+
+        Section 잠실_선릉 = new Section(잠실, 선릉, 10);
+
+        Sections sections = new Sections(List.of(잠실_선릉));
+        //then
+        assertThatThrownBy(sections::checkCanDelete)
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("등록하려는 구간의 상행역과 하행역 둘 중 하나는 노선에 포함된 역이어야 합니다.");
+                .hasMessage("해당 노선은 더 삭제할 수 없습니다.");
     }
 
     @Test
-    @DisplayName("상행역 종점을 제거한다.")
-    void deleteFinalUpStation() {
-        sections.delete(new Station(1L));
+    @DisplayName("삭제하려는 TargetSection을 찾을 때, 대상 section의 개수가 2개가 아니라면 에러가 발생한다.")
+    void getMergedTargetSectionToDeleteErrorByWrongSectionSize() {
+        //given
+        Station 잠실 = new Station(1L, "잠실");
+        Station 선릉 = new Station(2L, "선릉");
+        Station 서울숲 = new Station(3L, "서울숲");
 
-        assertThat(sections.hasSection(section1)).isFalse();
-    }
+        Section 잠실_선릉 = new Section(잠실, 선릉, 10);
+        Section 선릉_서울숲 = new Section(선릉, 서울숲, 10);
 
-    @Test
-    @DisplayName("하행역 종점을 제거한다.")
-    void deleteFinalDownStation() {
-        sections.delete(new Station(4L));
+        Sections sections = new Sections(List.of(잠실_선릉, 선릉_서울숲));
 
-        assertThat(sections.hasSection(section3)).isFalse();
-    }
-
-    @Test
-    @DisplayName("중간역을 제거한다.")
-    void deleteMiddleStation() {
-        final Section section =
-                new Section(2L, 4L, 25);
-
-        sections.delete(new Station(3L));
-
-        assertThat(sections.hasSection(section)).isTrue();
-    }
-
-    @Test
-    @DisplayName("존재하지 않는 역을 제거하려 할 때 예외를 발생시킨다.")
-    void deleteNotExistSection() {
-        assertThatThrownBy(() -> sections.delete(new Station(5L)))
+        //then
+        assertThatThrownBy(() -> sections.getMergedTargetSectionToDelete(1L))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("존재하지 않는 역입니다.");
+                .hasMessage("대상 Sections의 크기가 올바르지 않습니다.");
     }
 
     @Test
-    @DisplayName("구간이 하나인 노선에서 역을 제거할 때 예외를 발생시킨다.")
-    void deleteWhenOnlyOneSection() {
-        sections.delete(new Station(3L));
-        sections.delete(new Station(2L));
+    @DisplayName("삭제하려는 stationId 값을 통해서 노선에서 해당 id값을 가진 두 노선의 병합된 값을 가질 수 있다.")
+    void getMergedTargetSectionToDelete() {
+        //given
+        Station 잠실 = new Station(1L, "잠실");
+        Station 선릉 = new Station(2L, "선릉");
+        Station 서울숲 = new Station(3L, "서울숲");
 
-        assertThatThrownBy(() -> sections.delete(new Station(4L)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("구간이 하나만 존재하는 노선입니다.");
+        Section 잠실_선릉 = new Section(잠실, 선릉, 10);
+        Section 선릉_서울숲 = new Section(선릉, 서울숲, 10);
+        Section 잠실_서울숲 = new Section(잠실, 서울숲, 20);
+
+        Sections sections = new Sections(List.of(잠실_선릉, 선릉_서울숲));
+
+        //when
+        Section section = sections.getMergedTargetSectionToDelete(2L);
+
+        //then
+        assertAll(
+                () -> assertThat(section.getDistance()).isEqualTo(잠실_서울숲.getDistance()),
+                () -> assertThat(section.isSameUpStationId(잠실_서울숲.getUpStation().getId())).isTrue(),
+                () -> assertThat(section.isSameDownStationId(잠실_서울숲.getDownStation().getId())).isTrue()
+        );
     }
 }

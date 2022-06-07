@@ -1,15 +1,10 @@
 package wooteco.subway.domain;
 
+import java.util.List;
 import java.util.Objects;
 
 public class Fare {
-    private static final int DEFAULT_FARE = 1250;
-    private static final int DEFAULT_FARE_SECOND = 2050;
-    private static final int FARE_DISTANCE_LIMIT_FIRST = 10;
-    private static final int FARE_DISTANCE_LIMIT_SECOND = 50;
-    private static final int FARE_DISTANCE_UNIT_FIRST = 5;
-    private static final int FARE_DISTANCE_UNIT_SECOND = 8;
-    private static final int EXTRA_FARE = 100;
+    private static final int DISCOUNT_EXCEPT_MONEY_UNIT = 350;
 
     private final int value;
 
@@ -17,18 +12,33 @@ public class Fare {
         this.value = value;
     }
 
-    public static Fare from(int distance) {
-        return new Fare(calculateFare(distance));
+    public static Fare of(int distance, List<Integer> extraFares, int age) {
+        int defaultFare = calculateDefaultFare(distance);
+        double discountRate = calculateDiscountRate(age);
+
+        int extraFare = calculateExtraFare(extraFares);
+
+        int fare = defaultFare + extraFare;
+        int discount = (int) ((fare - DISCOUNT_EXCEPT_MONEY_UNIT) * discountRate);
+
+        return new Fare(fare - discount);
     }
 
-    private static int calculateFare(int distance) {
-        if (distance <= FARE_DISTANCE_LIMIT_FIRST) {
-            return DEFAULT_FARE;
-        }
-        if (distance <= FARE_DISTANCE_LIMIT_SECOND) {
-            return DEFAULT_FARE + (int) ((Math.ceil((distance - 11) / FARE_DISTANCE_UNIT_FIRST) + 1) * EXTRA_FARE);
-        }
-        return DEFAULT_FARE_SECOND + (int) ((Math.ceil((distance - 51) / FARE_DISTANCE_UNIT_SECOND) + 1) * EXTRA_FARE);
+    private static int calculateDefaultFare(int distance) {
+        DistanceFare distanceFare = DistanceFare.valueOf(distance);
+        return distanceFare.calculateFare(distance);
+    }
+
+    private static double calculateDiscountRate(int age) {
+        DiscountRatesAge discountRatesAge = DiscountRatesAge.valueOf(age);
+        return discountRatesAge.getDiscountRate();
+    }
+
+    private static int calculateExtraFare(List<Integer> extraFares) {
+        return extraFares.stream()
+                .mapToInt(fare -> fare)
+                .max()
+                .orElse(0);
     }
 
     public int getValue() {
@@ -37,8 +47,12 @@ public class Fare {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Fare fare = (Fare) o;
         return value == fare.value;
     }

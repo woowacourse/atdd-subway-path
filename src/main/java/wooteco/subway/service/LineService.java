@@ -1,5 +1,8 @@
 package wooteco.subway.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.dao.LineDao;
@@ -7,203 +10,112 @@ import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
-import wooteco.subway.dto.SectionRequest;
 import wooteco.subway.dto.StationResponse;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
+import wooteco.subway.exception.NotFoundException;
 
 @Service
 public class LineService {
-    private final LineDao lineDao;
-    private final StationDao stationDao;
-    private final SectionDao sectionDao;
 
-    public LineService(LineDao lineDao, StationDao stationDao, SectionDao sectionDao) {
+    private static final String LINE_NOT_FOUND = "존재하지 않는 노선입니다.";
+    private static final String DUPLICATE_LINE_NAME = "지하철 노선 이름이 중복될 수 없습니다.";
+    private static final String STATION_NOT_EXIST = "존재하지 않는 지하철역이 포함되어 있습니다.";
+
+    private final LineDao lineDao;
+    private final SectionDao sectionDao;
+    private final StationDao stationDao;
+
+    public LineService(LineDao lineDao, SectionDao sectionDao, StationDao stationDao) {
         this.lineDao = lineDao;
-        this.stationDao = stationDao;
         this.sectionDao = sectionDao;
+        this.stationDao = stationDao;
     }
 
     @Transactional
-    public LineResponse saveLine(LineRequest lineRequest) {
-        checkExistLineByName(lineRequest);
-        final Line line = createLine(lineRequest);
+    public LineResponse insert(LineRequest request) {
+        String name = request.getName();
+        checkDuplicateName(lineDao.isExistName(name));
 
-        final Station upStation = findByStationId(lineRequest.getUpStationId());
-        final Station downStation = findByStationId(lineRequest.getDownStationId());
-        final List<StationResponse> stationResponses = makeStationResponseByStation(List.of(upStation, downStation));
+        Line line = new Line(request.getName(), request.getColor(), request.getExtraFare());
+        Long lineId = lineDao.insert(line);
 
+        line = new Line(lineId, line.getName(), line.getColor(), line.getExtraFare());
+
+        insertSection(request, lineId);
+
+        List<StationResponse> stationResponses = getStationResponsesByLineId(lineId);
         return new LineResponse(line, stationResponses);
     }
 
-    private void checkExistLineByName(LineRequest lineRequest) {
-        if (lineDao.hasLine(lineRequest.getName())) {
-            throw new IllegalArgumentException("같은 이름의 노선이 존재합니다.");
-        }
+    private void insertSection(LineRequest request, Long lineId) {
+        Station upStation = findStation(request.getUpStationId());
+        Station downStation = findStation(request.getDownStationId());
+
+        Section section = new Section(lineId, upStation, downStation, request.getDistance());
+        sectionDao.insert(section);
     }
 
-    private Line createLine(LineRequest lineRequest) {
-        final Long id = lineDao.save(lineRequest);
-        final Section section = saveInitialSection(id, lineRequest.getUpStationId(), lineRequest.getDownStationId(),
-                lineRequest.getDistance());
-        return new Line(id, lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare(), section);
-    }
-
-    private Section saveInitialSection(Long newLineId, Long upStationId, Long downStationId, int distance) {
-        final Section section = new Section(newLineId, upStationId, downStationId, distance);
-        final Long sectionId = sectionDao.save(section);
-        return new Section(sectionId, newLineId, upStationId, downStationId, distance);
-    }
-
-    private Station findByStationId(Long id) {
+    private Station findStation(Long id) {
         return stationDao.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("구간 내 존재하는 역 조회에 오류가 발생했습니다."));
-    }
-
-    @Transactional
-    public void addSection(Long lineId, SectionRequest sectionRequest) {
-        final Line line = loadLine(lineId);
-        validateLine(sectionDao.findByLineId(lineId));
-
-        final Section section = new Section(lineId, sectionRequest.getUpStationId(), sectionRequest.getDownStationId(),
-                sectionRequest.getDistance());
-        line.addSection(section);
-        checkFinalSectionAndAdd(lineId, section);
-    }
-
-    private void validateLine(List<Section> sections) {
-        if (sections.isEmpty()) {
-            throw new NoSuchElementException("구간이 존재하지 않는 노선입니다. 오류가 발생했습니다.");
-        }
-    }
-
-    private void checkFinalSectionAndAdd(Long lineId, Section section) {
-        final Optional<Section> sameUpStation = sectionDao.findByDownStationId(lineId, section.getDownStationId());
-        final Optional<Section> sameDownStation = sectionDao.findByUpStationId(lineId, section.getUpStationId());
-        if (sameUpStation.isPresent() || sameDownStation.isPresent()) {
-            addNotFinalSection(lineId, section);
-            return;
-        }
-        sectionDao.save(section);
-    }
-
-    private void addNotFinalSection(Long lineId, Section section) {
-        final Section existSection = sectionDao.findBySameUpOrDownStationId(lineId, section)
-                .orElseThrow(() -> new NoSuchElementException("구간이 존재하지 않습니다."));
-        saveSplitSection(existSection, section);
-        sectionDao.save(section);
-    }
-
-    private void saveSplitSection(Section existSection, Section section) {
-        final int newDistance = existSection.getDistance() - section.getDistance();
-        if (existSection.hasSameUpStation(section)) {
-            sectionDao.updateUpStation(existSection.getId(), section.getDownStationId(), newDistance);
-            return;
-        }
-        sectionDao.updateDownStation(existSection.getId(), section.getUpStationId(), newDistance);
+                .orElseThrow(() -> new IllegalArgumentException(STATION_NOT_EXIST));
     }
 
     @Transactional(readOnly = true)
-    public List<LineResponse> findAllLines() {
-        final List<Line> lines = lineDao.findAll();
-        return lines.stream()
-                .map(this::makeLineResponseByLine)
+    public List<LineResponse> findAll() {
+        List<LineResponse> lineResponses = new ArrayList<>();
+
+        for (Line line : lineDao.findAll()) {
+            List<StationResponse> stationResponsesByLineId = getStationResponsesByLineId(line.getId());
+            lineResponses.add(new LineResponse(line, stationResponsesByLineId));
+        }
+        return lineResponses;
+    }
+
+    @Transactional(readOnly = true)
+    public LineResponse findById(Long id) {
+        Line line = lineDao.findById(id)
+                .orElseThrow(() -> new NotFoundException(LINE_NOT_FOUND));
+
+        List<StationResponse> responses = getStationResponsesByLineId(id);
+
+        return new LineResponse(line, responses);
+    }
+
+    private List<StationResponse> getStationResponsesByLineId(Long lineId) {
+        Sections sections = new Sections(sectionDao.findByLineId(lineId));
+        List<Station> stations = sections.convertToStationIds();
+
+        return stations.stream()
+                .map(StationResponse::new)
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    @Transactional(readOnly = true)
-    public LineResponse findLine(Long id) {
-        final Line line = loadLine(id);
-        return makeLineResponseByLine(line);
-    }
-
-    private LineResponse makeLineResponseByLine(Line line) {
-        final List<Section> sections = sectionDao.findByLineId(line.getId());
-        final List<Station> stations = sortStations(line.getId(), sections);
-
-        final List<StationResponse> stationResponses = makeStationResponseByStation(stations);
-        return new LineResponse(line, stationResponses);
-    }
-
-    private List<Station> sortStations(Long lineId, List<Section> sections) {
-        final List<Station> stations = new ArrayList<>();
-        final Section upSection = sections.stream()
-                .filter(it -> sectionDao.findByDownStationId(lineId, it.getUpStationId()).isEmpty())
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("구간의 상행역 종점 조회에 오류가 발생했습니다."));
-        stationDao.findById(upSection.getUpStationId()).ifPresent(stations::add);
-        addDownSectionToSort(lineId, upSection, stations);
-        return stations;
-    }
-
-    private void addDownSectionToSort(Long lineId, Section upSection, final List<Station> stations) {
-        stationDao.findById(upSection.getDownStationId()).ifPresent(stations::add);
-        final Optional<Section> downSection = sectionDao.findByUpStationId(lineId, upSection.getDownStationId());
-        downSection.ifPresent(section -> addDownSectionToSort(lineId, section, stations));
-    }
-
-    private List<StationResponse> makeStationResponseByStation(List<Station> stations) {
-        return stations.stream()
-                .map(StationResponse::new)
-                .collect(Collectors.toList());
-    }
-
     @Transactional
-    public void updateLine(Long id, String name, String color, int extraFare) {
-        checkExistLineById(id);
-        lineDao.updateById(id, name, color, extraFare);
-    }
-
-    @Transactional
-    public void deleteLine(Long id) {
-        checkExistLineById(id);
-        final List<Section> sections = sectionDao.findByLineId(id);
-        sectionDao.delete(sections);
-        lineDao.deleteById(id);
-    }
-
-    private void checkExistLineById(Long id) {
-        lineDao.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(id + "번에 해당하는 노선이 존재하지 않습니다."));
-    }
-
-    @Transactional
-    public void deleteSection(Long lineId, Long stationId) {
-        final Station station = stationDao.findById(stationId)
-                .orElseThrow(() -> new IllegalArgumentException(stationId + "번에 해당하는 지하철역이 존재하지 않습니다."));
-        final Line line = loadLine(lineId);
-        line.deleteSections(station);
-        final Optional<Section> upSection = sectionDao.findByDownStationId(lineId, stationId);
-        final Optional<Section> downSection = sectionDao.findByUpStationId(lineId, stationId);
-        upSection.ifPresent((up -> downSection.ifPresent(down -> updateDownSectionByDeletion(up, down))));
-        if (upSection.isEmpty() || downSection.isEmpty()) {
-            upSection.ifPresent(deleteFinalSection());
-            downSection.ifPresent(deleteFinalSection());
+    public void deleteById(Long id) {
+        if (lineDao.delete(id) == 0) {
+            throw new NotFoundException(LINE_NOT_FOUND);
         }
+        sectionDao.deleteByLineId(id);
     }
 
-    private Line loadLine(Long lineId) {
-        final Line findLine = lineDao.findById(lineId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 노선이 존재하지 않습니다."));
-        final List<Section> sections = sectionDao.findByLineId(lineId);
-        return new Line(findLine.getId(), findLine.getName(), findLine.getColor(), findLine.getExtraFare(), sections);
+    @Transactional
+    public void update(Long id, LineRequest request) {
+        String name = request.getName();
+        checkDuplicateName(lineDao.isExistName(id, name));
+
+        Line oldLine = lineDao.findById(id)
+                .orElseThrow(() -> new NotFoundException(LINE_NOT_FOUND));
+        Line newLine = new Line(oldLine.getId(), request.getName(), request.getColor(), oldLine.getExtraFare());
+
+        lineDao.update(newLine);
     }
 
-    private void updateDownSectionByDeletion(Section upSection, Section downSection) {
-        sectionDao.delete(List.of(upSection));
-        sectionDao.updateUpStation(downSection.getId(), upSection.getUpStationId(),
-                upSection.getDistance() + downSection.getDistance());
-    }
-
-    private Consumer<Section> deleteFinalSection() {
-        return section -> sectionDao.delete(List.of(section));
+    private void checkDuplicateName(boolean result) {
+        if (result) {
+            throw new IllegalArgumentException(DUPLICATE_LINE_NAME);
+        }
     }
 }

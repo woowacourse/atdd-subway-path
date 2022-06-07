@@ -6,7 +6,7 @@ public class Station {
     private Long id;
     private String name;
 
-    private Station() {
+    public Station() {
     }
 
     public Station(Long id, String name) {
@@ -14,17 +14,8 @@ public class Station {
         this.name = name;
     }
 
-    public Station(Long id) {
-        this(id, "");
-    }
-
-    public Station(String name) {
-        this(0L, name);
-
-    }
-
-    public boolean isSameStation(Long stationId) {
-        return Objects.equals(id, stationId);
+    public boolean isSameId(Long id) {
+        return this.id.equals(id);
     }
 
     public Long getId() {
@@ -43,13 +34,15 @@ public class Station {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
+
         Station station = (Station) o;
-        return Objects.equals(name, station.name);
+
+        return Objects.equals(id, station.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return id != null ? id.hashCode() : 0;
     }
 }
 

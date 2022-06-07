@@ -1,171 +1,119 @@
 package wooteco.subway.domain;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Sections {
-    private static final int CANNOT_DELETE_SECTION_MAX_SIZE = 1;
+    private static final String ALREADY_CONTAINS_UP_AND_DOWN_STATIONS = "상행역과 하행역이 이미 모두 노선에 등록되어 있습니다.";
+    private static final String NOT_CONTAINS_UP_AND_DOWN_STATIONS = "상행역과 하행역이 모두 노선에 등록되어 있지 않습니다.";
+    private static final String CAN_NOT_DELETE_MORE = "해당 노선은 더 삭제할 수 없습니다.";
+    private static final String INCORRECT_TARGET_SECTIONS_SIZE = "대상 Sections의 크기가 올바르지 않습니다.";
 
-    private final List<Section> sections;
+    private static final Station DEFAULT = new Station(0L, "DEFAULT");
+    private static final int VALID_SECTIONS_TO_MERGE_SIZE = 2;
+    private static final int DELETE_LIMIT = 1;
 
-    public Sections(List<Section> sections) {
-        this.sections = new ArrayList<>(sections);
+    private final List<Section> value;
+
+    public Sections(List<Section> value) {
+        this.value = value;
     }
 
-    private Sections() {
-        this(new ArrayList<>());
+    public void checkSections(Section inputSection) {
+        List<Station> stationIds = convertToStationIds();
+
+        Station inputUpStation = inputSection.getUpStation();
+        Station inputDownStation = inputSection.getDownStation();
+
+        checkContainsAll(stationIds, List.of(inputUpStation, inputDownStation));
+        checkNotContains(stationIds, inputUpStation, inputDownStation);
     }
 
-    public void add(Section section) {
-        boolean isIncludeUpStation = hasSameUpStation(section) || hasSameDownStationWithOtherUpStation(section);
-        boolean isIncludeDownStation = hasSameDownStation(section) || hasSameUpStationWithOtherDownStation(section);
-        validateSection(isIncludeUpStation, isIncludeDownStation);
-        if (isIncludeUpStation) {
-            addWithSameUpStation(section);
-            return;
-        }
-        addWithSameDownStation(section);
-    }
-
-    private void validateSection(boolean isIncludeUpStation, boolean isIncludeDownStation) {
-        if (!isIncludeUpStation && !isIncludeDownStation) {
-            throw new IllegalArgumentException("등록하려는 구간의 상행역과 하행역 둘 중 하나는 노선에 포함된 역이어야 합니다.");
-        }
-        if (isIncludeUpStation && isIncludeDownStation) {
-            throw new IllegalArgumentException("상행역과 하행역이 이미 노선에 존재합니다.");
-        }
-    }
-
-    private void addWithSameUpStation(Section section) {
-        if (hasSameUpStation(section)) {
-            addSplitUpSection(section);
-            return;
-        }
-        sections.add(section);
-    }
-
-    private void addSplitUpSection(Section addSection) {
-        final Section existSection = sections.stream()
-                .filter(it -> it.hasSameUpStation(addSection))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("구간 등록 중 상행역 불일치로 오류가 발생했습니다."));
-        validateSectionDistance(addSection, existSection);
-        sections.add(addSection);
-        sections.add(existSection.splitSectionBySameUpStation(addSection));
-        sections.remove(existSection);
-    }
-
-    private void addWithSameDownStation(Section section) {
-        if (hasSameDownStation(section)) {
-            addSplitDownSection(section);
-            return;
-        }
-        sections.add(section);
-    }
-
-    private void addSplitDownSection(Section section) {
-        final Section existSection = sections.stream()
-                .filter(it -> it.hasSameDownStation(section))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("구간 등록 중 하행역 불일치로 오류가 발생했습니다."));
-        validateSectionDistance(section, existSection);
-        sections.add(section);
-        sections.add(existSection.splitSectionBySameDownStation(section));
-        sections.remove(existSection);
-    }
-
-    private void validateSectionDistance(Section section, Section existSection) {
-        if (!existSection.isLongerThan(section)) {
-            throw new IllegalArgumentException("존재하는 구간보다 긴 구간을 등록할 수 없습니다. 상행역, 하행역을 다시 설정해주세요.");
+    private void checkContainsAll(List<Station> stations, List<Station> inputStations) {
+        if (stations.containsAll(inputStations)) {
+            throw new IllegalArgumentException(ALREADY_CONTAINS_UP_AND_DOWN_STATIONS);
         }
     }
 
-    private boolean hasSameUpStation(Section section) {
-        return sections.stream()
-                .anyMatch(it -> it.hasSameUpStation(section));
-    }
-
-    private boolean hasSameDownStation(Section section) {
-        return sections.stream()
-                .anyMatch(it -> it.hasSameDownStation(section));
-    }
-
-    private boolean hasSameUpStationWithOtherDownStation(Section section) {
-        return sections.stream()
-                .anyMatch(it -> it.hasSameUpStationWithOtherDownStation(section));
-    }
-
-    private boolean hasSameDownStationWithOtherUpStation(Section section) {
-        return sections.stream()
-                .anyMatch(it -> it.hasSameDownStationWithOtherUpStation(section));
-    }
-
-    public void delete(Station station) {
-        boolean hasUpSection = hasUpSectionByStation(station);
-        boolean hasDownSection = hasDownSectionByStation(station);
-        checkDeleteSafety(hasUpSection, hasDownSection);
-        if (hasUpSection && hasDownSection) {
-            deleteAndMergeSections(station);
-            return;
-        }
-        deleteFinalStation(station, hasUpSection);
-    }
-
-    private boolean hasUpSectionByStation(Station station) {
-        return sections.stream()
-                .anyMatch(it -> it.hasSameDownStationByStation(station));
-    }
-
-    private boolean hasDownSectionByStation(Station station) {
-        return sections.stream()
-                .anyMatch(it -> it.hasSameUpStationByStation(station));
-    }
-
-    private void checkDeleteSafety(boolean hasUpSection, boolean hasDownSection) {
-        if (!hasUpSection && !hasDownSection) {
-            throw new IllegalArgumentException("존재하지 않는 역입니다.");
-        }
-        if (sections.size() == CANNOT_DELETE_SECTION_MAX_SIZE) {
-            throw new IllegalArgumentException("구간이 하나만 존재하는 노선입니다.");
+    private void checkNotContains(List<Station> stations, Station inputUpStation, Station inputDownStation) {
+        if (!stations.contains(inputDownStation) && !stations.contains(inputUpStation)) {
+            throw new IllegalArgumentException(NOT_CONTAINS_UP_AND_DOWN_STATIONS);
         }
     }
 
-    private void deleteAndMergeSections(Station station) {
-        final Section upSection = findUpSectionByStation(station);
-        final Section downSection = findDownSectionByStation(station);
-        sections.add(upSection.mergeSectionByCut(downSection));
-        sections.remove(upSection);
-        sections.remove(downSection);
+    public Optional<Section> getTargetSectionToInsert(Section inputSection) {
+        return value.stream()
+                .filter(section -> section.isSameUpStation(inputSection)
+                        || section.isSameDownStation(inputSection))
+                .findFirst();
     }
 
-    private void deleteFinalStation(Station station, boolean hasUpSection) {
-        if (hasUpSection) {
-            sections.remove(findUpSectionByStation(station));
-            return;
+    public List<Station> convertToStationIds() {
+        Station station = value.get(0).getUpStation();
+        LinkedList<Station> result = new LinkedList<>();
+        result.add(station);
+
+        addUpStations(result, station);
+        addDownStations(result, station);
+
+        return result.stream()
+                .distinct()
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    private void addUpStations(LinkedList<Station> result, Station station) {
+        Map<Station, Station> stations = value.stream()
+                .collect(Collectors.toMap(Section::getDownStation, Section::getUpStation));
+
+        while (stations.getOrDefault(station, DEFAULT) != DEFAULT) {
+            station = stations.get(station);
+            result.addFirst(station);
         }
-        sections.remove(findDownSectionByStation(station));
     }
 
-    private Section findUpSectionByStation(Station station) {
-        return sections.stream()
-                .filter(it -> it.hasSameDownStationByStation(station))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("구간 삭제 중 상행역 연결 오류가 발생했습니다."));
+    private void addDownStations(LinkedList<Station> result, Station station) {
+        Map<Station, Station> stations = value.stream()
+                .collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
+
+        while (stations.getOrDefault(station, DEFAULT) != DEFAULT) {
+            station = stations.get(station);
+            result.addFirst(station);
+        }
     }
 
-    private Section findDownSectionByStation(Station station) {
-        return sections.stream()
-                .filter(it -> it.hasSameUpStationByStation(station))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("구간 삭제 중 하행역 연결 오류가 발생했습니다."));
+    public void checkCanDelete() {
+        if (value.size() <= DELETE_LIMIT) {
+            throw new IllegalArgumentException(CAN_NOT_DELETE_MORE);
+        }
     }
 
-    public boolean hasSection(Section section) {
-        return sections.stream()
-                .anyMatch(it -> it.isSameStations(section));
+    public Section getMergedTargetSectionToDelete(long stationId) {
+        List<Section> sections = value.stream()
+                .filter(section -> section.isSameUpStationId(stationId) || section.isSameDownStationId(stationId))
+                .collect(Collectors.toUnmodifiableList());
+
+        Sections targetSections = new Sections(sections);
+        targetSections.checkSectionsSize();
+        return targetSections.mergeSections();
     }
 
-    public List<Section> getSections() {
-        return sections;
+    private void checkSectionsSize() {
+        if (value.size() != VALID_SECTIONS_TO_MERGE_SIZE) {
+            throw new IllegalArgumentException(INCORRECT_TARGET_SECTIONS_SIZE);
+        }
+    }
+
+    private Section mergeSections() {
+        Section firstSection = value.get(0);
+        Section secondSection = value.get(1);
+        int newDistance = firstSection.getDistance() + secondSection.getDistance();
+
+        if (firstSection.isSameDownStationId(secondSection.getUpStation().getId())) {
+            return new Section(firstSection.getLineId(), firstSection.getUpStation(), secondSection.getDownStation(), newDistance);
+        }
+        return new Section(firstSection.getLineId(), secondSection.getUpStation(), firstSection.getDownStation(), newDistance);
     }
 }
